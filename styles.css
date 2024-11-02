@@ -411,22 +411,25 @@ body:focus-within #scrollTopBtn {
   position: fixed;
   top: 10px;
   right: 10px;
-  padding: 10px;
-  font-size: 24px;
+  padding: 10px 20px;
+  font-size: 24px; /* Adjust size for better visibility */
   cursor: pointer;
   z-index: 1000;
-  background: none;
-  border: none;
-  outline: none;
-  transition: transform 0.3s ease;
+  border: none; /* Remove any border */
+  background: none; /* Remove background */
+  transition: transform 0.2s; /* Smooth transition for button */
 }
 
-/* Add a rotation animation */
-#darkModeToggle.rotate {
-  transform: rotate(180deg);
+/* Hover Effect for the Toggle Button */
+#darkModeToggle:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
 }
 
 /* Dark Mode Styles */
+body {
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
+}
+
 body.dark-mode {
   background-color: #121212;
   color: #ffffff;
@@ -440,6 +443,7 @@ body.dark-mode {
 .dark-mode .section5 {
   background-color: #121212;
   color: #ffffff;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for sections */
 }
 
 .dark-mode .hover-link {
@@ -448,4 +452,28 @@ body.dark-mode {
 
 .dark-mode .footer {
   background-color: #121212;
+  transition: background-color 0.3s; /* Smooth transition for footer */
+}
+
+/* Add transitions for images if necessary */
+img {
+  transition: filter 0.3s; /* Smooth transition for images */
+}
+
+.dark-mode img {
+  filter: brightness(0.8); /* Optional: Darken images in dark mode */
+}
+
+/* Animation for emoji */
+@keyframes emojiChange {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.animate {
+  animation: emojiChange 0.2s ease-in-out; /* Animation effect */
 }

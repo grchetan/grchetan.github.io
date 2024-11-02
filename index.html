@@ -223,19 +223,26 @@
     <!-- JavaScript code here -->
     <script>
       const toggleButton = document.getElementById("darkModeToggle");
-      toggleButton.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
+      const body = document.body;
 
-        // Change the emoji based on the dark mode state
-        if (document.body.classList.contains("dark-mode")) {
+      toggleButton.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        // Change emoji based on dark mode status
+        if (body.classList.contains("dark-mode")) {
           toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+          toggleButton.classList.add("animate"); // Add animation class
         } else {
           toggleButton.textContent = "🌙"; // Moon emoji for light mode
+          toggleButton.classList.remove("animate"); // Remove animation class
         }
+      });
 
-        // Apply rotation animation
-        toggleButton.classList.add("rotate");
-        setTimeout(() => toggleButton.classList.remove("rotate"), 300); // Remove rotation after 0.3s
+      // Animation effect for the emoji transition
+      toggleButton.classList.add("animate");
+
+      toggleButton.addEventListener("animationend", () => {
+        toggleButton.classList.remove("animate");
       });
     </script>
   </body>
