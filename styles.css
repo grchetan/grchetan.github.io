@@ -1,83 +1,406 @@
+.anton-regular {
+  font-family: "Anton", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 60px;
+  margin-top: -20px;
+}
+
+.header-style {
+  text-align: center;
+  padding-left: auto;
+  padding-right: auto;
+  padding-top: 64px;
+}
+
+#myimage {
+  width: 180px;
+  aspect-ratio: auto 180 / 180;
+  height: 180px;
+  border-radius: 50%;
+}
+
+.carrois-gothic-regular {
+  font-family: "Carrois Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
+.sulphur-point-light {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+}
+
+/* Education Shool college styles*/
+.sulphur-point-light2 {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+}
+
+/* Unorderlist CSS Styles*/
+.sulphur-point-light3 {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+}
+
+@media (max-width: 600px) {
+  .sulphur-point-light3 {
+    font-size: 18px; /* Reduce text size */
+  }
+}
+
+.zen-dots-regular {
+  font-family: "Zen Dots", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
+.section1 {
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.section2,
+.section3,
+.section4,
+.section5 {
+  padding-top: 2%;
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.logo-container {
+  display: flex; /* Aligns items in a row */
+  align-items: center; /* Vertically centers the image and text */
+  padding-bottom: 20px;
+}
+
+.text-content {
+  margin-left: 10px; /* Adjusts the spacing between the image and text */
+  margin-top: -20px;
+}
+
+/* Mobile styling */
+@media (max-width: 600px) {
+  .logo-container {
+    align-items: flex-start;
+  }
+
+  .text-content {
+    margin-top: -14px; /* Increases the top margin for mobile */
+  }
+
+  .logo-container img {
+    height: 60px; /* Reduce image size */
+  }
+
+  .text-content p,
+  .text-content span,
+  .text-content a {
+    font-size: 14px; /* Reduce text size */
+  }
+}
+
+.educationlogo {
+  border-radius: 50%;
+}
+
+/* Initial styles for the link */
+.hover-link {
+  font-family: monospace;
+  font-size: large;
+  text-decoration: none;
+  color: #3498db; /* Initial color */
+  transition: color 0.3s ease; /* Smooth transition for color change */
+}
+
+/* Hover effect */
+.hover-link:hover {
+  color: #e74c3c; /* Change color on hover */
+}
+
+.school-year {
+  font-family: monospace;
+  font-size: large;
+  color: grey;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  /* Adjust max-width to target other screen sizes if needed */
+  .section1,
+  .section2,
+  .section3,
+  .section4,
+  .section5 {
+    padding-top: 10%; /* Less top padding for smaller screens */
+    padding-left: 0%; /* Reduce left padding on mobile */
+    padding-right: 0%; /* Add some right padding to center the text better */
+  }
+}
+
+/* List Heading Styles */
+.listheading {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding-left: 25px;
+  padding-top: 20px;
+  margin-bottom: -10px;
+  font-weight: bold;
+  animation: rgbLights 3s infinite; /* Apply the animation */
+}
+
+/* RGB lights animation */
+@keyframes rgbLights {
+  0% {
+    color: rgb(255, 0, 0);
+  } /* Red */
+  25% {
+    color: rgb(0, 255, 0);
+  } /* Green */
+  50% {
+    color: rgb(0, 0, 255);
+  } /* Blue */
+  75% {
+    color: rgb(0, 0, 0);
+  } /* Yellow */
+  100% {
+    color: rgb(255, 0, 0);
+  } /* Back to Red */
+}
+
+@media (max-width: 600px) {
+  .listheading {
+    font-size: medium;
+    padding-top: 20px;
+  }
+}
+
+/* Arrow Container */
+.arrow-container {
+  display: flex;
+  justify-content: center; /* Center the arrow */
+  align-items: center;
+  height: 50vh; /* Full height for better visibility */
+  position: relative; /* For positioning animation */
+}
+
+/* Stylish Downward Arrow */
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent; /* Left side of the arrow */
+  border-right: 15px solid transparent; /* Right side of the arrow */
+  border-top: 25px solid #3498db; /* Arrow color */
+  position: relative; /* For positioning pseudo-element */
+  animation: bounce 1.5s infinite; /* Bouncing animation */
+}
+
+/* Arrow Shadow */
+.arrow-down:after {
+  content: "";
+  position: absolute;
+  top: 20px; /* Position below the arrow */
+  left: -15px; /* Centering the shadow */
+  width: 30px; /* Width of the shadow */
+  height: 10px; /* Height of the shadow */
+  background-color: rgba(0, 0, 0, 0.2); /* Semi-transparent black */
+  border-radius: 5px; /* Rounded edges for the shadow */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #4a90e2,
+    #9013fe
+  ); /* Gradient color for the scrollbar thumb */
+  border-radius: 10px;
+  transition: background-color 0.3s ease; /* Smooth color change animation */
+}
+
+/* Hover effect on scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #9013fe,
+    #4a90e2
+  ); /* Reverse gradient on hover */
+}
+
+/* Adding bounce animation */
+::-webkit-scrollbar-thumb {
+  animation: bounce 1.5s infinite alternate; /* Repeats the animation */
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(
+      -3px
+    ); /* Moves the scrollbar thumb up and down slightly */
+  }
+}
+
+/* ----------------------------------------------  Footer  ------------------------------------------------------------------------- */
+/* Footer Styling */
+.footer {
+  background-color: #222;
+  padding: 40px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-left: -20px;
+  margin-right: -20px;
+  margin-top: 30%;
+}
+
+.footer-container h2 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  color: #ffffff;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-icon {
+  font-size: 24px;
+  color: #3ce7f4;
+  text-decoration: none;
+  border: 2px solid #585c62;
+  padding: 10px;
+  border-radius: 50%;
+  transition: 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #000000;
+  background-color: #ffffff;
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+/* Footer Bottom Styling */
+.footer-bottom {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #aaa;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
+
+.footer-bottom a {
+  text-decoration: none;
+  color: #fff; /* Remove underline */
+}
+.footer-bottom a:hover {
+  color: #00d9ff; /* Change to red on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .social-links {
+    gap: 15px;
+  }
+
+  .social-icon {
+    padding: 8px;
+    font-size: 20px;
+  }
+}
+
+/* ----------------------------------------------   Up scrooll Button   ------------------------------------------------------------------------- */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    color: #333;
-    background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  height: 2000px; /* Extra height for scrollable content */
+  margin: 0;
 }
 
-header {
-    background: #2c3e50;
-    color: #ecf0f1;
-    padding: 20px;
-    text-align: center;
+html {
+  scroll-behavior: smooth; /* Enable smooth scrolling */
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
+/* Scroll to Top Button styling */
+#scrollTopBtn {
+  position: fixed;
+  bottom: 30px; /* Position from the bottom */
+  right: 30px; /* Position from the right */
+  width: 50px; /* Default width */
+  height: 50px; /* Default height */
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease-in-out, transform 0.3s; /* Smooth fade-in and scale effect */
+  background-image: url("images/up.gif"); /* Set your GIF image */
+  background-size: contain; /* Adjust size to contain the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-position: center; /* Center the image */
 }
 
-header p {
-    margin: 0;
-    font-size: 1.2em;
+/* Show button when hovering near the bottom */
+body:hover #scrollTopBtn,
+body:focus-within #scrollTopBtn {
+  opacity: 1; /* Make button visible */
+  transform: scale(1.1); /* Slightly enlarge the button */
 }
 
-header a {
-    color: #ecf0f1;
-    text-decoration: none;
+/* Arrow color on hover */
+#scrollTopBtn:hover {
+  background-color: #0056b3; /* Darken background on hover */
 }
 
-header a:hover {
-    text-decoration: underline;
-}
-
-section {
-    padding: 20px;
-    margin: 0 auto;
-    max-width: 800px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-h2 {
-    color: #3498db;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 5px;
-}
-
-.job, .school {
-    margin-bottom: 20px;
-}
-
-ul {
-    list-style-type: disc;
-    padding-left: 20px;
-}
-
-footer {
-    background: #2c3e50;
-    color: #ecf0f1;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-footer p {
-    margin: 0;
-}
-
-@media screen and (max-width: 600px) {
-    header, footer {
-        padding: 10px;
-    }
-    
-    section {
-        padding: 10px;
-    }
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  #scrollTopBtn {
+    width: 40px; /* Smaller width for mobile */
+    height: 40px; /* Smaller height for mobile */
+    bottom: 20px; /* Reduce bottom spacing */
+    right: 20px; /* Reduce right spacing */
+  }
 }
