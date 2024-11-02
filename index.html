@@ -37,6 +37,8 @@
   <body id="top">
     <div>
       <header class="header-style">
+        <button id="darkModeToggle">🌙</button>
+
         <img src="images/grimage.jpg" id="myimage" alt="my image" />
         <h1 class="carrois-gothic-regular">Hey, I'm Chetan prajapat</h1>
         <h1 class="anton-regular">I am Web Developer</h1>
@@ -77,7 +79,7 @@
           <h1 class="zen-dots-regular">Education</h1>
           <div class="logo-container">
             <img
-              src="https://kisjhabua.com/wp-content/uploads/2017/02/KIS-LO-GO-removebg-preview.png"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHRg9otCqyIEo03VTlKmCHRpapNdqsAxF_iMZRMf1MDQzaGgpZaqt8f8cjV1FH-uKoxE0&usqp=CAU"
               class="educationlogo"
               height="90px"
               alt="KIS"
@@ -99,7 +101,7 @@
 
           <div class="logo-container">
             <img
-              src="https://kisjhabua.com/wp-content/uploads/2017/02/KIS-LO-GO-removebg-preview.png"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHRg9otCqyIEo03VTlKmCHRpapNdqsAxF_iMZRMf1MDQzaGgpZaqt8f8cjV1FH-uKoxE0&usqp=CAU"
               class="educationlogo"
               height="90px"
               alt="KIS"
@@ -218,5 +220,23 @@
         </div>
       </footer>
     </div>
+    <!-- JavaScript code here -->
+    <script>
+      const toggleButton = document.getElementById("darkModeToggle");
+      toggleButton.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        // Change the emoji based on the dark mode state
+        if (document.body.classList.contains("dark-mode")) {
+          toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+        } else {
+          toggleButton.textContent = "🌙"; // Moon emoji for light mode
+        }
+
+        // Apply rotation animation
+        toggleButton.classList.add("rotate");
+        setTimeout(() => toggleButton.classList.remove("rotate"), 300); // Remove rotation after 0.3s
+      });
+    </script>
   </body>
 </html>

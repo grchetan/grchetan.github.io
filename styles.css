@@ -171,7 +171,7 @@
     color: rgb(0, 0, 255);
   } /* Blue */
   75% {
-    color: rgb(0, 0, 0);
+    color: rgb(241, 58, 168);
   } /* Yellow */
   100% {
     color: rgb(255, 0, 0);
@@ -350,7 +350,7 @@
   }
 }
 
-/* ----------------------------------------------   Up scrooll Button   ------------------------------------------------------------------------- */
+/* ----------------------------------------------   Up scrooll Button   ----------------------------------------------------------------------- */
 body {
   font-family: Arial, sans-serif;
   padding: 20px;
@@ -403,4 +403,49 @@ body:focus-within #scrollTopBtn {
     bottom: 20px; /* Reduce bottom spacing */
     right: 20px; /* Reduce right spacing */
   }
+}
+
+/* ----------------------------------------------   dARK   ----------------------------------------------------------------------- */
+/* Toggle Button */
+#darkModeToggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  background: none;
+  border: none;
+  outline: none;
+  transition: transform 0.3s ease;
+}
+
+/* Add a rotation animation */
+#darkModeToggle.rotate {
+  transform: rotate(180deg);
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.dark-mode .header-style,
+.dark-mode .section1,
+.dark-mode .section2,
+.dark-mode .section3,
+.dark-mode .section4,
+.dark-mode .section5 {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.dark-mode .hover-link {
+  color: #bb86fc;
+}
+
+.dark-mode .footer {
+  background-color: #121212;
 }
