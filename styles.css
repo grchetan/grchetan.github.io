@@ -534,6 +534,15 @@ body {
   background: rgba(0, 0, 0, 0.5); /* Slight background for better readability */
 }
 
+/* Additional Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  .background-video video {
+    width: auto;
+    height: 100vh;
+    object-fit: cover;
+  }
+}
+
 #toggle-container {
   position: fixed;
   top: 10px;
