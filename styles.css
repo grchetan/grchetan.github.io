@@ -456,8 +456,7 @@ body {
 }
 
 body.dark-mode {
-  background-color: none;
-  color: #ffffff;
+  background-color: transparent;
 }
 
 .dark-mode .header-style,
