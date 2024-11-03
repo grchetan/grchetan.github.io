@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>My Digital Watch</title>
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <style>
+      /* Body Styling */
+      body {
+        font-family: Arial, sans-serif;
+        flex-direction: column; /* Align elements vertically */
+        justify-content: center;
+        min-height: 100vh; /* Minimum height to fill viewport */
+        background-color: black;
+        color: #fff;
+        margin: 0; /* Remove default margin */
+      }
+
+      /* Clock Container Styling */
+      .clock-container {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: transparent;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        width: 80%; /* Set width for responsiveness */
+        max-width: 400px; /* Maximum width */
+      }
+
+      /* Media Queries for Mobile Responsiveness */
+      @media (max-width: 800px) {
+        .clock-container {
+          margin: 20px; /* Adjust margin for mobile */
+          padding: 20px; /* Reduced padding for mobile */
+        }
+      }
+
+      /* Time Styling */
+      .time {
+        font-size: 4rem;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+
+      /* Date Styling */
+      .date {
+        font-size: 1.5rem;
+        color: #ccc;
+      }
+
+      /* Footer Styling */
+      .footer {
+        background-color: #222;
+        padding: 40px 20px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-top: 30%; /* Push footer to the bottom */
+      }
+
+      .footer-container {
+        max-width: 1200px; /* Maximum width for large screens */
+        margin: 0 auto; /* Center footer content */
+      }
+
+      .footer-container h2 {
+        font-size: 40px;
+        margin-bottom: 15px;
+        margin-top: 0px;
+        color: #ffffff;
+      }
+
+      .back-to-home {
+        text-decoration: none;
+        color: #00d9ff;
+        margin-top: 20px;
+      }
+
+      .social-icons {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* Allow wrapping on small screens */
+        margin: 20px 0;
+      }
+
+      .social-icons a {
+        color: #fff;
+        margin: 0 10px;
+        font-size: 24px;
+        text-decoration: none;
+        position: relative;
+        transition: color 0.3s ease, transform 0.3s ease;
+      }
+
+      .social-icons a:hover {
+        color: #ff5722; /* Your preferred hover color */
+        transform: translateY(-5px); /* Slightly moves icon up */
+      }
+
+      .social-icons a::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -6px;
+        width: 0;
+        height: 2px;
+        background-color: #ff5722;
+        transition: width 0.3s ease, left 0.3s ease;
+      }
+
+      .social-icons a:hover::after {
+        width: 100%;
+        left: 0;
+      }
+
+      /* Footer Bottom Styling */
+      .footer-bottom {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #aaa;
+        border-top: 1px solid #444;
+        padding-top: 10px;
+      }
+
+      .footer-bottom a {
+        text-decoration: none;
+        color: #fff; /* Remove underline */
+      }
+
+      .footer-bottom a:hover {
+        color: #00d9ff; /* Change to color on hover */
+      }
+
+      /* Responsive Design */
+      @media (max-width: 600px) {
+        .footer-container h2 {
+          font-size: 30px; /* Smaller heading on mobile */
+        }
+
+        .social-icons a {
+          font-size: 20px; /* Smaller icons on mobile */
+          margin: 0 8px; /* Adjust margin for mobile */
+        }
+
+        .social-icons {
+          gap: 15px; /* Adjust gap for mobile */
+        }
+        .footer {
+          margin-top: 60%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="clock-container">
+      <span id="time" class="time">00:00:00 AM</span>
+      <br />
+      <span id="date" class="date">Loading...</span>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <h2>Contact</h2>
+        <div class="social-icons">
+          <a href="https://www.instagram.com/chetanprajapat_/" target="_blank"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a
+            href="https://www.facebook.com/profile.php?id=100030457882324&mibextid=ZbWKwL"
+            target="_blank"
+            ><i class="fab fa-facebook"></i
+          ></a>
+          <a href="https://github.com/grchetan" target="_blank"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a href="mailto:chetanprajapat340@gmail.com"
+            ><i class="fas fa-envelope"></i
+          ></a>
+          <a
+            href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
+            target="_blank"
+            ><i class="fab fa-linkedin"></i
+          ></a>
+          <a href="https://twitter.com/grchetann" target="_blank"
+            ><i class="fab fa-twitter"></i
+          ></a>
+        </div>
+        <a href="https://grchetan.github.io/" class="back-to-home"
+          >Back to Home</a
+        >
+        <div class="footer-bottom">
+          &copy; Made with ❤️ by
+          <a href="https://github.com/grchetan" target="_blank"
+            ><strong>Chetan Prajapat</strong></a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function updateClock() {
+        const now = new Date();
+
+        // Formatting the time for 12-hour format with AM/PM
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+        const amPm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12; // Convert 24-hour format to 12-hour format
+
+        const timeString = `${hours}:${minutes}:${seconds} ${amPm}`;
+
+        // Formatting the date
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        const dateString = now.toLocaleDateString("en-US", options);
+
+        // Displaying time and date
+        document.getElementById("time").textContent = timeString;
+        document.getElementById("date").textContent = dateString;
+      }
+
+      // Call updateClock every second
+      setInterval(updateClock, 1000);
+      updateClock(); // Initial call to display clock immediately
+
+      // Pop-up Functionality
+      var modal = document.getElementById("resumePopup");
+      var btn = document.getElementById("openResumePopup");
+      var span = document.getElementById("closeResumePopup");
+
+      // When the user clicks the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
+</html>

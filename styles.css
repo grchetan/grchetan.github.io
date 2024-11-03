@@ -52,6 +52,17 @@
   margin-bottom: -1px;
 }
 
+/* orderlist achortag styles a hover */
+.projectlink {
+  text-decoration: none;
+  color: black;
+  transition: color 5 ease;
+}
+
+.projectlink:hover {
+  color: #386dff;
+}
+
 @media (max-width: 600px) {
   .sulphur-point-light3 {
     font-size: 18px; /* Reduce text size */
@@ -390,6 +401,7 @@ html {
 /* Scroll to Top Button styling */
 #scrollTopBtn {
   position: fixed;
+  z-index: 1000; /* isse button footer ke upar aa jayega */
   bottom: 30px; /* Position from the bottom */
   right: 30px; /* Position from the right */
   width: 50px; /* Default width */
@@ -502,7 +514,7 @@ img {
   animation: emojiChange 0.2s ease-in-out; /* Animation effect */
 }
 
-/* ----------------------------------------------  backgound video   ----------------------------------------------------------------------- */
+/* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
 body {
   margin: 0;
   height: 100vh;
@@ -550,7 +562,7 @@ body {
   z-index: 10; /* Ensure the toggle button is on top */
 }
 
-/* ---------------------------------------------- Download Resume Button ----------------------------------------------------------------------- */
+/* ---------------------------------------------- Download Resume Button ------------------------------------------------------- */
 .resume-btn {
   margin-top: 10px;
   padding: 10px 20px;
