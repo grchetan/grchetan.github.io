@@ -638,4 +638,42 @@ body {
 .download-btn:hover {
   background-color: #45a049;
 }
-/* ---------------------------------------------- Download Resume Button ----------------------------------------------------------------------- */
+/* ---------------------------------------------- keyframing---------------------------------------------------- */
+
+/* Keyframes for fade in and slide up animation */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0; /* Start invisible */
+    transform: translateY(20px); /* Start below */
+  }
+  100% {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* End position */
+  }
+}
+
+/* Apply animation to div elements */
+.header-style,
+.section1,
+.section2,
+.section3,
+.section4,
+.section5,
+.footer {
+  opacity: 0; /* Start invisible */
+  transform: translateY(20px); /* Start below */
+  animation: fadeInSlideUp 1s forwards; /* Animation applied */
+}
+
+/* Adding a delay for each div to animate one after the other */
+.animated-div:nth-child(1) {
+  animation-delay: 0s; /* No delay for the first div */
+}
+
+.animated-div:nth-child(2) {
+  animation-delay: 0.5s; /* Delay for the second div */
+}
+
+.animated-div:nth-child(3) {
+  animation-delay: 1s; /* Delay for the third div */
+}
