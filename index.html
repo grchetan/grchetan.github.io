@@ -26,19 +26,32 @@
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+
     <title>chetan prajapat</title>
     <link rel="icon" type="icon" href="images/favicon.png" />
   </head>
   <body id="top">
+    <div id="toggle-container">
+      <button id="darkModeToggle">🌙</button>
+    </div>
+
+    <div class="background-video light-mode">
+      <video autoplay muted loop>
+        <source src="videos/video11.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div class="background-video dark-mode" style="display: none">
+      <video autoplay muted loop>
+        <source src="videos/videoplayback.mp4" type="video/mp4" />
+      </video>
+    </div>
+
     <div>
       <header class="header-style">
-        <button id="darkModeToggle">🌙</button>
-
+        <!--  <button id="darkModeToggle">🌙</button>-->
         <img src="images/grimage.jpg" id="myimage" alt="my image" />
         <h1 class="carrois-gothic-regular">Hey, I'm Chetan prajapat</h1>
         <h1 class="anton-regular">I am Web Developer</h1>
@@ -171,46 +184,33 @@
       <!-- Scroll to Top Button -->
       <a href="#top" id="scrollTopBtn"></a>
 
-      <footer class="footer">
-        <div class="footer-container">
-          <h2>Contact</h2>
-          <div class="social-links">
-            <a
-              href="https://www.facebook.com/profile.php?id=100030457882324&mibextid=ZbWKwL"
-              target="_blank"
-              class="social-icon facebook"
-            >
-              <i class="fa-brands fa-facebook"></i>
-            </a>
-            <a
-              href="https://x.com/grchetann"
-              target="_blank"
-              class="social-icon twitter"
-            >
-              <i class="fa-brands fa-twitter"></i>
-            </a>
-            <a
-              href="https://www.instagram.com/chetanprajapat_/"
-              target="_blank"
-              class="social-icon instagram"
-            >
-              <i class="fa-brands fa-instagram"></i>
-            </a>
-            <a
-              href="https://github.com/grchetan"
-              target="_blank"
-              class="social-icon github"
-            >
-              <i class="fa-brands fa-github"></i>
-            </a>
-            <a
-              href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
-              target="_blank"
-              class="social-icon linkedin"
-            >
-              <i class="fa-brands fa-linkedin"></i>
-            </a>
-          </div>
+
+      
+        <footer class="footer">
+          <div class="footer-container">
+            <h2>Contact</h2>
+        <div class="social-icons">
+          <a href="https://www.instagram.com/chetanprajapat_/" target="_blank"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a href="https://www.facebook.com/profile.php?id=100030457882324&mibextid=ZbWKwL" target="_blank"
+            ><i class="fab fa-facebook"></i
+          ></a>
+          <a href="https://github.com/grchetan" target="_blank"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a href="mailto:chetanprajapat340@gmail.com"
+            ><i class="fas fa-envelope"></i
+          ></a>
+          <a href="https://www.linkedin.com/in/chetan-prajapat-58350b285/" target="_blank"
+            ><i class="fab fa-linkedin"></i
+          ></a>
+          <a href="https://twitter.com/grchetann" target="_blank"
+            ><i class="fab fa-twitter"></i
+          ></a>
+        </div>
+        <div class="footer-resume">
+          <a href="Operating System Notes.pdf">Resume</a>
         </div>
         <div class="footer-bottom">
           &copy; Made with ❤️ by
@@ -220,7 +220,7 @@
         </div>
       </footer>
     </div>
-    <!-- JavaScript code here -->
+    <!-- JavaScript code here this code a remove backround video function
     <script>
       const toggleButton = document.getElementById("darkModeToggle");
       const body = document.body;
@@ -241,6 +241,40 @@
       // Animation effect for the emoji transition
       toggleButton.classList.add("animate");
 
+      toggleButton.addEventListener("animationend", () => {
+        toggleButton.classList.remove("animate");
+      });
+    </script> -->
+
+    <script>
+      const toggleButton = document.getElementById("darkModeToggle");
+      const lightVideo = document.querySelector(".background-video.light-mode");
+      const darkVideo = document.querySelector(".background-video.dark-mode");
+      const body = document.body;
+
+      // Initial setup for toggle button emoji
+      toggleButton.classList.add("animate");
+
+      // Event listener for the toggle button
+      toggleButton.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        // Change videos and emoji based on dark mode status
+        if (body.classList.contains("dark-mode")) {
+          lightVideo.style.display = "none"; // Hide light mode video
+          darkVideo.style.display = "block"; // Show dark mode video
+          toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+        } else {
+          lightVideo.style.display = "block"; // Show light mode video
+          darkVideo.style.display = "none"; // Hide dark mode video
+          toggleButton.textContent = "🌙"; // Moon emoji for light mode
+        }
+
+        // Add and remove animation class
+        toggleButton.classList.add("animate");
+      });
+
+      // Animation effect for the emoji transition
       toggleButton.addEventListener("animationend", () => {
         toggleButton.classList.remove("animate");
       });
