@@ -39,7 +39,7 @@
 
     <div class="background-video light-mode">
       <video autoplay muted loop>
-        <source src="#" type="video/mp4" />
+        <source src="videos/video11.mp4" type="video/mp4" />
       </video>
     </div>
 
@@ -209,9 +209,22 @@
             ><i class="fab fa-twitter"></i
           ></a>
         </div>
-        <div class="footer-resume">
-          <a href="Operating System Notes.pdf">Resume</a>
-        </div>
+        
+        <!-- Download Resume Button -->
+<button id="openResumePopup" class="resume-btn">Resume</button>
+
+<!-- Pop-Up Structure -->
+<div id="resumePopup" class="popup">
+  <div class="popup-content">
+    <span id="closeResumePopup" class="close-btn">&times;</span>
+    <h2>Download My Resume</h2>
+    <p>Click the button below to download my resume.</p>
+    <a href="resume.pdf" download class="download-btn">Download</a>
+  </div>
+</div>
+<script src="script.js"></script>
+
+    
         <div class="footer-bottom">
           &copy; Made with ❤️ by
           <a href="https://github.com/grchetan" target="_blank"
@@ -220,7 +233,34 @@
         </div>
       </footer>
     </div>
+    <!-- JavaScript code here this code a remove backround video function
+    <script>
+      const toggleButton = document.getElementById("darkModeToggle");
+      const body = document.body;
 
+      toggleButton.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        // Change emoji based on dark mode status
+        if (body.classList.contains("dark-mode")) {
+          toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+          toggleButton.classList.add("animate"); // Add animation class
+        } else {
+          toggleButton.textContent = "🌙"; // Moon emoji for light mode
+          toggleButton.classList.remove("animate"); // Remove animation class
+        }
+      });
+
+      // Animation effect for the emoji transition
+      toggleButton.classList.add("animate");
+
+      toggleButton.addEventListener("animationend", () => {
+        toggleButton.classList.remove("animate");
+      });
+    </script> -->
+
+<!----------------------------------- javacript toggle and bacground vedio code --------------------------------------------------------->
+<!--
     <script>
       const toggleButton = document.getElementById("darkModeToggle");
       const lightVideo = document.querySelector(".background-video.light-mode");
@@ -254,5 +294,7 @@
         toggleButton.classList.remove("animate");
       });
     </script>
+ --------------------------------------------------------->
+
   </body>
 </html>

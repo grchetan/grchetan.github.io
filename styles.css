@@ -549,3 +549,93 @@ body {
   right: 10px;
   z-index: 10; /* Ensure the toggle button is on top */
 }
+
+/* ---------------------------------------------- Download Resume Button ----------------------------------------------------------------------- */
+.resume-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.resume-btn:hover {
+  background-color: #2e6331;
+}
+
+/* Pop-Up Styling */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+}
+
+.popup-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: scale(0.7);
+  transition: transform 0.4s ease;
+}
+
+.popup-content h2 {
+  color: black;
+  font-size: large;
+}
+
+.popup.show .popup-content {
+  transform: scale(1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #ff0000;
+}
+
+/* Download Button Inside Pop-Up */
+.download-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
+}
+/* ---------------------------------------------- Download Resume Button ----------------------------------------------------------------------- */
