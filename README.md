@@ -11,7 +11,7 @@ Welcome to my portfolio website! This is a showcase of my skills, projects, and 
 
 ## 🔗 View the Portfolio
 
-Check out the live version of my portfolio [here](https://hrchetan.github.io)!
+Check out the live version of my portfolio [here](https://grchetan.github.io)!
 
 ## 🚀 Tech Stack
 
@@ -24,4 +24,5 @@ Check out the live version of my portfolio [here](https://hrchetan.github.io)!
 To run this project locally:
 1. Clone this repository.
    ```bash
-   git clone https://github.com/grchetan-repo.git
+   
+  git clone https://github.com/grchetan/grchetan.github.io.git
