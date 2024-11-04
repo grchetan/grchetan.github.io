@@ -75,13 +75,20 @@
         margin-top: 0px;
         color: #ffffff;
       }
-
-      .back-to-home {
-        text-decoration: none;
-        color: #00d9ff;
-        margin-top: 20px;
+      .go-back-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
       }
 
+      .go-back-btn:hover {
+        background-color: #555;
+      }
       .social-icons {
         display: flex;
         justify-content: center;
@@ -191,9 +198,7 @@
             ><i class="fab fa-twitter"></i
           ></a>
         </div>
-        <a href="https://grchetan.github.io/" class="back-to-home"
-          >Back to Home</a
-        >
+        <button class="go-back-btn" onclick="goBack()">⬅ Go Back</button>
         <div class="footer-bottom">
           &copy; Made with ❤️ by
           <a href="https://github.com/grchetan" target="_blank"
@@ -255,6 +260,11 @@
           modal.style.display = "none";
         }
       };
+
+      // Go back Button
+      function goBack() {
+        window.history.back();
+      }
     </script>
   </body>
 </html>

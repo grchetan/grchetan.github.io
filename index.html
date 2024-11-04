@@ -61,6 +61,7 @@
           <!-- -->
           <strong>Video Editor</strong>.
         </p>
+         <!------------------------------------arrow------------------------------>
         <div class="arrow-container">
           <div class="arrow-down"></div>
         </div>
@@ -177,8 +178,8 @@
           <div>
             <h1 class="listheading">Projects</h1>
             <ol class="sulphur-point-light3">
-              <a href="https://grchetan.github.io" class="projectlink"><li>Personal Portfolio Website <span style="color: black;">(This Website)</span></li></a>
-              <a href="digitalwatch.html" target="_blank" class="projectlink"><li>Digital Watch or Date</li></a>
+              <a href="https://grchetan.github.io" class="projectlink"><li>Personal Portfolio Website <span class="span">(This Website)</span></li></a>
+              <a href="digitalwatch.html" class="projectlink"><li>Digital Watch or Date</li></a>
             </ol>
           </div>
         </section>
@@ -236,6 +237,68 @@
         </div>
       </footer>
     </div>
+    <!-- JavaScript code here this code a remove backround video function
+    <script>
+      const toggleButton = document.getElementById("darkModeToggle");
+      const body = document.body;
+
+      toggleButton.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        // Change emoji based on dark mode status
+        if (body.classList.contains("dark-mode")) {
+          toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+          toggleButton.classList.add("animate"); // Add animation class
+        } else {
+          toggleButton.textContent = "🌙"; // Moon emoji for light mode
+          toggleButton.classList.remove("animate"); // Remove animation class
+        }
+      });
+
+      // Animation effect for the emoji transition
+      toggleButton.classList.add("animate");
+
+      toggleButton.addEventListener("animationend", () => {
+        toggleButton.classList.remove("animate");
+      });
+    </script> -->
+
+<!----------------------------------- javacript toggle and bacground vedio code --------------------------------------------------------->
+<!--
+    <script>
+      const toggleButton = document.getElementById("darkModeToggle");
+      const lightVideo = document.querySelector(".background-video.light-mode");
+      const darkVideo = document.querySelector(".background-video.dark-mode");
+      const body = document.body;
+
+      // Initial setup for toggle button emoji
+      toggleButton.classList.add("animate");
+
+      // Event listener for the toggle button
+      toggleButton.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        // Change videos and emoji based on dark mode status
+        if (body.classList.contains("dark-mode")) {
+          lightVideo.style.display = "none"; // Hide light mode video
+          darkVideo.style.display = "block"; // Show dark mode video
+          toggleButton.textContent = "☀️"; // Sun emoji for dark mode
+        } else {
+          lightVideo.style.display = "block"; // Show light mode video
+          darkVideo.style.display = "none"; // Hide dark mode video
+          toggleButton.textContent = "🌙"; // Moon emoji for light mode
+        }
+
+        // Add and remove animation class
+        toggleButton.classList.add("animate");
+      });
+
+      // Animation effect for the emoji transition
+      toggleButton.addEventListener("animationend", () => {
+        toggleButton.classList.remove("animate");
+      });
+    </script>
+ --------------------------------------------------------->
 
   </body>
 </html>

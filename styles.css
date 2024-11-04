@@ -56,7 +56,7 @@
 .projectlink {
   text-decoration: none;
   color: black;
-  transition: color 5 ease;
+  transition: color 0.3s ease; /* Smooth transition for color change */
 }
 
 .projectlink:hover {
@@ -482,8 +482,18 @@ body.dark-mode {
   transition: background-color 0.3s, color 0.3s; /* Smooth transition for sections */
 }
 
-.dark-mode .hover-link {
+.dark-mode .hover-link,
+.dark-mode .projectlink {
   color: #bb86fc;
+}
+
+/* school education hover or project hover styles */
+.dark-mode .hover-link:hover,
+.dark-mode .projectlink:hover {
+  color: white;
+}
+.dark-mode .projectlink .span {
+  color: #15fff3;
 }
 
 .dark-mode .footer {
