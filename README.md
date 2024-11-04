@@ -24,5 +24,6 @@ Check out the live version of my portfolio [here](https://grchetan.github.io)!
 To run this project locally:
 1. Clone this repository.
    ```bash
+   git clone https://github.com/grchetan/grchetan.github.io.git
    
-  git clone https://github.com/grchetan/grchetan.github.io.git
+  
