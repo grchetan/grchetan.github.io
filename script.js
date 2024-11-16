@@ -54,3 +54,10 @@ toggleButton.addEventListener("click", () => {
 toggleButton.addEventListener("animationend", () => {
   toggleButton.classList.remove("animate");
 });
+
+// Navigatio button click
+// Toggle for hamburger menu
+document.getElementById("navtoggle").addEventListener("click", function () {
+  const navLinks = document.getElementById("navLinks");
+  navLinks.classList.toggle("active");
+});

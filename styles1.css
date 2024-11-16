@@ -1,0 +1,915 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-image: url(images/body-bg.jpg);
+}
+
+/*----------------------------- Keyframe for fading in elements-------------------------------- */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Keyframe for scaling up elements */
+@keyframes scaleUp {
+  0% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Keyframe for rotating an element */
+@keyframes rotateElement {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*  All Font are here */
+.anton-regular {
+  font-family: "Anton", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 60px;
+  color: #00ffff;
+  text-shadow: 5px 5px 25px rgba(98, 194, 242, 0.4); /* Blur radius: 25px */
+  border-radius: 10px;
+  margin: 0px;
+}
+
+.anton-regular2 {
+  font-family: Arial, sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 20px;
+  color: #ffffff;
+  text-shadow: 5px 5px 25px rgba(249, 249, 249, 0.4); /* Blur radius: 25px */
+  letter-spacing: 10px;
+}
+@media (max-width: 738px) {
+  .anton-regular {
+    font-size: 40px;
+  }
+  .anton-regular2 {
+    font-size: 10px;
+    letter-spacing: 7px;
+  }
+}
+
+/* =----------------------    Main Heading Content Styling  -------------*/
+
+.main-header {
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+  justify-content: center;
+  align-items: center; /* Vertical center */
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.gameHeading {
+  text-align: center;
+  animation: scaleUp 1s ease-out;
+}
+
+.zen-dots-regular {
+  font-family: "Zen Dots", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  color: #00ffff;
+}
+
+/* Container for Hero Images */
+.hero-images-container {
+  margin-top: 50px;
+  margin-bottom: -40px;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  height: auto; /* Default height for larger screens */
+  overflow: hidden;
+}
+
+/* Background Image */
+.hero-banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  object-fit: cover; /* Ensures the image covers the container */
+  z-index: -1; /* Push it behind the foreground image */
+}
+
+/* Foreground Image */
+.hero-banner {
+  position: relative;
+  height: auto;
+  margin: 0 auto; /* Centers the image horizontally */
+}
+
+/* Responsive Design */
+
+/* For Tablets */
+@media (max-width: 1024px) {
+  .hero-images-container {
+    height: 400px; /* Reduce height for tablets */
+  }
+  .hero-banner {
+    top: -20px; /* Slightly adjust top position for tablets */
+    width: 90%; /* Make the banner slightly smaller */
+  }
+}
+
+/* For Mobile Screens (iPhones, etc.) */
+@media (max-width: 768px) {
+  .hero-images-container {
+    height: 300px; /* Reduce height for smaller screens */
+  }
+
+  .hero-banner-bg {
+    display: none;
+  }
+  .hero-banner {
+    top: -15px; /* Adjust top position for small screens */
+    width: 90%; /* Reduce width for smaller screens */
+  }
+}
+
+/* For Very Small Mobile Phones */
+@media (max-width: 480px) {
+  .hero-images-container {
+    height: 250px; /* Further reduce height for very small phones */
+    margin-bottom: -100px;
+  }
+  .hero-banner {
+    top: 0; /* Remove top margin for very small screens */
+    width: 100%; /* Make the image full width */
+  }
+}
+
+/* -------------------Navigation ----------------------*/
+.logo a {
+  color: #f39c12;
+  white-space: nowrap;
+  font-size: 1.8em;
+  text-decoration: none;
+}
+.navbar {
+  background-color: black;
+  padding: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+.navlist {
+  list-style-type: none;
+  color: rgb(255, 255, 255);
+  display: flex;
+  white-space: nowrap;
+  font-size: 20px;
+  padding: 0%;
+  margin-right: 10px;
+}
+
+.navlist li {
+  padding: 10px 20px;
+}
+.navlist a {
+  padding: 10px;
+  text-decoration: none;
+  color: aliceblue;
+}
+.navlist a:hover,
+.active {
+  color: #f39c12;
+  border-bottom: 2px solid #f39c12;
+}
+
+.iconbar {
+  font-size: 30px;
+  display: none;
+  color: #f39c12;
+  cursor: pointer;
+}
+/* Responsive styles for mobile */
+@media (max-width: 820px) {
+  .navlist {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    position: absolute;
+    top: 60px; /* Space under navbar */
+    left: 0;
+    background-color: #333;
+    padding: 0;
+    border: none;
+  }
+
+  .navlist.active {
+    display: flex;
+  }
+
+  .navlist li {
+    padding: 15px 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .iconbar {
+    display: block;
+  }
+}
+
+/* ----------------------------------------  Dark mode Toggle button----------------------------------------------------------------- */
+/* Toggle Button */
+
+#darkModeToggle {
+  padding: 10px 20px;
+  font-size: 24px; /* Adjust size for better visibility */
+  cursor: pointer;
+  border: none; /* Remove any border */
+  background: none; /* Remove background */
+  transition: transform 0.2s; /* Smooth transition for button */
+}
+
+/* Hover Effect for the Toggle Button */
+#darkModeToggle:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+  #toggle-container {
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Keep the toggle container behind the content */
+  }
+
+  #darkModeToggle {
+    font-size: 20px;
+    background: none;
+    color: #f39c12;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+/*-------------------------------------------- Dark Mode Styles --------------------------------------------------*/
+body {
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
+}
+
+body.dark-mode {
+  background-color: rgb(29, 26, 26);
+
+  background-image: none; /* Remove background image in dark mode */
+}
+
+.dark-mode .main-header,
+.dark-mode .latest-news,
+.dark-mode .About-Us-container,
+.dark-mode .section3,
+.dark-mode .section4,
+.dark-mode .footer {
+  background-color: rgb(29, 26, 26);
+  color: #ffffff;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for sections */
+}
+
+.dark-mode .hover-link,
+.dark-mode .projectlink {
+  color: #bb86fc;
+}
+
+/* school education hover or project hover styles */
+.dark-mode .hover-link:hover,
+.dark-mode .projectlink:hover {
+  color: white;
+}
+.dark-mode .projectlink .span {
+  color: #15fff3;
+}
+
+.dark-mode .footer {
+  background-color: transparent;
+  transition: background-color 0.3s; /* Smooth transition for footer */
+}
+
+/* Add transitions for images if necessary */
+img {
+  transition: filter 0.3s; /* Smooth transition for images */
+}
+
+.dark-mode img {
+  filter: brightness(0.8); /* Optional: Darken images in dark mode */
+}
+
+/* Animation for emoji */
+@keyframes emojiChange {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.animate {
+  animation: emojiChange 0.2s ease-in-out; /* Animation effect */
+}
+
+/* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
+body {
+  margin: 0;
+  height: 100vh;
+  overflow-y: scroll; /* Enable vertical scrolling */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
+}
+
+.background-video {
+  position: fixed; /* Fixes the video in the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Send to back */
+}
+
+.background-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure video covers the entire background */
+}
+
+.content {
+  position: relative; /* Position content above the video */
+  z-index: 1; /* Ensure content is above the background video */
+  color: white; /* Text color */
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5); /* Slight background for better readability */
+}
+
+/* Additional Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  .background-video video {
+    width: auto;
+    height: 100vh;
+    object-fit: cover;
+  }
+}
+
+/*-----------------------------------Scrollbar styling --------------------------------------*/
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #4a90e2,
+    #9013fe
+  ); /* Gradient color for the scrollbar thumb */
+  border-radius: 10px;
+  transition: background-color 0.3s ease; /* Smooth color change animation */
+}
+
+/* Hover effect on scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #9013fe,
+    #4a90e2
+  ); /* Reverse gradient on hover */
+}
+
+/* Adding bounce animation */
+::-webkit-scrollbar-thumb {
+  animation: bounce 1.5s infinite alternate; /* Repeats the animation */
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(
+      -3px
+    ); /* Moves the scrollbar thumb up and down slightly */
+  }
+}
+/*-------------------sectoin Latest new Container----------------- */
+#latest-news {
+  color: #f4f4f4;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+/*------------------------------------Slider-------------------------------*/
+.slider {
+  height: auto;
+  width: 100%;
+  margin: auto;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* New Container */
+.news-container {
+  display: flex;
+  width: calc(350px * 6);
+  padding: 35px;
+  gap: 20px;
+  animation: scroll 30s linear infinite;
+}
+.news-container:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-250px * 3));
+  }
+}
+
+.news-item {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  max-width: 350px;
+  text-align: left;
+  transition: transform 0.3s;
+}
+.news-item img {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.news-item:hover {
+  transform: scale(1.05);
+  box-shadow: 5px 5px 25px rgb(13, 177, 214); /* Blur radius: 25px */
+  border-radius: 10px;
+}
+
+.news-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.news-content {
+  padding: 20px;
+}
+
+.news-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #f8f8f8;
+}
+
+.news-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  color: #dcdcdc;
+}
+
+.read-more {
+  color: #e94560;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.read-more:hover {
+  color: #f4f4f4;
+}
+
+@media (max-width: 788px) {
+  #latest-news {
+    color: #f4f4f4;
+    padding: 0px;
+    text-align: center;
+  }
+  .slider {
+    height: auto;
+    width: 100%;
+    margin: auto;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .news-container {
+    display: flex;
+    width: calc(350px * 6);
+    padding: 35px;
+    gap: 20px;
+    animation: scroll 30s linear infinite;
+  }
+  .news-container:hover {
+    animation-play-state: paused;
+  }
+
+  .news-item {
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    width: 300px;
+    text-align: left;
+    transition: transform 0.3s;
+  }
+
+  .news-item:hover {
+    transform: scale(1.05);
+    box-shadow: 5px 5px 25px rgb(13, 177, 214); /* Blur radius: 25px */
+    border-radius: 10px;
+  }
+
+  .news-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+
+  .news-content {
+    padding: 20px;
+  }
+
+  .news-content h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #f8f8f8;
+  }
+
+  .news-content p {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    color: #dcdcdc;
+  }
+}
+
+/*-------------About Us Container ---------------------*/
+.About-Us-container {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.About-up-paragraph {
+  color: white;
+  font-size: larger;
+}
+
+.highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.highlight {
+  background-color: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1 1 calc(33% - 20px);
+  text-align: center;
+}
+.highlight h3 {
+  font-size: 1.5rem;
+  color: #ff8c00;
+}
+.highlight p {
+  font-size: 1rem;
+  color: white;
+}
+
+/*-----------------------------------------Turnament Container Upcoming ----------------------------*/
+
+.tournaments img {
+  height: 300px;
+  align-items: center;
+}
+.Upcoming-Tournament-container {
+  background-color: #1e1e1e;
+  color: white;
+  margin: 20px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  height: 300px;
+  display: flex;
+}
+
+.tournament-information {
+  position: relative;
+  margin-left: 20px;
+}
+
+.Upcoming-Tournament-container ul {
+  list-style: none;
+  margin-top: 30px;
+}
+.Upcoming-Tournament-container li {
+  margin-top: 9px;
+  line-height: 1.5;
+}
+
+.Upcoming-Tournament-container a {
+  text-decoration: none;
+  font-size: larger;
+  margin-left: 38px;
+  color: #15fff3;
+}
+
+.Upcoming-Tournament-container a:hover {
+  text-decoration: underline;
+  color: #00fff7;
+}
+
+@media (max-width: 768px) {
+  .Upcoming-Tournament-container {
+    flex-direction: column;
+    background-color: #1e1e1e;
+    color: white;
+    margin: 10px;
+    padding: 25px 10px;
+    border-radius: 10px;
+    height: auto;
+  }
+
+  .Upcoming-Tournament-container img {
+    height: 250px;
+    align-self: center; /* This centers the image horizontally */
+  }
+
+  .Upcoming-Tournament-container ul {
+    padding: 0px;
+  }
+  .Upcoming-Tournament-container a {
+    margin-left: 0px;
+  }
+
+  .tournament-information {
+    margin-left: 20px;
+  }
+}
+/*------------------------------ Pop-Up Styling --------------------------------------------------*/
+
+/*------Resume Buttom--------*/
+.resume-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.resume-btn:hover {
+  background-color: #2e6331;
+}
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+}
+
+.popup-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: scale(0.7);
+  transition: transform 0.4s ease;
+}
+
+.popup-content h2 {
+  color: black;
+  font-size: large;
+}
+
+.popup-content p {
+  color: black;
+  font-size: large;
+}
+
+.popup.show .popup-content {
+  transform: scale(1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #ff0000;
+}
+
+/* Download Button Inside Pop-Up */
+.download-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
+}
+
+/* ----------------------------------------------  Footer  ------------------------------------------------------------------------- */
+/* Footer Styling */
+.footer {
+  background-color: #222;
+  padding: 20px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-top: 30%;
+}
+
+.footer-container h2 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  color: #ffffff;
+}
+
+.social-icons a {
+  color: #fff;
+  margin: 0 10px;
+  font-size: 24px;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #f39c12; /* Your preferred hover color */
+  transform: translateY(-5px); /* Slightly moves icon up */
+}
+
+.social-icons a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background-color: #f39c12;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.social-icons a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Footer Bottom Styling */
+.footer-bottom {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #aaa;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
+
+.footer-resume a {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4dd0e1; /* Light blue background color */
+  color: #333; /* Text color */
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 25px; /* Rounded corners */
+  transition: background-color 0.3s ease;
+}
+
+.footer-resume a:hover {
+  background-color: #539fc9;
+}
+
+.footer-bottom a {
+  text-decoration: none;
+  color: #fff; /* Remove underline */
+}
+.footer-bottom a:hover {
+  color: #00d9ff; /* Change to red on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .social-links {
+    gap: 15px;
+  }
+
+  .social-icon {
+    padding: 8px;
+    font-size: 20px;
+  }
+}
+
+/*------------------------------------------------------------Scroll to Top Button styling -------------------------------------*/
+
+html {
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+#scrollTopBtn {
+  position: fixed;
+  z-index: 1000; /* isse button footer ke upar aa jayega */
+  bottom: 30px; /* Position from the bottom */
+  right: 30px; /* Position from the right */
+  width: 50px; /* Default width */
+  height: 50px; /* Default height */
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease-in-out, transform 0.3s; /* Smooth fade-in and scale effect */
+  background-image: url("images/up.gif"); /* Set your GIF image */
+  background-size: contain; /* Adjust size to contain the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-position: center; /* Center the image */
+}
+
+/* Show button when hovering near the bottom */
+body:hover #scrollTopBtn,
+body:focus-within #scrollTopBtn {
+  opacity: 1; /* Make button visible */
+  transform: scale(1.1); /* Slightly enlarge the button */
+}
+
+/* Arrow color on hover */
+#scrollTopBtn:hover {
+  background-color: #0056b3; /* Darken background on hover */
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  #scrollTopBtn {
+    width: 40px; /* Smaller width for mobile */
+    height: 40px; /* Smaller height for mobile */
+    bottom: 20px; /* Reduce bottom spacing */
+    right: 20px; /* Reduce right spacing */
+  }
+}

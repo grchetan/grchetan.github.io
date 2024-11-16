@@ -1,0 +1,649 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #020d1f;
+}
+
+/* -------------------Navigation ----------------------*/
+.logo a {
+  color: #f39c12;
+  white-space: nowrap;
+  font-size: 1.8em;
+  text-decoration: none;
+}
+.navbar {
+  background-color: black;
+  padding: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+.navlist {
+  list-style-type: none;
+  color: rgb(255, 255, 255);
+  display: flex;
+  white-space: nowrap;
+  font-size: 20px;
+  padding: 0%;
+  margin-right: 34px;
+}
+
+.navlist li {
+  padding: 10px 20px;
+}
+.navlist a {
+  padding: 10px;
+  text-decoration: none;
+  color: aliceblue;
+}
+.navlist a:hover,
+.active {
+  color: #f39c12;
+  border-bottom: 2px solid #f39c12;
+}
+
+.iconbar {
+  font-size: 30px;
+  display: none;
+  color: #f39c12;
+  cursor: pointer;
+}
+/* Responsive styles for mobile */
+@media (max-width: 820px) {
+  .navlist {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    position: absolute;
+    top: 60px; /* Space under navbar */
+    left: 0;
+    background-color: #333;
+    padding: 0;
+    border: none;
+  }
+
+  .navlist.active {
+    display: flex;
+  }
+
+  .navlist li {
+    padding: 15px 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .iconbar {
+    display: block;
+  }
+}
+
+/*--------------Header Elemenets Are here---------------*/
+
+/* Google Font Leaning ZOne*/
+.syne-mono-regular {
+  font-family: "Syne Mono", monospace;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 40px;
+}
+
+.font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  margin: 0px;
+  font-size: 25px;
+}
+
+/* Heading Logo learning Zone Container */
+.heading-logo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 89vh; /* Full viewport height */
+  text-align: center;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+/* Typing animation container */
+.typing-container {
+  font-family: "Courier New", monospace; /* Typewriter-style font */
+  font-size: 24px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #333;
+  animation: typing 5s steps(50, end), blink 0.5s step-end infinite;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+  .typing-container {
+    font-size: 18px; /* Reduce font size for tablets */
+    width: 100%; /* Ensure it fits smaller screens */
+    animation: none;
+    border-right: none;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-container {
+    font-size: 16px; /* Smaller font for mobile phones */
+    width: 100%; /* Ensure full text visibility on small devices */
+    animation: none;
+    border-right: none;
+    white-space: normal;
+  }
+}
+
+/* Typing animation */
+@keyframes typing {
+  from {
+    width: 0;
+  } /* Start with no text visible */
+  to {
+    width: 52ch;
+  } /* Adjust width to fit your text */
+}
+
+/* Cursor blink animation */
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: #333;
+  }
+}
+
+/* College Assignment Font */
+.knewave-regular {
+  font-family: "Knewave", system-ui;
+  font-weight: 100;
+  font-style: normal;
+  text-align: center;
+  font-size: 35px;
+  color: white;
+}
+
+/* Collegge assignment Heading */
+.sofadi-one-regular {
+  font-family: "Sofadi One", system-ui;
+  font-weight: 400;
+  font-size: 33px;
+  color: white;
+  text-align: center;
+  font-style: normal;
+}
+
+.assignment-containers {
+  margin: 30px 100px;
+  background-color: none;
+}
+@media (max-width: 768px) {
+  .assignment-containers {
+    margin: 10px 10px;
+  }
+}
+.assignment-container {
+  background-color: #0f172a;
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+}
+
+.assignment-card {
+  background-color: #1e293b;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+  .assignment-card {
+    margin-top: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+}
+
+.assignment-card a {
+  display: inline-block;
+  border-radius: 8px;
+  background-color: #00d9ff;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.assignment-card a:hover {
+  text-decoration: underline;
+}
+/* ----------------------------------------  Dark mode Toggle button----------------------------------------------------------------- */
+/* Toggle Button */
+
+#darkModeToggle {
+  padding: 10px 20px;
+  font-size: 24px; /* Adjust size for better visibility */
+  cursor: pointer;
+  border: none; /* Remove any border */
+  background: none; /* Remove background */
+  transition: transform 0.2s; /* Smooth transition for button */
+}
+
+/* Hover Effect for the Toggle Button */
+#darkModeToggle:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+  #toggle-container {
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Keep the toggle container behind the content */
+  }
+
+  #darkModeToggle {
+    font-size: 20px;
+    background: none;
+    color: #f39c12;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+/*-------------------------------------------- Dark Mode Styles --------------------------------------------------*/
+body {
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
+}
+
+body.dark-mode {
+  background-color: rgb(29, 26, 26);
+
+  background-image: none; /* Remove background image in dark mode */
+}
+
+.dark-mode .main-header,
+.dark-mode .latest-news,
+.dark-mode .About-Us-container,
+.dark-mode .section3,
+.dark-mode .section4,
+.dark-mode .footer {
+  background-color: rgb(29, 26, 26);
+  color: #ffffff;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for sections */
+}
+
+.dark-mode .hover-link,
+.dark-mode .projectlink {
+  color: #bb86fc;
+}
+
+/* school education hover or project hover styles */
+.dark-mode .hover-link:hover,
+.dark-mode .projectlink:hover {
+  color: white;
+}
+.dark-mode .projectlink .span {
+  color: #15fff3;
+}
+
+.dark-mode .footer {
+  background-color: transparent;
+  transition: background-color 0.3s; /* Smooth transition for footer */
+}
+
+/* Add transitions for images if necessary */
+img {
+  transition: filter 0.3s; /* Smooth transition for images */
+}
+
+.dark-mode img {
+  filter: brightness(0.8); /* Optional: Darken images in dark mode */
+}
+
+/* Animation for emoji */
+@keyframes emojiChange {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.animate {
+  animation: emojiChange 0.2s ease-in-out; /* Animation effect */
+}
+
+/* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
+body {
+  margin: 0;
+  height: 100vh;
+  overflow-y: scroll; /* Enable vertical scrolling */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
+}
+
+.background-video {
+  position: fixed; /* Fixes the video in the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Send to back */
+}
+
+.background-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure video covers the entire background */
+}
+
+.content {
+  position: relative; /* Position content above the video */
+  z-index: 1; /* Ensure content is above the background video */
+  color: white; /* Text color */
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5); /* Slight background for better readability */
+}
+
+/* Additional Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  .background-video video {
+    width: auto;
+    height: 100vh;
+    object-fit: cover;
+  }
+}
+
+/*-----------------------------------Scrollbar styling --------------------------------------*/
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #4a90e2,
+    #9013fe
+  ); /* Gradient color for the scrollbar thumb */
+  border-radius: 10px;
+  transition: background-color 0.3s ease; /* Smooth color change animation */
+}
+
+/* Hover effect on scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #9013fe,
+    #4a90e2
+  ); /* Reverse gradient on hover */
+}
+
+/* Adding bounce animation */
+::-webkit-scrollbar-thumb {
+  animation: bounce 1.5s infinite alternate; /* Repeats the animation */
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(
+      -3px
+    ); /* Moves the scrollbar thumb up and down slightly */
+  }
+}
+/*------------------------------ Pop-Up Styling --------------------------------------------------*/
+
+/*------Resume Buttom--------*/
+.resume-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.resume-btn:hover {
+  background-color: #2e6331;
+}
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+}
+
+.popup-content {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: scale(0.7);
+  transition: transform 0.4s ease;
+}
+
+.popup-content h2 {
+  color: black;
+  font-size: large;
+}
+
+.popup-content p {
+  color: black;
+  font-size: large;
+}
+
+.popup.show .popup-content {
+  transform: scale(1);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.close-btn:hover {
+  color: #ff0000;
+}
+
+/* Download Button Inside Pop-Up */
+.download-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #45a049;
+}
+
+/* ----------------------------------------------  Footer  ------------------------------------------------------------------------- */
+/* Footer Styling */
+.footer {
+  background-color: #222;
+  padding: 20px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-top: 30%;
+}
+
+.footer-container h2 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  color: #ffffff;
+}
+
+.social-icons a {
+  color: #fff;
+  margin: 0 10px;
+  font-size: 24px;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #f39c12; /* Your preferred hover color */
+  transform: translateY(-5px); /* Slightly moves icon up */
+}
+
+.social-icons a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background-color: #f39c12;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.social-icons a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Footer Bottom Styling */
+.footer-bottom {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #aaa;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
+
+.footer-resume a {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4dd0e1; /* Light blue background color */
+  color: #333; /* Text color */
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 25px; /* Rounded corners */
+  transition: background-color 0.3s ease;
+}
+
+.footer-resume a:hover {
+  background-color: #539fc9;
+}
+
+.footer-bottom a {
+  text-decoration: none;
+  color: #fff; /* Remove underline */
+}
+.footer-bottom a:hover {
+  color: #00d9ff; /* Change to red on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .social-links {
+    gap: 15px;
+  }
+
+  .social-icon {
+    padding: 8px;
+    font-size: 20px;
+  }
+}
+
+/*------------------------------------------------------------Scroll to Top Button styling -------------------------------------*/
+
+html {
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+#scrollTopBtn {
+  position: fixed;
+  z-index: 1000; /* isse button footer ke upar aa jayega */
+  bottom: 30px; /* Position from the bottom */
+  right: 30px; /* Position from the right */
+  width: 50px; /* Default width */
+  height: 50px; /* Default height */
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease-in-out, transform 0.3s; /* Smooth fade-in and scale effect */
+  background-image: url("images/up.gif"); /* Set your GIF image */
+  background-size: contain; /* Adjust size to contain the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-position: center; /* Center the image */
+}
+
+/* Show button when hovering near the bottom */
+body:hover #scrollTopBtn,
+body:focus-within #scrollTopBtn {
+  opacity: 1; /* Make button visible */
+  transform: scale(1.1); /* Slightly enlarge the button */
+}
+
+/* Arrow color on hover */
+#scrollTopBtn:hover {
+  background-color: #0056b3; /* Darken background on hover */
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  #scrollTopBtn {
+    width: 40px; /* Smaller width for mobile */
+    height: 40px; /* Smaller height for mobile */
+    bottom: 20px; /* Reduce bottom spacing */
+    right: 20px; /* Reduce right spacing */
+  }
+}

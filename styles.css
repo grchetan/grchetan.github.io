@@ -1,3 +1,9 @@
+body {
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden; /* Horizontal scroll ko hide kar deta hai */
+}
+
 .anton-regular {
   font-family: "Anton", sans-serif;
   font-weight: 200;
@@ -7,24 +13,135 @@
 }
 
 .header-style {
+  position: relative;
   text-align: center;
   padding-left: auto;
   padding-right: auto;
-  padding-top: 64px;
+  margin-top: -10px;
+  z-index: 1; /* Keep the toggle container behind the content */
+}
+/*---------------------------Navigation--------------------*/
+/* Basic navbar styling */
+
+.logo a {
+  text-decoration: none;
+  font-size: 1.8em;
+  color: #f39c12;
+  white-space: nowrap;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #121212;
+  padding: 20px;
+  margin: -20px;
+  height: 40px;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
 }
 
+.nav-links {
+  padding: 0%;
+  list-style-type: none;
+  display: flex;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.nav-links li {
+  padding: 10px 20px;
+}
+
+.nav-links a {
+  padding: 10px;
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+  transition: border-bottom 0.3s ease, color 0.3s ease;
+}
+
+.nav-links a:hover,
+.active {
+  color: #f39c12;
+  border-bottom: 2px solid #f39c12;
+}
+
+.iconbar {
+  font-size: 30px;
+  display: none;
+  color: #f39c12;
+  cursor: pointer;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 820px) {
+  .nav-links {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    position: absolute;
+    top: 60px; /* Space under navbar */
+    left: 0;
+    background-color: #333;
+    padding: 0;
+    border: none;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links li {
+    padding: 15px 8px;
+    text-align: center;
+  }
+
+  .iconbar {
+    display: block;
+  }
+}
+
+/* Container for Image */
+
+.image-container {
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Horizontally center the image */
+  margin-top: 70px; /* Image ko niche shift karne ke liye */
+  z-index: -1; /* Image ko sabse peeche rakhne ke liye */
+}
 #myimage {
   width: 180px;
-  aspect-ratio: auto 180 / 180;
   height: 180px;
   border-radius: 50%;
+  z-index: -1; /* Image ko sabse peeche rakhne ke liye */
 }
 
+@media (max-width: 820px) {
+  .image-container {
+    position: relative;
+    justify-content: center; /* Horizontally center the image */
+    margin-top: 60px; /* Image ko niche shift karne ke liye */
+    z-index: -1; /* Image ko sabse peeche rakhne ke liye */
+  }
+  #myimage {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    z-index: -1; /* Image ko sabse peeche rakhne ke liye */
+  }
+}
 .carrois-gothic-regular {
   font-family: "Carrois Gothic", sans-serif;
   font-weight: 400;
   font-style: normal;
   text-align: center;
+}
+
+@media (max-width: 400px) {
+  .carrois-gothic-regular {
+    font-size: 30px;
+  }
 }
 
 .sulphur-point-light {
@@ -246,7 +363,7 @@
   }
 }
 
-/* Scrollbar styling */
+/* -----------------------------------Scrollbar styling --------------------------------------*/
 ::-webkit-scrollbar {
   width: 8px; /* Width of the scrollbar */
 }
@@ -295,7 +412,7 @@
 /* Footer Styling */
 .footer {
   background-color: #222;
-  padding: 40px 20px;
+  padding: 20px 20px;
   text-align: center;
   font-family: Arial, sans-serif;
   margin-left: -20px;
@@ -320,7 +437,7 @@
 }
 
 .social-icons a:hover {
-  color: #ff5722; /* Your preferred hover color */
+  color: #f39c12; /* Your preferred hover color */
   transform: translateY(-5px); /* Slightly moves icon up */
 }
 
@@ -331,7 +448,7 @@
   bottom: -6px;
   width: 0;
   height: 2px;
-  background-color: #ff5722;
+  background-color: #f39c12;
   transition: width 0.3s ease, left 0.3s ease;
 }
 
@@ -342,7 +459,7 @@
 
 /* Footer Bottom Styling */
 .footer-bottom {
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 14px;
   color: #aaa;
   border-top: 1px solid #444;
@@ -442,16 +559,12 @@ body:focus-within #scrollTopBtn {
   }
 }
 
-/* ----------------------------------------------   dARK   ----------------------------------------------------------------------- */
+/* ----------------------------------------  Dark mode Toggle button----------------------------------------------------------------- */
 /* Toggle Button */
 #darkModeToggle {
-  position: fixed;
-  top: 10px;
-  right: 10px;
   padding: 10px 20px;
   font-size: 24px; /* Adjust size for better visibility */
   cursor: pointer;
-  z-index: 1000;
   border: none; /* Remove any border */
   background: none; /* Remove background */
   transition: transform 0.2s; /* Smooth transition for button */
@@ -462,7 +575,24 @@ body:focus-within #scrollTopBtn {
   transform: scale(1.1); /* Slightly increase size on hover */
 }
 
-/* Dark Mode Styles */
+/* Media query for mobile screens */
+@media (max-width: 768px) {
+  #toggle-container {
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Keep the toggle container behind the content */
+  }
+
+  #darkModeToggle {
+    font-size: 20px;
+    background: none;
+    color: #f39c12;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+/*-------------------------------------------- Dark Mode Styles --------------------------------------------------*/
 body {
   transition: background-color 0.3s, color 0.3s; /* Smooth transition for body */
 }
@@ -565,13 +695,6 @@ body {
   }
 }
 
-#toggle-container {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 10; /* Ensure the toggle button is on top */
-}
-
 /* ---------------------------------------------- Download Resume Button ------------------------------------------------------- */
 .resume-btn {
   margin-top: 10px;
@@ -660,7 +783,7 @@ body {
 .download-btn:hover {
   background-color: #45a049;
 }
-/* ---------------------------------------------- keyframing---------------------------------------------------- */
+/* ---------------------------------------------- keyframing in web pages open --------------------------------------------------- */
 
 /* Keyframes for fade in and slide up animation */
 @keyframes fadeInSlideUp {
@@ -675,6 +798,7 @@ body {
 }
 
 /* Apply animation to div elements */
+.image-container,
 .header-style,
 .section1,
 .section2,
