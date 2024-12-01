@@ -14,7 +14,7 @@ Welcome to my portfolio website! This is a showcase of my skills, projects, and 
 
 3. **Attribution Example**  
    If you use this code, you must include the following credit in your project:  
-   ```html
+ 
    
 ## 🌟 About the Portfolio
 
