@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--Google Fonts-->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--Social fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>Editing Videos</title>
+    <style>
+      body {
+        padding: 0;
+        background: url(videos/editing-bg.mp4);
+        margin: 0;
+        color: #fff;
+        font-family: "Roboto", sans-serif;
+        background-color: #000000;
+        animation: backgroundFade 3s ease-in-out forwards;
+      }
+
+      .bg-video video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 50%;
+        min-height: 50%;
+        z-index: -1;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      header {
+        display: flex;
+        position: fixed;
+        width: 100%;
+        padding: 0rem 1rem;
+        justify-content: space-between;
+        align-items: center;
+        background: #000000;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid #1f1f1f;
+        z-index: 1;
+        animation: fadeInScale 2s ease-in-out forwards;
+      }
+      header:hover {
+        box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
+      }
+      @keyframes fadeInScale {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .logo {
+        font-size: 24px;
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
+        animation: bounce 2s infinite; /* Add bounce effect */
+      }
+
+      /* Bounce Animation */
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0); /* Normal position */
+        }
+        40% {
+          transform: translateY(-10px); /* Move up */
+        }
+        60% {
+          transform: translateY(-5px); /* Slightly down */
+        }
+      }
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 50px;
+        margin-right: 5rem;
+      }
+      nav ul a {
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: white;
+        transition: all 0.4s ease;
+      }
+      nav ul a:hover {
+        text-decoration: underline;
+        text-underline-offset: 8px;
+        text-shadow: 0 0 19px #fff;
+      }
+
+      .intro-section {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .intro-section h1 {
+        color: #ffffff;
+        font-size: 3rem;
+      }
+      .intro-section h2 {
+        color: #ffffff;
+      }
+      .videos-container .bouncing-text {
+        justify-content: center;
+        padding: 2rem;
+      }
+      .video-cards {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 1.2rem;
+        gap: 20px;
+        justify-content: space-between;
+        position: relative;
+      }
+      .cards {
+        text-align: center;
+        overflow: hidden;
+        background: #1f1f1f;
+        padding: 20px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: 400px;
+      }
+      .cards:hover {
+        transform: scale(1.02);
+      }
+      .cards video {
+        width: 400px;
+        aspect-ratio: 16/9;
+      }
+
+      .contant div {
+        width: 100%;
+        display: block;
+        text-align: left;
+        margin-bottom: 30px;
+      }
+
+      .download-btn {
+        text-decoration: none;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+      .download-btn:hover {
+        background-color: #0056b3;
+      }
+      .speech-container {
+        display: flex;
+        justify-content: space-between;
+      }
+      .quote-container h1 {
+        text-align: center;
+      }
+      .speech-content {
+        display: block;
+        padding: 1.3rem;
+        margin: 20px;
+        background-color: #1f1f1f;
+        border-radius: 10px;
+        flex: 1; /* Ensures both divs take equal space */
+        border: 1px solid #000;
+        box-sizing: border-box;
+      }
+
+      footer {
+        display: flex;
+        align-items: center;
+      }
+      footer .footer-name {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid white;
+      }
+      .footer-name img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin: 10px;
+      }
+
+      .footer-name div h3 {
+        margin: 10px;
+      }
+
+      .footer-link {
+        margin: 20px;
+      }
+      .footer-link a {
+        position: relative;
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: aqua;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .footer-link a:hover {
+        text-shadow: 0 0 15px aqua;
+        transform: scale(1.1);
+      }
+      .social-icons {
+        flex: 1;
+        margin-right: 2rem;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .social-icons a i {
+        font-size: 1.6rem;
+        color: white;
+      }
+
+      .social-icons a i:hover {
+        color: #007bff;
+        text-decoration: underline;
+        text-underline-offset: 8px;
+      }
+
+      @media (max-width: 768px) {
+        header {
+          flex-wrap: wrap;
+          justify-content: center;
+          padding: 10px;
+        }
+        header h2 {
+          margin: 10px;
+        }
+        nav ul {
+          gap: 20px;
+          padding: 0;
+          margin: 0;
+        }
+        nav ul a {
+          white-space: nowrap;
+        }
+        .intro-section h1 {
+          font-size: 32px;
+        }
+        .intro-section h2 {
+          font-size: 20px;
+        }
+        .intro-section div {
+          margin: 10px;
+        }
+        .video-cards {
+          padding: 20px;
+          justify-content: center;
+        }
+
+        .cards {
+          padding: 20px;
+          flex-basis: 300px;
+        }
+
+        .cards video {
+          width: 300px;
+        }
+
+        .download-btn {
+          font-size: 12px;
+        }
+        .speech-container {
+          flex-direction: column;
+        }
+        footer {
+          flex-direction: column;
+          justify-content: center;
+        }
+        footer .footer-name {
+          border: none;
+          margin-top: 3rem;
+        }
+        footer .footer-link {
+          margin: 0;
+          border-bottom: 1px solid #fff;
+        }
+        .social-icons {
+          margin: 10px;
+          font-size: 1.2rem;
+        }
+        .social-icons a i {
+          font-size: 1.2rem;
+        }
+      }
+
+      .bouncing-text {
+        display: flex;
+        gap: 5px; /* Optional spacing between letters */
+      }
+
+      .bouncing-text span {
+        display: inline-block;
+        font-size: 24px; /* Adjust as needed */
+        animation: bounce 1.5s ease-in-out infinite;
+      }
+
+      .bouncing-text span:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .bouncing-text span:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .bouncing-text span:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .bouncing-text span:nth-child(4) {
+        animation-delay: 0.3s;
+      }
+      .bouncing-text span:nth-child(5) {
+        animation-delay: 0.4s;
+      }
+      .bouncing-text span:nth-child(6) {
+        animation-delay: 0.5s;
+      }
+      .bouncing-text span:nth-child(7) {
+        animation-delay: 0.6s;
+      }
+      .bouncing-text span:nth-child(8) {
+        animation-delay: 0.7s;
+      }
+      .bouncing-text span:nth-child(9) {
+        animation-delay: 0.8s;
+      }
+      .bouncing-text span:nth-child(10) {
+        animation-delay: 0.9s;
+      }
+      .bouncing-text span:nth-child(11) {
+        animation-delay: 1s;
+      }
+      .bouncing-text span:nth-child(12) {
+        animation-delay: 1.1s;
+      }
+      .bouncing-text span:nth-child(13) {
+        animation-delay: 1.2s;
+      }
+      .bouncing-text span:nth-child(14) {
+        animation-delay: 1.3s;
+      }
+
+      /* Keyframes for bouncing effect */
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0); /* Default position */
+        }
+        50% {
+          transform: translateY(-10px); /* Bounce up */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">Video Samples</h2>
+      <nav>
+        <ul>
+          <a href="#Home"><li>Home</li></a>
+          <a href="#Videos"><li>Videos</li></a>
+          <a href="#Skills"><li>Skills</li></a>
+          <a href="Home"><li>Work With Us</li></a>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="bg-video">
+      <video autoplay loop muted>
+        <source src="videos/editing-bg.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <section class="intro-section" id="Home">
+      <div class="intro-items">
+        <h1>Showcasing My Creative Video Editing Skills</h1>
+        <h2>Work in - <span class="auto-type"></span></h2>
+
+        <!-- Load library from the CDN -->
+        <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+        <script>
+          var typed = new Typed(".auto-type", {
+            strings: [
+              "Basic Effects",
+              "Motion Effects",
+              "Audio Effects",
+              "Animation",
+              "Social Media Optimization",
+            ],
+            typeSpeed: 50,
+            backSpeed: 50,
+            loop: true,
+          });
+        </script>
+      </div>
+    </section>
+
+    <section class="videos-container" id="Videos">
+      <div class="bouncing-text">
+        <span>S</span><span>a</span><span>m</span><span>p</span><span>l</span
+        ><span>e</span><span>s</span>
+        <span> </span>
+        <span>V</span><span>i</span><span>d</span><span>e</span><span>o</span
+        ><span>s</span>
+      </div>
+
+      <div class="video-cards">
+        <div class="cards">
+          <video src="videos/video-editing/frendsvedio.mp4" controls></video>
+          <div class="contant">
+            <div>
+              <h3>Fun Moments with Friends</h3>
+              <p><strong>Purpose:</strong> Just for fun and memories!</p>
+              <p><strong>Tools Used:</strong> CapCut, Adobe Premiere Pro</p>
+            </div>
+            <!-- Download Button -->
+            <a
+              href="videos/video-editing/frendsvedio.mp4"
+              download="videos/video-editing/frendsvedio.mp4"
+              class="download-btn"
+              >Download Video</a
+            >
+          </div>
+        </div>
+
+        <div class="cards">
+          <video src="videos/video-editing/logo.mp4" controls></video>
+          <div class="contant">
+            <p>Type</p>
+            <!-- Download Button -->
+            <a
+              href="videos/video-editing/logo.mp4"
+              download="videos/video-editing/logo.mp4"
+              class="download-btn"
+              >Download Video</a
+            >
+          </div>
+        </div>
+
+        <div class="cards">
+          <video src="videos/video-editing/freindsedit.mp4" controls></video>
+          <div class="contant">
+            <p>Type</p>
+            <!-- Download Button -->
+            <a
+              href="videos/videoplayback.mp4"
+              download="videos/videoplayback.mp4"
+              class="download-btn"
+              >Download Video</a
+            >
+          </div>
+        </div>
+
+        <div class="cards">
+          <video
+            src="https://www.instagram.com/reel/CxR1xJbIbqH/?utm_source=ig_web_copy_link"
+            controls
+          ></video>
+          <div class="contant">
+            <p>Type</p>
+            <!-- Download Button -->
+            <a
+              href="https://www.instagram.com/reel/CxR1xJbIbqH/?utm_source=ig_web_copy_link"
+              download="https://www.instagram.com/reel/CxR1xJbIbqH/?utm_source=ig_web_copy_link"
+              class="download-btn"
+              >Download Video</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote-container" id="Skills">
+      <h1>Testimonials</h1>
+      <div class="speech-container">
+        <div class="speech-content">
+          <i
+            class="fas fa-quote-right"
+            style="font-size: 24px; color: gray"
+          ></i>
+          <p>
+            My friend is great at video editing! The way he adds transitions,
+            effects, and perfect timing makes the video look professional and
+            engaging. He knows how to bring life to simple footage with his
+            creativity and skills.
+          </p>
+          <p><strong>Krishna Rathod</strong></p>
+        </div>
+
+        <div class="speech-content">
+          <i
+            class="fas fa-quote-right"
+            style="font-size: 24px; color: gray"
+          ></i>
+          <p>
+            An exceptional video editor, my friend delivers professional-level
+            work with precision and creativity. From seamless transitions to
+            dynamic effects, every detail is crafted to perfection, turning
+            ordinary footage into visually stunning content.
+          </p>
+          <p><strong>Sachin Prajapat</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-name">
+        <img src="images/AI Image.webp" alt="my" />
+        <div>
+          <h3>Chetan Prajapat</h3>
+        </div>
+      </div>
+
+      <div class="footer-link">
+        <p>
+          Copyright © 2024 <a href="https://grchetan.github.io/">grchetan</a>
+        </p>
+      </div>
+
+      <div class="social-icons">
+        <a href="https://www.instagram.com/chetanprajapat_/"
+          ><i class="fab fa-instagram"></i
+        ></a>
+        <a href="https://github.com/grchetan"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
+          ><i class="fab fa-linkedin"></i
+        ></a>
+        <a href="https://twitter.com/grchetann"
+          ><i class="fab fa-twitter"></i
+        ></a>
+      </div>
+    </footer>
+  </body>
+</html>
