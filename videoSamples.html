@@ -22,17 +22,23 @@
         margin: 0;
         color: #fff;
         font-family: "Roboto", sans-serif;
-        background-color: #000000;
+        background: black;
         animation: backgroundFade 3s ease-in-out forwards;
       }
 
-      .bg-video video {
-        position: fixed;
-        top: 0;
-        left: 0;
-        min-width: 50%;
-        min-height: 50%;
+      .bg-video {
+        width: 100%;
+        height: 100%;
         z-index: -1;
+      }
+
+      .bg-video video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        opacity: 0.5;
       }
 
       html {
@@ -51,6 +57,7 @@
         border-bottom: 1px solid #1f1f1f;
         z-index: 1;
         animation: fadeInScale 2s ease-in-out forwards;
+        background-color: rgba(0, 0, 0, 0.136);
       }
       header:hover {
         box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
@@ -58,7 +65,7 @@
       @keyframes fadeInScale {
         0% {
           opacity: 0;
-          transform: scale(0.5);
+          transform: scale(0.1);
         }
         100% {
           opacity: 1;
@@ -138,7 +145,7 @@
       .cards {
         text-align: center;
         overflow: hidden;
-        background: #1f1f1f;
+        background: linear-gradient(1deg, #ff00002e,#121111, #2d2b2b, #000000);
         padding: 20px;
         border-radius: 10px;
         transition: all 0.3s ease;
@@ -148,6 +155,7 @@
       }
       .cards:hover {
         transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.287);
       }
       .cards video {
         width: 400px;
@@ -175,20 +183,24 @@
       }
       .speech-container {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between;        
       }
       .quote-container h1 {
-        text-align: center;
+        text-align: center;        
       }
       .speech-content {
         display: block;
         padding: 1.3rem;
         margin: 20px;
-        background-color: #1f1f1f;
         border-radius: 10px;
         flex: 1; /* Ensures both divs take equal space */
-        border: 1px solid #000;
+        border: 1px solid #2a2a2a;
         box-sizing: border-box;
+        transition: box-shadow 0.3s ease-in-out;
+      }
+
+      .speech-content:hover {
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.415);
       }
 
       footer {
@@ -245,6 +257,76 @@
         color: #007bff;
         text-decoration: underline;
         text-underline-offset: 8px;
+      }
+      .form-header {
+        text-align: center;
+        font-size: 25px;
+        margin-top: 6rem;
+      }
+      .form-containers {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: #1f1f1f00;
+        border-radius: 12px;
+        margin: 20px;
+        margin-bottom: 9rem;
+        
+      }
+      .form-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .form-list {
+        margin: 20px;
+        width: 70%;
+      }
+      .form-list form{
+        display: flex ;
+        flex-direction: column;
+        padding: 2rem;
+        background: linear-gradient(135deg,  #1a1a1a90,#2c2c2c, #000000);
+        border-radius: 10px;
+        margin: 10px;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: 100;
+      }
+      .form-list form p {
+        margin-bottom: -10px;
+      }
+      input[type="text"], input[type="email"],input[type="number"] {
+        padding: 8px;
+        border-radius: 12px;
+        background-color: transparent;
+      }
+      input[type="text"]:hover,input[type="email"]:hover,input[type="number"]:hover {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.274);
+      }
+      .radio-section {
+        display: flex;  
+      }
+      .radio-item {
+        display: flex;
+        flex-direction: column;
+        margin-right: 20px;
+      }
+      .submit-btn {
+        padding: 10px;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+      }
+      .submit-btn:hover{
+        background-color: rgba(255, 255, 255, 0.745);
+      }
+      .submit-btn:active {
+        background-color: #000000;
+        color: #fff;
+      }
+      label {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        
       }
 
       @media (max-width: 768px) {
@@ -312,7 +394,33 @@
         .social-icons a i {
           font-size: 1.2rem;
         }
+        .bg-video {
+          width: 100%;
+          height: 100%;
+        }
+        .bg-video video {
+          height: 120vh;
+          object-fit: cover;
+        }
+        .form-info {
+          padding: 10px;
+        }
+        .form-list{
+          width: 100%;
+        }
+        .form-list form {
+          padding: 1rem;
+        }
+        .form-containers {
+          flex-direction: column;
       }
+      .radio-item{
+        margin-right: 4px;
+      }
+      .submit-btn {
+        padding: 8px;
+      }
+    }
 
       .bouncing-text {
         display: flex;
@@ -378,9 +486,26 @@
           transform: translateY(-10px); /* Bounce up */
         }
       }
+      .top-btn {
+      position: fixed;
+      bottom: 60px; 
+      right: 10px; 
+      z-index: 1000; 
+      padding: 10px 15px; 
+      cursor: pointer;
+      border-radius: 50%; 
+     }
+    .top-btn:hover {
+     background-color: #2f2d2d6b; /* Change color on hover */
+     }
+
+    .top-btn a i {
+    font-size: 33px;
+    color: white;
+      }
     </style>
   </head>
-  <body>
+  <body id="top">
     <header>
       <h2 class="logo">Video Samples</h2>
       <nav>
@@ -388,18 +513,17 @@
           <a href="#Home"><li>Home</li></a>
           <a href="#Videos"><li>Videos</li></a>
           <a href="#Skills"><li>Skills</li></a>
-          <a href="Home"><li>Work With Us</li></a>
+          <a href="#contact"><li>Work With Us</li></a>
         </ul>
       </nav>
     </header>
 
     <div class="bg-video">
       <video autoplay loop muted>
-        <source src="videos/editing-bg.mp4" type="video/mp4" />
+        <source src="videos/video-editing/bgvideo2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </div>
-
     <section class="intro-section" id="Home">
       <div class="intro-items">
         <h1>Showcasing My Creative Video Editing Skills</h1>
@@ -438,9 +562,9 @@
           <video src="videos/video-editing/frendsvedio.mp4" controls></video>
           <div class="contant">
             <div>
-              <h3>Fun Moments with Friends</h3>
-              <p><strong>Purpose:</strong> Just for fun and memories!</p>
-              <p><strong>Tools Used:</strong> CapCut, Adobe Premiere Pro</p>
+              <h3>My Setup</h3>
+              <p><strong>Purpose:</strong> Just for fun</p>
+              <p><strong>Tools Used:</strong> CapCut</p>
             </div>
             <!-- Download Button -->
             <a
@@ -455,7 +579,11 @@
         <div class="cards">
           <video src="videos/video-editing/logo.mp4" controls></video>
           <div class="contant">
-            <p>Type</p>
+            <div>
+              <h3>Logo</h3>
+              <p><strong>Purpose:</strong>instagram Account Logo</p>
+              <p><strong>Tools Used:</strong> CapCut</p>
+            </div>
             <!-- Download Button -->
             <a
               href="videos/video-editing/logo.mp4"
@@ -469,11 +597,15 @@
         <div class="cards">
           <video src="videos/video-editing/freindsedit.mp4" controls></video>
           <div class="contant">
-            <p>Type</p>
+            <div>
+              <h3>Fun Moments with Friends</h3>
+              <p><strong>Purpose:</strong> Just for fun and memories!</p>
+              <p><strong>Tools Used:</strong> CapCut</p>
+            </div>
             <!-- Download Button -->
             <a
-              href="videos/video-editing/freindsedit.mp4"
-              download="videos/video-editing/freindsedit.mp4"
+              href="videos/videoplayback.mp4"
+              download="videos/videoplayback.mp4"
               class="download-btn"
               >Download Video</a
             >
@@ -486,7 +618,11 @@
             controls
           ></video>
           <div class="contant">
-            <p>Type</p>
+            <div>
+              <h3>note Found Video</h3>
+              <p><strong>Purpose:</strong> ?</p>
+              <p><strong>Tools Used:</strong> CapCut</p>
+            </div>
             <!-- Download Button -->
             <a
               href="https://www.instagram.com/reel/CxR1xJbIbqH/?utm_source=ig_web_copy_link"
@@ -531,6 +667,67 @@
         </div>
       </div>
     </section>
+
+
+    <h1 class="form-header" id="contact">Work With Us</h1>
+    <section class="form-containers" >
+        <div class="form-info">
+          <h1>Freelance Developer Application</h1>
+          <p>
+            Hi, I’m Chetan Prajapat, a developer specializing in web development and game design. I focus on creating modern, user-friendly websites and enjoy working on creative projects. Looking forward to collaborating and delivering quality work!
+          </p>
+        </div>
+
+        <div class="form-list">
+          <form action="">
+            <p>india only</p>
+            <h3>Apply Now!</h3>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            
+            <label for="phone-no">Mobile No.</label>
+            <input type="number" id="phone-no" name="mobile no." required>
+            
+            <label for="link">Resume Link</label>
+            <input type="text" id="link" name="github-link" required>
+
+            <label for="skills">Skills</label>
+            <div class="radio-section">
+
+            <div class="radio-item">
+                <label>
+                <input type="radio" name="skills" value="video_editor"> Video Editor
+              </label>
+              <label>
+                <input type="radio" name="skills" value="Web_Developer"> Web Developer
+              </label>
+              <label>
+                <input type="radio" name="skills" value="Content_Writer"> Content Writer
+              </label>
+            </div>
+
+            <div class="radio-item">
+              <label>
+                <input type="radio" name="skills" value="Game_Developer"> Game Developer
+              </label>
+              <label>
+                <input type="radio" name="skills" value="Animator"> 2d / 3d Animator
+              </label>
+            </div>
+          </div>
+            
+              <button type="submit" class="submit-btn">Sumbit</button>
+          </form>
+        </div>
+      </form>
+    </section>
+    <div class="top-btn">
+      <a href="#top"><i class="fas fa-arrow-up"></i></a>
+    </div>
 
     <footer>
       <div class="footer-name">
