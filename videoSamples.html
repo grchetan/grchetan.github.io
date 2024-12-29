@@ -58,6 +58,7 @@
         z-index: 1;
         animation: fadeInScale 2s ease-in-out forwards;
         background-color: rgba(0, 0, 0, 0.136);
+        backdrop-filter: blur(10px);
       }
       header:hover {
         box-shadow: 0 6px 12px rgba(255, 255, 255, 0.2);
@@ -290,6 +291,7 @@
         margin: 10px;
         font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         font-weight: 100;
+        color: white;
       }
       .form-list form p {
         margin-bottom: -10px;
@@ -298,6 +300,7 @@
         padding: 8px;
         border-radius: 12px;
         background-color: transparent;
+        color: white;
       }
       input[type="text"]:hover,input[type="email"]:hover,input[type="number"]:hover {
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.274);
@@ -404,15 +407,18 @@
         }
         .form-info {
           padding: 10px;
+          margin: 10px;
         }
         .form-list{
           width: 100%;
+          margin: 0;
         }
         .form-list form {
           padding: 1rem;
         }
         .form-containers {
           flex-direction: column;
+          margin: 0;
       }
       .radio-item{
         margin-right: 4px;
@@ -604,8 +610,8 @@
             </div>
             <!-- Download Button -->
             <a
-              href="videos/videoplayback.mp4"
-              download="videos/videoplayback.mp4"
+              href="videos/video-editing/freindsedit.mp4"
+              download="videos/video-editing/freindsedit.mp4"
               class="download-btn"
               >Download Video</a
             >
