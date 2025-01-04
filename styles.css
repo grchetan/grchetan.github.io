@@ -1,6 +1,8 @@
 body {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
+  background-color: white;
 }
 
 /* Container for Image */
@@ -113,6 +115,8 @@ body {
   font-style: normal;
   font-size: 25px;
   margin-bottom: -1px;
+  background-color: transparent;
+  backdrop-filter: blur(6px);
 }
 
 /* orderlist achortag styles a hover */
@@ -122,12 +126,11 @@ body {
 }
 .projectlink {
   text-decoration: none;
-  color: black;
-  transition: color 0.3s ease;
+  color: #1a4cd7;
 }
 
 .projectlink:hover {
-  color: #386dff;
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {
@@ -238,24 +241,19 @@ body {
   margin-bottom: -10px;
   font-weight: bold;
   animation: rgbLights 3s infinite;
+  text-decoration: underline;
 }
 
 /* RGB lights animation */
 @keyframes rgbLights {
   0% {
-    color: rgb(255, 0, 0);
-  }
-  25% {
-    color: rgb(0, 255, 0);
+    transform: scale(1);
   }
   50% {
-    color: rgb(0, 0, 255);
-  }
-  75% {
-    color: rgb(241, 58, 168);
+    transform: scale(1.02);
   }
   100% {
-    color: rgb(255, 0, 0);
+    transform: scale(1);
   }
 }
 
@@ -281,25 +279,21 @@ body {
   height: 0;
   border-left: 15px solid transparent; /* Left side of the arrow */
   border-right: 15px solid transparent; /* Right side of the arrow */
-  border-top: 25px solid #3498db;
+  border-top: 30px solid #3498db;
   position: relative;
-  animation: bounce 1.5s infinite;
+  animation: bounce 1.5s infinite alternate;
 }
 
 /* Bounce Animation */
 @keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
   100% {
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-10px);
+    transform: translateY(-50px);
   }
   60% {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
   }
 }
 
@@ -349,7 +343,7 @@ body {
 /* -------------------------------------- Footer Styling ----------------------------------------------------------- */
 
 .footer {
-  background-color: #222;
+  background-color: transparent;
   padding: 20px 20px;
   text-align: center;
   font-family: Arial, sans-serif;
@@ -360,20 +354,21 @@ body {
   font-size: 40px;
   margin-bottom: 15px;
   margin-top: 0px;
-  color: #ffffff;
+  color: #000000;
 }
 
 .social-icons a {
-  color: #fff;
+  display: inline-block;
+  color: #000000;
   margin: 0 10px;
-  font-size: 24px;
+  font-size: 30px;
   text-decoration: none;
   position: relative;
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .social-icons a:hover {
-  color: #f39c12;
+  color: #000000;
   transform: translateY(-5px);
 }
 
@@ -384,7 +379,7 @@ body {
   bottom: -6px;
   width: 0;
   height: 2px;
-  background-color: #f39c12;
+  background-color: #000000;
   transition: width 0.3s ease, left 0.3s ease;
 }
 
@@ -392,39 +387,48 @@ body {
   width: 100%;
   left: 0;
 }
+/* ---------------------------------------------- Download Resume Button ------------------------------------------------------- */
+button.resume-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid black;
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+button.resume-btn a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.resume-btn:hover {
+  text-decoration: underline;
+  transform: rotate(5deg);
+}
 
 /* Footer Bottom Styling */
 .footer-bottom {
   margin-top: 10px;
   font-size: 14px;
-  color: #aaa;
-  border-top: 1px solid #444;
+  color: #181616;
+  border-top: 1px solid #000000;
   padding-top: 10px;
 }
 
-.footer-resume a {
-  margin-top: 10px;
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #4dd0e1;
-  color: #333;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-  border-radius: 25px;
-  transition: background-color 0.3s ease;
-}
-
 .footer-resume a:hover {
-  background-color: #539fc9;
+  background-color: #000000;
 }
 
 .footer-bottom a {
   text-decoration: none;
-  color: #fff;
+  color: #000000;
 }
 .footer-bottom a:hover {
-  color: #00d9ff;
+  color: #000000;
+  text-decoration: underline;
 }
 
 /* ----------------------------------------------   Up scrooll Button   --------------------------------------------------------- */
@@ -453,6 +457,7 @@ html {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: transparent;
 }
 
 /* Show button when hovering near the bottom */
@@ -460,6 +465,7 @@ body:hover #scrollTopBtn,
 body:focus-within #scrollTopBtn {
   opacity: 1;
   transform: scale(1.1);
+  background-color: transparent;
 }
 
 /* Arrow color on hover */
@@ -547,9 +553,22 @@ body.dark-mode {
   color: #15fff3;
 }
 
-.dark-mode .footer {
+.dark-mode .footer,
+.dark-mode footer h2,
+.dark-mode footer a,
+.dark-mode button,
+.dark-mode button.resume-btn a,
+.dark-mode .footer-bottom {
   background-color: transparent;
   transition: background-color 0.3s; /* Smooth transition for footer */
+  border: white;
+  color: white;
+}
+.dark-mode button.resume-btn {
+  border: 2px solid white;
+}
+.dark-mode footer a:hover {
+  color: white;
 }
 
 /* Add transitions for images if necessary */
@@ -572,9 +591,22 @@ img {
 }
 
 .animate {
-  animation: emojiChange 0.2s ease-in-out; /* Animation effect */
+  animation: emojiChange 0.2s ease-in-out;
 }
 
+.dark-mode #myimage {
+  animation-name: glow;
+  animation: glow2 1.5s infinite alternate;
+}
+
+@keyframes glow2 {
+  0% {
+    box-shadow: 0px 0px 12px white;
+  }
+  100% {
+    box-shadow: 0px 0px 12px white, 0px 0px 25px rgba(255, 255, 255, 0.648);
+  }
+}
 /* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
 body {
   margin: 0;
@@ -616,94 +648,6 @@ body {
   }
 }
 
-/* ---------------------------------------------- Download Resume Button ------------------------------------------------------- */
-.resume-btn {
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.resume-btn:hover {
-  background-color: #2e6331;
-}
-
-/* Pop-Up Styling */
-.popup {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.popup.show {
-  display: flex;
-  opacity: 1;
-}
-
-.popup-content {
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  width: 300px;
-  text-align: center;
-  position: relative;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  transform: scale(0.7);
-  transition: transform 0.4s ease;
-}
-
-.popup-content h2 {
-  color: black;
-  font-size: large;
-}
-
-.popup.show .popup-content {
-  transform: scale(1);
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #333;
-  transition: color 0.3s;
-}
-
-.close-btn:hover {
-  color: #ff0000;
-}
-
-/* Download Button Inside Pop-Up */
-.download-btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.download-btn:hover {
-  background-color: #45a049;
-}
 /* ---------------------------------------------- keyframing in web pages open --------------------------------------------------- */
 
 /* Keyframes for fade in and slide up animation */
@@ -778,7 +722,7 @@ body {
 
   .social-icons a {
     padding: 0px;
-    font-size: 20px;
+    font-size: 24px;
   }
 
   .footer-container h2 {
@@ -796,6 +740,10 @@ body {
   .coffee img {
     height: 30px;
   }
+  .bg-image {
+    background-position: none;
+    top: 0%;
+  }
 }
 
 @media (max-width: 420px) {
@@ -805,5 +753,35 @@ body {
   }
   .coffee img {
     height: 30px;
+  }
+}
+
+.bg-image {
+  position: absolute;
+  width: 100%;
+  height: 500px;
+  background-image: url("images/ryuken\ ishida.webp");
+  background-size: contain; /* Makes the image cover the entire div */
+  background-repeat: no-repeat;
+  /* Animation */
+  background-position: right;
+  top: 1%;
+  right: 0px;
+  z-index: -1;
+  animation: blink-hide1 1s infinite;
+}
+
+/* Keyframes for the blink-hide animation */
+@keyframes blink-hide {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  65%,
+  95% {
+    opacity: 1; /* Visible (blinks) from 8s to 9.5s */
+  }
+  100% {
+    opacity: 0; /* Invisible again */
   }
 }
