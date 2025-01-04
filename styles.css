@@ -17,7 +17,6 @@ body {
   height: 180px;
   border-radius: 24% 12px 24% 12px;
   z-index: -1;
-  animation-name: glow;
   animation: glow 1.5s infinite alternate;
 }
 
@@ -596,15 +595,15 @@ img {
 
 .dark-mode #myimage {
   animation-name: glow;
-  animation: glow2 1.5s infinite alternate;
+  animation: glow2 2s infinite alternate;
 }
 
 @keyframes glow2 {
   0% {
-    box-shadow: 0px 0px 12px white;
+    transform: scale(1);
   }
   100% {
-    box-shadow: 0px 0px 12px white, 0px 0px 25px rgba(255, 255, 255, 0.648);
+    transform: scale(1.06);
   }
 }
 /* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
