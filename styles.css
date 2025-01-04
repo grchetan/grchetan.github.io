@@ -760,7 +760,7 @@ body {
   position: absolute;
   width: 100%;
   height: 500px;
-  background-image: url("images/ryuken\ ishida.webp");
+  background-image: url("images/ryuken_ishida.webp");
   background-size: contain; /* Makes the image cover the entire div */
   background-repeat: no-repeat;
   /* Animation */
