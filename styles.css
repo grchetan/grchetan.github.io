@@ -52,6 +52,12 @@ body {
   text-align: center;
   z-index: -1;
 }
+#painter-img {
+  background-image: url(images/text-highlight.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  right: -100;
+}
 
 @media (max-width: 400px) {
   .carrois-gothic-regular {
@@ -169,15 +175,21 @@ body {
   display: block;
   width: 100px;
   height: 100px;
+  background-color: transparent;
 }
 
 .imagess img {
+  background-color: transparent;
   width: 90px;
   height: 90px;
-  transition: transform 0.4s ease-in-out;
+  border: 1px solid black;
+  border-radius: 50%;
+  transition: border-radius 0.4s ease-in, transform 0.4s ease-in;
 }
+
 .imagess img:hover {
   transform: scale(1.1);
+  border-radius: 10px;
 }
 .text-content {
   margin-left: 10px;
@@ -207,10 +219,6 @@ body {
   .text-content a {
     font-size: 14px;
   }
-}
-
-.educationlogo {
-  border-radius: 50%;
 }
 
 /* Initial styles for the link */
