@@ -10,23 +10,14 @@ body {
   display: flex;
   justify-content: center;
   z-index: -1;
-  padding-top: 20vh;
+  padding-top: 16vh;
 }
 #myimage {
   width: 180px;
   height: 180px;
-  border-radius: 24% 12px 24% 12px;
+  border-radius: 50%;
   z-index: -1;
   animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-  0% {
-    box-shadow: 0px 0px 12px #0000009f;
-  }
-  100% {
-    box-shadow: 0px 0px 12px #000000e6, 0px 0px 25px #000000e6;
-  }
 }
 
 @media (max-width: 820px) {
