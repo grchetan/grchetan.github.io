@@ -179,7 +179,7 @@ body {
   background-color: transparent;
   width: 90px;
   height: 90px;
-  border: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.334);
   border-radius: 50%;
   transition: border-radius 0.4s ease-in, transform 0.4s ease-in;
 }
