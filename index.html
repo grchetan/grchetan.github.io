@@ -90,25 +90,32 @@
       
     <div>
       <div class="image-container">
-      <img src="images/profilepic.jpg" id="myimage" alt="my image" />
+        <div class="card">
+          <div class="card-inner">
+            <img
+              src="images/profilepic.jpg"
+              alt="Your Professional Image"
+              class="profile-image"
+            />
+          </div>
+        </div>
       </div>
-      <div class="header-style">
-    
-        <h1 class="carrois-gothic-regular">Hey, I'm Chetan prajapat <img src="images/ryuken_ishida.webp" width="30px" alt="image"></h1>
-        <h1 class="anton-regular" >I am <span class="auto-type" id="painter-img"></span></h1>
+        <div class="header-style">
+          <h1 class="carrois-gothic-regular">Hey, I'm Chetan prajapat <img src="images/ryuken_ishida.webp" width="30px" alt="image"></h1>
+          <h1 class="anton-regular" >I am <span class="auto-type" id="painter-img"></span></h1>
 
          <!-- Load library from the CDN -->
         <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
 
-  <!-- Setup and start animation! -->
-  <script>
-    var typed = new Typed('.auto-type', {
-      strings: ['Web Developer', 'Freeliancer' ,'Software Developer'],
-      typeSpeed: 50,
-      backSpeed: 50,
-      loop: true
-    });
-  </script>
+        <!-- Setup and start animation! -->
+      <script>
+        var typed = new Typed('.auto-type', {
+          strings: ['Web Developer', 'Freeliancer' ,'Software Developer'],
+          typeSpeed: 50,
+          backSpeed: 50,
+          oop: true
+        });
+     </script>
 
 
         <p class="sulphur-point-light">
@@ -126,9 +133,9 @@
         </div>
       </div>
     </div>
-    <div>
+    
 
-      
+    <div>
         <section class="section1">
           <h1 class="zen-dots-regular">About Me 👋</h1>
           <p class="sulphur-point-light">
