@@ -37,6 +37,7 @@ body {
     height: 150px;
     margin-bottom: 1rem;
     z-index: -1;
+    filter: brightness(0.8);
   }
 }
 
