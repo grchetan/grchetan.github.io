@@ -18,6 +18,11 @@ body {
   border-radius: 50%;
   z-index: -1;
   animation: glow 1.5s infinite alternate;
+  filter: brightness(0.8);
+  transition: filter 1s ease-in-out;
+}
+#myimage:hover {
+  filter: brightness(1);
 }
 
 @media (max-width: 820px) {
@@ -37,6 +42,7 @@ body {
 
 /*Hey I am chetan.... font */
 .carrois-gothic-regular {
+  align-items: center;
   font-family: "Carrois Gothic", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -112,7 +118,6 @@ body {
   font-size: 25px;
   margin-bottom: -1px;
   background-color: transparent;
-  backdrop-filter: blur(6px);
 }
 
 /* orderlist achortag styles a hover */
@@ -525,7 +530,9 @@ body:focus-within #scrollTopBtn {
 body.dark-mode {
   background-color: transparent;
 }
-
+.dark-mode #painter-img {
+  background-image: none;
+}
 .dark-mode .header-style,
 .dark-mode .section1,
 .dark-mode .section2,
@@ -568,10 +575,13 @@ body.dark-mode {
 .dark-mode footer a:hover {
   color: white;
 }
+.dark-mode .social-icons a {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
 
 /* Add transitions for images if necessary */
 img {
-  transition: filter 0.3s; /* Smooth transition for images */
+  transition: filter 0.3s;
 }
 
 .dark-mode img {
@@ -740,7 +750,6 @@ body {
   }
   .bg-image {
     background-position: none;
-    top: 0%;
   }
 }
 
@@ -761,11 +770,10 @@ body {
   background-image: url("images/ryuken_ishida.webp");
   background-size: contain; /* Makes the image cover the entire div */
   background-repeat: no-repeat;
-  /* Animation */
-  background-position: right;
+  background-position: left;
   top: 1%;
-  right: 0px;
   z-index: -1;
+  opacity: 0.2;
   animation: blink-hide1 1s infinite;
 }
 
