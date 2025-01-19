@@ -38,7 +38,7 @@
         height: 100%;
         object-fit: cover;
         z-index: -1;
-        opacity: 0.5;
+        opacity: 0.7;
       }
 
       html {
@@ -52,12 +52,10 @@
         padding: 0rem 1rem;
         justify-content: space-between;
         align-items: center;
-        background: #000000;
         box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
         border-bottom: 1px solid #1f1f1f;
         z-index: 1;
         animation: fadeInScale 2s ease-in-out forwards;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.61), rgba(0, 0, 0, 0.034));
         backdrop-filter: blur(4px);
       }
       header:hover {
@@ -146,7 +144,7 @@
       .cards {
         text-align: center;
         overflow: hidden;
-        background: linear-gradient(1deg, #ff00002e,#121111, #000000, #2d2b2b);
+        outline: 1px dotted rgba(255, 255, 255, 0.277);
         padding: 20px;
         border-radius: 10px;
         transition: all 0.3s ease;
@@ -198,6 +196,13 @@
         border: 1px solid #2a2a2a;
         box-sizing: border-box;
         transition: box-shadow 0.3s ease-in-out;
+      }
+      .speech-content a {
+        text-decoration: none;
+        color: white;
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       .speech-content:hover {
@@ -659,7 +664,7 @@
             engaging. He knows how to bring life to simple footage with his
             creativity and skills.
           </p>
-          <p><strong>Krishna Rathod</strong></p>
+          <p><a href="https://www.instagram.com/krishna_rathord_1437"><strong>Krishna Rathod</strong></a></p>
         </div>
 
         <div class="speech-content">
@@ -673,7 +678,7 @@
             dynamic effects, every detail is crafted to perfection, turning
             ordinary footage into visually stunning content.
           </p>
-          <p><strong>Sachin Prajapat</strong></p>
+          <p><a href="https://www.instagram.com/_sachinprajapat__/"><strong>Sachin Prajapat</strong></a></p>
         </div>
       </div>
     </section>
