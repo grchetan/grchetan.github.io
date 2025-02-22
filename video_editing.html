@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unique Project Showcase</title>
+    <style>
+      .hover-effect {
+        position: relative;
+        width: fit-content;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 2rem;
+        color: #333;
+        transition: all 0.3s ease;
+      }
+
+      .hover-effect h2::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 0, 150, 1) 0%,
+          rgba(255, 0, 150, 0) 100%
+        );
+        transition: width 0.3s ease, left 0.3s ease;
+      }
+
+      .hover-effect:hover h2::after {
+        width: 100%;
+        left: 0;
+      }
+      /* Styling for the video container */
+      .video-container {
+        position: relative;
+        width: 70%;
+        margin: auto;
+      }
+
+      /* Video styling */
+      video {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Play/Pause button styling */
+      .play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .play-btn:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      /* Play icon */
+      .play-btn::before {
+        content: "▶"; /* Unicode for play icon */
+        color: white;
+        font-size: 20px;
+        margin-left: 5px;
+      }
+
+      /* Pause icon */
+      .play-btn.pause::before {
+        content: "❚❚"; /* Unicode for pause icon */
+        margin-left: 0;
+      }
+      body {
+        margin-top: 9rem;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+
+      .portfolio {
+        text-align: center;
+      }
+
+      .image-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: transform 0.4s ease;
+      }
+
+      .image-container:hover {
+        transform: scale(1.1);
+      }
+
+      .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.4s ease;
+      }
+
+      .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        color: #fff;
+      }
+
+      .image-container:hover .image-overlay {
+        opacity: 1;
+      }
+
+      .image-overlay h2 {
+        margin: 0;
+        font-size: 24px;
+        letter-spacing: 1px;
+      }
+
+      .image-overlay p {
+        margin-top: 5px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="portfolio">
+      <div class="image-container">
+        <img
+          src="images/AI Image.webp"
+          alt="Your Professional Image"
+          class="profile-image"
+        />
+        <div class="image-overlay">
+          <h2>Your Name</h2>
+          <p>Web Developer | Designer | Programmer</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="hover-effect">
+      <h2>Your Centered Text</h2>
+    </div>
+
+    <div class="video-container">
+      <video
+        id="myVideo"
+        src="videos/video-editing/bgvideo2.mp4"
+        controls
+      ></video>
+      <button id="playPauseBtn" class="play-btn"></button>
+    </div>
+    <script>
+      const video = document.getElementById("myVideo");
+      const playPauseBtn = document.getElementById("playPauseBtn");
+
+      playPauseBtn.addEventListener("click", () => {
+        if (video.paused || video.ended) {
+          video.play();
+          playPauseBtn.classList.add("pause");
+        } else {
+          video.pause();
+          playPauseBtn.classList.remove("pause");
+        }
+      });
+    </script>
+  </body>
+</html>

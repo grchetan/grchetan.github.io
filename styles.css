@@ -1,0 +1,833 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  z-index: 3;
+  background: linear-gradient(to right, #000000, #000000);
+}
+
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 10px;
+  background: linear-gradient(to right, #4caf50, #81c784);
+  z-index: 1000;
+}
+/* Container for Image */
+.image-container {
+  display: flex;
+  justify-content: center;
+  z-index: -1;
+  padding-top: 16vh;
+}
+.card {
+  width: 200px;
+  height: 200px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: initial;
+}
+
+.card:hover .card-inner {
+  transform: rotateY(180deg); /* Flip the card */
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: grayscale(10%);
+  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.63);
+}
+
+@media (max-width: 820px) {
+  .card {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/*Hey I am chetan.... font */
+.carrois-gothic-regular {
+  align-items: center;
+  font-family: "Carrois Gothic", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  z-index: -1;
+}
+#painter-img {
+  background-image: url(images/text-highlight.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  right: -100;
+}
+
+@media (max-width: 400px) {
+  .carrois-gothic-regular {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+/*I am SOftware ... fonts */
+.anton-regular {
+  font-family: "Anton", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 60px;
+  margin-top: -20px;
+}
+
+@media (max-width: 768px) {
+  .anton-regular {
+    font-size: 35px;
+  }
+}
+
+/* Header Container */
+.header-style {
+  position: relative;
+  text-align: center;
+  padding-left: auto;
+  padding-right: auto;
+  margin-top: -10px;
+  z-index: -1;
+  height: 80vh;
+}
+
+.sulphur-point-light {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+}
+@media (max-width: 768px) {
+  .sulphur-point-light {
+    font-size: 20px;
+  }
+}
+
+/* Education Shool college styles*/
+.sulphur-point-light2 {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+}
+
+/* Unorderlist CSS Styles*/
+.sulphur-point-light3 {
+  font-family: "Sulphur Point", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+  background-color: transparent;
+}
+
+/* orderlist achortag styles a hover */
+.section5 div ol {
+  display: inline-block;
+  flex-direction: column;
+}
+.projectlink {
+  text-decoration: none;
+  color: #1a4cd7;
+}
+
+.projectlink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .sulphur-point-light3 {
+    font-size: 18px;
+  }
+}
+
+.zen-dots-regular {
+  font-family: "Zen Dots", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
+.section1 {
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.section2,
+.section3,
+.section4,
+.section5 {
+  padding-top: 2%;
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.imagess {
+  display: block;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+}
+
+.imagess img {
+  background-color: transparent;
+  width: 90px;
+  height: 90px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.334);
+  border-radius: 50%;
+  transition: border-radius 0.4s ease-in, transform 0.4s ease-in;
+}
+
+.imagess img:hover {
+  transform: scale(1.1);
+  border-radius: 10px;
+}
+.text-content {
+  margin-left: 10px;
+  margin-top: -20px;
+}
+
+/* Mobile styling */
+@media (max-width: 600px) {
+  .logo-container {
+    align-items: flex-start;
+  }
+
+  .text-content {
+    margin-top: -14px;
+  }
+
+  .imagess {
+    height: 60px;
+    width: 60px;
+  }
+  .imagess img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .text-content p,
+  .text-content a {
+    font-size: 14px;
+  }
+}
+
+/* Initial styles for the link */
+.hover-link {
+  display: inline-block;
+  font-family: monospace;
+  font-size: large;
+  text-decoration: none;
+  color: #3498db;
+  transition: color 0.3s ease;
+}
+.hover-link:hover {
+  color: #e74c3c;
+}
+
+.school-year {
+  font-family: monospace;
+  font-size: large;
+  color: grey;
+}
+
+/* List Heading Styles */
+.listheading {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding-left: 25px;
+  padding-top: 20px;
+  margin-bottom: -10px;
+  font-weight: bold;
+  animation: rgbLights 3s infinite;
+  text-decoration: underline;
+}
+
+/* RGB lights animation */
+@keyframes rgbLights {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .listheading {
+    font-size: medium;
+    padding-top: 20px;
+  }
+}
+
+/* Arrow Container */
+.arrow-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  position: relative;
+}
+
+/* Stylish Downward Arrow */
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent; /* Left side of the arrow */
+  border-right: 15px solid transparent; /* Right side of the arrow */
+  border-top: 30px solid #3498db;
+  position: relative;
+  animation: bounce 1.5s infinite alternate;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-50px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+/* -----------------------------------Scrollbar styling --------------------------------------*/
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #363739,
+    #28252b
+  ); /* Gradient color for the scrollbar thumb */
+  border-radius: 10px;
+  transition: background-color 0.3s ease; /* Smooth color change animation */
+}
+
+/* Hover effect on scrollbar thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #3f4e4f,
+    #4a90e2
+  ); /* Reverse gradient on hover */
+}
+
+/* Adding bounce animation */
+::-webkit-scrollbar-thumb {
+  animation: bounce 1.5s infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+/* -------------------------------------- Footer Styling ----------------------------------------------------------- */
+
+.footer {
+  background-color: transparent;
+  padding: 20px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-top: 30%;
+}
+
+.footer-container h2 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  color: #000000;
+}
+
+.social-icons a {
+  display: inline-block;
+  color: #000000;
+  margin: 0 10px;
+  font-size: 30px;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #000000;
+  transform: translateY(-5px);
+}
+
+.social-icons a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background-color: #000000;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.social-icons a:hover::after {
+  width: 100%;
+  left: 0;
+}
+/* ---------------------------------------------- Download Resume Button ------------------------------------------------------- */
+button.resume-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid black;
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+button.resume-btn a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.resume-btn:hover {
+  text-decoration: underline;
+  transform: rotate(5deg);
+}
+
+/* Footer Bottom Styling */
+.footer-bottom {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #181616;
+  border-top: 1px solid #000000;
+  padding-top: 10px;
+}
+
+.footer-resume a:hover {
+  background-color: #000000;
+}
+
+.footer-bottom a {
+  text-decoration: none;
+  color: #000000;
+}
+.footer-bottom a:hover {
+  color: #000000;
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------   Up scrooll Button   --------------------------------------------------------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll to Top Button styling */
+#scrollTopBtn {
+  position: fixed;
+  z-index: 1000;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s;
+  background-image: url("images/up.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+}
+
+/* Show button when hovering near the bottom */
+body:hover #scrollTopBtn,
+body:focus-within #scrollTopBtn {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: transparent;
+}
+
+/* Arrow color on hover */
+#scrollTopBtn:hover {
+  background-color: #0056b3;
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 600px) {
+  #scrollTopBtn {
+    width: 40px;
+    height: 40px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* ----------------------------------------  Dark mode Toggle button----------------------------------------------------------------- */
+/* Toggle Button */
+#toggle-container {
+  position: fixed;
+  z-index: 1000;
+}
+
+#darkModeToggle {
+  display: flex;
+  padding: 10px 20px;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  transition: transform 0.2s; /* Smooth transition for button */
+}
+
+/* Hover Effect for the Toggle Button */
+#darkModeToggle:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+/* Dark Mode Toggle Button */
+@media (max-width: 768px) {
+  #toggle-container {
+    display: flex;
+    align-items: center;
+    z-index: 1; /* Keep the toggle container behind the content */
+  }
+
+  #darkModeToggle {
+    margin-left: 2rem;
+    font-size: 20px;
+    background: none;
+    color: #f39c12;
+    border: none;
+    cursor: pointer;
+  }
+}
+/* End */
+/*-------------------------------------------- Dark Mode Styles --------------------------------------------------*/
+body.dark-mode {
+  background-color: #0a0a0a;
+}
+.dark-mode #painter-img {
+  background-image: none;
+}
+.dark-mode .header-style,
+.dark-mode .section1,
+.dark-mode .section2,
+.dark-mode .section3,
+.dark-mode .section4,
+.dark-mode .section5 {
+  background-color: transparent;
+  color: #ffffff;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for sections */
+}
+
+.dark-mode .hover-link,
+.dark-mode .projectlink {
+  color: #bb86fc;
+}
+
+/* school education hover or project hover styles */
+.dark-mode .hover-link:hover,
+.dark-mode .projectlink:hover {
+  color: white;
+}
+.dark-mode .projectlink {
+  color: #15fff3;
+}
+
+.dark-mode .footer,
+.dark-mode footer h2,
+.dark-mode footer a,
+.dark-mode button,
+.dark-mode button.resume-btn a,
+.dark-mode .footer-bottom {
+  background-color: transparent;
+  transition: background-color 0.3s; /* Smooth transition for footer */
+  border: white;
+  color: white;
+}
+.dark-mode button.resume-btn {
+  border: 2px solid white;
+}
+.dark-mode footer a:hover {
+  color: white;
+}
+.dark-mode .social-icons a {
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Add transitions for images if necessary */
+img {
+  transition: filter 0.3s;
+}
+
+.dark-mode img {
+  filter: brightness(0.8); /* Optional: Darken images in dark mode */
+}
+
+/* Animation for emoji */
+@keyframes emojiChange {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.animate {
+  animation: emojiChange 0.2s ease-in-out;
+}
+
+@keyframes glow2 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.06);
+  }
+}
+/* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
+body {
+  margin: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.background-video {
+  position: fixed; /* Fixes the video in the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure video covers the entire background */
+}
+
+.content {
+  position: relative; /* Position content above the video */
+  z-index: 1; /* Ensure content is above the background video */
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Additional Media Query for Mobile Devices */
+@media (max-width: 768px) {
+  .background-video video {
+    width: auto;
+    height: 100vh;
+    object-fit: cover;
+  }
+}
+
+.bg-image {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background-image: url("images/ryuken_ishida.webp");
+  background-size: cover; /* Covers the div completely */
+  background-repeat: no-repeat;
+  background-position: left;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
+  z-index: -1;
+
+  animation: smooth-float 10s ease-in-out infinite,
+    blink-hide 5s ease-in-out infinite;
+}
+
+/* Smooth floating animation */
+@keyframes smooth-float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-20px) rotate(5deg);
+  }
+}
+
+/* Keyframes for the subtle blink-hide animation */
+@keyframes blink-hide {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    opacity: 0.1;
+    transform: scale(1.05) rotate(-3deg);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.1) rotate(5deg);
+  }
+  75% {
+    opacity: 0.3;
+    transform: scale(0.95) rotate(-3deg);
+  }
+}
+
+/* ---------------------------------------------- keyframing in web pages open --------------------------------------------------- */
+
+/* Keyframes for fade in and slide up animation */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0; /* Start invisible */
+    transform: translateY(20px); /* Start below */
+  }
+  100% {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* End position */
+  }
+}
+
+/* Apply animation to div elements */
+.image-container,
+.header-style,
+.section1,
+.section2,
+.section3,
+.section4,
+.section5,
+.footer {
+  opacity: 0; /* Start invisible */
+  transform: translateY(20px); /* Start below */
+  animation: fadeInSlideUp 1s forwards; /* Animation applied */
+}
+
+/* Adding a delay for each div to animate one after the other */
+.animated-div:nth-child(1) {
+  animation-delay: 0s; /* No delay for the first div */
+}
+
+.animated-div:nth-child(2) {
+  animation-delay: 0.5s; /* Delay for the second div */
+}
+
+.animated-div:nth-child(3) {
+  animation-delay: 1s; /* Delay for the third div */
+}
+
+/* Cofee Container */
+.coffee {
+  position: fixed;
+  bottom: 1%;
+  z-index: 10;
+}
+
+.coffee img {
+  height: 50px;
+}
+
+/*------------------- Mobile Styles [About section], [Education], [project], [skills] ===========*/
+@media (max-width: 768px) {
+  .section1,
+  .section2,
+  .section3,
+  .section4,
+  .section5 {
+    margin: 1rem;
+    padding-top: 10%;
+    padding-left: 0%;
+    padding-right: 0%;
+  }
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .social-links {
+    gap: 15px;
+  }
+
+  .social-icons a {
+    padding: 0px;
+    font-size: 24px;
+  }
+
+  .footer-container h2 {
+    font-size: 20px;
+  }
+}
+/* End */
+
+/* Coffee Icon bar*/
+@media (max-width: 786px) {
+  .coffee {
+    position: relative;
+    transform: translateY(50px);
+  }
+  .coffee img {
+    height: 30px;
+  }
+  .bg-image {
+    width: 300px;
+    height: 300px;
+    top: 20%;
+  }
+}
+
+@media (max-width: 420px) {
+  .coffee {
+    position: relative;
+    transform: translateY(40px);
+  }
+  .coffee img {
+    height: 30px;
+  }
+}

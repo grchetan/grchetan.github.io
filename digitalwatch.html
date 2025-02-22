@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Watch</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fff;
+        color: #333;
+        transition: all 0.3s ease;
+      }
+
+      .container {
+        text-align: center;
+        padding: 50px 0;
+      }
+
+      header h1 {
+        font-size: 3em;
+      }
+
+      .clock {
+        margin-top: 20px;
+      }
+
+      .time {
+        font-size: 4em;
+        font-weight: bold;
+      }
+
+      .date {
+        margin-top: 10px;
+        font-size: 1.2em;
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button.toggle {
+        background-color: #333;
+        color: #fff;
+        margin-top: 20px;
+      }
+
+      footer {
+        margin-top: 50px;
+        font-size: 1.2em;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+        }
+
+        .time {
+          font-size: 3em;
+        }
+      }
+
+      body.dark-mode {
+        background-color: #333;
+        color: #fff;
+      }
+
+      body.dark-mode .clock {
+        background-color: #444;
+        color: #fff;
+      }
+
+      body.dark-mode .toggle {
+        background-color: #fff;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Digital Watch</h1>
+      </div>
+
+      <div class="clock" id="clock">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
+        <div class="alarm">
+          <input type="time" id="alarmTime" />
+          <button onclick="toggleAlarm()">Set Alarm</button>
+        </div>
+        <div class="stopwatch">
+          <button onclick="startStopwatch()">Start Stopwatch</button>
+          <div id="stopwatch"></div>
+        </div>
+        <button class="toggle" onclick="toggleDarkMode()">
+          Toggle Dark Mode
+        </button>
+      </div>
+
+      <footer>
+        <p>Created by Chetan | Digital Watch Project</p>
+      </footer>
+    </div>
+
+    <script>
+      // Clock functionality
+      function updateClock() {
+        const timeElement = document.getElementById("time");
+        const dateElement = document.getElementById("date");
+
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const dayOfWeek = now.toLocaleString("en-us", { weekday: "long" });
+        const date = now.toLocaleDateString();
+
+        timeElement.innerHTML = `${hours % 12 || 12}:${
+          minutes < 10 ? "0" + minutes : minutes
+        }:${seconds < 10 ? "0" + seconds : seconds} ${
+          hours >= 12 ? "PM" : "AM"
+        }`;
+        dateElement.innerHTML = `${dayOfWeek}, ${date}`;
+      }
+
+      // Alarm functionality
+      let alarmTime = "";
+      let alarmTimeout = null;
+
+      function toggleAlarm() {
+        const alarmInput = document.getElementById("alarmTime");
+        alarmTime = alarmInput.value;
+
+        if (alarmTime && !alarmTimeout) {
+          const alarmDate = new Date();
+          const [hours, minutes] = alarmTime.split(":");
+          alarmDate.setHours(hours, minutes, 0, 0);
+
+          alarmTimeout = setTimeout(() => {
+            alert("Alarm ringing!");
+            alarmTimeout = null;
+          }, alarmDate - new Date());
+        } else {
+          clearTimeout(alarmTimeout);
+          alarmTimeout = null;
+        }
+      }
+
+      // Stopwatch functionality
+      let stopwatchInterval = null;
+      let stopwatchSeconds = 0;
+
+      function startStopwatch() {
+        if (stopwatchInterval) {
+          clearInterval(stopwatchInterval);
+          stopwatchInterval = null;
+        } else {
+          stopwatchInterval = setInterval(() => {
+            stopwatchSeconds++;
+            document.getElementById("stopwatch").innerHTML = `${Math.floor(
+              stopwatchSeconds / 60
+            )}:${
+              stopwatchSeconds % 60 < 10
+                ? "0" + (stopwatchSeconds % 60)
+                : stopwatchSeconds % 60
+            }`;
+          }, 1000);
+        }
+      }
+
+      // Dark Mode Toggle
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+      }
+
+      // Update clock every second
+      setInterval(updateClock, 1000);
+      updateClock();
+    </script>
+  </body>
+</html>

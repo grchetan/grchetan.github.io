@@ -1,0 +1,69 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-section {
+  background: linear-gradient(45deg, #1e1e2e, #333344);
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.sample-videos {
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.video-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.video-card {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-card video {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.skills {
+  padding: 2rem 1rem;
+  background: #e9ecef;
+  text-align: center;
+}
+
+.skills ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.skills li {
+  display: inline;
+  margin: 0 0.5rem;
+  font-weight: bold;
+}
+
+.contact-section {
+  background: #333344;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+.contact-section a {
+  color: #00bcd4;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+.contact-section a:hover {
+  text-decoration: underline;
+}

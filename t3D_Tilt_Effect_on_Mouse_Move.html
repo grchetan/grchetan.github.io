@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Tilt Effect</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background: #222;
+      }
+
+      .image-container {
+        width: 300px;
+        height: 300px;
+        perspective: 1000px;
+      }
+
+      .image-container img {
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transition: transform 0.2s ease;
+        border-radius: 10px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+    <script>
+      document.addEventListener("mousemove", (e) => {
+        const imageContainer = document.querySelector(".image-container img");
+        const x = (e.clientX / window.innerWidth) * 30 - 15; // X-axis tilt
+        const y = (e.clientY / window.innerHeight) * 30 - 15; // Y-axis tilt
+        imageContainer.style.transform = `rotateX(${y}deg) rotateY(${x}deg)`;
+      });
+    </script>
+  </head>
+  <body>
+    <div class="image-container">
+      <img src="images/grimage.jpg" alt="3D Tilt Image" />
+    </div>
+  </body>
+</html>
