@@ -695,7 +695,7 @@
         </div>
 
         <div class="form-list">
-          <form action="">
+          <form  method="POST" name="google-sheet">
             <p>india only</p>
             <h3>Apply Now!</h3>
             <label for="name">Full Name</label>
@@ -706,10 +706,10 @@
 
             
             <label for="phone-no">Mobile No.</label>
-            <input type="number" id="phone-no" name="mobile no." required>
+            <input type="number" id="phone-no" name="number" required>
             
             <label for="link">Resume Link</label>
-            <input type="text" id="link" name="github-link" required>
+            <input type="text" id="link" name="resume_link" required>
 
             <label for="skills">Skills</label>
             <div class="radio-section">
@@ -740,10 +740,24 @@
           </form>
         </div>
       </form>
+
+      <script>
+        const scriptURL = 'https://script.google.com/macros/s/wAKfycbwbUFDN6YcRNtelU0TqSQPQFji9NXQS8cOMSssCvby6Mx4GhECpzop8E-fgANYNca57/exec'
+        const form = document.forms['google-sheet']
+      
+        form.addEventListener('submit', e => {
+          e.preventDefault()
+          fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => alert("Thanks for Contacting us..! We Will Contact You Soon..."))
+            .catch(error => console.error('Error!', error.message))
+        })
+      </script>
+
     </section>
-    <div class="top-btn">
+    <div class="top-btn" id="scrollTopBtn">
       <a href="#top"><i class="fas fa-arrow-up"></i></a>
-    </div>
+  </div>
+  
 
     <footer>
       <div class="footer-name">
@@ -772,5 +786,20 @@
         ></a>
       </div>
     </footer>
+
+    <script>
+      // Get Button
+const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+// Scroll Event Listener
+window.addEventListener("scroll", function () {
+    if (document.documentElement.scrollTop > 1200) {
+        scrollTopBtn.style.display = "block"; // Show button
+    } else {
+        scrollTopBtn.style.display = "none"; // Hide button
+    }
+});
+
+    </script>
   </body>
 </html>
