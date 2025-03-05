@@ -4,6 +4,9 @@ body {
   box-sizing: border-box;
   background-color: white;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 
 .progress-container {
   position: fixed;
@@ -320,49 +323,6 @@ body {
   }
   60% {
     transform: translateY(-10px);
-  }
-}
-
-/* -----------------------------------Scrollbar styling --------------------------------------*/
-::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Track color */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    #363739,
-    #28252b
-  ); /* Gradient color for the scrollbar thumb */
-  border-radius: 10px;
-  transition: background-color 0.3s ease; /* Smooth color change animation */
-}
-
-/* Hover effect on scrollbar thumb */
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    #3f4e4f,
-    #4a90e2
-  ); /* Reverse gradient on hover */
-}
-
-/* Adding bounce animation */
-::-webkit-scrollbar-thumb {
-  animation: bounce 1.5s infinite alternate;
-}
-
-@keyframes bounce {
-  from {
-    transform: translateY(0px);
-  }
-  to {
-    transform: translateY(-3px);
   }
 }
 
