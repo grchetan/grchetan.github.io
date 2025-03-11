@@ -8,25 +8,6 @@ body {
   display: none;
 }
 
-.progress-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 10px;
-  z-index: 3;
-  background: linear-gradient(to right, #000000, #000000);
-}
-
-#progress-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 10px;
-  background: linear-gradient(to right, #4caf50, #81c784);
-  z-index: 1000;
-}
 /* Container for Image */
 .image-container {
   display: flex;
@@ -56,7 +37,6 @@ body {
   object-fit: cover;
   border-radius: 50%;
   filter: grayscale(10%);
-  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.63);
 }
 
 @media (max-width: 820px) {
@@ -417,59 +397,46 @@ button.resume-btn a {
   text-decoration: underline;
 }
 
-/* ----------------------------------------------   Up scrooll Button   --------------------------------------------------------- */
-
+/* --------- Up scrooll Button ------ */
 html {
   scroll-behavior: smooth;
 }
-
-/* Scroll to Top Button styling */
-#scrollTopBtn {
+.top-btn {
   position: fixed;
-  z-index: 1000;
-  bottom: 30px;
-  right: 30px;
+  bottom: 20px;
+  right: 20px;
   width: 50px;
   height: 50px;
-  background-color: #007bff;
-  border: none;
   border-radius: 50%;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out, transform 0.3s;
-  background-image: url("images/up.gif");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: transparent;
+  cursor: pointer;
+  z-index: 1000;
+}
+.top-btn a i {
+  font-size: 26px;
+  color: #000000;
 }
 
-/* Show button when hovering near the bottom */
-body:hover #scrollTopBtn,
-body:focus-within #scrollTopBtn {
-  opacity: 1;
-  transform: scale(1.1);
-  background-color: transparent;
+.top-btn svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(
+    -90deg
+  ); /* Progress circle ko start position pe set karne ke liye */
+}
+#bgCircle {
+  stroke: #d3d3d3;
+}
+#progressCircle {
+  stroke: black; /* 🔥 Color change to black */
+  transition: stroke-dashoffset 0.2s linear;
 }
 
-/* Arrow color on hover */
-#scrollTopBtn:hover {
-  background-color: #0056b3;
-}
-
-/* Media Query for Mobile Devices */
-@media (max-width: 600px) {
-  #scrollTopBtn {
-    width: 40px;
-    height: 40px;
-    bottom: 20px;
-    right: 20px;
-  }
-}
-
-/* ----------------------------------------  Dark mode Toggle button----------------------------------------------------------------- */
+/* --------Dark mode Toggle button--------- */
 /* Toggle Button */
 #toggle-container {
   position: fixed;
@@ -511,7 +478,7 @@ body:focus-within #scrollTopBtn {
 /* End */
 /*-------------------------------------------- Dark Mode Styles --------------------------------------------------*/
 body.dark-mode {
-  background-color: #0a0a0a;
+  background-color: #121212;
 }
 .dark-mode #painter-img {
   background-image: none;
@@ -569,6 +536,16 @@ img {
 
 .dark-mode img {
   filter: brightness(0.8); /* Optional: Darken images in dark mode */
+}
+.dark-mode .top-btn {
+  color: rgb(0, 0, 0);
+}
+
+.dark-mode .top-btn a i {
+  color: white;
+}
+.dark-mode #progressCircle {
+  stroke: rgb(255, 255, 255);
 }
 
 /* Animation for emoji */
@@ -727,14 +704,23 @@ body {
 /* Cofee Container */
 .coffee {
   position: fixed;
+  align-items: center;
   bottom: 1%;
+  left: 10px;
   z-index: 10;
+  border-radius: 50%;
+  padding: 10px;
+  background-color: yellow;
+  transition: background-color 0.3s ease-in-out;
 }
 
 .coffee img {
-  height: 50px;
+  height: 40px;
+  width: 40px;
 }
-
+.coffee:hover {
+  background-color: #f39c12;
+}
 /*------------------- Mobile Styles [About section], [Education], [project], [skills] ===========*/
 @media (max-width: 768px) {
   .section1,
@@ -770,10 +756,12 @@ body {
 @media (max-width: 786px) {
   .coffee {
     position: relative;
-    transform: translateY(50px);
+    width: 30px;
+    height: 30px;
   }
   .coffee img {
     height: 30px;
+    width: 30px;
   }
   .bg-image {
     width: 300px;
@@ -785,9 +773,11 @@ body {
 @media (max-width: 420px) {
   .coffee {
     position: relative;
-    transform: translateY(40px);
+    width: 25px;
+    height: 25px;
   }
   .coffee img {
-    height: 30px;
+    height: 25px;
+    width: 25px;
   }
 }

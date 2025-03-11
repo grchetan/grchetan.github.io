@@ -28,12 +28,28 @@ toggleButton.addEventListener("animationend", () => {
   toggleButton.classList.remove("animate");
 });
 
-// Scroll Bar prosecc
-window.addEventListener("scroll", () => {
-  const scrollTop = window.scrollY;
-  const docHeight = document.body.scrollHeight - window.innerHeight;
-  const scrollPercent = (scrollTop / docHeight) * 100;
+// Scrooll top button
 
-  const progressBar = document.getElementById("progress-bar");
-  progressBar.style.width = scrollPercent + "%";
+let scrollBtn = document.getElementById("scrollTopBtn");
+let progressCircle = document.getElementById("progressCircle");
+let circleLength = progressCircle.getTotalLength(); // Circle ka total length
+
+window.addEventListener("scroll", () => {
+  let scrollTop = document.documentElement.scrollTop;
+  let scrollHeight =
+    document.documentElement.scrollHeight -
+    document.documentElement.clientHeight;
+  let scrollPercentage = (scrollTop / scrollHeight) * 100;
+
+  // Circle ka progress update karna
+  let progressOffset = circleLength - (scrollPercentage / 100) * circleLength;
+  progressCircle.style.strokeDashoffset = progressOffset;
+
+  // Scroll button dikhana/chhupana
+  scrollBtn.style.display = scrollTop > 1 ? "flex" : "none";
+});
+
+// Scroll to top on click
+scrollBtn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
