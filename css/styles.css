@@ -101,27 +101,6 @@ body {
   background-color: transparent;
 }
 
-/* orderlist achortag styles a hover */
-.section5 div ol {
-  display: inline-block;
-  flex-direction: column;
-}
-.projectlink {
-  text-decoration: none;
-  color: #1a4cd7;
-}
-
-.projectlink:hover {
-  text-decoration: underline;
-}
-
-.zen-dots-regular {
-  font-family: 'Zen Dots', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  text-align: center;
-}
-
 /* Skills Section Styles */
 
 .section4 {
@@ -199,6 +178,49 @@ body {
   color: #f24e1e;
 }
 
+/* Project section */
+.projects-list li {
+  margin: 10px 0;
+}
+
+.projectlink {
+  text-decoration: none;
+  color: #ffffff;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.projectlink::after {
+  content: '↗';
+  margin-left: 8px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.projectlink:hover {
+  color: #00c3ff;
+}
+/* orderlist achortag styles a hover */
+.section5 div ol {
+  display: inline-block;
+  flex-direction: column;
+}
+.projectlink {
+  text-decoration: none;
+  color: #1a4cd7;
+}
+
+.projectlink:hover {
+  text-decoration: underline;
+}
+
+.zen-dots-regular {
+  font-family: 'Zen Dots', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
 /* Frelancer Work Discription list */
 
 dl {
@@ -221,6 +243,7 @@ dd {
   color: #555;
   font-size: 25px;
 }
+
 .section1 {
   padding-left: 64px;
   padding-right: 64px;
