@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Not Found</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+      body {
+        background-color: #ffffff;
+        color: rgb(0, 0, 0);
+        font-family: "Press Start 2P", cursive;
+        text-align: center;
+        padding: 50px;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        font-size: 70px;
+        margin: 0;
+        position: relative;
+        animation: glitch 1s infinite;
+      }
+
+      @keyframes glitch {
+        0% {
+          text-shadow: 5px 5px 0px #3c393c, -5px -5px 0px #000000;
+        }
+        50% {
+          text-shadow: -5px -5px 0px #393838, 5px 5px 0px #00ffff;
+        }
+        100% {
+          text-shadow: 5px 5px 0px #333232, -5px -5px 0px #000000;
+        }
+      }
+
+      p {
+        font-size: 16px;
+        margin-top: 20px;
+        line-height: 2.1;
+        user-select: text; /* Allow text selection */
+      }
+
+      @media (max = 768px) {
+      }
+
+      a {
+        color: #000000;
+        text-decoration: none;
+        font-size: 18px;
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        border: 2px solid #000000;
+        transition: all 0.3s ease;
+      }
+
+      a:hover {
+        background-color: #040404;
+        color: #ffffff;
+      }
+
+      .glitch-bg {
+        z-index: -5;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("none") no-repeat center center/cover;
+        opacity: 0.2;
+      }
+      .fcontainer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      footer {
+        margin: 20%;
+        font-family: "Press Start 2P", cursive;
+        color: #000000;
+        padding: 20px;
+        font-size: 14px;
+        text-align: center;
+      }
+
+      /* Tablet (max-width: 768px) */
+      @media screen and (max-width: 768px) {
+        body {
+          padding: 30px;
+        }
+
+        h1 {
+          font-size: 50px;
+        }
+
+        p {
+          font-size: 14px;
+          line-height: 1.8;
+        }
+
+        a {
+          font-size: 16px;
+          padding: 8px 16px;
+        }
+
+        footer {
+          font-size: 12px;
+          padding: 15px;
+          margin: 10%;
+        }
+      }
+
+      /* Mobile (max-width: 480px) */
+      @media screen and (max-width: 480px) {
+        body {
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 40px;
+        }
+
+        p {
+          font-size: 12px;
+          line-height: 1.6;
+        }
+
+        a {
+          font-size: 14px;
+          padding: 6px 12px;
+        }
+
+        footer {
+          font-size: 10px;
+          padding: 10px;
+          margin: 5%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glitch-bg"></div>
+    <h1>404</h1>
+    <p>
+      Oops! You’ve entered a secret level that no one has unlocked yet! <br />
+      But the problem is… this level doesn’t even exist. <br />
+      Looks like your internet’s GPS is broken. <br />
+      <strong id="error-path"></strong>
+    </p>
+    <a href="https://chetanprajapat.com">Go Home</a>
+    <script>
+      // URL ka last part fetch karna
+      let path = window.location.pathname;
+      let lastPart = path.substring(path.lastIndexOf("/") + 1);
+
+      // Agar kuch hai toh show karo
+      if (lastPart) {
+        document.getElementById(
+          "error-path"
+        ).innerHTML = `You tried to visit "<span style="color: #ff00ff;">${lastPart}</span>", but it doesn't exist.`;
+      }
+    </script>
+
+    <div class="fcontainer">
+      <footer>©2025 Chetan Prajapat, All rights reserved</footer>
+    </div>
+  </body>
+</html>

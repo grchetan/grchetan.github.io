@@ -1,0 +1,666 @@
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: white;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Container for Image */
+.image-container {
+  display: flex;
+  justify-content: center;
+  z-index: -1;
+  padding-top: 16vh;
+}
+.card {
+  width: 200px;
+  height: 200px;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: initial;
+}
+
+.card:hover .card-inner {
+  transform: rotateY(180deg); /* Flip the card */
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: grayscale(10%);
+}
+
+/*Hey I am chetan.... font */
+.carrois-gothic-regular {
+  align-items: center;
+  font-family: 'Carrois Gothic', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  z-index: -1;
+}
+#painter-img {
+  background-image: url(/images/text-highlight.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  right: -100;
+}
+
+/*I am SOftware ... fonts */
+.anton-regular {
+  font-family: 'Anton', sans-serif;
+  font-weight: 200;
+  font-style: normal;
+  font-size: 60px;
+  margin-top: -20px;
+}
+
+/* Header Container */
+.header-style {
+  position: relative;
+  text-align: center;
+  padding-left: auto;
+  padding-right: auto;
+  margin-top: -10px;
+  z-index: -1;
+  height: 80vh;
+}
+
+.sulphur-point-light {
+  font-family: 'Sulphur Point', sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+}
+
+/* Education Shool college styles*/
+.sulphur-point-light2 {
+  font-family: 'Sulphur Point', sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+}
+
+/* Unorderlist CSS Styles*/
+.sulphur-point-light3 {
+  font-family: 'Sulphur Point', sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 25px;
+  margin-bottom: -1px;
+  background-color: transparent;
+}
+
+/* orderlist achortag styles a hover */
+.section5 div ol {
+  display: inline-block;
+  flex-direction: column;
+}
+.projectlink {
+  text-decoration: none;
+  color: #1a4cd7;
+}
+
+.projectlink:hover {
+  text-decoration: underline;
+}
+
+.zen-dots-regular {
+  font-family: 'Zen Dots', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+}
+
+/* Skills Section Styles */
+
+.section4 {
+  padding: 60px 20px;
+}
+
+.skills-grid {
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+  font-family: 'Carrois Gothic', sans-serif;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.skills-grid li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  font-size: 15px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.skills-grid li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon colors */
+.skills-grid i {
+  font-size: 22px;
+}
+
+.html {
+  color: #e34f26;
+}
+.css {
+  color: #1572b6;
+}
+.js {
+  color: #f7df1e;
+}
+.react {
+  color: #61dafb;
+}
+.node {
+  color: #3c873a;
+}
+.express {
+  color: #ffffff;
+}
+.sql {
+  color: #4db33d;
+}
+.python {
+  color: #3776ab;
+}
+.java {
+  color: #f89820;
+}
+.git {
+  color: #f34f29;
+}
+.linux {
+  color: #fcc624;
+}
+.figma {
+  color: #f24e1e;
+}
+
+/* Frelancer Work Discription list */
+
+dl {
+  margin: 20px;
+  font-family: 'Sulphur Point', sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+dt {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+  font-size: 25px;
+}
+
+dd {
+  margin-bottom: 10px;
+  margin-left: 20px;
+  color: #555;
+  font-size: 25px;
+}
+.section1 {
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.section2,
+.section3,
+.section4,
+.section5,
+.section6 {
+  padding-top: 2%;
+  padding-left: 64px;
+  padding-right: 64px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.imagess {
+  display: block;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+}
+
+.imagess img {
+  background-color: transparent;
+  width: 90px;
+  height: 90px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.334);
+  border-radius: 50%;
+  transition:
+    border-radius 0.4s ease-in,
+    transform 0.4s ease-in;
+}
+
+.imagess img:hover {
+  transform: scale(1.1);
+  border-radius: 10px;
+}
+.text-content {
+  margin-left: 10px;
+  margin-top: -20px;
+}
+
+/* Initial styles for the link */
+.hover-link {
+  display: inline-block;
+  font-family: monospace;
+  font-size: large;
+  text-decoration: none;
+  color: #3498db;
+  transition: color 0.3s ease;
+}
+.hover-link:hover {
+  color: #e74c3c;
+}
+
+.school-year {
+  font-family: monospace;
+  font-size: large;
+  color: grey;
+}
+
+/* List Heading Styles */
+.listheading {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding-left: 25px;
+  padding-top: 20px;
+  margin-bottom: -10px;
+  font-weight: bold;
+  animation: rgbLights 3s infinite;
+  text-decoration: underline;
+}
+
+/*scalse*/
+@keyframes rgbLights {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Arrow Container */
+.arrow-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  position: relative;
+}
+
+/* Stylish Downward Arrow */
+.arrow-down {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent; /* Left side of the arrow */
+  border-right: 15px solid transparent; /* Right side of the arrow */
+  border-top: 30px solid #3498db;
+  position: relative;
+  animation: bounce 1.5s infinite alternate;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-50px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+/* -------------------------------------- 
+Footer Styling 
+--------------------------------------------*/
+
+.footer {
+  background-color: transparent;
+  padding: 20px 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  margin-top: 30%;
+}
+
+.footer-container h2 {
+  font-size: 40px;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  color: #000000;
+}
+
+.social-icons a {
+  display: inline-block;
+  color: #000000;
+  margin: 0 10px;
+  font-size: 30px;
+  text-decoration: none;
+  position: relative;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #000000;
+  transform: translateY(-5px);
+}
+
+.social-icons a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background-color: #000000;
+  transition:
+    width 0.3s ease,
+    left 0.3s ease;
+}
+
+.social-icons a:hover::after {
+  width: 100%;
+  left: 0;
+}
+/*------------------ 
+Download Resume Button 
+--------------- */
+button.resume-btn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px solid black;
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+button.resume-btn a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.resume-btn:hover {
+  text-decoration: underline;
+  transform: rotate(5deg);
+}
+
+/* Footer Bottom Styling */
+.footer-bottom {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #181616;
+  border-top: 1px solid #000000;
+  padding-top: 10px;
+}
+
+.footer-resume a:hover {
+  background-color: #000000;
+}
+
+.footer-bottom a {
+  text-decoration: none;
+  color: #000000;
+}
+.footer-bottom a:hover {
+  color: #000000;
+  text-decoration: underline;
+}
+
+/* --------- Up scrooll Button ------ */
+html {
+  scroll-behavior: smooth;
+}
+
+.top-btn {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+.top-btn a i {
+  font-size: 26px;
+  color: #000000;
+}
+
+.top-btn svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(
+    -90deg
+  ); /* Progress circle ko start position pe set karne ke liye */
+}
+#bgCircle {
+  stroke: #d3d3d3;
+}
+#progressCircle {
+  stroke: black; /* 🔥 Color change to black */
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+/* ----------------------------
+Dark mode Toggle button
+----------------------------- */
+#toggle-container {
+  position: fixed;
+  z-index: 1000;
+}
+
+#darkModeToggle {
+  display: flex;
+  padding: 10px 20px;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  transition: transform 0.2s; /* Smooth transition for button */
+}
+
+/* Hover Effect for the Toggle Button */
+#darkModeToggle:hover {
+  transform: scale(1.1); /* Slightly increase size on hover */
+}
+
+/*---------------------
+ Dark Mode Styles 
+ ------------------------*/
+body.dark-mode {
+  background-color: #121212;
+}
+.dark-mode #painter-img {
+  background-image: none;
+}
+.dark-mode .header-style,
+.dark-mode .section1,
+.dark-mode .section2,
+.dark-mode .section3,
+.dark-mode .section4,
+.dark-mode .section5,
+.dark-mode .section6 {
+  background-color: transparent;
+  color: #ffffff;
+  transition:
+    background-color 0.3s,
+    color 0.3s; /* Smooth transition for sections */
+}
+
+.dark-mode .hover-link,
+.dark-mode .projectlink {
+  color: #bb86fc;
+}
+
+/* school education hover or project hover styles */
+.dark-mode .hover-link:hover,
+.dark-mode .projectlink:hover {
+  color: white;
+}
+.dark-mode .projectlink {
+  color: #15fff3;
+}
+
+.dark-mode .footer,
+.dark-mode footer h2,
+.dark-mode footer a,
+.dark-mode button,
+.dark-mode button.resume-btn a,
+.dark-mode .footer-bottom,
+.dark-mode dt,
+.dark-mode dd a {
+  background-color: transparent;
+  transition: background-color 0.3s; /* Smooth transition for footer */
+  border: white;
+  color: white;
+}
+.dark-mode button.resume-btn {
+  border: 2px solid white;
+}
+.dark-mode footer a:hover {
+  color: white;
+}
+.dark-mode .social-icons a {
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+/* Add transitions for images if necessary */
+img {
+  transition: filter 0.3s;
+}
+
+.dark-mode img {
+  filter: brightness(0.8);
+}
+.dark-mode .top-btn {
+  color: rgb(0, 0, 0);
+}
+
+.dark-mode .top-btn a i {
+  color: white;
+}
+.dark-mode #progressCircle {
+  stroke: rgb(255, 255, 255);
+}
+
+/* Animation for emoji */
+@keyframes emojiChange {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.2);
+  }
+}
+
+.animate {
+  animation: emojiChange 0.2s ease-in-out;
+}
+
+@keyframes glow2 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.06);
+  }
+}
+/* ---------------------------------------------  backgound video ----------------------------------------------------------------- */
+body {
+  margin: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.background-video {
+  position: fixed; /* Fixes the video in the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensure video covers the entire background */
+}
+
+.content {
+  position: relative; /* Position content above the video */
+  z-index: 1; /* Ensure content is above the background video */
+  color: white;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Cofee Container */
+.coffee {
+  position: fixed;
+  align-items: center;
+  bottom: 1%;
+  left: 10px;
+  z-index: 10;
+  border-radius: 50%;
+  padding: 10px;
+  background-color: yellow;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.coffee img {
+  height: 40px;
+  width: 40px;
+}
+.coffee:hover {
+  background-color: #f39c12;
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unique Social Icons</title>
+    <!-- Font Awesome CDN -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Poppins:wght@300;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+        font-family: "Poppins", sans-serif;
+      }
+
+      .social-container {
+        display: flex;
+        gap: 30px;
+      }
+
+      .social-container a {
+        font-family: "Alfa Slab One", cursive; /* Unique font for icons */
+        text-decoration: none;
+        font-size: 40px;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.4s ease;
+      }
+
+      .social-container a:hover {
+        background: linear-gradient(135deg, #ff512f, #dd2476);
+        color: #000;
+        transform: rotate(360deg);
+        border: none;
+      }
+
+      .social-container a i {
+        text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="social-container">
+      <a href="https://facebook.com" target="_blank"
+        ><i class="fab fa-facebook-f"></i
+      ></a>
+      <a href="https://twitter.com" target="_blank"
+        ><i class="fab fa-twitter"></i
+      ></a>
+      <a href="https://instagram.com" target="_blank"
+        ><i class="fab fa-instagram"></i
+      ></a>
+      <a href="https://github.com" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
+      <a href="mailto:your-email@example.com"
+        ><i class="fas fa-envelope"></i
+      ></a>
+    </div>
+  </body>
+</html>
