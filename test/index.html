@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Moh Maya → Bhakti → Moksha | A Spiritual Journey</title>
+    <meta
+      name="description"
+      content="Cinematic spiritual story of a man leaving moh-maya and finding bhakti — visual art, guided path to moksha. Experience the journey."
+    />
+    <!-- Open Graph -->
+    <meta
+      property="og:title"
+      content="Moh Maya → Bhakti → Moksha | A Spiritual Journey"
+    />
+    <meta
+      property="og:description"
+      content="Cinematic spiritual story of a man leaving moh-maya and finding bhakti — visual art, guided path to moksha."
+    />
+    <meta property="og:image" content="assets/og-hero-1200x630.jpg" />
+    <meta name="theme-color" content="#d4af37" />
+
+    <!-- Fonts (system fallback present; optional remote fonts) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --maxw: 1200px;
+        --gold: #d4af37;
+        --krishna: #083a5b;
+        --bg: #fbf9f6;
+        --glass: rgba(255, 255, 255, 0.06);
+        --card-radius: 14px;
+        --ease: cubic-bezier(0.2, 0.9, 0.2, 1);
+        --text-dark: #0b1220;
+        --muted: #556677;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial;
+        background: linear-gradient(180deg, #fbf9f6 0%, #f2efe9 100%);
+        color: var(--text-dark);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Container */
+      .wrap {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        min-height: 88vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        box-shadow: 0 30px 80px rgba(10, 12, 20, 0.08);
+        background: #000;
+      }
+      .hero__bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        transform: translateZ(0);
+        will-change: transform;
+        transition: transform 0.6s var(--ease);
+        filter: contrast(100%) saturate(95%);
+      }
+      .hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(6, 10, 14, 0) 30%,
+          rgba(6, 10, 14, 0.55) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+      .hero__content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        gap: 48px;
+        align-items: flex-start;
+        padding: 48px;
+        width: 100%;
+      }
+      .hero__left {
+        flex: 1;
+        max-width: 60%;
+      }
+      .hero__title {
+        font-family: Merriweather, serif;
+        font-size: clamp(26px, 4.2vw, 44px);
+        color: #fff;
+        margin: 0 0 12px;
+        line-height: 1.05;
+        text-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      }
+      .hero__sub {
+        color: #f3e9d1;
+        margin: 0 0 18px;
+        font-size: 1.05rem;
+        opacity: 0.95;
+      }
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-top: 12px;
+      }
+      .btn {
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 0;
+        transition: transform 0.12s var(--ease);
+        text-decoration: none;
+      }
+      .btn:focus {
+        outline: 3px solid rgba(255, 216, 140, 0.6);
+        outline-offset: 3px;
+      }
+      .btn--primary {
+        background: linear-gradient(90deg, var(--gold), #ffd86b);
+        color: #081224;
+        box-shadow: 0 14px 30px rgba(212, 175, 55, 0.14);
+      }
+      .btn--secondary {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      .audio-toggle {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        color: #fff;
+        font-size: 0.95rem;
+      }
+
+      /* small UI on top-right: audio toggle & credits */
+      .top-controls {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        z-index: 3;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .credit-pill {
+        background: rgba(0, 0, 0, 0.35);
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.88rem;
+      }
+
+      /* ---------- SECTIONS ---------- */
+      .section {
+        padding: 80px 24px;
+        display: flex;
+        justify-content: center;
+      }
+      .content {
+        max-width: var(--maxw);
+        width: 100%;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: center;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.86);
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 12px 30px rgba(10, 12, 20, 0.06);
+      }
+
+      /* Moh Maya split - smoky visuals + bullets */
+      .smoke-canvas {
+        height: 320px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(180deg, #0d0d10, #151417);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+      }
+      .bullets ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .bullets li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+      .bullet-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(180deg, #2b2f3a, #101214);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffd;
+        font-weight: 700;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+      }
+      .bullet-text {
+        font-weight: 600;
+        color: var(--text-dark);
+        opacity: 0.95;
+        font-size: 1rem;
+      }
+
+      /* Realization full width */
+      .center-quote {
+        font-family: Merriweather, serif;
+        font-size: clamp(20px, 3.2vw, 32px);
+        text-align: center;
+        padding: 40px 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(212, 175, 55, 0.06),
+          rgba(255, 255, 255, 0.02)
+        );
+        border-radius: 12px;
+        color: #19303a;
+        box-shadow: 0 8px 20px rgba(8, 12, 18, 0.04);
+      }
+
+      /* Krishna panel */
+      .krishna-panel {
+        position: relative;
+        min-height: 360px;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .krishna-content {
+        position: relative;
+        z-index: 2;
+        padding: 28px;
+      }
+      .ribbon {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        mix-blend-mode: screen;
+      }
+
+      /* Path timeline interactive */
+      .path-wrap {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      .path-visual {
+        flex: 1;
+        min-width: 280px;
+        background: linear-gradient(
+          180deg,
+          rgba(212, 175, 55, 0.07),
+          rgba(255, 255, 255, 0.02)
+        );
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 12px 30px rgba(10, 12, 20, 0.04);
+      }
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .point {
+        padding: 10px;
+        border-radius: 10px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.15s var(--ease);
+      }
+      .point:focus {
+        outline: 3px solid rgba(212, 175, 55, 0.22);
+      }
+      .point:hover {
+        transform: translateX(6px);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .point .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 6px 14px rgba(212, 175, 55, 0.25);
+      }
+      .point .label {
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+      .point .desc {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      /* Final truth */
+      .final-truth {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        background: linear-gradient(180deg, #fffaf0, #fff8ec);
+        border-radius: 12px;
+        text-align: center;
+        font-family: Merriweather, serif;
+        font-size: clamp(22px, 3.6vw, 40px);
+        color: #2b2a2a;
+        box-shadow: 0 12px 40px rgba(10, 12, 20, 0.04);
+      }
+
+      /* footer */
+      .site-footer {
+        padding: 28px 18px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 980px) {
+        .hero__content {
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 18px;
+          padding: 28px;
+        }
+        .hero__left {
+          max-width: 100%;
+        }
+        .split {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+      }
+      @media (max-width: 520px) {
+        .wrap {
+          padding: 14px;
+        }
+        .hero {
+          min-height: 72vh;
+        }
+        .top-controls {
+          right: 10px;
+          top: 10px;
+        }
+        .credit-pill {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Audio element (hidden) -->
+    <audio id="fluteAudio" loop preload="none">
+      <source src="assets/flute-loop.mp3" type="audio/mpeg" />
+      <!-- optional OGG fallback:
+  <source src="assets/flute-loop.ogg" type="audio/ogg"> -->
+    </audio>
+
+    <main class="wrap" id="main">
+      <!-- HERO -->
+      <section class="hero" id="hero" aria-label="Hero: Moh Maya to Moksha">
+        <!-- background image with srcset for responsive sizes (use local assets) -->
+        <div
+          id="heroBg"
+          class="hero__bg"
+          role="img"
+          aria-label="A man walking away from wealth toward divine light on a riverbank"
+        ></div>
+        <div class="hero__overlay" aria-hidden="true"></div>
+
+        <div class="top-controls" aria-hidden="false">
+          <button
+            id="audioToggle"
+            class="credit-pill audio-toggle"
+            aria-pressed="false"
+            aria-label="Toggle flute audio"
+          >
+            🔔 <span id="audioLabel">Sun Flute</span>
+          </button>
+          <div class="credit-pill" title="Image credit">
+            Image: provided artwork
+          </div>
+        </div>
+
+        <div class="hero__content">
+          <div class="hero__left">
+            <h1 class="hero__title">
+              Insaan khaali haath aata hai. Khaali haath jaata hai.
+            </h1>
+            <p class="hero__sub">
+              Moh Maya andhkar hai. Bhakti raasta dikhati hai.
+            </p>
+
+            <div
+              class="cta-row"
+              role="group"
+              aria-label="Primary calls to action"
+            >
+              <a href="#moh-maya" class="btn btn--primary" id="startBtn"
+                >Dekh — Safar Shuru</a
+              >
+              <button
+                class="btn btn--secondary"
+                id="listenBtn"
+                aria-controls="fluteAudio"
+                aria-pressed="false"
+              >
+                Sun Flute (Audio)
+              </button>
+            </div>
+          </div>
+
+          <!-- small right panel: short lines or quote -->
+          <div style="margin-left: auto; color: #fff; text-align: right">
+            <p style="font-weight: 600; color: #fff; margin: 0 0 8px">
+              Bhakti • Shraddha • Moksha
+            </p>
+            <p style="color: #f3e9d1; margin: 0 0 12px; opacity: 0.95">
+              A visual journey — leave behind what is not yours.
+            </p>
+            <a href="#path" class="btn btn--secondary" style="opacity: 0.95"
+              >Padhai: 5 Shlok aur Updesh</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- MOH MAYA -->
+      <section id="moh-maya" class="section" aria-labelledby="mohHeading">
+        <div class="content split">
+          <div class="card smoke-canvas" aria-hidden="false" id="smokeCanvas">
+            <!-- Placeholder: if you add a canvas/three.js, it goes here. For now a symbolic image. -->
+            <picture>
+              <source srcset="assets/mohmaya-1200.avif" type="image/avif" />
+              <source srcset="assets/mohmaya-1200.webp" type="image/webp" />
+              <img
+                src="assets/mohmaya-1200.jpg"
+                alt="Smoky silhouettes representing greed and attachment"
+                style="width: 100%; height: 100%; object-fit: cover"
+              />
+            </picture>
+          </div>
+
+          <div class="card bullets" role="region" aria-labelledby="mohHeading">
+            <h2 id="mohHeading" style="margin-top: 0">Moh Maya</h2>
+            <p class="muted" style="color: var(--muted); margin-bottom: 14px">
+              Moh Maya woh andha pan hai jo Bhagwan se door karta hai.
+            </p>
+            <ul>
+              <li>
+                <div class="bullet-icon">G</div>
+                <div class="bullet-text">
+                  <strong>Greed</strong>
+                  <div style="font-size: 0.9rem; color: var(--muted)">
+                    Chahat jo kabhi sant nahi hoti
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-icon">A</div>
+                <div class="bullet-text">
+                  <strong>Ahankaar (Ego)</strong>
+                  <div style="font-size: 0.9rem; color: var(--muted)">
+                    Apne aap ko sabse upar samajhna
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-icon">M</div>
+                <div class="bullet-text">
+                  <strong>Moh (Attachment)</strong>
+                  <div style="font-size: 0.9rem; color: var(--muted)">
+                    Cheezein jo nahi chalti hamesha
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-icon">B</div>
+                <div class="bullet-text">
+                  <strong>Bhay (Fear)</strong>
+                  <div style="font-size: 0.9rem; color: var(--muted)">
+                    Anishchit se darr
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- REALIZATION -->
+      <section id="realization" class="section" aria-label="Realization">
+        <div class="content">
+          <div class="center-quote" id="revealQuote">
+            "Jab gyaan aata hai, chhodna aata hai."
+          </div>
+        </div>
+      </section>
+
+      <!-- DIVINE (Krishna) -->
+      <section id="divine" class="section" aria-labelledby="divineHeading">
+        <div
+          class="content krishna-panel"
+          style="display: grid; grid-template-columns: 1fr; gap: 18px"
+        >
+          <div
+            style="position: relative; overflow: hidden; border-radius: 12px"
+          >
+            <picture>
+              <source srcset="assets/krishna-1600.avif" type="image/avif" />
+              <source srcset="assets/krishna-1600.webp" type="image/webp" />
+              <img
+                src="assets/krishna-1600.jpg"
+                alt="Lord Krishna playing flute, golden-blue aura"
+                style="
+                  width: 100%;
+                  height: 380px;
+                  object-fit: cover;
+                  display: block;
+                "
+              />
+            </picture>
+            <!-- visual ribbon overlay for flute waves -->
+            <svg
+              class="ribbon"
+              viewBox="0 0 800 200"
+              preserveAspectRatio="none"
+              style="
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+              "
+            >
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0" stop-color="#ffd86b" stop-opacity="0.6" />
+                  <stop offset="1" stop-color="#7fe0ff" stop-opacity="0.2" />
+                </linearGradient>
+              </defs>
+              <path
+                id="wave"
+                d="M0,140 C150,80 300,200 800,120 L800,200 L0,200 Z"
+                fill="url(#g1)"
+                opacity="0.28"
+              ></path>
+            </svg>
+          </div>
+
+          <div class="card krishna-content">
+            <h2 id="divineHeading" style="margin-top: 0">
+              Bhakti — yaad dilati hai
+            </h2>
+            <p style="color: var(--muted)">
+              Bhakti hi yaad dilati hai: sab kuch Bhagwan ka hai. Flute ki dhun
+              se man aage badhta hai.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PATH TO MOKSHA (interactive timeline) -->
+      <section id="path" class="section" aria-labelledby="pathHeading">
+        <div class="content path-wrap">
+          <div
+            class="path-visual card"
+            style="flex: 1"
+            role="region"
+            aria-labelledby="pathHeading"
+          >
+            <h3 id="pathHeading">Path to Moksha</h3>
+            <p style="color: var(--muted); margin-top: 6px">
+              Glowing golden path leads to light — hover points to read short
+              teachings.
+            </p>
+
+            <div class="timeline" id="timeline" role="list" tabindex="0">
+              <div
+                class="point"
+                role="button"
+                tabindex="0"
+                data-title="Surrender"
+                data-desc="Apna ahankaar chhod do."
+              >
+                <div class="dot" aria-hidden="true"></div>
+                <div>
+                  <div class="label">Surrender</div>
+                  <div class="desc">Apna ahankaar chhod do.</div>
+                </div>
+              </div>
+
+              <div
+                class="point"
+                role="button"
+                tabindex="0"
+                data-title="Remember"
+                data-desc="Har cheez Bhagwan ki hai."
+              >
+                <div class="dot" aria-hidden="true"></div>
+                <div>
+                  <div class="label">Remember</div>
+                  <div class="desc">Har cheez Bhagwan ki hai.</div>
+                </div>
+              </div>
+
+              <div
+                class="point"
+                role="button"
+                tabindex="0"
+                data-title="Bhakti"
+                data-desc="Roz ek minute bhakti."
+              >
+                <div class="dot"></div>
+                <div>
+                  <div class="label">Bhakti</div>
+                  <div class="desc">Roz ek minute bhakti.</div>
+                </div>
+              </div>
+
+              <div
+                class="point"
+                role="button"
+                tabindex="0"
+                data-title="Seva"
+                data-desc="Seva se mann nirmal hota hai."
+              >
+                <div class="dot"></div>
+                <div>
+                  <div class="label">Seva</div>
+                  <div class="desc">Seva se mann nirmal hota hai.</div>
+                </div>
+              </div>
+
+              <div
+                class="point"
+                role="button"
+                tabindex="0"
+                data-title="Moksha"
+                data-desc="Aakhirkar ananda aur shanti."
+              >
+                <div class="dot"></div>
+                <div>
+                  <div class="label">Moksha</div>
+                  <div class="desc">Aakhirkar ananda aur shanti.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- right column: glowing path visual (simple) -->
+          <div style="flex: 1; min-width: 300px">
+            <div
+              class="card"
+              style="
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <div
+                style="
+                  width: 100%;
+                  height: 320px;
+                  position: relative;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  background: linear-gradient(
+                    180deg,
+                    rgba(255, 244, 230, 0.55),
+                    rgba(255, 242, 220, 0.12)
+                  );
+                  box-shadow: inset 0 -20px 60px rgba(212, 175, 55, 0.06);
+                "
+              >
+                <!-- decorative glowing path -->
+                <svg
+                  viewBox="0 0 200 400"
+                  style="width: 100%; height: 100%; display: block"
+                >
+                  <defs>
+                    <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0" stop-color="#fffdf2" />
+                      <stop offset="1" stop-color="#fff1c9" />
+                    </linearGradient>
+                    <filter id="glow">
+                      <feGaussianBlur stdDeviation="6" result="b" />
+                      <feMerge>
+                        <feMergeNode in="b" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <path
+                    d="M100 380 C100 280 100 240 100 200 C100 160 80 120 100 80 C120 40 100 20 100 10"
+                    stroke="url(#g2)"
+                    stroke-width="12"
+                    stroke-linecap="round"
+                    fill="none"
+                    filter="url(#glow)"
+                    opacity="0.95"
+                  />
+                  <circle
+                    cx="100"
+                    cy="8"
+                    r="18"
+                    fill="#fff9e6"
+                    opacity="0.95"
+                    filter="url(#glow)"
+                  />
+                </svg>
+              </div>
+
+              <div
+                style="
+                  margin-top: 14px;
+                  font-weight: 600;
+                  color: var(--text-dark);
+                "
+              >
+                Follow the light — touch timeline points
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FINAL TRUTH -->
+      <section id="final" class="section">
+        <div class="final-truth" role="region" aria-label="Final truth message">
+          Na kuchh leke aaye the. Na kuchh leke jaayenge.
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="site-footer" role="contentinfo">
+        <div>Bhakti hi Mukti ka ekmatra marg.</div>
+        <div style="margin-top: 8px; font-size: 0.9rem; color: var(--muted)">
+          <a href="#about" style="color: inherit; text-decoration: underline"
+            >About</a
+          >
+          •
+          <a href="#contact" style="color: inherit; text-decoration: underline"
+            >Contact</a
+          >
+          • Image credit: Provided artwork
+        </div>
+        <div style="margin-top: 10px; color: var(--muted)">
+          &copy; <span id="year"></span> — Moh Maya → Bhakti → Moksha
+        </div>
+      </footer>
+
+      <!-- Modal for 5 Shlok -->
+      <div
+        id="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+        style="
+          position: fixed;
+          inset: 0;
+          display: none;
+          align-items: center;
+          justify-content: center;
+          z-index: 55;
+        "
+      >
+        <div
+          style="
+            background: rgba(6, 10, 14, 0.86);
+            color: #fff;
+            padding: 22px;
+            border-radius: 12px;
+            max-width: 720px;
+            width: 92%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+          "
+        >
+          <button
+            id="modalClose"
+            style="
+              float: right;
+              background: transparent;
+              color: #fff;
+              border: 0;
+              font-size: 18px;
+            "
+          >
+            ✕
+          </button>
+          <h3 style="margin-top: 6px">5 Shlok aur Updesh (Hinglish)</h3>
+          <ol style="margin-top: 12px; color: #f3f0e6">
+            <li>Yaad rakh — sab kuch Bhagwan ka hai; lagav chhodo.</li>
+            <li>Daan aur seva se man nirmal hota hai.</li>
+            <li>Roz thodi der bhakti se jeevan sudharta hai.</li>
+            <li>Galti se seekho, usme chhupaa pehchaan hai.</li>
+            <li>Moksha anubhav tab aata hai jab prem aur shraddha ho.</li>
+          </ol>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      /* ---------- Config & small helpers ---------- */
+      const heroBg = document.getElementById('heroBg');
+      const yearSpan = document.getElementById('year');
+      yearSpan.textContent = new Date().getFullYear();
+
+      /* Load responsive hero background with progressive approach */
+      (function setHeroBg() {
+        // recommended assets (replace with your files)
+        const srcSmall = 'assets/hero-640.jpg';
+        const srcMed = 'assets/hero-1024.jpg';
+        const srcLarge = 'assets/hero-2048.jpg';
+        // choose based on device width
+        const w = Math.max(
+          window.innerWidth,
+          document.documentElement.clientWidth,
+        );
+        const chosen = w >= 1400 ? srcLarge : w >= 800 ? srcMed : srcSmall;
+        heroBg.style.backgroundImage = `url("${chosen}")`;
+        heroBg.setAttribute(
+          'aria-label',
+          'A man walking away from wealth toward divine light on a riverbank',
+        );
+      })();
+
+      /* ---------- Audio toggle (persistent) ---------- */
+      const audio = document.getElementById('fluteAudio');
+      const audioToggle = document.getElementById('audioToggle');
+      const listenBtn = document.getElementById('listenBtn');
+      const startBtn = document.getElementById('startBtn');
+
+      function setAudioState(on) {
+        audioToggle.setAttribute('aria-pressed', String(!!on));
+        listenBtn.setAttribute('aria-pressed', String(!!on));
+        audioToggle.style.background = on
+          ? 'linear-gradient(90deg,var(--gold), #ffd86b)'
+          : 'rgba(0,0,0,0.35)';
+        audioToggle.style.color = on ? '#081224' : '#fff';
+        if (on) {
+          // start playback (user gesture requirement: must be triggered by user click)
+          audio.play().catch((e) => {
+            /* autoplay may be blocked */
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+        localStorage.setItem('mm_audio_on', on ? '1' : '0');
+      }
+
+      audioToggle.addEventListener('click', (e) => {
+        const on = audioToggle.getAttribute('aria-pressed') === 'true';
+        setAudioState(!on);
+      });
+      listenBtn.addEventListener('click', (e) => {
+        const on = listenBtn.getAttribute('aria-pressed') === 'true';
+        // ensure user intent: toggle audio
+        setAudioState(!on);
+        // optional: start small scroll animation to hero
+        heroBg.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      // restore from storage
+      if (localStorage.getItem('mm_audio_on') === '1') {
+        // do not auto-play—only set state so next user gesture can play
+        audioToggle.setAttribute('aria-pressed', 'false');
+        // keep as user-initiated when they click
+      }
+
+      /* ---------- Smooth scroll for CTA -->
+ simple polyfill */
+      startBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        document
+          .querySelector('#moh-maya')
+          .scrollIntoView({ behavior: 'smooth' });
+      });
+
+      /* ---------- Intersection animations (reveal & parallax) ---------- */
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((ent) => {
+            if (ent.isIntersecting) {
+              ent.target.classList.add('inview');
+            }
+          });
+        },
+        { threshold: 0.18 },
+      );
+
+      document
+        .querySelectorAll('.section, .card, .final-truth')
+        .forEach((n) => io.observe(n));
+
+      /* Parallax on scroll for hero background */
+      window.addEventListener('scroll', () => {
+        const sc = window.scrollY;
+        heroBg.style.transform = `translateY(${sc * 0.12}px) scale(1.02)`;
+      });
+
+      /* ---------- Timeline interaction ---------- */
+      const points = document.querySelectorAll('.point');
+      points.forEach((p) => {
+        p.addEventListener('click', () =>
+          showTeaching(p.dataset.title, p.dataset.desc),
+        );
+        p.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showTeaching(p.dataset.title, p.dataset.desc);
+          }
+        });
+      });
+      function showTeaching(title, desc) {
+        // small temporary toast-like reveal (simple)
+        const t = document.createElement('div');
+        t.setAttribute('role', 'status');
+        t.style.position = 'fixed';
+        t.style.right = '18px';
+        t.style.bottom = '18px';
+        t.style.background = 'rgba(10,20,30,0.9)';
+        t.style.color = '#fff';
+        t.style.padding = '12px 16px';
+        t.style.borderRadius = '10px';
+        t.style.boxShadow = '0 10px 30px rgba(0,0,0,0.45)';
+        t.style.zIndex = 9999;
+        t.style.fontWeight = 600;
+        t.textContent = title + ' — ' + desc;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
+
+      /* ---------- Modal: 5 shlok ---------- */
+      const modal = document.getElementById('modal');
+      const modalClose = document.getElementById('modalClose');
+      const padhaiBtn = document.querySelectorAll('a[href="#path"]');
+      padhaiBtn.forEach((b) =>
+        b.addEventListener('click', (e) => {
+          if (e.currentTarget.getAttribute('href') === '#path') {
+            /* normal scroll */
+          }
+        }),
+      );
+      document
+        .querySelectorAll('.btn--secondary, .credit-pill')
+        .forEach((el) => {
+          // keep lightweight - no action
+        });
+      document.getElementById('main').addEventListener('click', (e) => {
+        // open modal when user clicks the top "Padhai" link (or you can make a button)
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      });
+      function openModal() {
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+      }
+      function closeModal() {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+      }
+      modalClose.addEventListener('click', closeModal);
+
+      /* ---------- Accessibility: keyboard nav hints ---------- */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          // move to next section
+          const sections = Array.from(document.querySelectorAll('section'));
+          const idx = sections.findIndex(
+            (s) => s.getBoundingClientRect().top > 10,
+          );
+          if (idx >= 0) sections[idx].scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+
+      /* ---------- Lazy load images: simple approach (already using srcset/picture) ---------- */
+      /* ---------- End ---------- */
+    </script>
+  </body>
+</html>
