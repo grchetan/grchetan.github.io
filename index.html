@@ -426,15 +426,86 @@ I enjoy turning ideas into clean, responsive interfaces and writing structured c
 
 
 
-        <section class="section6" data-aos="fade-up" data-aos-delay="300" data-aos-offset="200">
-          <h1 class="zen-dots-regular">Freelance Projects Showcase</h1>
-          <div>
-            <dl>
-              <dt>1. Crafting Fit Bridge</dt>
-              <dd>Fit Bridge is a fitness platform designed to help users track their workouts, plan their diet, and monitor body transformation over time. The project is currently under development, with a focus on both UI/UX design and backend functionality. <a href="https://github.com/grchetan/fitbridge">Github repository</a></dd> 
-            </dl>
-          </div>
-        </section>
+<section class="section6" data-aos="fade-up" data-aos-delay="300" data-aos-offset="200">
+  <h1 class="zen-dots-regular">Freelance Projects Showcase</h1>
+  <div>
+    <dl>
+      <dt>1. Crafting Fit Bridge</dt>
+      <dd>Fit Bridge is a fitness platform designed to help users track their workouts, plan their diet, and monitor body transformation over time. The project is currently under development, with a focus on both UI/UX design and backend functionality. <a href="https://github.com/grchetan/fitbridge">Github repository</a></dd> 
+    </dl>
+  </div>
+</section>
+
+<!-- ================= ACHIEVEMENTS SECTION ================= -->
+<section class="achievements" id="Achievements"  >
+  <div class="achievements-container">
+    <h1 class="section-title">🏆 My Achievements</h1>
+    <p class="section-subtitle">
+      Recognitions and milestones that reflect my dedication and competitive spirit.
+    </p>
+
+    <div class="achievement-grid">
+
+      <!-- Certificate 1 -->
+      <div class="achievement-card"  data-aos="fade-up" data-aos-delay="300" data-aos-offset="200">
+        <img src="images/sunstone-tech-meme.png" alt="Tech Meme Competition Certificate">
+        <div class="achievement-content">
+          <h3>2nd Prize - Tech Meme Competition</h3>
+          <p>Issued by Sunstone Tech Club</p>
+          <button onclick="openModal('images/sunstone-tech-meme.png')">
+            View Certificate
+          </button>
+        </div>
+      </div>
+
+      <!-- Certificate 2 -->
+      <div class="achievement-card"  data-aos="fade-up" data-aos-delay="300" data-aos-offset="200">
+        <img src="images/sunstone-treasure-hunt.jpg" alt="Tech Treasure Hunt Certificate">
+        <div class="achievement-content">
+          <h3>3rd Position - Tech Treasure Hunt</h3>
+          <p>Issued by Sunstone</p>
+          <button onclick="openModal('images/sunstone-treasure-hunt.jpg')">
+            View Certificate
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Modal -->
+<div id="certificateModal" class="modal">
+  <div class="modal-box">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("certificateModal").style.display = "none";
+});
+
+function openModal(src) {
+  const modal = document.getElementById("certificateModal");
+  const img = document.getElementById("modalImage");
+
+  img.src = src;
+  modal.style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("certificateModal").style.display = "none";
+}
+
+/* Outside click close */
+document.getElementById("certificateModal").addEventListener("click", function (e) {
+  if (e.target.id === "certificateModal") {
+    closeModal();
+  }
+});
+</script>
 
 
 <!-- Circular Scroll Progress Indicator -->

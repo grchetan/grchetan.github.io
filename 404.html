@@ -1,172 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 - Not Found</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+    <title>404 | Page Not Found</title>
 
-      body {
-        background-color: #ffffff;
-        color: rgb(0, 0, 0);
-        font-family: "Press Start 2P", cursive;
-        text-align: center;
-        padding: 50px;
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --primary: #111827;
+        --secondary: #6b7280;
+        --accent: #4f46e5;
+        --bg: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
         box-sizing: border-box;
       }
 
-      h1 {
-        font-size: 70px;
-        margin: 0;
+      body {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--primary);
+        font-family: 'Montserrat', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      /* 404 Heading */
+      .error-code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: clamp(80px, 15vw, 140px);
+        font-weight: 700;
         position: relative;
-        animation: glitch 1s infinite;
+        letter-spacing: 6px;
+        margin-bottom: 10px;
+        animation: glitch 1.6s infinite;
       }
 
       @keyframes glitch {
         0% {
-          text-shadow: 5px 5px 0px #3c393c, -5px -5px 0px #000000;
+          text-shadow:
+            2px 2px var(--accent),
+            -2px -2px #000;
         }
         50% {
-          text-shadow: -5px -5px 0px #393838, 5px 5px 0px #00ffff;
+          text-shadow:
+            -2px -2px var(--accent),
+            2px 2px #000;
         }
         100% {
-          text-shadow: 5px 5px 0px #333232, -5px -5px 0px #000000;
+          text-shadow:
+            2px 2px var(--accent),
+            -2px -2px #000;
         }
+      }
+
+      h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 14px;
       }
 
       p {
-        font-size: 16px;
-        margin-top: 20px;
-        line-height: 2.1;
-        user-select: text; /* Allow text selection */
+        max-width: 520px;
+        font-size: 15px;
+        line-height: 1.8;
+        color: var(--secondary);
+        margin-bottom: 24px;
       }
 
-      @media (max = 768px) {
+      .path {
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--accent);
+        word-break: break-all;
       }
 
-      a {
-        color: #000000;
-        text-decoration: none;
-        font-size: 18px;
+      /* Button */
+      .btn {
         display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        border: 2px solid #000000;
+        padding: 12px 26px;
+        border-radius: 30px;
+        border: 2px solid var(--primary);
+        text-decoration: none;
+        color: var(--primary);
+        font-weight: 600;
         transition: all 0.3s ease;
       }
 
-      a:hover {
-        background-color: #040404;
-        color: #ffffff;
+      .btn:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translateY(-2px);
       }
 
-      .glitch-bg {
-        z-index: -5;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url("none") no-repeat center center/cover;
-        opacity: 0.2;
-      }
-      .fcontainer {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
+      /* Footer */
       footer {
-        margin: 20%;
-        font-family: "Press Start 2P", cursive;
-        color: #000000;
-        padding: 20px;
-        font-size: 14px;
-        text-align: center;
+        margin-top: 60px;
+        font-size: 13px;
+        color: var(--secondary);
       }
 
-      /* Tablet (max-width: 768px) */
-      @media screen and (max-width: 768px) {
-        body {
-          padding: 30px;
-        }
-
-        h1 {
-          font-size: 50px;
-        }
-
-        p {
-          font-size: 14px;
-          line-height: 1.8;
-        }
-
-        a {
-          font-size: 16px;
-          padding: 8px 16px;
-        }
-
-        footer {
-          font-size: 12px;
-          padding: 15px;
-          margin: 10%;
-        }
+      footer span {
+        color: var(--primary);
+        font-weight: 600;
       }
 
-      /* Mobile (max-width: 480px) */
-      @media screen and (max-width: 480px) {
-        body {
-          padding: 20px;
-        }
+      /* ===== Animated Background Lines ===== */
 
-        h1 {
-          font-size: 40px;
-        }
+.animated-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #f9fafb;
+  overflow: hidden;
+}
 
-        p {
-          font-size: 12px;
-          line-height: 1.6;
-        }
+/* Create lines using pseudo-elements */
+.animated-bg::before,
+.animated-bg::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.04) 0px,
+      rgba(0, 0, 0, 0.04) 1px,
+      transparent 1px,
+      transparent 80px
+    );
+  animation: moveLines 30s linear infinite;
+}
 
-        a {
-          font-size: 14px;
-          padding: 6px 12px;
-        }
+/* second layer (different direction) */
+.animated-bg::after {
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 100px
+    );
+  animation-duration: 45s;
+}
 
-        footer {
-          font-size: 10px;
-          padding: 10px;
-          margin: 5%;
-        }
-      }
+/* Animation */
+@keyframes moveLines {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-200px, -200px);
+  }
+}
     </style>
   </head>
+
   <body>
-    <div class="glitch-bg"></div>
-    <h1>404</h1>
+
+
+    <div class="error-code">404</div>
+
+        <div class="animated-bg"></div>
+    <h2>Page Not Found</h2>
+
     <p>
-      Oops! You’ve entered a secret level that no one has unlocked yet! <br />
-      But the problem is… this level doesn’t even exist. <br />
-      Looks like your internet’s GPS is broken. <br />
-      <strong id="error-path"></strong>
+      The page you’re looking for doesn’t exist or may have been moved.
+      <br />
+      Requested path:
+      <span class="path" id="error-path"></span>
     </p>
-    <a href="https://chetanprajapat.com">Go Home</a>
+
+    <a href="https://grchetan.github.io" class="btn">← Back to Home</a>
+
+    <footer>© <span>2025 Chetan Prajapat</span>. All rights reserved.</footer>
+
     <script>
-      // URL ka last part fetch karna
-      let path = window.location.pathname;
-      let lastPart = path.substring(path.lastIndexOf("/") + 1);
-
-      // Agar kuch hai toh show karo
-      if (lastPart) {
-        document.getElementById(
-          "error-path"
-        ).innerHTML = `You tried to visit "<span style="color: #ff00ff;">${lastPart}</span>", but it doesn't exist.`;
-      }
+      const path = window.location.pathname;
+      document.getElementById('error-path').textContent = path;
     </script>
-
-    <div class="fcontainer">
-      <footer>©2025 Chetan Prajapat, All rights reserved</footer>
-    </div>
   </body>
 </html>

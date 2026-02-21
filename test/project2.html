@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Project Spotlight — Single Section</title>
+    <meta
+      name="description"
+      content="Frontend Project Spotlight component — single section, gallery-like switcher, accessible and responsive."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --maxw: 1200px;
+        --gold: #d4af37;
+        --midnight: #071427;
+        --glass: rgba(255, 255, 255, 0.06);
+        --card-radius: 14px;
+        --ease: cubic-bezier(0.2, 0.9, 0.2, 1);
+        --text: #0b1220;
+        --muted: #556677;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          Inter,
+          system-ui,
+          Segoe UI,
+          Arial;
+        margin: 0;
+        color: var(--text);
+        background: linear-gradient(180deg, #fbfbfc, #f6f7f9);
+        -webkit-font-smoothing: antialiased;
+      }
+      .section-wrap {
+        max-width: var(--maxw);
+        margin: 44px auto;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .spotlight {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 48% 52%;
+        gap: 28px;
+        align-items: center;
+        min-height: 420px;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.86),
+          rgba(255, 255, 255, 0.74)
+        );
+        border-radius: var(--card-radius);
+        padding: 18px;
+        box-shadow: 0 12px 36px rgba(8, 12, 24, 0.06);
+        backdrop-filter: blur(6px);
+      }
+      /* THUMBNAIL */
+      .thumb {
+        position: relative;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #eee;
+        transition:
+          transform 0.45s var(--ease),
+          box-shadow 0.2s var(--ease);
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transform-origin: center;
+        transition: transform 0.6s var(--ease);
+      }
+      .thumb:focus {
+        outline: 3px solid rgba(212, 175, 55, 0.22);
+        outline-offset: 4px;
+      }
+      .thumb:hover {
+        transform: translateY(-6px);
+      }
+      .thumb:hover img {
+        transform: scale(1.03);
+      }
+      .preview-badge {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        background: linear-gradient(90deg, var(--gold), #ffd86b);
+        color: #081224;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.86rem;
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.12);
+      }
+      /* INFO */
+      .info {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      h2.title {
+        font-family: Merriweather, serif;
+        margin: 0;
+        font-size: 1.45rem;
+        color: var(--midnight);
+      }
+      p.theme {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 6px;
+      }
+      .chip {
+        background: #fff;
+        border-radius: 999px;
+        padding: 8px 10px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        box-shadow: 0 8px 18px rgba(8, 12, 20, 0.04);
+      }
+      .meta {
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+        align-items: center;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 0;
+        transition: transform 0.12s var(--ease);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn:focus {
+        outline: 3px solid rgba(212, 175, 55, 0.22);
+        outline-offset: 3px;
+      }
+      .btn-live {
+        background: linear-gradient(90deg, var(--gold), #ffd86b);
+        color: #081224;
+      }
+      .btn-git {
+        background: transparent;
+        color: var(--midnight);
+        border: 1px solid rgba(8, 18, 36, 0.06);
+      }
+      .icon {
+        width: 16px;
+        height: 16px;
+        display: inline-block;
+      }
+      /* NAV */
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .chev {
+        background: #fff;
+        border-radius: 10px;
+        padding: 8px;
+        box-shadow: 0 8px 20px rgba(8, 12, 20, 0.06);
+        cursor: pointer;
+        border: 0;
+      }
+      .chev:focus {
+        outline: 3px solid rgba(8, 18, 36, 0.12);
+      }
+      .dots {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(6, 10, 14, 0.12);
+        cursor: pointer;
+      }
+      .dot.active {
+        background: var(--gold);
+      }
+      /* entrance animation */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(12px);
+        transition:
+          opacity 0.6s var(--ease),
+          transform 0.6s var(--ease);
+      }
+      .inview.fade-up {
+        opacity: 1;
+        transform: none;
+      }
+      /* responsive */
+      @media (max-width: 880px) {
+        .spotlight {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .nav {
+          margin-left: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .thumb,
+        .thumb img,
+        .fade-up {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="section-wrap" aria-label="Frontend Project Spotlight">
+      <div class="spotlight" id="spotlight">
+        <!-- THUMB -->
+        <div
+          class="card thumb fade-up"
+          id="thumb"
+          tabindex="0"
+          aria-label="Project preview image"
+        >
+          <span class="preview-badge" id="deviceLabel">Desktop</span>
+          <picture id="thumbPicture">
+            <!-- sources will be set by JS (srcset) -->
+            <img
+              src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop"
+              alt="Project screenshot"
+              id="thumbImg"
+            />
+          </picture>
+        </div>
+
+        <!-- INFO -->
+        <div
+          class="card info fade-up"
+          id="infoPanel"
+          role="region"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <div style="display: flex; align-items: center; gap: 12px">
+            <div style="flex: 1">
+              <h2 class="title" id="projTitle">
+                Digital Watch — Minimalist UI
+              </h2>
+              <p class="theme" id="projTheme">
+                A lightweight digital watch UI with smooth micro-interactions
+                and dark mode.
+              </p>
+            </div>
+
+            <div class="nav" role="navigation" aria-label="Project navigation">
+              <button class="chev" id="prevBtn" aria-label="Previous project">
+                ‹
+              </button>
+              <button class="chev" id="nextBtn" aria-label="Next project">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="skills" id="projSkills" aria-hidden="false">
+            <span class="chip">HTML</span>
+            <span class="chip">CSS</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">Accessibility</span>
+          </div>
+
+          <div class="meta" id="projMeta">Last updated: Feb 2026</div>
+
+          <div class="actions" style="align-items: center">
+            <a
+              class="btn btn-live"
+              id="liveBtn"
+              href="https://chetan.dev/digital-watch"
+              target="_blank"
+              rel="noopener"
+              >▶ View Live</a
+            >
+            <a
+              class="btn btn-git"
+              id="gitBtn"
+              href="https://github.com/chetan/digital-watch"
+              target="_blank"
+              rel="noopener"
+              > View Code</a
+            >
+
+            <div style="margin-left: auto; text-align: right">
+              <div
+                class="dots"
+                role="tablist"
+                aria-label="Project items"
+                id="dots"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      /* ========= Sample project data (replace these with real assets/links) ========= */
+      const projects = [
+        {
+          id: 'digital-watch',
+          title: 'Digital Watch — Minimalist UI',
+          theme:
+            'A lightweight digital watch UI with smooth micro-interactions and dark mode.',
+          skills: ['HTML', 'CSS', 'JavaScript', 'Accessibility'],
+          meta: 'Last updated: Feb 2026',
+          imgDesktop:
+            'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200&auto=format&fit=crop',
+          imgMobile:
+            'https://images.unsplash.com/photo-1503264116251-35a269479413?q=80&w=640&auto=format&fit=crop',
+          live: 'https://chetan.dev/digital-watch',
+          git: 'https://github.com/chetan/digital-watch',
+        },
+        {
+          id: 'recipe-explorer',
+          title: 'Recipe Explorer — Fast Filters',
+          theme:
+            'Filterable recipe finder with responsive grid and save-to-favorites.',
+          skills: ['React', 'CSS Grid', 'Fetch API'],
+          meta: 'Last updated: Jan 2026',
+          imgDesktop:
+            'https://images.unsplash.com/photo-1512058564366-c9e0b3d5a1a5?q=80&w=1200&auto=format&fit=crop',
+          imgMobile:
+            'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=640&auto=format&fit=crop',
+          live: 'https://mayuri.app/recipes',
+          git: 'https://github.com/mayuri/recipe-explorer',
+        },
+        {
+          id: 'portfolio-grid',
+          title: 'Portfolio Grid — Animated Cards',
+          theme:
+            'Keyboard-accessible animated grid for projects with ARIA-first markup.',
+          skills: ['React', 'GSAP', 'ARIA'],
+          meta: 'Last updated: Dec 2025',
+          imgDesktop:
+            'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop',
+          imgMobile:
+            'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=640&auto=format&fit=crop',
+          live: 'https://aditya.work/portfolio',
+          git: 'https://github.com/aditya/portfolio-grid',
+        },
+      ];
+
+      /* ========= DOM refs ========= */
+      const thumbImg = document.getElementById('thumbImg');
+      const deviceLabel = document.getElementById('deviceLabel');
+      const projTitle = document.getElementById('projTitle');
+      const projTheme = document.getElementById('projTheme');
+      const projSkills = document.getElementById('projSkills');
+      const projMeta = document.getElementById('projMeta');
+      const liveBtn = document.getElementById('liveBtn');
+      const gitBtn = document.getElementById('gitBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const dotsWrap = document.getElementById('dots');
+      const thumbPicture = document.getElementById('thumbPicture');
+      const thumbContainer = document.getElementById('thumb');
+      const infoPanel = document.getElementById('infoPanel');
+
+      let index = 0;
+
+      /* ========= render function ========= */
+      function render(i) {
+        const p = projects[i];
+        projTitle.textContent = p.title;
+        projTheme.textContent = p.theme;
+        projMeta.textContent = p.meta;
+        // skills
+        projSkills.innerHTML = p.skills
+          .map((s) => `<span class="chip">${s}</span>`)
+          .join('');
+        // hrefs
+        liveBtn.href = p.live;
+        gitBtn.href = p.git;
+        // image - choose desktop or mobile based on width
+        const isMobile = window.innerWidth < 880;
+        thumbImg.src = isMobile ? p.imgMobile : p.imgDesktop;
+        thumbImg.alt = `${p.title} screenshot (${isMobile ? 'mobile' : 'desktop'})`;
+        deviceLabel.textContent = isMobile ? 'Mobile' : 'Desktop';
+        // dots active state & announce
+        updateDots(i);
+        announce(`${p.title} — ${p.theme}`);
+      }
+
+      /* ========= dots ========= */
+      function createDots() {
+        dotsWrap.innerHTML = '';
+        projects.forEach((_, idx) => {
+          const d = document.createElement('button');
+          d.className = 'dot';
+          d.setAttribute('aria-label', `Go to project ${idx + 1}`);
+          d.setAttribute('role', 'tab');
+          d.addEventListener('click', () => {
+            index = idx;
+            render(index);
+          });
+          dotsWrap.appendChild(d);
+        });
+      }
+      function updateDots(i) {
+        [...dotsWrap.children].forEach((d, idx) =>
+          d.classList.toggle('active', idx === i),
+        );
+      }
+
+      /* ========= navigation ========= */
+      prevBtn.addEventListener('click', () => {
+        index = (index - 1 + projects.length) % projects.length;
+        render(index);
+      });
+      nextBtn.addEventListener('click', () => {
+        index = (index + 1) % projects.length;
+        render(index);
+      });
+
+      // keyboard support: left/right and Enter on thumb to open live
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+          index = (index + 1) % projects.length;
+          render(index);
+        }
+        if (e.key === 'ArrowLeft') {
+          index = (index - 1 + projects.length) % projects.length;
+        }
+      });
+
+      // thumb open live on Enter
+      thumbContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          window.open(projects[index].live, '_blank', 'noopener');
+        }
+      });
+
+      /* ========= simple announce for screenreaders ========= */
+      const sr = document.createElement('div');
+      sr.setAttribute('aria-live', 'polite');
+      sr.style.position = 'absolute';
+      sr.style.left = '-9999px';
+      sr.style.width = '1px';
+      sr.style.height = '1px';
+      sr.style.overflow = 'hidden';
+      document.body.appendChild(sr);
+      function announce(text) {
+        sr.textContent = text;
+      }
+
+      /* ========= entrance animation observer ========= */
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('inview');
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.18 },
+      );
+      document.querySelectorAll('.fade-up').forEach((n) => observer.observe(n));
+
+      /* ========= responsive on resize ========= */
+      window.addEventListener('resize', () => {
+        render(index);
+      });
+
+      /* ========= init ========= */
+      createDots();
+      render(index);
+
+      /* ========= helper: prefers-reduced-motion ========= */
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document
+          .querySelectorAll('*')
+          .forEach((el) => (el.style.transition = 'none'));
+      }
+    </script>
+  </body>
+</html>
