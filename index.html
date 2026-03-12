@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- ===================== PRIMARY META TAGS ===================== -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>
+      Chetan Prajapat — Full Stack Web Developer | React, Node.js, JavaScript
+      Portfolio
+    </title>
+
+    <meta
+      name="description"
+      content="Chetan Prajapat is a Full Stack Web Developer from Indore, India, skilled in React, Node.js, JavaScript, HTML, CSS, and SQL. Explore his projects, portfolio, freelance work, and achievements."
+    />
+    <meta
+      name="keywords"
+      content="Chetan Prajapat, Full Stack Developer, Web Developer, Frontend Developer, Backend Developer, JavaScript Developer, React Developer, Node.js Developer, Chetan prajapat portfolio, grchetan, chetan prajapat indore, BCA developer, freelance web developer india, full stack developer indore"
+    />
+    <meta name="author" content="Chetan Prajapat" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- ===================== CANONICAL & CRAWL ===================== -->
+    <link rel="canonical" href="https://grchetan.github.io/" />
+    <meta name="googlebot" content="index, follow" />
+    <meta
+      name="google-site-verification"
+      content="sa0TnhDstpu8c3FA9sFQazfLt4rzpVun_64e3zkUUh8"
+    />
+
+    <!-- ===================== OPEN GRAPH (Facebook / LinkedIn) ===================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://grchetan.github.io/" />
+    <meta property="og:site_name" content="Chetan Prajapat Portfolio" />
+    <meta
+      property="og:title"
+      content="Chetan Prajapat — Full Stack Web Developer | Portfolio"
+    />
+    <meta
+      property="og:description"
+      content="Full Stack Web Developer crafting scalable, responsive, and modern web applications using React, Node.js, and JavaScript. View projects and professional portfolio."
+    />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/grchetan/grchetan.github.io/refs/heads/main/images/favicon.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="Chetan Prajapat — Full Stack Web Developer"
+    />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- ===================== TWITTER CARD ===================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@grchetann" />
+    <meta name="twitter:creator" content="@grchetann" />
+    <meta name="twitter:url" content="https://grchetan.github.io/" />
+    <meta
+      name="twitter:title"
+      content="Chetan Prajapat — Full Stack Developer"
+    />
+    <meta
+      name="twitter:description"
+      content="Building modern, scalable web apps with clean UI & powerful backend. Explore my portfolio and projects."
+    />
+    <meta
+      name="twitter:image"
+      content="https://raw.githubusercontent.com/grchetan/grchetan.github.io/refs/heads/main/images/favicon.png"
+    />
+
+    <!-- ===================== GOOGLE ANALYTICS ===================== -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-HLS482HB27"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'G-HLS482HB27');
+    </script>
+
+    <!-- ===================== FONTS ===================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Arsenal+SC:ital,wght@0,400;0,700;1,400;1,700&family=Bebas+Neue&family=Carrois+Gothic&family=Denk+One&family=Hind+Siliguri:wght@300;400;500;600;700&family=Holtwood+One+SC&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Sulphur+Point:wght@300;400;700&family=Zen+Dots&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ===================== ICONS & STYLESHEETS ===================== -->
+    <!--Social icon fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="apple-touch-icon" href="images/favicon.png" />
+
+    <!-- Critical CSS loaded with preload for performance -->
+    <link
+      rel="preload"
+      href="css/styles.css"
+      as="style"
+      onload="this.rel = 'stylesheet'"
+    />
+    <noscript><link rel="stylesheet" href="css/styles.css" /></noscript>
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <!-- AOS Animation CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+    <!-- ===================== STRUCTURED DATA (JSON-LD) ===================== -->
+    <!-- Person Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Chetan Prajapat",
+        "url": "https://grchetan.github.io/",
+        "jobTitle": "Full Stack Web Developer",
+        "description": "Full Stack Web Developer skilled in React, Node.js, JavaScript, HTML, CSS, and SQL. Building scalable, responsive, and SEO-optimized web applications.",
+        "image": "https://raw.githubusercontent.com/grchetan/grchetan.github.io/refs/heads/main/images/favicon.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Indore",
+          "addressRegion": "Madhya Pradesh",
+          "addressCountry": "IN"
+        },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Sage University Indore"
+        },
+        "knowsAbout": [
+          "HTML5",
+          "CSS3",
+          "JavaScript",
+          "React.js",
+          "Node.js",
+          "Express.js",
+          "SQL",
+          "Python",
+          "Java",
+          "Git",
+          "Figma"
+        ],
+        "sameAs": [
+          "https://github.com/grchetan",
+          "https://www.linkedin.com/in/chetan-prajapat-58350b285/",
+          "https://www.instagram.com/chetanprajapat_/",
+          "https://twitter.com/grchetann",
+          "https://leetcode.com/u/chetanprajapat07/",
+          "https://www.hackerrank.com/profile/chetanprajapat"
+        ]
+      }
+    </script>
+
+    <!-- Website Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Chetan Prajapat Portfolio",
+        "url": "https://grchetan.github.io/",
+        "description": "Portfolio of Chetan Prajapat — Full Stack Web Developer specializing in React, Node.js, and modern web technologies.",
+        "author": {
+          "@type": "Person",
+          "name": "Chetan Prajapat"
+        }
+      }
+    </script>
+
+    <!-- ===================== GOOGLE ADS ===================== -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9364558569710117"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body id="top">
+    <!-- ===================== BACKGROUND VIDEO ===================== -->
+    <!------------This is a background Vedio ------------------------>
+    <div class="background-video light-mode" aria-hidden="true">
+      <video autoplay muted loop playsinline>
+        <source src="videos/video111.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <div
+      class="background-video dark-mode"
+      style="display: none"
+      aria-hidden="true"
+    >
+      <video autoplay muted loop playsinline>
+        <source src="videos/videoplayback1.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <!------------End ------------------------>
+
+    <!-- ===================== HEADER ===================== -->
+    <header role="banner">
+      <div id="toggle-container">
+        <button id="darkModeToggle" aria-label="Toggle dark mode">🌙</button>
+      </div>
+    </header>
+
+    <!-- ===================== HERO SECTION ===================== -->
+    <div>
+      <div class="image-container">
+        <div class="card">
+          <div class="card-inner">
+            <img
+              src="./images/profilepic.png"
+              alt="Chetan Prajapat — Full Stack Web Developer"
+              class="profile-image"
+              loading="eager"
+              width="200"
+              height="200"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="header-style">
+        <h1 class="carrois-gothic-regular">Hey, I'm Chetan prajapat</h1>
+        <h2 class="anton-regular">
+          I am <span class="auto-type" id="painter-img"></span>
+        </h2>
+
+        <!-- Typed.js — animated role text -->
+        <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+        <script>
+          var typed = new Typed('.auto-type', {
+            strings: [
+              'Web Developer',
+              'Freelancer',
+              'Software Developer',
+              'Video Editor',
+            ],
+            typeSpeed: 50,
+            backSpeed: 50,
+            loop: true,
+          });
+        </script>
+
+        <p class="sulphur-point-light">
+          Full Stack Web Developer &amp; Freelancer building responsive and
+          performance-driven web solutions.
+        </p>
+
+        <!-------arrow------------>
+        <div class="arrow-container" aria-hidden="true">
+          <div class="arrow-down"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <main role="main">
+      <!-- ===== ABOUT ME ===== -->
+      <section class="section1" id="about" aria-labelledby="about-heading">
+        <h2 class="zen-dots-regular" id="about-heading" data-aos="fade-up">
+          About Me 👋
+        </h2>
+        <p class="sulphur-point-light" data-aos="fade-up" data-aos-delay="300">
+          Hi! I'm ,<b>Chetan Prajapat</b>, a BCA student and Full Stack Web
+          Developer with hands-on experience in building modern, scalable, and
+          SEO-optimized web applications. I work across the stack using HTML,
+          CSS, JavaScript, React, Node.js, Express.js, and SQL, focusing on
+          clean UI, efficient backend logic, and well-structured databases.
+          <br />
+          <br />
+          I enjoy turning ideas into clean, responsive interfaces and writing
+          structured code that focuses on performance, usability, and security.
+        </p>
+      </section>
+
+      <!-- ===== WHAT I'M WORKING ON ===== -->
+      <section
+        class="section2"
+        id="working-on"
+        aria-labelledby="working-heading"
+      >
+        <h2
+          class="zen-dots-regular"
+          id="working-heading"
+          data-aos="fade-up"
+          data-aos-delay="200"
+        >
+          What I'm Working On 🚀
+        </h2>
+        <p class="sulphur-point-light" data-aos="fade-up" data-aos-delay="200">
+          I'm currently strengthening my full-stack development skills by
+          building modern web applications using React, Node.js, Express, and
+          SQL. I focus on creating scalable, responsive, and performance-driven
+          solutions with clean code and efficient architecture.
+        </p>
+      </section>
+
+      <!-- ===== EDUCATION ===== -->
+      <section
+        class="section3"
+        id="education"
+        aria-labelledby="education-heading"
+      >
+        <h2
+          class="zen-dots-regular"
+          id="education-heading"
+          data-aos="fade-up"
+          data-aos-delay="300"
+        >
+          Education
+        </h2>
+
+        <!-- Education Entry 1 -->
+        <div class="logo-container" data-aos="fade-right" data-aos-delay="400">
+          <div class="imagess">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHRg9otCqyIEo03VTlKmCHRpapNdqsAxF_iMZRMf1MDQzaGgpZaqt8f8cjV1FH-uKoxE0&usqp=CAU"
+              class="educationlogo"
+              alt="Keshav International School Logo"
+              loading="lazy"
+              width="60"
+              height="60"
+            />
+          </div>
+          <div class="text-content">
+            <p class="sulphur-point-light2">Secondary Education - X (CBSE)</p>
+            <span>
+              <a
+                target="_blank"
+                href="https://kisjhabua.com/"
+                class="hover-link"
+                rel="noopener noreferrer"
+              >
+                Keshav International School, jhabua, Madhya Pradesh
+              </a>
+            </span>
+            <br />
+            <span class="school-year">2020 - 2021</span>
+          </div>
+        </div>
+
+        <!-- Education Entry 2 -->
+        <div class="logo-container" data-aos="fade-right" data-aos-delay="400">
+          <div class="imagess">
+            <img
+              src="https://play-lh.googleusercontent.com/UN83yMBGFBHlaG1wX2iNnkOhMK-ug2caOF_ZIJejaxdipiu00FLyJRjCFp_ILFHRGg"
+              class="educationlogo"
+              alt="Rebenok Infotech Logo"
+              loading="lazy"
+              width="60"
+              height="60"
+            />
+          </div>
+          <div class="text-content">
+            <p class="sulphur-point-light2">Rebenok Infotech</p>
+            <span>
+              <a
+                target="_blank"
+                href="https://kisjhabua.com/"
+                class="hover-link"
+                rel="noopener noreferrer"
+              >
+                Computer Insitute, Mumbai, Maharashtra
+              </a>
+            </span>
+            <br />
+            <span class="school-year">2021 - 2022</span>
+          </div>
+        </div>
+
+        <!-- Education Entry 3 -->
+        <div class="logo-container" data-aos="fade-right" data-aos-delay="400">
+          <div class="imagess">
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHRg9otCqyIEo03VTlKmCHRpapNdqsAxF_iMZRMf1MDQzaGgpZaqt8f8cjV1FH-uKoxE0&usqp=CAU"
+              class="educationlogo"
+              alt="Keshav International School Logo"
+              loading="lazy"
+              width="60"
+              height="60"
+            />
+          </div>
+          <div class="text-content">
+            <p class="sulphur-point-light2">
+              Senior Secondary Education - XII (CBSE)
+            </p>
+            <span>
+              <a
+                target="_blank"
+                href="https://kisjhabua.com/"
+                class="hover-link"
+                rel="noopener noreferrer"
+              >
+                Keshav International School, jhabua, Madhya Pradesh
+              </a>
+            </span>
+            <br />
+            <span class="school-year">2023 - 2024</span>
+          </div>
+        </div>
+
+        <!-- Education Entry 4 -->
+        <div class="logo-container" data-aos="fade-right" data-aos-delay="400">
+          <div class="imagess">
+            <img
+              src="https://www.campusoption.com/images/colleges/logos/06_08_19_074948_SAGE-UNIVERSITY.jpg"
+              class="educationlogo"
+              alt="Sage University Indore Logo"
+              loading="lazy"
+              width="60"
+              height="60"
+            />
+          </div>
+          <div class="text-content">
+            <p class="sulphur-point-light2">BCA - Full-stack Developer</p>
+            <span>
+              <a
+                target="_blank"
+                href="https://www.sageuniversity.in/"
+                class="hover-link"
+                rel="noopener noreferrer"
+              >
+                Sage University, Indore, Madhya Pradesh
+              </a>
+            </span>
+            <br />
+            <span class="school-year">2024 - Present</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SKILLS ===== -->
+      <section class="section4" id="skills" aria-labelledby="skills-heading">
+        <h2 class="zen-dots-regular" id="skills-heading" data-aos="fade-up">
+          Skills
+        </h2>
+
+        <h3 class="listheading" data-aos="fade-up">Professional Skills</h3>
+
+        <ul
+          class="skills-grid"
+          aria-label="List of professional technical skills"
+        >
+          <li data-aos="fade-right">
+            <i class="fab fa-html5 html" aria-hidden="true"></i> HTML5
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-css3-alt css" aria-hidden="true"></i> CSS3
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-js js" aria-hidden="true"></i> JavaScript (ES6+)
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-react react" aria-hidden="true"></i> React.js
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-node-js node" aria-hidden="true"></i> Node.js
+          </li>
+          <li data-aos="fade-right">
+            <i class="fas fa-server express" aria-hidden="true"></i> Express.js
+          </li>
+          <li data-aos="fade-right">
+            <i class="fas fa-database sql" aria-hidden="true"></i> SQL /
+            Databases
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-python python" aria-hidden="true"></i> Python
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-java java" aria-hidden="true"></i> Java
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-git-alt git" aria-hidden="true"></i> Git &amp;
+            GitHub
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-linux linux" aria-hidden="true"></i> Linux &amp;
+            Windows
+          </li>
+          <li data-aos="fade-right">
+            <i class="fab fa-figma figma" aria-hidden="true"></i> Figma (Basic
+            UI/UX)
+          </li>
+        </ul>
+      </section>
+
+      <!-- 
+        <section class="section5">
+          <h1 class="zen-dots-regular" data-aos="fade-up" >Projects</h1>
+          <div>
+            <h1 class="listheading" data-aos="fade-up" > BASIC PROJECTS</h1>
+            <ol class="sulphur-point-light3">
+              <a href="https://grchetan.github.io/My-Portfolio/" class="projectlink" data-aos="fade-right"><li>Personal Portfolio Website</li></a>
+              <a href="digitalwatch.html" class="projectlink" data-aos="fade-right"><li>Digital Watch or Date</li></a>
+              <a href="https://grchetan.github.io/game/" class="projectlink" data-aos="fade-right"><li>Gaming Website</li></a>
+              <a href="https://grchetan.github.io/Learning-Zone/" class="projectlink" data-aos="fade-right"><li>Learning Zone</li></a>
+              <a href="https://grchetan.github.io/Rog-Asus/" class="projectlink" data-aos="fade-right"><li>Rog Asus Clone Webpage</li></a>
+              <a href="https://grchetan.github.io/calculater/" class="projectlink" data-aos="fade-right"><li>Calculator</li></a>
+            </ol>
+          </div>
+        </section> -->
+
+      <!-- ===== PROJECTS ===== -->
+      <section
+        class="section5"
+        id="projects"
+        aria-labelledby="projects-heading"
+      >
+        <h2 class="zen-dots-regular" id="projects-heading" data-aos="fade-up">
+          Projects
+        </h2>
+
+        <div>
+          <h3 class="listheading" data-aos="fade-up">Selected Projects</h3>
+
+          <ol class="projects-list sulphur-point-light3">
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/My-Portfolio/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Personal Portfolio Website by Chetan Prajapat"
+              >
+                Personal Portfolio Website
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/game/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Gaming Website built with HTML, CSS, JavaScript"
+              >
+                Gaming Website
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/Rog-Asus/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="ROG Asus Clone Webpage — Frontend Clone Project"
+              >
+                ROG Asus Clone Webpage
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/calculater/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Calculator Web App built with JavaScript"
+              >
+                Calculator Web App
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/sitereadypro/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="SiteReadyPro — Business Website Template by Chetan Prajapat"
+              >
+                SiteReadyPro – Business Website Template
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/Travel-Itinerary-Generator/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="AI-powered Travel Itinerary Generator Web App"
+              >
+                Travel Itinerary Generator
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/bhagwat-gita/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Bhagavad Gita Web App — Spiritual Web Project"
+              >
+                Bhagavad Gita Web App
+              </a>
+            </li>
+
+            <li data-aos="fade-right">
+              <a
+                href="https://grchetan.github.io/weather-app/"
+                class="projectlink"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Weather Forecast Application using API integration"
+              >
+                Weather Forecast Application
+              </a>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ===== FREELANCE PROJECTS ===== -->
+      <section
+        class="section6"
+        id="freelance"
+        aria-labelledby="freelance-heading"
+        data-aos="fade-up"
+        data-aos-delay="300"
+        data-aos-offset="200"
+      >
+        <h2 class="zen-dots-regular" id="freelance-heading">
+          Freelance Projects Showcase
+        </h2>
+        <div>
+          <dl>
+            <dt>1. Crafting Fit Bridge</dt>
+            <dd>
+              Fit Bridge is a fitness platform designed to help users track
+              their workouts, plan their diet, and monitor body transformation
+              over time. The project is currently under development, with a
+              focus on both UI/UX design and backend functionality.
+              <a
+                href="https://github.com/grchetan/fitbridge"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Github repository</a
+              >
+            </dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ================= ACHIEVEMENTS SECTION ================= -->
+      <section
+        class="achievements"
+        id="Achievements"
+        aria-labelledby="achievements-heading"
+      >
+        <div class="achievements-container">
+          <h2 class="section-title" id="achievements-heading">
+            🏆 My Achievements
+          </h2>
+          <p class="section-subtitle">
+            Recognitions and milestones that reflect my dedication and
+            competitive spirit.
+          </p>
+
+          <div class="achievement-grid">
+            <!-- Certificate 1 -->
+            <div
+              class="achievement-card"
+              data-aos="fade-up"
+              data-aos-delay="300"
+              data-aos-offset="200"
+            >
+              <img
+                src="images/sunstone-tech-meme.png"
+                alt="2nd Prize Tech Meme Competition Certificate — Sunstone Tech Club"
+                loading="lazy"
+              />
+              <div class="achievement-content">
+                <h3>2nd Prize - Tech Meme Competition</h3>
+                <p>Issued by Sunstone Tech Club</p>
+                <button
+                  onclick="openModal('images/sunstone-tech-meme.png')"
+                  aria-label="View Tech Meme Competition Certificate"
+                >
+                  View Certificate
+                </button>
+              </div>
+            </div>
+
+            <!-- Certificate 2 -->
+            <div
+              class="achievement-card"
+              data-aos="fade-up"
+              data-aos-delay="300"
+              data-aos-offset="200"
+            >
+              <img
+                src="images/sunstone-treasure-hunt.jpg"
+                alt="3rd Position Tech Treasure Hunt Certificate — Sunstone"
+                loading="lazy"
+              />
+              <div class="achievement-content">
+                <h3>3rd Position - Tech Treasure Hunt</h3>
+                <p>Issued by Sunstone</p>
+                <button
+                  onclick="openModal('images/sunstone-treasure-hunt.jpg')"
+                  aria-label="View Tech Treasure Hunt Certificate"
+                >
+                  View Certificate
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certificate Modal -->
+      <div
+        id="certificateModal"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Certificate viewer"
+      >
+        <div class="modal-box">
+          <span
+            class="close"
+            onclick="closeModal()"
+            aria-label="Close certificate modal"
+            >&times;</span
+          >
+          <img
+            class="modal-content"
+            id="modalImage"
+            alt="Achievement Certificate"
+          />
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          document.getElementById('certificateModal').style.display = 'none';
+        });
+
+        function openModal(src) {
+          const modal = document.getElementById('certificateModal');
+          const img = document.getElementById('modalImage');
+          img.src = src;
+          modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+          document.getElementById('certificateModal').style.display = 'none';
+        }
+
+        /* Close modal on outside click */
+        document
+          .getElementById('certificateModal')
+          .addEventListener('click', function (e) {
+            if (e.target.id === 'certificateModal') {
+              closeModal();
+            }
+          });
+      </script>
+
+      <!-- ===================== CIRCULAR SCROLL PROGRESS INDICATOR ===================== -->
+      <div class="top-btn" id="scrollTopBtn" aria-label="Scroll back to top">
+        <svg width="50" height="50" aria-hidden="true">
+          <!-- Background Circle -->
+          <circle
+            id="bgCircle"
+            cx="25"
+            cy="25"
+            r="20"
+            stroke="gray"
+            stroke-width="4"
+            fill="none"
+          />
+          <!-- Progress Circle -->
+          <circle
+            id="progressCircle"
+            cx="25"
+            cy="25"
+            r="20"
+            stroke="black"
+            stroke-width="4"
+            fill="none"
+            stroke-dasharray="125.6"
+            stroke-dashoffset="125.6"
+          />
+        </svg>
+        <a href="#top" aria-label="Back to top"
+          ><i class="fas fa-arrow-up" aria-hidden="true"></i
+        ></a>
+      </div>
+
+      <!--By me A coffee container-->
+      <div class="coffee">
+        <a
+          href="https://www.buymeacoffee.com/grchetan"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Buy Chetan Prajapat a Coffee"
+        >
+          <img
+            align="left"
+            src="images/coffee cup.svg"
+            alt="Buy me a Coffee"
+            loading="lazy"
+          />
+        </a>
+      </div>
+    </main>
+    <!-- end main content -->
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="footer" role="contentinfo">
+      <div class="footer-container">
+        <h2>Connect with Me</h2>
+
+        <nav class="social-icons" aria-label="Social media and contact links">
+          <a
+            href="https://www.instagram.com/chetanprajapat_/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chetan Prajapat on Instagram"
+          >
+            <i class="fab fa-instagram" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://www.facebook.com/profile.php?id=100030457882324&mibextid=ZbWKwL"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chetan Prajapat on Facebook"
+          >
+            <i class="fab fa-facebook" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://github.com/grchetan"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chetan Prajapat on GitHub"
+          >
+            <i class="fab fa-github" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://leetcode.com/u/chetanprajapat07/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="LeetCode"
+            aria-label="Chetan Prajapat on LeetCode"
+          >
+            <i class="fas fa-code" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://www.hackerrank.com/profile/chetanprajapat"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="HackerRank"
+            aria-label="Chetan Prajapat on HackerRank"
+          >
+            <i class="fab fa-hackerrank" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="mailto:chetanprajapat340@gmail.com"
+            aria-label="Email Chetan Prajapat"
+          >
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chetan Prajapat on LinkedIn"
+          >
+            <i class="fab fa-linkedin" aria-hidden="true"></i>
+          </a>
+
+          <a
+            href="https://twitter.com/grchetann"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Chetan Prajapat on Twitter"
+          >
+            <i class="fab fa-twitter" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+        <!-- Resume Button (as requested, button hi rahega) -->
+        <button class="resume-btn">
+          <a
+            href="./assets/chetan_prajapat.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Download Chetan Prajapat Resume PDF"
+            >Resume</a
+          >
+        </button>
+
+        <div class="footer-bottom">
+          &copy; <span id="year"></span> Made with ❤️ by
+          <a
+            href="https://github.com/grchetan"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Chetan Prajapat</strong>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Dynamic Year in footer -->
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script src="javascript/script.js"></script>
+
+    <!-- AOS Animation JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 200, // Animation speed
+        offset: 50, // Distance from top to start animation
+        easing: 'ease-in-out', // Smooth effect
+        once: false, // Animation once
+        mirror: false, // Disable animation on scroll up
+      });
+    </script>
+
+
+  </body>
+</html>
