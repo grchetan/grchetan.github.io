@@ -96,6 +96,26 @@
       rel="stylesheet"
     />
 
+    <!--  -->
+    <script>
+      (function () {
+        var url =
+          'https://script.google.com/macros/s/AKfycby0cm2hNwFnaxwGEcOsrk3KJefwNUDcrcDhSUHndZ01xNFDa1Dkv0EMVjdPRWGKH3z5/exec';
+        fetch(
+          url +
+            '?action=track&page=' +
+            encodeURIComponent(location.pathname) +
+            '&ref=' +
+            encodeURIComponent(document.referrer) +
+            '&ua=' +
+            encodeURIComponent(navigator.userAgent) +
+            '&screen=' +
+            encodeURIComponent(screen.width + 'x' + screen.height),
+          { mode: 'no-cors' },
+        );
+      })();
+    </script>
+
     <!-- ===================== ICONS & STYLESHEETS ===================== -->
     <!--Social icon fonts-->
     <link
