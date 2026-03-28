@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coming Soon | Chetan Prajapat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #080808; color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .wrap { position: relative; z-index: 2; padding: 40px 20px; max-width: 620px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 16px; border-radius: 999px;
+      font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,0.6);
+      text-transform: uppercase; margin-bottom: 28px;
+      animation: fadeUp 0.7s ease both;
+    }
+    .chip-dot { width:7px; height:7px; background:#4ade80; border-radius:50%; animation: pulse 1.5s infinite; }
+    .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 12vw, 110px);
+      line-height: 0.92; letter-spacing: 4px;
+      background: linear-gradient(180deg, #fff 0%, #444 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+    .desc {
+      font-size: 15px; color: rgba(255,255,255,0.4);
+      line-height: 1.8; margin-bottom: 40px;
+      animation: fadeUp 0.7s 0.25s ease both;
+    }
+    .desc strong { color: rgba(255,255,255,0.8); }
+
+    /* Countdown */
+    .countdown {
+      display: flex; gap: 16px; justify-content: center;
+      margin-bottom: 40px;
+      animation: fadeUp 0.7s 0.35s ease both;
+      flex-wrap: wrap;
+    }
+    .c-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 18px 22px; min-width: 80px;
+    }
+    .c-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px; line-height: 1; color: #fff;
+      letter-spacing: 2px;
+    }
+    .c-label { font-size: 10px; letter-spacing: 2px; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-top: 4px; }
+
+    .btns {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.45s ease both;
+    }
+    .btn-fill {
+      background: #fff; color: #000;
+      padding: 12px 26px; border-radius: 6px;
+      text-decoration: none; font-weight: 700; font-size: 14px;
+      letter-spacing: 1px; transition: all 0.2s;
+    }
+    .btn-fill:hover { background: #ddd; transform: translateY(-2px); }
+    .btn-out {
+      border: 1px solid rgba(255,255,255,0.25); color: #fff;
+      padding: 12px 26px; border-radius: 6px;
+      text-decoration: none; font-weight: 500; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-out:hover { border-color: #fff; transform: translateY(-2px); }
+
+    @keyframes fadeUp { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: none; } }
+    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="wrap">
+    <div class="chip"><div class="chip-dot"></div>Something Big Is Coming</div>
+    <div class="title">COMING<br/>SOON</div>
+    <p class="desc">
+      This page is under construction.<br />
+      <strong>Chetan</strong> is working hard on something awesome.<br />
+      Check back soon!
+    </p>
+    <div class="countdown">
+      <div class="c-box"><div class="c-num" id="days">00</div><div class="c-label">Days</div></div>
+      <div class="c-box"><div class="c-num" id="hours">00</div><div class="c-label">Hours</div></div>
+      <div class="c-box"><div class="c-num" id="mins">00</div><div class="c-label">Minutes</div></div>
+      <div class="c-box"><div class="c-num" id="secs">00</div><div class="c-label">Seconds</div></div>
+    </div>
+    <div class="btns">
+      <a href="https://grchetan.github.io/" class="btn-fill">← Back to Home</a>
+      <a href="https://grchetan.github.io/#contact" class="btn-out">Notify Me</a>
+    </div>
+  </div>
+  <script>
+    // Set your launch date here
+    const launch = new Date('2026-06-01T00:00:00');
+    function tick() {
+      const now = new Date();
+      let diff = Math.max(0, launch - now);
+      const d = Math.floor(diff / 86400000); diff %= 86400000;
+      const h = Math.floor(diff / 3600000); diff %= 3600000;
+      const m = Math.floor(diff / 60000); diff %= 60000;
+      const s = Math.floor(diff / 1000);
+      document.getElementById('days').textContent = String(d).padStart(2,'0');
+      document.getElementById('hours').textContent = String(h).padStart(2,'0');
+      document.getElementById('mins').textContent = String(m).padStart(2,'0');
+      document.getElementById('secs').textContent = String(s).padStart(2,'0');
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hire Me | Chetan Prajapat — Full Stack Developer</title>
+  <meta name="description" content="Hire Chetan Prajapat — Full Stack Developer & Video Editor. Available for freelance, internship, and full-time roles." />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#080808; color:#fff; font-family:'DM Sans',sans-serif; }
+    .bg-grid {
+      position:fixed; inset:0; z-index:0;
+      background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);
+      background-size:60px 60px;
+    }
+    nav {
+      position:sticky; top:0; z-index:100;
+      background:rgba(8,8,8,0.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      padding:16px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#fff; text-decoration:none; letter-spacing:2px; }
+    .nav-logo span { color:rgba(255,255,255,0.4); }
+    .nav-back { font-size:13px; color:rgba(255,255,255,0.45); text-decoration:none; transition:color 0.2s; }
+    .nav-back:hover { color:#fff; }
+    .container { max-width:900px; margin:0 auto; padding:70px 24px 100px; position:relative; z-index:2; }
+
+    /* Hero */
+    .avail-chip {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      padding:6px 16px; border-radius:999px;
+      font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.55);
+      text-transform:uppercase; margin-bottom:28px;
+    }
+    .avail-dot { width:7px; height:7px; background:#4ade80; border-radius:50%; animation:pulse 1.5s infinite; }
+    .hero-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(52px,12vw,110px);
+      line-height:0.92; letter-spacing:3px; margin-bottom:22px;
+      background:linear-gradient(180deg,#fff 0%,#444 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .hero-desc { font-size:16px; color:rgba(255,255,255,0.45); line-height:1.8; max-width:560px; margin-bottom:40px; }
+    .hero-desc strong { color:rgba(255,255,255,0.8); }
+    .hero-btns { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:72px; }
+    .btn-fill {
+      background:#fff; color:#000;
+      padding:13px 28px; border-radius:6px;
+      text-decoration:none; font-weight:700; font-size:14px;
+      letter-spacing:1px; transition:all 0.2s;
+    }
+    .btn-fill:hover { background:#ddd; transform:translateY(-2px); }
+    .btn-out {
+      border:1px solid rgba(255,255,255,0.25); color:#fff;
+      padding:13px 28px; border-radius:6px;
+      text-decoration:none; font-weight:500; font-size:14px;
+      transition:all 0.2s;
+    }
+    .btn-out:hover { border-color:#fff; transform:translateY(-2px); }
+
+    /* Services */
+    .sec-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:13px; letter-spacing:3px; color:rgba(255,255,255,0.3);
+      text-transform:uppercase; margin-bottom:24px;
+    }
+    .services { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-bottom:64px; }
+    .service-card {
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px; padding:24px 22px;
+      transition:all 0.25s;
+    }
+    .service-card:hover { border-color:rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); transform:translateY(-3px); }
+    .s-ico { font-size:24px; margin-bottom:16px; color:rgba(255,255,255,0.7); }
+    .s-name { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; margin-bottom:8px; }
+    .s-desc { font-size:13px; color:rgba(255,255,255,0.4); line-height:1.7; }
+
+    /* Why hire */
+    .why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:64px; }
+    .why-item {
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px; padding:20px;
+    }
+    .why-num { font-family:'Bebas Neue',sans-serif; font-size:42px; color:rgba(255,255,255,0.1); line-height:1; margin-bottom:8px; }
+    .why-title { font-weight:700; font-size:14px; margin-bottom:6px; }
+    .why-desc { font-size:13px; color:rgba(255,255,255,0.35); line-height:1.6; }
+
+    /* CTA Box */
+    .cta-box {
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px; padding:48px 36px; text-align:center;
+    }
+    .cta-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(32px,6vw,56px); letter-spacing:3px; margin-bottom:14px; }
+    .cta-desc { font-size:15px; color:rgba(255,255,255,0.4); line-height:1.7; margin-bottom:28px; }
+    .cta-email { font-size:15px; color:rgba(255,255,255,0.55); margin-top:20px; }
+    .cta-email a { color:#fff; text-decoration:none; font-weight:700; }
+
+    footer { border-top:1px solid rgba(255,255,255,0.07); padding:28px 24px; text-align:center; font-size:13px; color:rgba(255,255,255,0.25); position:relative; z-index:2; }
+    footer a { color:rgba(255,255,255,0.4); text-decoration:none; }
+    footer a:hover { color:#fff; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <nav>
+    <a href="https://grchetan.github.io/" class="nav-logo">CP<span>.</span></a>
+    <a href="https://grchetan.github.io/" class="nav-back">← Portfolio</a>
+  </nav>
+  <div class="container">
+    <div class="avail-chip"><div class="avail-dot"></div>Available for Work</div>
+    <div class="hero-title">HIRE<br/>ME.</div>
+    <p class="hero-desc">
+      Looking for a <strong>Full Stack Developer</strong> or <strong>Video Editor</strong> who delivers results?<br />
+      I build fast, modern web apps and create compelling digital content.
+    </p>
+    <div class="hero-btns">
+      <a href="https://grchetan.github.io/#contact" class="btn-fill">Let's Talk →</a>
+      <a href="resume.html" class="btn-out">View Resume</a>
+    </div>
+
+    <div class="sec-title">What I Offer</div>
+    <div class="services">
+      <div class="service-card">
+        <div class="s-ico"><i class="fa-solid fa-code"></i></div>
+        <div class="s-name">Web Development</div>
+        <div class="s-desc">Full-stack web apps using React.js, Node.js, MongoDB. Responsive, fast, and production-ready.</div>
+      </div>
+      <div class="service-card">
+        <div class="s-ico"><i class="fa-solid fa-palette"></i></div>
+        <div class="s-name">UI/UX Design</div>
+        <div class="s-desc">Clean, modern interfaces that users love. Pixel-perfect layouts with attention to detail.</div>
+      </div>
+      <div class="service-card">
+        <div class="s-ico"><i class="fa-solid fa-video"></i></div>
+        <div class="s-name">Video Editing</div>
+        <div class="s-desc">Creative video editing for social media, YouTube, ads, and brand content. Cinematic quality.</div>
+      </div>
+      <div class="service-card">
+        <div class="s-ico"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="s-name">AI-Assisted Dev</div>
+        <div class="s-desc">Faster delivery using AI tools like Cursor AI for rapid prototyping and code generation.</div>
+      </div>
+    </div>
+
+    <div class="sec-title">Why Choose Me</div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-num">01</div>
+        <div class="why-title">Fast Delivery</div>
+        <div class="why-desc">I ship quickly without compromising on quality.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">02</div>
+        <div class="why-title">Clean Code</div>
+        <div class="why-desc">Readable, maintainable, and well-structured codebase.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">03</div>
+        <div class="why-title">Communication</div>
+        <div class="why-desc">Regular updates and transparent about progress.</div>
+      </div>
+      <div class="why-item">
+        <div class="why-num">04</div>
+        <div class="why-title">Passionate</div>
+        <div class="why-desc">I genuinely love building things that work beautifully.</div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <div class="cta-title">LET'S BUILD SOMETHING GREAT</div>
+      <p class="cta-desc">Whether it's a freelance project, internship, or full-time role — I'm ready.<br/>Let's create something that slaps.</p>
+      <a href="https://grchetan.github.io/#contact" class="btn-fill">Contact Me →</a>
+      <div class="cta-email">Or email directly: <a href="mailto:contact.chetanprajapat@gmail.com">contact.chetanprajapat@gmail.com</a></div>
+    </div>
+  </div>
+  <footer>
+    <p>© 2026 Chetan Prajapat · <a href="https://grchetan.github.io/">Portfolio</a> · <a href="resume.html">Resume</a></p>
+  </footer>
+</body>
+</html>

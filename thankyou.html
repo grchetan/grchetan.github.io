@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You | Chetan Prajapat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #080808; color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; overflow: hidden;
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .wrap { position: relative; z-index: 2; padding: 40px 20px; }
+    .icon-wrap {
+      width: 90px; height: 90px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 36px; color: #fff;
+      animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    .title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 10vw, 90px);
+      letter-spacing: 4px;
+      background: linear-gradient(180deg, #fff 0%, #555 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .sub {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(16px, 3vw, 26px);
+      letter-spacing: 3px; color: rgba(255,255,255,0.45);
+      margin-bottom: 20px;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .desc {
+      font-size: 15px; color: rgba(255,255,255,0.4);
+      max-width: 400px; margin: 0 auto 36px; line-height: 1.8;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .desc strong { color: rgba(255,255,255,0.75); }
+    .btns {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+    .btn-fill {
+      background: #fff; color: #000;
+      padding: 12px 26px; border-radius: 6px;
+      text-decoration: none; font-weight: 700; font-size: 14px;
+      letter-spacing: 1px; transition: all 0.2s;
+    }
+    .btn-fill:hover { background: #ddd; transform: translateY(-2px); }
+    .btn-out {
+      border: 1px solid rgba(255,255,255,0.25); color: #fff;
+      padding: 12px 26px; border-radius: 6px;
+      text-decoration: none; font-weight: 500; font-size: 14px;
+      transition: all 0.2s;
+    }
+    .btn-out:hover { border-color: #fff; transform: translateY(-2px); }
+    .counter {
+      margin-top: 32px; font-size: 13px; color: rgba(255,255,255,0.25);
+      animation: fadeUp 0.7s 0.6s ease both;
+    }
+    .counter span { color: rgba(255,255,255,0.6); font-weight: 700; }
+    @keyframes popIn { from { opacity:0; transform: scale(0.5); } to { opacity:1; transform: scale(1); } }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: none; } }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="wrap">
+    <div class="icon-wrap"><i class="fa-solid fa-check"></i></div>
+    <div class="title">THANK YOU</div>
+    <div class="sub">Message Received!</div>
+    <p class="desc">
+      Your message has been sent successfully.<br />
+      <strong>Chetan will reply within 24 hours.</strong><br />
+      Stay tuned — great things coming!
+    </p>
+    <div class="btns">
+      <a href="https://grchetan.github.io/" class="btn-fill">← Back to Home</a>
+      <a href="https://grchetan.github.io/#projects" class="btn-out">View Projects</a>
+    </div>
+    <div class="counter">Redirecting in <span id="count">8</span> seconds...</div>
+  </div>
+  <script>
+    let sec = 8;
+    const el = document.getElementById('count');
+    const t = setInterval(() => {
+      sec--; el.textContent = sec;
+      if (sec <= 0) { clearInterval(t); window.location.href = 'https://grchetan.github.io/'; }
+    }, 1000);
+  </script>
+</body>
+</html>

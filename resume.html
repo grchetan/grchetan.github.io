@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume | Chetan Prajapat — Full Stack Developer</title>
+  <meta name="description" content="Online Resume of Chetan Prajapat — Full Stack Developer & Video Editor from Mumbai, India." />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body { background:#080808; color:#fff; font-family:'DM Sans',sans-serif; }
+    nav {
+      position:sticky; top:0; z-index:100;
+      background:rgba(8,8,8,0.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      padding:16px 24px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:26px; color:#fff; text-decoration:none; letter-spacing:2px; }
+    .nav-logo span { color:rgba(255,255,255,0.4); }
+    .nav-right { display:flex; gap:12px; align-items:center; }
+    .btn-dl {
+      background:#fff; color:#000;
+      padding:9px 20px; border-radius:6px;
+      text-decoration:none; font-weight:700; font-size:13px;
+      letter-spacing:1px; transition:all 0.2s;
+    }
+    .btn-dl:hover { background:#ddd; }
+    .nav-back { font-size:13px; color:rgba(255,255,255,0.45); text-decoration:none; transition:color 0.2s; }
+    .nav-back:hover { color:#fff; }
+    .container { max-width:820px; margin:0 auto; padding:60px 24px 100px; }
+
+    /* Header */
+    .r-header { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:24px; margin-bottom:48px; }
+    .r-name {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(50px,10vw,90px);
+      letter-spacing:4px; line-height:0.95;
+      background:linear-gradient(180deg,#fff 0%,#555 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .r-role { font-size:14px; color:rgba(255,255,255,0.45); letter-spacing:2px; text-transform:uppercase; margin-top:10px; }
+    .r-contact { display:flex; flex-direction:column; gap:8px; text-align:right; }
+    .r-contact a, .r-contact span { font-size:13px; color:rgba(255,255,255,0.45); text-decoration:none; transition:color 0.2s; display:flex; align-items:center; gap:6px; justify-content:flex-end; }
+    .r-contact a:hover { color:#fff; }
+    .r-contact i { font-size:11px; }
+
+    /* Divider */
+    .sec-divider { border:none; border-top:1px solid rgba(255,255,255,0.07); margin:36px 0; }
+
+    /* Section */
+    .r-sec { margin-bottom:40px; }
+    .r-sec-title {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:16px; letter-spacing:3px;
+      color:rgba(255,255,255,0.35); text-transform:uppercase;
+      margin-bottom:20px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .r-sec-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.07); }
+
+    /* Experience / Education rows */
+    .r-item { margin-bottom:28px; }
+    .r-item-head { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
+    .r-item-title { font-weight:700; font-size:15px; color:#fff; }
+    .r-item-company { font-size:13px; color:rgba(255,255,255,0.45); }
+    .r-item-date { font-size:12px; color:rgba(255,255,255,0.3); white-space:nowrap; }
+    .r-item p { font-size:14px; color:rgba(255,255,255,0.4); line-height:1.75; }
+    ul.r-list { padding-left:18px; }
+    ul.r-list li { font-size:14px; color:rgba(255,255,255,0.4); line-height:1.75; margin-bottom:4px; }
+
+    /* Skills grid */
+    .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
+    .skill-group { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:14px 16px; }
+    .skill-cat { font-size:10px; letter-spacing:2px; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:8px; }
+    .skill-list { font-size:13px; color:rgba(255,255,255,0.55); line-height:1.7; }
+
+    /* Tags */
+    .tags { display:flex; flex-wrap:wrap; gap:8px; }
+    .tag { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 12px; font-size:12px; color:rgba(255,255,255,0.5); }
+
+    footer { border-top:1px solid rgba(255,255,255,0.07); padding:28px 24px; text-align:center; font-size:13px; color:rgba(255,255,255,0.25); }
+    footer a { color:rgba(255,255,255,0.4); text-decoration:none; }
+    footer a:hover { color:#fff; }
+
+    @media (max-width:540px) {
+      .r-header { flex-direction:column; }
+      .r-contact { text-align:left; }
+      .r-contact a, .r-contact span { justify-content:flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="https://grchetan.github.io/" class="nav-logo">CP<span>.</span></a>
+    <div class="nav-right">
+      <a href="https://grchetan.github.io/" class="nav-back">← Portfolio</a>
+      <a href="mailto:contact.chetanprajapat@gmail.com" class="btn-dl">Hire Me →</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="r-header">
+      <div>
+        <div class="r-name">Chetan<br/>Prajapat</div>
+        <div class="r-role">Full Stack Developer &amp; Video Editor</div>
+      </div>
+      <div class="r-contact">
+        <a href="mailto:contact.chetanprajapat@gmail.com"><i class="fa-solid fa-envelope"></i>contact.chetanprajapat@gmail.com</a>
+        <span><i class="fa-solid fa-location-dot"></i>Mumbai, Andheri East, India</span>
+        <a href="https://github.com/grchetan" target="_blank"><i class="fab fa-github"></i>github.com/grchetan</a>
+        <a href="https://linkedin.com/in/chetan-prajapat-58350b285/" target="_blank"><i class="fab fa-linkedin"></i>linkedin.com/in/chetan-prajapat</a>
+        <a href="https://grchetan.github.io/" target="_blank"><i class="fa-solid fa-globe"></i>grchetan.github.io</a>
+      </div>
+    </div>
+
+    <hr class="sec-divider" />
+
+    <div class="r-sec">
+      <div class="r-sec-title">Summary</div>
+      <p style="font-size:15px;color:rgba(255,255,255,0.45);line-height:1.85;">
+        Passionate Full Stack Developer with 2+ years of experience building responsive, high-performance web applications using React.js, Node.js, and MongoDB. Creative video editor skilled in digital content production. Currently seeking opportunities to contribute to world-class teams and products.
+      </p>
+    </div>
+
+    <div class="r-sec">
+      <div class="r-sec-title">Projects</div>
+
+      <div class="r-item">
+        <div class="r-item-head">
+          <div>
+            <div class="r-item-title">Travel Itinerary Generator</div>
+            <div class="r-item-company"><a href="https://grchetan.github.io/Travel-Itinerary-Generator/" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">grchetan.github.io/Travel-Itinerary-Generator</a></div>
+          </div>
+          <div class="r-item-date">2025</div>
+        </div>
+        <ul class="r-list">
+          <li>AI-powered web app generating custom travel itineraries based on user preferences</li>
+          <li>Built with HTML, CSS, JavaScript and integrated AI API</li>
+        </ul>
+      </div>
+
+      <div class="r-item">
+        <div class="r-item-head">
+          <div>
+            <div class="r-item-title">ASUS ROG Website Clone</div>
+            <div class="r-item-company"><a href="https://grchetan.github.io/Rog-Asus/" target="_blank" style="color:rgba(255,255,255,0.4);text-decoration:none;">grchetan.github.io/Rog-Asus</a></div>
+          </div>
+          <div class="r-item-date">2024</div>
+        </div>
+        <ul class="r-list">
+          <li>Pixel-perfect clone of ASUS ROG website with modern UI and gaming aesthetics</li>
+          <li>Focused on performance, animations, and responsive design</li>
+        </ul>
+      </div>
+
+      <div class="r-item">
+        <div class="r-item-head">
+          <div>
+            <div class="r-item-title">Weather Forecast App</div>
+          </div>
+          <div class="r-item-date">2024</div>
+        </div>
+        <ul class="r-list">
+          <li>Real-time weather app with live API integration for any global location</li>
+          <li>Clean UI with search functionality and live forecast data display</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="r-sec">
+      <div class="r-sec-title">Skills</div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <div class="skill-cat">Frontend</div>
+          <div class="skill-list">React.js · HTML5 · CSS3 · JavaScript</div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-cat">Backend</div>
+          <div class="skill-list">Node.js · Express.js · REST APIs</div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-cat">Database</div>
+          <div class="skill-list">MongoDB · SQL · Database Design</div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-cat">Tools</div>
+          <div class="skill-list">Git · GitHub · Linux · Cursor AI · VS Code</div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-cat">Other</div>
+          <div class="skill-list">Video Editing · Canva · Python · Java</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="r-sec">
+      <div class="r-sec-title">Certifications</div>
+      <div class="tags">
+        <span class="tag">Web Development — Udemy (Jan 2025)</span>
+        <span class="tag">Cursor AI — Sunstone (Feb 2026)</span>
+        <span class="tag">Git & GitHub — Sunstone (Feb 2025)</span>
+        <span class="tag">Ethical Hacking — Udemy (Jan 2025)</span>
+        <span class="tag">C Programming — Ministry of Tribal Affairs (Apr 2025)</span>
+        <span class="tag">Canva Editing — Canva (Jul 2024)</span>
+        <span class="tag">Typing Speed — Typing Club (Oct 2022)</span>
+      </div>
+    </div>
+
+    <div class="r-sec">
+      <div class="r-sec-title">Education</div>
+      <div class="r-item">
+        <div class="r-item-head">
+          <div>
+            <div class="r-item-title">Bachelor of Science — Computer Science</div>
+            <div class="r-item-company">University, Mumbai</div>
+          </div>
+          <div class="r-item-date">2023 – Present</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p>© 2026 Chetan Prajapat · <a href="https://grchetan.github.io/">Portfolio</a> · <a href="privacy-policy.html">Privacy</a></p>
+  </footer>
+</body>
+</html>
