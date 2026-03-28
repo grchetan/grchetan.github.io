@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — Page Not Found | Chetan Prajapat</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #0a0a0a;
+        color: #fff;
+        font-family: 'DM Sans', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .wrap {
+        padding: 40px 20px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .big-num {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(120px, 25vw, 220px);
+        line-height: 1;
+        background: linear-gradient(135deg, #fff 0%, #555 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 4px;
+      }
+
+      .glitch {
+        position: relative;
+        display: inline-block;
+      }
+
+      .title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(24px, 5vw, 42px);
+        letter-spacing: 3px;
+        color: #fff;
+        margin-bottom: 16px;
+      }
+
+      .desc {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.5);
+        max-width: 380px;
+        margin: 0 auto 40px;
+        line-height: 1.7;
+      }
+
+      .desc span {
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .btns {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-fill {
+        background: #fff;
+        color: #000;
+        padding: 13px 28px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 1px;
+        transition: all 0.2s;
+      }
+
+      .btn-fill:hover {
+        background: #ddd;
+        transform: translateY(-2px);
+      }
+
+      .btn-out {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        padding: 13px 28px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .btn-out:hover {
+        border-color: #fff;
+        transform: translateY(-2px);
+      }
+
+      /* Background glow */
+      .bg-glow {
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.04) 0%,
+          transparent 70%
+        );
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+      }
+
+      /* Counter */
+      .counter {
+        margin-top: 40px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      .counter span {
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-glow"></div>
+
+    <div class="wrap">
+      <div class="big-num glitch">404</div>
+      <div class="title">PAGE NOT FOUND</div>
+      <p class="desc">
+        Bhai yeh URL toh <span>exist hi nahi karta!</span><br />
+        Shayad galat link hai ya page delete ho gaya.
+      </p>
+
+      <div class="btns">
+        <a href="https://grchetan.github.io/" class="btn-fill">
+          ← Back to Home
+        </a>
+        <a href="https://grchetan.github.io/#contact" class="btn-out">
+          Contact Me
+        </a>
+      </div>
+
+      <div class="counter">
+        Auto redirect in <span id="count">10</span> seconds...
+      </div>
+    </div>
+
+    <script>
+      // Auto redirect countdown
+      let sec = 10;
+      const el = document.getElementById('count');
+      const timer = setInterval(() => {
+        sec--;
+        el.textContent = sec;
+        if (sec <= 0) {
+          clearInterval(timer);
+          window.location.href = 'https://grchetan.github.io/';
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
