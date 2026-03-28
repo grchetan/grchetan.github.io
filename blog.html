@@ -1,607 +1,1775 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog | Chetan Prajapat — Full Stack Developer</title>
-  <meta name="description" content="Dev tips, project breakdowns, tutorials and thoughts by Chetan Prajapat — Full Stack Developer from Mumbai." />
-  <meta name="author" content="Chetan Prajapat" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <style>
-    [data-theme="dark"] {
-      --bg:#080808; --bg2:#111; --bg3:#181818;
-      --border:rgba(255,255,255,0.08); --border-h:rgba(255,255,255,0.22);
-      --text:#fff; --text2:rgba(255,255,255,0.55); --text3:rgba(255,255,255,0.3);
-      --tag-bg:rgba(255,255,255,0.06); --card-bg:rgba(255,255,255,0.04); --card-h:rgba(255,255,255,0.07);
-      --nav-bg:rgba(8,8,8,0.92); --grid-line:rgba(255,255,255,0.025);
-      --logo-span:rgba(255,255,255,0.35); --search-bg:rgba(255,255,255,0.05);
-    }
-    [data-theme="light"] {
-      --bg:#f5f5f0; --bg2:#eeeee9; --bg3:#e5e5e0;
-      --border:rgba(0,0,0,0.09); --border-h:rgba(0,0,0,0.28);
-      --text:#0a0a0a; --text2:rgba(0,0,0,0.55); --text3:rgba(0,0,0,0.35);
-      --tag-bg:rgba(0,0,0,0.06); --card-bg:rgba(0,0,0,0.03); --card-h:rgba(0,0,0,0.06);
-      --nav-bg:rgba(245,245,240,0.92); --grid-line:rgba(0,0,0,0.04);
-      --logo-span:rgba(0,0,0,0.35); --search-bg:rgba(0,0,0,0.05);
-    }
-    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;transition:background .3s,color .3s;cursor:none;}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog | Chetan Prajapat — Full Stack Developer</title>
+    <meta
+      name="description"
+      content="Dev tips, project breakdowns, tutorials and thoughts by Chetan Prajapat — Full Stack Developer from Mumbai."
+    />
+    <meta name="author" content="Chetan Prajapat" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      [data-theme='dark'] {
+        --bg: #080808;
+        --bg2: #111;
+        --bg3: #181818;
+        --border: rgba(255, 255, 255, 0.08);
+        --border-h: rgba(255, 255, 255, 0.22);
+        --text: #fff;
+        --text2: rgba(255, 255, 255, 0.55);
+        --text3: rgba(255, 255, 255, 0.3);
+        --tag-bg: rgba(255, 255, 255, 0.06);
+        --card-bg: rgba(255, 255, 255, 0.04);
+        --card-h: rgba(255, 255, 255, 0.07);
+        --nav-bg: rgba(8, 8, 8, 0.92);
+        --grid-line: rgba(255, 255, 255, 0.025);
+        --logo-span: rgba(255, 255, 255, 0.35);
+        --search-bg: rgba(255, 255, 255, 0.05);
+      }
+      [data-theme='light'] {
+        --bg: #f5f5f0;
+        --bg2: #eeeee9;
+        --bg3: #e5e5e0;
+        --border: rgba(0, 0, 0, 0.09);
+        --border-h: rgba(0, 0, 0, 0.28);
+        --text: #0a0a0a;
+        --text2: rgba(0, 0, 0, 0.55);
+        --text3: rgba(0, 0, 0, 0.35);
+        --tag-bg: rgba(0, 0, 0, 0.06);
+        --card-bg: rgba(0, 0, 0, 0.03);
+        --card-h: rgba(0, 0, 0, 0.06);
+        --nav-bg: rgba(245, 245, 240, 0.92);
+        --grid-line: rgba(0, 0, 0, 0.04);
+        --logo-span: rgba(0, 0, 0, 0.35);
+        --search-bg: rgba(0, 0, 0, 0.05);
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        min-height: 100vh;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        cursor: none;
+      }
 
-    /* BG GRID */
-    .bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-      background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
-      background-size:60px 60px;}
+      /* BG GRID */
+      .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
 
-    /* CURSOR */
-    #cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--text);pointer-events:none;z-index:10000;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:transform .08s;}
-    #cursor-canvas{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+      /* CURSOR */
+      #cursor-dot {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text);
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+        transition: transform 0.08s;
+      }
+      #cursor-canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+      }
 
-    /* MOBILE MENU */
-    .mobile-menu{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transform:translateX(100%);transition:transform .35s cubic-bezier(.77,0,.18,1);}
-    .mobile-menu.open{transform:translateX(0);}
-    .mob-close-btn{position:absolute;top:22px;right:24px;background:none;border:none;color:var(--text);font-size:22px;cursor:none;}
-    .mob-links{display:flex;flex-direction:column;align-items:center;gap:28px;}
-    .mob-links a{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;color:var(--text);text-decoration:none;transition:opacity .2s;}
-    .mob-links a:hover{opacity:.5;}
-    .mob-footer{display:flex;gap:20px;}
-    .mob-social{color:var(--text2);font-size:18px;text-decoration:none;transition:color .2s;}
-    .mob-social:hover{color:var(--text);}
+      /* MOBILE MENU */
+      .mobile-menu {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        background: var(--bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+      .mobile-menu.open {
+        transform: translateX(0);
+      }
+      .mob-close-btn {
+        position: absolute;
+        top: 22px;
+        right: 24px;
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 22px;
+        cursor: none;
+      }
+      .mob-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+      }
+      .mob-links a {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 38px;
+        letter-spacing: 3px;
+        color: var(--text);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .mob-links a:hover {
+        opacity: 0.5;
+      }
+      .mob-footer {
+        display: flex;
+        gap: 20px;
+      }
+      .mob-social {
+        color: var(--text2);
+        font-size: 18px;
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .mob-social:hover {
+        color: var(--text);
+      }
 
-    /* NAV */
-    #main-nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(18px);border-bottom:1px solid transparent;transition:border-color .3s,background .3s;}
-    #main-nav.scrolled{border-bottom-color:var(--border);}
-    .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px;}
-    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text);text-decoration:none;}
-    .nav-logo span{color:var(--logo-span);}
-    .nav-links{display:flex;gap:32px;list-style:none;}
-    .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;letter-spacing:1px;transition:color .2s;}
-    .nav-links a:hover,.nav-links a.active{color:var(--text);}
-    .nav-right{display:flex;align-items:center;gap:16px;}
-    .theme-btn{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border);border-radius:999px;padding:6px 14px;color:var(--text2);font-size:11px;letter-spacing:1.5px;cursor:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
-    .theme-btn:hover{border-color:var(--border-h);color:var(--text);}
-    .t-track{width:28px;height:16px;background:var(--border);border-radius:999px;position:relative;transition:background .3s;}
-    .t-knob{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--text);border-radius:50%;transition:transform .3s;}
-    [data-theme="light"] .t-knob{transform:translateX(12px);}
-    .nav-cta{background:var(--text);color:var(--bg);padding:8px 18px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.5px;transition:opacity .2s;}
-    .nav-cta:hover{opacity:.8;}
-    .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px;}
-    .ham-line{width:22px;height:2px;background:var(--text);transition:all .3s;border-radius:2px;}
-    .hamburger.open .ham-line:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .hamburger.open .ham-line:nth-child(2){opacity:0;}
-    .hamburger.open .ham-line:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+      /* NAV */
+      #main-nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--nav-bg);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid transparent;
+        transition:
+          border-color 0.3s,
+          background 0.3s;
+      }
+      #main-nav.scrolled {
+        border-bottom-color: var(--border);
+      }
+      .nav-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+      }
+      .nav-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 28px;
+        letter-spacing: 2px;
+        color: var(--text);
+        text-decoration: none;
+      }
+      .nav-logo span {
+        color: var(--logo-span);
+      }
+      .nav-links {
+        display: flex;
+        gap: 32px;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text2);
+        text-decoration: none;
+        font-size: 13px;
+        letter-spacing: 1px;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--text);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .theme-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        color: var(--text2);
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        cursor: none;
+        transition: all 0.2s;
+        font-family: 'DM Sans', sans-serif;
+      }
+      .theme-btn:hover {
+        border-color: var(--border-h);
+        color: var(--text);
+      }
+      .t-track {
+        width: 28px;
+        height: 16px;
+        background: var(--border);
+        border-radius: 999px;
+        position: relative;
+        transition: background 0.3s;
+      }
+      .t-knob {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 12px;
+        height: 12px;
+        background: var(--text);
+        border-radius: 50%;
+        transition: transform 0.3s;
+      }
+      [data-theme='light'] .t-knob {
+        transform: translateX(12px);
+      }
+      .nav-cta {
+        background: var(--text);
+        color: var(--bg);
+        padding: 8px 18px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: opacity 0.2s;
+      }
+      .nav-cta:hover {
+        opacity: 0.8;
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: none;
+        padding: 4px;
+      }
+      .ham-line {
+        width: 22px;
+        height: 2px;
+        background: var(--text);
+        transition: all 0.3s;
+        border-radius: 2px;
+      }
+      .hamburger.open .ham-line:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      .hamburger.open .ham-line:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.open .ham-line:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
 
-    /* LAYOUT */
-    .container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:2;}
+      /* LAYOUT */
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 2;
+      }
 
-    /* BLOG HERO */
-    .blog-hero{padding:72px 0 52px;border-bottom:1px solid var(--border);margin-bottom:52px;}
-    .blog-hero .container{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:28px;}
-    .page-tag{font-size:11px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-    .page-tag::before{content:'';width:24px;height:1px;background:var(--text3);}
-    .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,12vw,110px);line-height:.9;letter-spacing:4px;color:var(--text);margin-bottom:18px;}
-    .page-desc{font-size:15px;color:var(--text2);max-width:440px;line-height:1.8;}
-    .hero-stats{display:flex;gap:36px;align-items:center;}
-    .h-stat{text-align:center;}
-    .h-stat-num{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--text);line-height:1;}
-    .h-stat-label{font-size:11px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-top:4px;}
+      /* BLOG HERO */
+      .blog-hero {
+        padding: 72px 0 52px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 52px;
+      }
+      .blog-hero .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 28px;
+      }
+      .page-tag {
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--text3);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .page-tag::before {
+        content: '';
+        width: 24px;
+        height: 1px;
+        background: var(--text3);
+      }
+      .page-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(60px, 12vw, 110px);
+        line-height: 0.9;
+        letter-spacing: 4px;
+        color: var(--text);
+        margin-bottom: 18px;
+      }
+      .page-desc {
+        font-size: 15px;
+        color: var(--text2);
+        max-width: 440px;
+        line-height: 1.8;
+      }
+      .hero-stats {
+        display: flex;
+        gap: 36px;
+        align-items: center;
+      }
+      .h-stat {
+        text-align: center;
+      }
+      .h-stat-num {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 38px;
+        letter-spacing: 2px;
+        color: var(--text);
+        line-height: 1;
+      }
+      .h-stat-label {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--text3);
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
 
-    /* TOOLBAR */
-    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:44px;}
-    .filters{display:flex;gap:8px;flex-wrap:wrap;}
-    .filter-btn{background:var(--tag-bg);border:1px solid var(--border);color:var(--text2);padding:8px 18px;border-radius:999px;font-size:12px;letter-spacing:1px;cursor:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
-    .filter-btn:hover{border-color:var(--border-h);color:var(--text);}
-    .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);}
-    .search-wrap{position:relative;}
-    .search-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text3);pointer-events:none;}
-    .search-input{background:var(--search-bg);border:1px solid var(--border);border-radius:8px;padding:9px 16px 9px 38px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;width:220px;transition:all .2s;cursor:text;}
-    .search-input::placeholder{color:var(--text3);}
-    .search-input:focus{outline:none;border-color:var(--border-h);}
+      /* TOOLBAR */
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 44px;
+      }
+      .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .filter-btn {
+        background: var(--tag-bg);
+        border: 1px solid var(--border);
+        color: var(--text2);
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        cursor: none;
+        transition: all 0.2s;
+        font-family: 'DM Sans', sans-serif;
+      }
+      .filter-btn:hover {
+        border-color: var(--border-h);
+        color: var(--text);
+      }
+      .filter-btn.active {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+      }
+      .search-wrap {
+        position: relative;
+      }
+      .search-wrap i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: var(--text3);
+        pointer-events: none;
+      }
+      .search-input {
+        background: var(--search-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 16px 9px 38px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: 'DM Sans', sans-serif;
+        width: 220px;
+        transition: all 0.2s;
+        cursor: text;
+      }
+      .search-input::placeholder {
+        color: var(--text3);
+      }
+      .search-input:focus {
+        outline: none;
+        border-color: var(--border-h);
+      }
 
-    /* FEATURED POST */
-    .featured-post{display:grid;grid-template-columns:1fr 320px;gap:0;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:28px;transition:all .3s;text-decoration:none;color:inherit;position:relative;}
-    .featured-post:hover{border-color:var(--border-h);transform:translateY(-3px);}
-    .feat-badge{position:absolute;top:18px;left:18px;background:var(--text);color:var(--bg);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:4px;}
-    .featured-content{padding:52px 32px 32px;display:flex;flex-direction:column;justify-content:space-between;}
-    .feat-cat{font-size:11px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:14px;}
-    .feat-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,3.2vw,42px);letter-spacing:2px;line-height:1.05;color:var(--text);margin-bottom:14px;}
-    .feat-excerpt{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px;}
-    .feat-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-    .feat-date,.feat-read{font-size:12px;color:var(--text3);}
-    .feat-tag{background:var(--tag-bg);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;color:var(--text2);}
-    .feat-arrow{width:34px;height:34px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text2);transition:all .25s;}
-    .featured-post:hover .feat-arrow{background:var(--text);color:var(--bg);border-color:var(--text);}
-    .featured-img{background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:3px;color:var(--border);border-left:1px solid var(--border);min-height:260px;transition:color .3s;position:relative;overflow:hidden;}
-    .fi-bg{position:absolute;inset:0;background:linear-gradient(135deg,var(--bg3) 0%,var(--bg2) 100%);}
-    .fi-text{position:relative;z-index:1;}
-    .featured-post:hover .featured-img{border-left-color:var(--border-h);}
+      /* FEATURED POST */
+      .featured-post {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 0;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 28px;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+      }
+      .featured-post:hover {
+        border-color: var(--border-h);
+        transform: translateY(-3px);
+      }
+      .feat-badge {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        background: var(--text);
+        color: var(--bg);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 4px;
+      }
+      .featured-content {
+        padding: 52px 32px 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .feat-cat {
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--text3);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+      .feat-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(26px, 3.2vw, 42px);
+        letter-spacing: 2px;
+        line-height: 1.05;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+      .feat-excerpt {
+        font-size: 14px;
+        color: var(--text2);
+        line-height: 1.8;
+        margin-bottom: 24px;
+      }
+      .feat-meta {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .feat-date,
+      .feat-read {
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .feat-tag {
+        background: var(--tag-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 3px 10px;
+        font-size: 11px;
+        color: var(--text2);
+      }
+      .feat-arrow {
+        width: 34px;
+        height: 34px;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: var(--text2);
+        transition: all 0.25s;
+      }
+      .featured-post:hover .feat-arrow {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+      }
+      .featured-img {
+        background: var(--bg3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 80px;
+        letter-spacing: 3px;
+        color: var(--border);
+        border-left: 1px solid var(--border);
+        min-height: 260px;
+        transition: color 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      .fi-bg {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--bg3) 0%, var(--bg2) 100%);
+      }
+      .fi-text {
+        position: relative;
+        z-index: 1;
+      }
+      .featured-post:hover .featured-img {
+        border-left-color: var(--border-h);
+      }
 
-    /* BLOG GRID */
-    .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:52px;}
-    .blog-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:26px;transition:all .3s;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;overflow:hidden;--mx:50%;--my:50%;}
-    .blog-card::before{content:'';position:absolute;inset:0;background:radial-gradient(180px circle at var(--mx) var(--my),rgba(255,255,255,0.05),transparent);opacity:0;transition:opacity .3s;pointer-events:none;}
-    [data-theme="light"] .blog-card::before{background:radial-gradient(180px circle at var(--mx) var(--my),rgba(0,0,0,0.04),transparent);}
-    .blog-card:hover{border-color:var(--border-h);transform:translateY(-4px);}
-    .blog-card:hover::before{opacity:1;}
-    .card-cat-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .card-cat{background:var(--tag-bg);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:10px;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;}
-    .card-read{font-size:11px;color:var(--text3);}
-    .card-title{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1.5px;color:var(--text);line-height:1.1;margin-bottom:12px;}
-    .card-excerpt{font-size:13px;color:var(--text2);line-height:1.75;flex:1;margin-bottom:20px;}
-    .card-footer{display:flex;align-items:center;justify-content:space-between;}
-    .card-date{font-size:11px;color:var(--text3);}
-    .card-link{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;transition:color .2s;}
-    .blog-card:hover .card-link{color:var(--text);}
+      /* BLOG GRID */
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 52px;
+      }
+      .blog-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 26px;
+        transition: all 0.3s;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        --mx: 50%;
+        --my: 50%;
+      }
+      .blog-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          180px circle at var(--mx) var(--my),
+          rgba(255, 255, 255, 0.05),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+      [data-theme='light'] .blog-card::before {
+        background: radial-gradient(
+          180px circle at var(--mx) var(--my),
+          rgba(0, 0, 0, 0.04),
+          transparent
+        );
+      }
+      .blog-card:hover {
+        border-color: var(--border-h);
+        transform: translateY(-4px);
+      }
+      .blog-card:hover::before {
+        opacity: 1;
+      }
+      .card-cat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .card-cat {
+        background: var(--tag-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 3px 10px;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        color: var(--text3);
+        text-transform: uppercase;
+      }
+      .card-read {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .card-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 21px;
+        letter-spacing: 1.5px;
+        color: var(--text);
+        line-height: 1.1;
+        margin-bottom: 12px;
+      }
+      .card-excerpt {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.75;
+        flex: 1;
+        margin-bottom: 20px;
+      }
+      .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-date {
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .card-link {
+        font-size: 12px;
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+      }
+      .blog-card:hover .card-link {
+        color: var(--text);
+      }
 
-    /* COMING SOON CARD */
-    .cs-card{background:var(--card-bg);border:1px dashed var(--border);border-radius:12px;padding:40px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;}
-    .cs-icon{font-size:26px;color:var(--text3);margin-bottom:4px;}
-    .cs-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--text3);}
-    .cs-sub{font-size:12px;color:var(--text3);}
+      /* COMING SOON CARD */
+      .cs-card {
+        background: var(--card-bg);
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        padding: 40px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+      }
+      .cs-icon {
+        font-size: 26px;
+        color: var(--text3);
+        margin-bottom: 4px;
+      }
+      .cs-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 17px;
+        letter-spacing: 2px;
+        color: var(--text3);
+      }
+      .cs-sub {
+        font-size: 12px;
+        color: var(--text3);
+      }
 
-    /* NO RESULTS */
-    .no-results{text-align:center;padding:60px 24px;display:none;}
-    .no-results.show{display:block;}
-    .no-results i{font-size:32px;color:var(--text3);margin-bottom:14px;}
-    .no-results p{font-size:15px;color:var(--text3);}
+      /* NO RESULTS */
+      .no-results {
+        text-align: center;
+        padding: 60px 24px;
+        display: none;
+      }
+      .no-results.show {
+        display: block;
+      }
+      .no-results i {
+        font-size: 32px;
+        color: var(--text3);
+        margin-bottom: 14px;
+      }
+      .no-results p {
+        font-size: 15px;
+        color: var(--text3);
+      }
 
-    /* LAYOUT WITH SIDEBAR */
-    .blog-layout{display:grid;grid-template-columns:1fr 290px;gap:30px;margin-bottom:80px;}
-    .sidebar{}
-    .sidebar-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:26px;margin-bottom:18px;}
-    .sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--text);margin-bottom:14px;}
-    .sidebar-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;}
-    .sidebar-input{width:100%;background:var(--search-bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;margin-bottom:10px;cursor:text;}
-    .sidebar-input::placeholder{color:var(--text3);}
-    .sidebar-input:focus{outline:none;border-color:var(--border-h);}
-    .sidebar-btn{width:100%;background:var(--text);color:var(--bg);border:none;border-radius:6px;padding:11px;font-size:13px;font-weight:700;letter-spacing:1px;cursor:none;transition:opacity .2s;font-family:'DM Sans',sans-serif;}
-    .sidebar-btn:hover{opacity:.8;}
-    .topic-list{display:flex;flex-direction:column;gap:2px;}
-    .topic-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);cursor:none;transition:color .2s;}
-    .topic-row:last-child{border-bottom:none;}
-    .topic-row:hover .topic-name{color:var(--text);}
-    .topic-name{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:10px;}
-    .topic-name i{font-size:11px;color:var(--text3);width:14px;}
-    .topic-count{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text3);letter-spacing:1px;}
-    .mini-post{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);cursor:none;text-decoration:none;color:inherit;transition:all .2s;}
-    .mini-post:last-child{border-bottom:none;}
-    .mini-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--border-h);line-height:1;min-width:26px;}
-    .mini-title{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:4px;font-weight:500;transition:color .2s;}
-    .mini-post:hover .mini-title{color:var(--text);}
-    .mini-date{font-size:11px;color:var(--text3);}
+      /* LAYOUT WITH SIDEBAR */
+      .blog-layout {
+        display: grid;
+        grid-template-columns: 1fr 290px;
+        gap: 30px;
+        margin-bottom: 80px;
+      }
+      .sidebar {
+      }
+      .sidebar-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 26px;
+        margin-bottom: 18px;
+      }
+      .sidebar-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 18px;
+        letter-spacing: 2px;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+      .sidebar-desc {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.7;
+        margin-bottom: 16px;
+      }
+      .sidebar-input {
+        width: 100%;
+        background: var(--search-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 10px 14px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: 'DM Sans', sans-serif;
+        margin-bottom: 10px;
+        cursor: text;
+      }
+      .sidebar-input::placeholder {
+        color: var(--text3);
+      }
+      .sidebar-input:focus {
+        outline: none;
+        border-color: var(--border-h);
+      }
+      .sidebar-btn {
+        width: 100%;
+        background: var(--text);
+        color: var(--bg);
+        border: none;
+        border-radius: 6px;
+        padding: 11px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        cursor: none;
+        transition: opacity 0.2s;
+        font-family: 'DM Sans', sans-serif;
+      }
+      .sidebar-btn:hover {
+        opacity: 0.8;
+      }
+      .topic-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .topic-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: none;
+        transition: color 0.2s;
+      }
+      .topic-row:last-child {
+        border-bottom: none;
+      }
+      .topic-row:hover .topic-name {
+        color: var(--text);
+      }
+      .topic-name {
+        font-size: 13px;
+        color: var(--text2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .topic-name i {
+        font-size: 11px;
+        color: var(--text3);
+        width: 14px;
+      }
+      .topic-count {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 16px;
+        color: var(--text3);
+        letter-spacing: 1px;
+      }
+      .mini-post {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: none;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s;
+      }
+      .mini-post:last-child {
+        border-bottom: none;
+      }
+      .mini-num {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 22px;
+        color: var(--border-h);
+        line-height: 1;
+        min-width: 26px;
+      }
+      .mini-title {
+        font-size: 13px;
+        color: var(--text2);
+        line-height: 1.5;
+        margin-bottom: 4px;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .mini-post:hover .mini-title {
+        color: var(--text);
+      }
+      .mini-date {
+        font-size: 11px;
+        color: var(--text3);
+      }
 
-    /* SCROLL REVEAL */
-    .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
-    .rv.on{opacity:1;transform:none;}
-    .d1{transition-delay:.1s;} .d2{transition-delay:.2s;} .d3{transition-delay:.3s;} .d4{transition-delay:.4s;} .d5{transition-delay:.5s;}
+      /* SCROLL REVEAL */
+      .rv {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .rv.on {
+        opacity: 1;
+        transform: none;
+      }
+      .d1 {
+        transition-delay: 0.1s;
+      }
+      .d2 {
+        transition-delay: 0.2s;
+      }
+      .d3 {
+        transition-delay: 0.3s;
+      }
+      .d4 {
+        transition-delay: 0.4s;
+      }
+      .d5 {
+        transition-delay: 0.5s;
+      }
 
-    /* TOAST */
-    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s;z-index:9998;white-space:nowrap;}
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+      /* TOAST */
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: var(--text);
+        color: var(--bg);
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+        z-index: 9998;
+        white-space: nowrap;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
 
-    /* TOP BTN */
-    .top-btn{position:fixed;bottom:28px;right:24px;z-index:500;width:42px;height:42px;background:var(--text);color:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;opacity:0;pointer-events:none;transition:all .3s;}
-    .top-btn.show{opacity:1;pointer-events:all;}
-    .top-btn:hover{transform:translateY(-3px);}
+      /* TOP BTN */
+      .top-btn {
+        position: fixed;
+        bottom: 28px;
+        right: 24px;
+        z-index: 500;
+        width: 42px;
+        height: 42px;
+        background: var(--text);
+        color: var(--bg);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 14px;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+      }
+      .top-btn.show {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .top-btn:hover {
+        transform: translateY(-3px);
+      }
 
-    /* FOOTER */
-    footer{border-top:1px solid var(--border);padding:32px 24px;position:relative;z-index:2;}
-    .ft-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .ft-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);text-decoration:none;letter-spacing:2px;}
-    .ft-logo span{color:var(--logo-span);}
-    .ft-copy{font-size:12px;color:var(--text3);}
-    .ft-copy a{color:var(--text2);text-decoration:none;}
-    .ft-back{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s;}
-    .ft-back:hover{color:var(--text);}
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 32px 24px;
+        position: relative;
+        z-index: 2;
+      }
+      .ft-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .ft-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 22px;
+        color: var(--text);
+        text-decoration: none;
+        letter-spacing: 2px;
+      }
+      .ft-logo span {
+        color: var(--logo-span);
+      }
+      .ft-copy {
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .ft-copy a {
+        color: var(--text2);
+        text-decoration: none;
+      }
+      .ft-back {
+        font-size: 13px;
+        color: var(--text2);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .ft-back:hover {
+        color: var(--text);
+      }
 
-    /* RESPONSIVE */
-    @media(max-width:1024px){
-      .blog-layout{grid-template-columns:1fr;}
-      .sidebar{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;}
-      .blog-grid{grid-template-columns:repeat(2,1fr);}
-    }
-    @media(max-width:768px){
-      .featured-post{grid-template-columns:1fr;}
-      .featured-img{min-height:150px;border-left:none;border-top:1px solid var(--border);}
-      .nav-links{display:none;}
-      .hamburger{display:flex;}
-      .blog-grid{grid-template-columns:1fr;}
-      .blog-hero .container{flex-direction:column;align-items:flex-start;}
-      .toolbar{flex-direction:column;align-items:flex-start;}
-      .search-input{width:100%;}
-    }
-  </style>
-</head>
-<body>
+      /* RESPONSIVE */
+      @media (max-width: 1024px) {
+        .blog-layout {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 18px;
+        }
+        .blog-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        .featured-post {
+          grid-template-columns: 1fr;
+        }
+        .featured-img {
+          min-height: 150px;
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+        .nav-links {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .blog-grid {
+          grid-template-columns: 1fr;
+        }
+        .blog-hero .container {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .toolbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .search-input {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="cursor-canvas"></canvas>
+    <div id="cursor-dot"></div>
+    <div class="toast" id="toast"></div>
+    <div class="bg-grid"></div>
 
-  <canvas id="cursor-canvas"></canvas>
-  <div id="cursor-dot"></div>
-  <div class="toast" id="toast"></div>
-  <div class="bg-grid"></div>
+    <!-- ══ Mobile Menu ══ -->
+    <div class="mobile-menu" id="mob-menu">
+      <button class="mob-close-btn" id="mob-close-btn" onclick="closeMob()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <nav class="mob-links">
+        <a href="https://grchetan.github.io/#home" onclick="closeMob()">Home</a>
+        <a href="https://grchetan.github.io/#about" onclick="closeMob()"
+          >About</a
+        >
+        <a href="https://grchetan.github.io/#projects" onclick="closeMob()"
+          >Projects</a
+        >
+        <a href="https://grchetan.github.io/#certs" onclick="closeMob()"
+          >Certs</a
+        >
+        <a href="blog.html" onclick="closeMob()">Blog</a>
+        <a href="https://grchetan.github.io/#contact" onclick="closeMob()"
+          >Contact</a
+        >
+      </nav>
+      <div class="mob-footer">
+        <a
+          href="https://www.instagram.com/chetanprajapat_/"
+          target="_blank"
+          class="mob-social"
+          ><i class="fab fa-instagram"></i
+        ></a>
+        <a
+          href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
+          target="_blank"
+          class="mob-social"
+          ><i class="fab fa-linkedin"></i
+        ></a>
+        <a href="https://github.com/grchetan" target="_blank" class="mob-social"
+          ><i class="fab fa-github"></i
+        ></a>
+        <a
+          href="https://twitter.com/grchetann"
+          target="_blank"
+          class="mob-social"
+          ><i class="fab fa-twitter"></i
+        ></a>
+      </div>
+    </div>
 
-  <!-- ══ Mobile Menu ══ -->
-  <div class="mobile-menu" id="mob-menu">
-    <button class="mob-close-btn" id="mob-close-btn" onclick="closeMob()"><i class="fa-solid fa-xmark"></i></button>
-    <nav class="mob-links">
-      <a href="https://grchetan.github.io/#home" onclick="closeMob()">Home</a>
-      <a href="https://grchetan.github.io/#about" onclick="closeMob()">About</a>
-      <a href="https://grchetan.github.io/#projects" onclick="closeMob()">Projects</a>
-      <a href="https://grchetan.github.io/#certs" onclick="closeMob()">Certs</a>
-      <a href="blog.html" onclick="closeMob()">Blog</a>
-      <a href="https://grchetan.github.io/#contact" onclick="closeMob()">Contact</a>
+    <!-- ══ NAV ══ -->
+    <nav id="main-nav">
+      <div class="nav-inner">
+        <a href="https://grchetan.github.io/" class="nav-logo"
+          >CP<span>.</span></a
+        >
+        <ul class="nav-links">
+          <li><a href="https://grchetan.github.io/#home">Home</a></li>
+          <li><a href="https://grchetan.github.io/#about">About</a></li>
+          <li><a href="https://grchetan.github.io/#projects">Projects</a></li>
+          <li><a href="https://grchetan.github.io/#certs">Certs</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+          <li><a href="https://grchetan.github.io/#contact">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="theme-btn" id="theme-btn" title="Toggle theme">
+            <div class="t-track"><div class="t-knob"></div></div>
+            <span class="t-label" id="t-label">DARK</span>
+          </button>
+          <a href="https://github.com/grchetan" target="_blank" class="nav-cta"
+            >GitHub →</a
+          >
+          <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <div class="ham-line"></div>
+            <div class="ham-line"></div>
+            <div class="ham-line"></div>
+          </button>
+        </div>
+      </div>
     </nav>
-    <div class="mob-footer">
-      <a href="https://www.instagram.com/chetanprajapat_/" target="_blank" class="mob-social"><i class="fab fa-instagram"></i></a>
-      <a href="https://www.linkedin.com/in/chetan-prajapat-58350b285/" target="_blank" class="mob-social"><i class="fab fa-linkedin"></i></a>
-      <a href="https://github.com/grchetan" target="_blank" class="mob-social"><i class="fab fa-github"></i></a>
-      <a href="https://twitter.com/grchetann" target="_blank" class="mob-social"><i class="fab fa-twitter"></i></a>
-    </div>
-  </div>
 
-  <!-- ══ NAV ══ -->
-  <nav id="main-nav">
-    <div class="nav-inner">
-      <a href="https://grchetan.github.io/" class="nav-logo">CP<span>.</span></a>
-      <ul class="nav-links">
-        <li><a href="https://grchetan.github.io/#home">Home</a></li>
-        <li><a href="https://grchetan.github.io/#about">About</a></li>
-        <li><a href="https://grchetan.github.io/#projects">Projects</a></li>
-        <li><a href="https://grchetan.github.io/#certs">Certs</a></li>
-        <li><a href="blog.html" class="active">Blog</a></li>
-        <li><a href="https://grchetan.github.io/#contact">Contact</a></li>
-      </ul>
-      <div class="nav-right">
-        <button class="theme-btn" id="theme-btn" title="Toggle theme">
-          <div class="t-track"><div class="t-knob"></div></div>
-          <span class="t-label" id="t-label">DARK</span>
-        </button>
-        <a href="https://github.com/grchetan" target="_blank" class="nav-cta">GitHub →</a>
-        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-          <div class="ham-line"></div><div class="ham-line"></div><div class="ham-line"></div>
-        </button>
+    <!-- ══ BLOG HERO ══ -->
+    <div class="blog-hero">
+      <div class="container">
+        <div class="rv">
+          <div class="page-tag">Blog</div>
+          <div class="page-title">THOUGHTS<br />&amp; CODE</div>
+          <p class="page-desc">
+            Dev tips, project breakdowns, career stories, and things I learned
+            the hard way. Real content by a real developer.
+          </p>
+        </div>
+        <div class="hero-stats rv d2">
+          <div class="h-stat">
+            <div class="h-stat-num">6</div>
+            <div class="h-stat-label">Posts</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">4</div>
+            <div class="h-stat-label">Topics</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">2K</div>
+            <div class="h-stat-label">Reads</div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <!-- ══ BLOG HERO ══ -->
-  <div class="blog-hero">
+    <!-- ══ CONTENT ══ -->
     <div class="container">
-      <div class="rv">
-        <div class="page-tag">Blog</div>
-        <div class="page-title">THOUGHTS<br/>&amp; CODE</div>
-        <p class="page-desc">Dev tips, project breakdowns, career stories, and things I learned the hard way. Real content by a real developer.</p>
-      </div>
-      <div class="hero-stats rv d2">
-        <div class="h-stat"><div class="h-stat-num">6</div><div class="h-stat-label">Posts</div></div>
-        <div class="h-stat"><div class="h-stat-num">4</div><div class="h-stat-label">Topics</div></div>
-        <div class="h-stat"><div class="h-stat-num">2K</div><div class="h-stat-label">Reads</div></div>
+      <div class="blog-layout">
+        <!-- ── Main Column ── -->
+        <div class="main-col">
+          <!-- Toolbar -->
+          <div class="toolbar rv">
+            <div class="filters" id="filters">
+              <button class="filter-btn active" data-cat="all">All</button>
+              <button class="filter-btn" data-cat="web-dev">Web Dev</button>
+              <button class="filter-btn" data-cat="tips">
+                Tips &amp; Tricks
+              </button>
+              <button class="filter-btn" data-cat="projects">Projects</button>
+              <button class="filter-btn" data-cat="career">Career</button>
+            </div>
+            <div class="search-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input
+                type="text"
+                class="search-input"
+                id="search-input"
+                placeholder="Search posts..."
+              />
+            </div>
+          </div>
+
+          <!-- Featured Post -->
+          <a
+            href="#"
+            class="featured-post rv"
+            data-cat="web-dev"
+            data-title="how i built my portfolio website from scratch"
+          >
+            <div class="featured-content">
+              <div>
+                <div class="feat-cat">Web Dev</div>
+                <div class="feat-title">
+                  How I Built My Portfolio Website From Scratch
+                </div>
+                <p class="feat-excerpt">
+                  A complete breakdown of how I built my personal portfolio —
+                  including the custom cursor trail with canvas, scroll reveal
+                  animations, Google Sheets contact form integration, dark/light
+                  mode toggle, and every premium detail.
+                </p>
+              </div>
+              <div class="feat-meta">
+                <span class="feat-date">March 2026</span>
+                <span class="feat-tag">Web Dev</span>
+                <span class="feat-read">5 min read</span>
+                <div class="feat-arrow">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </div>
+              </div>
+            </div>
+            <div class="featured-img">
+              <div class="fi-bg"></div>
+              <div class="fi-text">&lt;/&gt;</div>
+            </div>
+            <div class="feat-badge">⭐ Featured</div>
+          </a>
+
+          <!-- Blog Grid -->
+          <div class="blog-grid" id="blog-grid">
+            <a
+              href="#"
+              class="blog-card rv d1"
+              data-cat="tips"
+              data-title="10 css tricks every developer should know"
+            >
+              <div class="card-cat-row">
+                <span class="card-cat">Tips &amp; Tricks</span
+                ><span class="card-read">3 min</span>
+              </div>
+              <div class="card-title">
+                10 CSS Tricks Every Developer Should Know
+              </div>
+              <p class="card-excerpt">
+                From glassmorphism to CSS grid magic — tricks that will level up
+                your UI instantly without any extra libraries.
+              </p>
+              <div class="card-footer">
+                <span class="card-date">Feb 2026</span
+                ><span class="card-link"
+                  >Read <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <a
+              href="#"
+              class="blog-card rv d2"
+              data-cat="career"
+              data-title="learning to code in 2025 what actually works"
+            >
+              <div class="card-cat-row">
+                <span class="card-cat">Career</span
+                ><span class="card-read">4 min</span>
+              </div>
+              <div class="card-title">
+                Learning to Code in 2025: What Actually Works
+              </div>
+              <p class="card-excerpt">
+                My honest self-learning experience — what to focus on, what to
+                skip, and how to stay consistent when nobody is watching.
+              </p>
+              <div class="card-footer">
+                <span class="card-date">Jan 2026</span
+                ><span class="card-link"
+                  >Read <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <a
+              href="#"
+              class="blog-card rv d3"
+              data-cat="projects"
+              data-title="building a travel itinerary generator with ai"
+            >
+              <div class="card-cat-row">
+                <span class="card-cat">Projects</span
+                ><span class="card-read">6 min</span>
+              </div>
+              <div class="card-title">
+                Building a Travel Itinerary Generator with AI
+              </div>
+              <p class="card-excerpt">
+                Full project breakdown — idea to deployment. How I integrated AI
+                API into a real web app that users actually love.
+              </p>
+              <div class="card-footer">
+                <span class="card-date">Dec 2025</span
+                ><span class="card-link"
+                  >Read <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <a
+              href="#"
+              class="blog-card rv d1"
+              data-cat="web-dev"
+              data-title="react vs vanilla js when to use what"
+            >
+              <div class="card-cat-row">
+                <span class="card-cat">Web Dev</span
+                ><span class="card-read">4 min</span>
+              </div>
+              <div class="card-title">
+                React vs Vanilla JS: When to Use What
+              </div>
+              <p class="card-excerpt">
+                Not every project needs React. Here's my real breakdown of when
+                plain JS wins — and when React actually makes sense.
+              </p>
+              <div class="card-footer">
+                <span class="card-date">Nov 2025</span
+                ><span class="card-link"
+                  >Read <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <a
+              href="#"
+              class="blog-card rv d2"
+              data-cat="tips"
+              data-title="git commands i use every single day"
+            >
+              <div class="card-cat-row">
+                <span class="card-cat">Tips &amp; Tricks</span
+                ><span class="card-read">2 min</span>
+              </div>
+              <div class="card-title">Git Commands I Use Every Single Day</div>
+              <p class="card-excerpt">
+                Forget the 100-command cheat sheets. These are the 12 Git
+                commands that actually matter in your daily workflow.
+              </p>
+              <div class="card-footer">
+                <span class="card-date">Oct 2025</span
+                ><span class="card-link"
+                  >Read <i class="fa-solid fa-arrow-right"></i
+                ></span>
+              </div>
+            </a>
+
+            <div class="cs-card rv d3" id="cs-card">
+              <div class="cs-icon"><i class="fa-solid fa-pen-nib"></i></div>
+              <div class="cs-title">More Coming Soon</div>
+              <div class="cs-sub">Chetan is writing...</div>
+            </div>
+          </div>
+
+          <div class="no-results" id="no-results">
+            <i class="fa-solid fa-face-meh-blank"></i>
+            <p>No posts found. Try a different search or filter.</p>
+          </div>
+        </div>
+
+        <!-- ── Sidebar ── -->
+        <div class="sidebar">
+          <!-- Newsletter -->
+          <div class="sidebar-card rv">
+            <div class="sidebar-title">STAY UPDATED</div>
+            <p class="sidebar-desc">
+              Get new posts and dev tips in your inbox. No spam, ever.
+            </p>
+            <input
+              type="email"
+              class="sidebar-input"
+              placeholder="your@email.com"
+              id="nl-email"
+            />
+            <button class="sidebar-btn" id="nl-btn">Subscribe →</button>
+          </div>
+
+          <!-- Topics -->
+          <div class="sidebar-card rv d1">
+            <div class="sidebar-title">TOPICS</div>
+            <div class="topic-list">
+              <div class="topic-row" onclick="filterByTopic('web-dev')">
+                <span class="topic-name"
+                  ><i class="fa-solid fa-code"></i> Web Dev</span
+                >
+                <span class="topic-count">2</span>
+              </div>
+              <div class="topic-row" onclick="filterByTopic('tips')">
+                <span class="topic-name"
+                  ><i class="fa-solid fa-lightbulb"></i> Tips &amp; Tricks</span
+                >
+                <span class="topic-count">2</span>
+              </div>
+              <div class="topic-row" onclick="filterByTopic('projects')">
+                <span class="topic-name"
+                  ><i class="fa-solid fa-rocket"></i> Projects</span
+                >
+                <span class="topic-count">1</span>
+              </div>
+              <div class="topic-row" onclick="filterByTopic('career')">
+                <span class="topic-name"
+                  ><i class="fa-solid fa-briefcase"></i> Career</span
+                >
+                <span class="topic-count">1</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Posts -->
+          <div class="sidebar-card rv d2">
+            <div class="sidebar-title">RECENT POSTS</div>
+            <a href="#" class="mini-post"
+              ><div class="mini-num">01</div>
+              <div class="mini-info">
+                <div class="mini-title">
+                  How I Built My Portfolio Website From Scratch
+                </div>
+                <div class="mini-date">March 2026</div>
+              </div></a
+            >
+            <a href="#" class="mini-post"
+              ><div class="mini-num">02</div>
+              <div class="mini-info">
+                <div class="mini-title">
+                  10 CSS Tricks Every Developer Should Know
+                </div>
+                <div class="mini-date">Feb 2026</div>
+              </div></a
+            >
+            <a href="#" class="mini-post"
+              ><div class="mini-num">03</div>
+              <div class="mini-info">
+                <div class="mini-title">
+                  Learning to Code in 2025: What Actually Works
+                </div>
+                <div class="mini-date">Jan 2026</div>
+              </div></a
+            >
+            <a href="#" class="mini-post"
+              ><div class="mini-num">04</div>
+              <div class="mini-info">
+                <div class="mini-title">
+                  Building a Travel Itinerary Generator with AI
+                </div>
+                <div class="mini-date">Dec 2025</div>
+              </div></a
+            >
+          </div>
+
+          <!-- Connect -->
+          <div class="sidebar-card rv d3" style="text-align: center">
+            <div class="sidebar-title">CONNECT</div>
+            <p class="sidebar-desc">Follow me for more dev content.</p>
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                gap: 16px;
+                margin-top: 4px;
+              "
+            >
+              <a
+                href="https://github.com/grchetan"
+                target="_blank"
+                style="
+                  color: var(--text2);
+                  font-size: 20px;
+                  text-decoration: none;
+                  transition: color 0.2s;
+                "
+                ><i class="fab fa-github"></i
+              ></a>
+              <a
+                href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
+                target="_blank"
+                style="
+                  color: var(--text2);
+                  font-size: 20px;
+                  text-decoration: none;
+                  transition: color 0.2s;
+                "
+                ><i class="fab fa-linkedin"></i
+              ></a>
+              <a
+                href="https://twitter.com/grchetann"
+                target="_blank"
+                style="
+                  color: var(--text2);
+                  font-size: 20px;
+                  text-decoration: none;
+                  transition: color 0.2s;
+                "
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a
+                href="https://www.instagram.com/chetanprajapat_/"
+                target="_blank"
+                style="
+                  color: var(--text2);
+                  font-size: 20px;
+                  text-decoration: none;
+                  transition: color 0.2s;
+                "
+                ><i class="fab fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ══ CONTENT ══ -->
-  <div class="container">
-    <div class="blog-layout">
-
-      <!-- ── Main Column ── -->
-      <div class="main-col">
-        <!-- Toolbar -->
-        <div class="toolbar rv">
-          <div class="filters" id="filters">
-            <button class="filter-btn active" data-cat="all">All</button>
-            <button class="filter-btn" data-cat="web-dev">Web Dev</button>
-            <button class="filter-btn" data-cat="tips">Tips &amp; Tricks</button>
-            <button class="filter-btn" data-cat="projects">Projects</button>
-            <button class="filter-btn" data-cat="career">Career</button>
-          </div>
-          <div class="search-wrap">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" class="search-input" id="search-input" placeholder="Search posts..." />
-          </div>
-        </div>
-
-        <!-- Featured Post -->
-        <a href="#" class="featured-post rv" data-cat="web-dev" data-title="how i built my portfolio website from scratch">
-          <div class="featured-content">
-            <div>
-              <div class="feat-cat">Web Dev</div>
-              <div class="feat-title">How I Built My Portfolio Website From Scratch</div>
-              <p class="feat-excerpt">A complete breakdown of how I built my personal portfolio — including the custom cursor trail with canvas, scroll reveal animations, Google Sheets contact form integration, dark/light mode toggle, and every premium detail.</p>
-            </div>
-            <div class="feat-meta">
-              <span class="feat-date">March 2026</span>
-              <span class="feat-tag">Web Dev</span>
-              <span class="feat-read">5 min read</span>
-              <div class="feat-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-            </div>
-          </div>
-          <div class="featured-img"><div class="fi-bg"></div><div class="fi-text">&lt;/&gt;</div></div>
-          <div class="feat-badge">⭐ Featured</div>
-        </a>
-
-        <!-- Blog Grid -->
-        <div class="blog-grid" id="blog-grid">
-          <a href="#" class="blog-card rv d1" data-cat="tips" data-title="10 css tricks every developer should know">
-            <div class="card-cat-row"><span class="card-cat">Tips &amp; Tricks</span><span class="card-read">3 min</span></div>
-            <div class="card-title">10 CSS Tricks Every Developer Should Know</div>
-            <p class="card-excerpt">From glassmorphism to CSS grid magic — tricks that will level up your UI instantly without any extra libraries.</p>
-            <div class="card-footer"><span class="card-date">Feb 2026</span><span class="card-link">Read <i class="fa-solid fa-arrow-right"></i></span></div>
-          </a>
-
-          <a href="#" class="blog-card rv d2" data-cat="career" data-title="learning to code in 2025 what actually works">
-            <div class="card-cat-row"><span class="card-cat">Career</span><span class="card-read">4 min</span></div>
-            <div class="card-title">Learning to Code in 2025: What Actually Works</div>
-            <p class="card-excerpt">My honest self-learning experience — what to focus on, what to skip, and how to stay consistent when nobody is watching.</p>
-            <div class="card-footer"><span class="card-date">Jan 2026</span><span class="card-link">Read <i class="fa-solid fa-arrow-right"></i></span></div>
-          </a>
-
-          <a href="#" class="blog-card rv d3" data-cat="projects" data-title="building a travel itinerary generator with ai">
-            <div class="card-cat-row"><span class="card-cat">Projects</span><span class="card-read">6 min</span></div>
-            <div class="card-title">Building a Travel Itinerary Generator with AI</div>
-            <p class="card-excerpt">Full project breakdown — idea to deployment. How I integrated AI API into a real web app that users actually love.</p>
-            <div class="card-footer"><span class="card-date">Dec 2025</span><span class="card-link">Read <i class="fa-solid fa-arrow-right"></i></span></div>
-          </a>
-
-          <a href="#" class="blog-card rv d1" data-cat="web-dev" data-title="react vs vanilla js when to use what">
-            <div class="card-cat-row"><span class="card-cat">Web Dev</span><span class="card-read">4 min</span></div>
-            <div class="card-title">React vs Vanilla JS: When to Use What</div>
-            <p class="card-excerpt">Not every project needs React. Here's my real breakdown of when plain JS wins — and when React actually makes sense.</p>
-            <div class="card-footer"><span class="card-date">Nov 2025</span><span class="card-link">Read <i class="fa-solid fa-arrow-right"></i></span></div>
-          </a>
-
-          <a href="#" class="blog-card rv d2" data-cat="tips" data-title="git commands i use every single day">
-            <div class="card-cat-row"><span class="card-cat">Tips &amp; Tricks</span><span class="card-read">2 min</span></div>
-            <div class="card-title">Git Commands I Use Every Single Day</div>
-            <p class="card-excerpt">Forget the 100-command cheat sheets. These are the 12 Git commands that actually matter in your daily workflow.</p>
-            <div class="card-footer"><span class="card-date">Oct 2025</span><span class="card-link">Read <i class="fa-solid fa-arrow-right"></i></span></div>
-          </a>
-
-          <div class="cs-card rv d3" id="cs-card">
-            <div class="cs-icon"><i class="fa-solid fa-pen-nib"></i></div>
-            <div class="cs-title">More Coming Soon</div>
-            <div class="cs-sub">Chetan is writing...</div>
-          </div>
-        </div>
-
-        <div class="no-results" id="no-results">
-          <i class="fa-solid fa-face-meh-blank"></i>
-          <p>No posts found. Try a different search or filter.</p>
-        </div>
+    <!-- ══ FOOTER ══ -->
+    <footer>
+      <div class="ft-inner">
+        <a href="https://grchetan.github.io/" class="ft-logo"
+          >CP<span>.</span></a
+        >
+        <p class="ft-copy">
+          © <span id="yr"></span> Chetan Prajapat. All rights reserved.
+        </p>
+        <a href="https://grchetan.github.io/" class="ft-back"
+          >← Back to Portfolio</a
+        >
       </div>
+    </footer>
 
-      <!-- ── Sidebar ── -->
-      <div class="sidebar">
-        <!-- Newsletter -->
-        <div class="sidebar-card rv">
-          <div class="sidebar-title">STAY UPDATED</div>
-          <p class="sidebar-desc">Get new posts and dev tips in your inbox. No spam, ever.</p>
-          <input type="email" class="sidebar-input" placeholder="your@email.com" id="nl-email" />
-          <button class="sidebar-btn" id="nl-btn">Subscribe →</button>
-        </div>
+    <a href="#" class="top-btn" id="top-btn"
+      ><i class="fa-solid fa-arrow-up"></i
+    ></a>
 
-        <!-- Topics -->
-        <div class="sidebar-card rv d1">
-          <div class="sidebar-title">TOPICS</div>
-          <div class="topic-list">
-            <div class="topic-row" onclick="filterByTopic('web-dev')">
-              <span class="topic-name"><i class="fa-solid fa-code"></i> Web Dev</span>
-              <span class="topic-count">2</span>
-            </div>
-            <div class="topic-row" onclick="filterByTopic('tips')">
-              <span class="topic-name"><i class="fa-solid fa-lightbulb"></i> Tips &amp; Tricks</span>
-              <span class="topic-count">2</span>
-            </div>
-            <div class="topic-row" onclick="filterByTopic('projects')">
-              <span class="topic-name"><i class="fa-solid fa-rocket"></i> Projects</span>
-              <span class="topic-count">1</span>
-            </div>
-            <div class="topic-row" onclick="filterByTopic('career')">
-              <span class="topic-name"><i class="fa-solid fa-briefcase"></i> Career</span>
-              <span class="topic-count">1</span>
-            </div>
-          </div>
-        </div>
+    <script>
+      // ── Year ──
+      document.getElementById('yr').textContent = new Date().getFullYear();
 
-        <!-- Recent Posts -->
-        <div class="sidebar-card rv d2">
-          <div class="sidebar-title">RECENT POSTS</div>
-          <a href="#" class="mini-post"><div class="mini-num">01</div><div class="mini-info"><div class="mini-title">How I Built My Portfolio Website From Scratch</div><div class="mini-date">March 2026</div></div></a>
-          <a href="#" class="mini-post"><div class="mini-num">02</div><div class="mini-info"><div class="mini-title">10 CSS Tricks Every Developer Should Know</div><div class="mini-date">Feb 2026</div></div></a>
-          <a href="#" class="mini-post"><div class="mini-num">03</div><div class="mini-info"><div class="mini-title">Learning to Code in 2025: What Actually Works</div><div class="mini-date">Jan 2026</div></div></a>
-          <a href="#" class="mini-post"><div class="mini-num">04</div><div class="mini-info"><div class="mini-title">Building a Travel Itinerary Generator with AI</div><div class="mini-date">Dec 2025</div></div></a>
-        </div>
-
-        <!-- Connect -->
-        <div class="sidebar-card rv d3" style="text-align:center;">
-          <div class="sidebar-title">CONNECT</div>
-          <p class="sidebar-desc">Follow me for more dev content.</p>
-          <div style="display:flex;justify-content:center;gap:16px;margin-top:4px;">
-            <a href="https://github.com/grchetan" target="_blank" style="color:var(--text2);font-size:20px;text-decoration:none;transition:color .2s;"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/chetan-prajapat-58350b285/" target="_blank" style="color:var(--text2);font-size:20px;text-decoration:none;transition:color .2s;"><i class="fab fa-linkedin"></i></a>
-            <a href="https://twitter.com/grchetann" target="_blank" style="color:var(--text2);font-size:20px;text-decoration:none;transition:color .2s;"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.instagram.com/chetanprajapat_/" target="_blank" style="color:var(--text2);font-size:20px;text-decoration:none;transition:color .2s;"><i class="fab fa-instagram"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══ FOOTER ══ -->
-  <footer>
-    <div class="ft-inner">
-      <a href="https://grchetan.github.io/" class="ft-logo">CP<span>.</span></a>
-      <p class="ft-copy">© <span id="yr"></span> Chetan Prajapat. All rights reserved.</p>
-      <a href="https://grchetan.github.io/" class="ft-back">← Back to Portfolio</a>
-    </div>
-  </footer>
-
-  <a href="#" class="top-btn" id="top-btn"><i class="fa-solid fa-arrow-up"></i></a>
-
-  <script>
-    // ── Year ──
-    document.getElementById('yr').textContent = new Date().getFullYear();
-
-    // ── Theme (syncs with main portfolio localStorage) ──
-    const html = document.documentElement;
-    const themeBtn = document.getElementById('theme-btn');
-    const tLabel = document.getElementById('t-label');
-    const sv = localStorage.getItem('cp-theme') || 'dark';
-    html.setAttribute('data-theme', sv);
-    tLabel.textContent = sv === 'dark' ? 'DARK' : 'LIGHT';
-    themeBtn.addEventListener('click', () => {
-      const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', n);
-      localStorage.setItem('cp-theme', n);
-      tLabel.textContent = n === 'dark' ? 'DARK' : 'LIGHT';
-    });
-
-    // ── Hamburger ──
-    const ham = document.getElementById('hamburger');
-    const mob = document.getElementById('mob-menu');
-    function closeMob() { ham.classList.remove('open'); mob.classList.remove('open'); document.body.style.overflow = ''; }
-    ham.addEventListener('click', e => {
-      e.stopPropagation();
-      const isOpen = mob.classList.toggle('open');
-      ham.classList.toggle('open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-    });
-    document.addEventListener('click', e => { if (mob.classList.contains('open') && !mob.contains(e.target) && !ham.contains(e.target)) closeMob(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMob(); });
-
-    // ── Nav scroll ──
-    window.addEventListener('scroll', () => {
-      document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 50);
-      document.getElementById('top-btn').classList.toggle('show', window.scrollY > 350);
-    });
-
-    // ── Scroll Reveal ──
-    const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); }), { threshold: 0.07 });
-    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
-
-    // ── Card Glow ──
-    document.querySelectorAll('.blog-card').forEach(c => {
-      c.addEventListener('mousemove', e => {
-        const r = c.getBoundingClientRect();
-        c.style.setProperty('--mx', ((e.clientX - r.left) / r.width) * 100 + '%');
-        c.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%');
+      // ── Theme (syncs with main portfolio localStorage) ──
+      const html = document.documentElement;
+      const themeBtn = document.getElementById('theme-btn');
+      const tLabel = document.getElementById('t-label');
+      const sv = localStorage.getItem('cp-theme') || 'dark';
+      html.setAttribute('data-theme', sv);
+      tLabel.textContent = sv === 'dark' ? 'DARK' : 'LIGHT';
+      themeBtn.addEventListener('click', () => {
+        const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', n);
+        localStorage.setItem('cp-theme', n);
+        tLabel.textContent = n === 'dark' ? 'DARK' : 'LIGHT';
       });
-    });
 
-    // ── Filter Logic ──
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('[data-cat]');
-    const noResults = document.getElementById('no-results');
-    const csCard = document.getElementById('cs-card');
-    let currentCat = 'all', searchVal = '';
-
-    function applyFilters() {
-      let visible = 0;
-      cards.forEach(card => {
-        if (card === csCard) return;
-        const catMatch = currentCat === 'all' || card.getAttribute('data-cat') === currentCat;
-        const searchMatch = searchVal === '' || (card.getAttribute('data-title') || '').toLowerCase().includes(searchVal);
-        const show = catMatch && searchMatch;
-        card.style.display = show ? '' : 'none';
-        if (show) visible++;
+      // ── Hamburger ──
+      const ham = document.getElementById('hamburger');
+      const mob = document.getElementById('mob-menu');
+      function closeMob() {
+        ham.classList.remove('open');
+        mob.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+      ham.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = mob.classList.toggle('open');
+        ham.classList.toggle('open', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
       });
-      noResults.classList.toggle('show', visible === 0);
-      csCard.style.display = (visible > 0 && currentCat === 'all' && searchVal === '') ? '' : 'none';
-    }
+      document.addEventListener('click', (e) => {
+        if (
+          mob.classList.contains('open') &&
+          !mob.contains(e.target) &&
+          !ham.contains(e.target)
+        )
+          closeMob();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMob();
+      });
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentCat = btn.getAttribute('data-cat');
+      // ── Nav scroll ──
+      window.addEventListener('scroll', () => {
+        document
+          .getElementById('main-nav')
+          .classList.toggle('scrolled', window.scrollY > 50);
+        document
+          .getElementById('top-btn')
+          .classList.toggle('show', window.scrollY > 350);
+      });
+
+      // ── Scroll Reveal ──
+      const obs = new IntersectionObserver(
+        (es) =>
+          es.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add('on');
+          }),
+        { threshold: 0.07 },
+      );
+      document.querySelectorAll('.rv').forEach((el) => obs.observe(el));
+
+      // ── Card Glow ──
+      document.querySelectorAll('.blog-card').forEach((c) => {
+        c.addEventListener('mousemove', (e) => {
+          const r = c.getBoundingClientRect();
+          c.style.setProperty(
+            '--mx',
+            ((e.clientX - r.left) / r.width) * 100 + '%',
+          );
+          c.style.setProperty(
+            '--my',
+            ((e.clientY - r.top) / r.height) * 100 + '%',
+          );
+        });
+      });
+
+      // ── Filter Logic ──
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('[data-cat]');
+      const noResults = document.getElementById('no-results');
+      const csCard = document.getElementById('cs-card');
+      let currentCat = 'all',
+        searchVal = '';
+
+      function applyFilters() {
+        let visible = 0;
+        cards.forEach((card) => {
+          if (card === csCard) return;
+          const catMatch =
+            currentCat === 'all' ||
+            card.getAttribute('data-cat') === currentCat;
+          const searchMatch =
+            searchVal === '' ||
+            (card.getAttribute('data-title') || '')
+              .toLowerCase()
+              .includes(searchVal);
+          const show = catMatch && searchMatch;
+          card.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        noResults.classList.toggle('show', visible === 0);
+        csCard.style.display =
+          visible > 0 && currentCat === 'all' && searchVal === '' ? '' : 'none';
+      }
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCat = btn.getAttribute('data-cat');
+          applyFilters();
+        });
+      });
+
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchVal = e.target.value.toLowerCase().trim();
         applyFilters();
       });
-    });
 
-    document.getElementById('search-input').addEventListener('input', e => {
-      searchVal = e.target.value.toLowerCase().trim();
-      applyFilters();
-    });
-
-    function filterByTopic(cat) {
-      currentCat = cat;
-      filterBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-cat') === cat));
-      applyFilters();
-      document.querySelector('.main-col').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // ── Toast ──
-    function toast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3500);
-    }
-
-    // ── Newsletter ──
-    document.getElementById('nl-btn').addEventListener('click', () => {
-      const email = document.getElementById('nl-email').value.trim();
-      if (!email || !email.includes('@')) { toast('⚠️ Enter a valid email!'); return; }
-      toast('✅ Subscribed! Thanks for joining.');
-      document.getElementById('nl-email').value = '';
-    });
-
-    // ── Cursor Trail ──
-    (function() {
-      const canvas = document.getElementById('cursor-canvas');
-      const ctx = canvas.getContext('2d');
-      const dot = document.getElementById('cursor-dot');
-      let W, H;
-      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-      resize();
-      window.addEventListener('resize', resize);
-      const mouse = { x: -999, y: -999 };
-      const DOTS = 18;
-      const trail = Array.from({ length: DOTS }, () => ({ x: -999, y: -999 }));
-      const parts = [];
-      let hue = 0, frame = 0;
-      window.addEventListener('mousemove', e => {
-        mouse.x = e.clientX; mouse.y = e.clientY;
-        dot.style.left = e.clientX + 'px'; dot.style.top = e.clientY + 'px';
-        if (trail[0].x === -999) trail.forEach(t => { t.x = e.clientX; t.y = e.clientY; });
-      });
-      window.addEventListener('mousedown', e => { for (let i = 0; i < 12; i++) parts.push(newDot(e.clientX, e.clientY)); });
-      function newDot(x, y) {
-        const a = Math.random() * Math.PI * 2, s = 0.8 + Math.random() * 1.8;
-        return { x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s-0.5, life:1, decay:0.028+Math.random()*0.02, r:1.5+Math.random()*2, hue:hue+Math.random()*40-20 };
+      function filterByTopic(cat) {
+        currentCat = cat;
+        filterBtns.forEach((b) =>
+          b.classList.toggle('active', b.getAttribute('data-cat') === cat),
+        );
+        applyFilters();
+        document
+          .querySelector('.main-col')
+          .scrollIntoView({ behavior: 'smooth' });
       }
-      function render() {
-        requestAnimationFrame(render);
-        hue = (hue + 0.8) % 360; frame++;
-        ctx.clearRect(0, 0, W, H);
-        trail[0].x += (mouse.x - trail[0].x) * 0.5;
-        trail[0].y += (mouse.y - trail[0].y) * 0.5;
-        for (let i = 1; i < DOTS; i++) { trail[i].x += (trail[i-1].x - trail[i].x)*0.45; trail[i].y += (trail[i-1].y - trail[i].y)*0.45; }
-        ctx.lineJoin = 'round'; ctx.lineCap = 'round';
-        for (let i = 1; i < DOTS; i++) {
-          const t = 1 - i/DOTS, h = (hue + i*8) % 360;
-          ctx.beginPath(); ctx.moveTo(trail[i-1].x, trail[i-1].y); ctx.lineTo(trail[i].x, trail[i].y);
-          ctx.strokeStyle = `hsla(${h},100%,65%,${t*0.85})`; ctx.lineWidth = t*5;
-          ctx.shadowColor = `hsla(${h},100%,70%,0.6)`; ctx.shadowBlur = 8; ctx.stroke();
-        }
-        const dx = trail[0].x - trail[1].x, dy = trail[0].y - trail[1].y;
-        if (Math.sqrt(dx*dx+dy*dy) > 2 && parts.length < 40 && frame%2===0) parts.push(newDot(mouse.x, mouse.y));
-        ctx.shadowBlur = 0;
-        for (let i = parts.length-1; i >= 0; i--) {
-          const p = parts[i];
-          p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.vx *= 0.98; p.life -= p.decay;
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2);
-          ctx.fillStyle = `hsla(${p.hue},100%,70%,${p.life*0.8})`; ctx.fill();
-          if (p.life <= 0) parts.splice(i, 1);
-        }
-        ctx.shadowBlur = 0;
+
+      // ── Toast ──
+      function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
       }
-      render();
-      document.querySelectorAll('a,button,.blog-card,.sidebar-card,.topic-row,.mini-post,.filter-btn').forEach(el => {
-        el.addEventListener('mouseenter', () => { dot.style.transform = 'translate(-50%,-50%) scale(2.4)'; });
-        el.addEventListener('mouseleave', () => { dot.style.transform = 'translate(-50%,-50%) scale(1)'; });
+
+      // ── Newsletter ──
+      document.getElementById('nl-btn').addEventListener('click', () => {
+        const email = document.getElementById('nl-email').value.trim();
+        if (!email || !email.includes('@')) {
+          toast('⚠️ Enter a valid email!');
+          return;
+        }
+        toast('✅ Subscribed! Thanks for joining.');
+        document.getElementById('nl-email').value = '';
       });
-    })();
-  </script>
-</body>
+
+      // ── Cursor Trail ──
+      (function () {
+        const canvas = document.getElementById('cursor-canvas');
+        const ctx = canvas.getContext('2d');
+        const dot = document.getElementById('cursor-dot');
+        let W, H;
+        function resize() {
+          W = canvas.width = window.innerWidth;
+          H = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        const mouse = { x: -999, y: -999 };
+        const DOTS = 18;
+        const trail = Array.from({ length: DOTS }, () => ({
+          x: -999,
+          y: -999,
+        }));
+        const parts = [];
+        let hue = 0,
+          frame = 0;
+        window.addEventListener('mousemove', (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+          dot.style.left = e.clientX + 'px';
+          dot.style.top = e.clientY + 'px';
+          if (trail[0].x === -999)
+            trail.forEach((t) => {
+              t.x = e.clientX;
+              t.y = e.clientY;
+            });
+        });
+        window.addEventListener('mousedown', (e) => {
+          for (let i = 0; i < 12; i++) parts.push(newDot(e.clientX, e.clientY));
+        });
+        function newDot(x, y) {
+          const a = Math.random() * Math.PI * 2,
+            s = 0.8 + Math.random() * 1.8;
+          return {
+            x,
+            y,
+            vx: Math.cos(a) * s,
+            vy: Math.sin(a) * s - 0.5,
+            life: 1,
+            decay: 0.028 + Math.random() * 0.02,
+            r: 1.5 + Math.random() * 2,
+            hue: hue + Math.random() * 40 - 20,
+          };
+        }
+        function render() {
+          requestAnimationFrame(render);
+          hue = (hue + 0.8) % 360;
+          frame++;
+          ctx.clearRect(0, 0, W, H);
+          trail[0].x += (mouse.x - trail[0].x) * 0.5;
+          trail[0].y += (mouse.y - trail[0].y) * 0.5;
+          for (let i = 1; i < DOTS; i++) {
+            trail[i].x += (trail[i - 1].x - trail[i].x) * 0.45;
+            trail[i].y += (trail[i - 1].y - trail[i].y) * 0.45;
+          }
+          ctx.lineJoin = 'round';
+          ctx.lineCap = 'round';
+          for (let i = 1; i < DOTS; i++) {
+            const t = 1 - i / DOTS,
+              h = (hue + i * 8) % 360;
+            ctx.beginPath();
+            ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+            ctx.lineTo(trail[i].x, trail[i].y);
+            ctx.strokeStyle = `hsla(${h},100%,65%,${t * 0.85})`;
+            ctx.lineWidth = t * 5;
+            ctx.shadowColor = `hsla(${h},100%,70%,0.6)`;
+            ctx.shadowBlur = 8;
+            ctx.stroke();
+          }
+          const dx = trail[0].x - trail[1].x,
+            dy = trail[0].y - trail[1].y;
+          if (
+            Math.sqrt(dx * dx + dy * dy) > 2 &&
+            parts.length < 40 &&
+            frame % 2 === 0
+          )
+            parts.push(newDot(mouse.x, mouse.y));
+          ctx.shadowBlur = 0;
+          for (let i = parts.length - 1; i >= 0; i--) {
+            const p = parts[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.04;
+            p.vx *= 0.98;
+            p.life -= p.decay;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${p.hue},100%,70%,${p.life * 0.8})`;
+            ctx.fill();
+            if (p.life <= 0) parts.splice(i, 1);
+          }
+          ctx.shadowBlur = 0;
+        }
+        render();
+        document
+          .querySelectorAll(
+            'a,button,.blog-card,.sidebar-card,.topic-row,.mini-post,.filter-btn',
+          )
+          .forEach((el) => {
+            el.addEventListener('mouseenter', () => {
+              dot.style.transform = 'translate(-50%,-50%) scale(2.4)';
+            });
+            el.addEventListener('mouseleave', () => {
+              dot.style.transform = 'translate(-50%,-50%) scale(1)';
+            });
+          });
+      })();
+    </script>
+  </body>
 </html>
