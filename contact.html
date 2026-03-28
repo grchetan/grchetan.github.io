@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Chetan Prajapat — Full Stack Developer</title>
+    <meta
+      name="description"
+      content="Get in touch with Chetan Prajapat for freelance, internship, or full-time opportunities."
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root,
+      [data-theme='dark'] {
+        --bg: #080808;
+        --bg-nav: rgba(8, 8, 8, 0.92);
+        --bg-card: rgba(255, 255, 255, 0.04);
+        --bg-card-h: rgba(255, 255, 255, 0.07);
+        --bg-input: rgba(255, 255, 255, 0.05);
+        --bg-input-f: rgba(255, 255, 255, 0.08);
+        --bg-info: rgba(255, 255, 255, 0.03);
+        --border: rgba(255, 255, 255, 0.08);
+        --border-h: rgba(255, 255, 255, 0.2);
+        --border-nav: rgba(255, 255, 255, 0.07);
+        --border-input: rgba(255, 255, 255, 0.1);
+        --border-inp-f: rgba(255, 255, 255, 0.35);
+        --text: #ffffff;
+        --text-muted: rgba(255, 255, 255, 0.45);
+        --text-dim: rgba(255, 255, 255, 0.3);
+        --text-mid: rgba(255, 255, 255, 0.55);
+        --text-strong: rgba(255, 255, 255, 0.8);
+        --text-label: rgba(255, 255, 255, 0.6);
+        --text-footer: rgba(255, 255, 255, 0.25);
+        --grid-line: rgba(255, 255, 255, 0.025);
+        --logo-dot: rgba(255, 255, 255, 0.4);
+        --hero-grad: linear-gradient(180deg, #fff 0%, #444 100%);
+        --btn-fill-bg: #ffffff;
+        --btn-fill-cl: #000000;
+        --btn-fill-h: #dddddd;
+        --toggle-bg: rgba(255, 255, 255, 0.08);
+        --toggle-bd: rgba(255, 255, 255, 0.15);
+        --toggle-ico: rgba(255, 255, 255, 0.7);
+        --placeholder: rgba(255, 255, 255, 0.2);
+        --icon-info: rgba(255, 255, 255, 0.5);
+        --success-bg: rgba(74, 222, 128, 0.1);
+        --success-bd: rgba(74, 222, 128, 0.3);
+        --success-cl: #4ade80;
+        --err-bg: rgba(248, 113, 113, 0.1);
+        --err-bd: rgba(248, 113, 113, 0.3);
+        --err-cl: #f87171;
+      }
+
+      [data-theme='light'] {
+        --bg: #f4f4f0;
+        --bg-nav: rgba(244, 244, 240, 0.92);
+        --bg-card: rgba(0, 0, 0, 0.04);
+        --bg-card-h: rgba(0, 0, 0, 0.07);
+        --bg-input: rgba(255, 255, 255, 0.7);
+        --bg-input-f: rgba(255, 255, 255, 0.95);
+        --bg-info: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.1);
+        --border-h: rgba(0, 0, 0, 0.25);
+        --border-nav: rgba(0, 0, 0, 0.08);
+        --border-input: rgba(0, 0, 0, 0.12);
+        --border-inp-f: rgba(0, 0, 0, 0.4);
+        --text: #0a0a0a;
+        --text-muted: rgba(0, 0, 0, 0.5);
+        --text-dim: rgba(0, 0, 0, 0.35);
+        --text-mid: rgba(0, 0, 0, 0.55);
+        --text-strong: rgba(0, 0, 0, 0.85);
+        --text-label: rgba(0, 0, 0, 0.65);
+        --text-footer: rgba(0, 0, 0, 0.3);
+        --grid-line: rgba(0, 0, 0, 0.06);
+        --logo-dot: rgba(0, 0, 0, 0.35);
+        --hero-grad: linear-gradient(180deg, #111 0%, #555 100%);
+        --btn-fill-bg: #0a0a0a;
+        --btn-fill-cl: #ffffff;
+        --btn-fill-h: #333333;
+        --toggle-bg: rgba(0, 0, 0, 0.07);
+        --toggle-bd: rgba(0, 0, 0, 0.15);
+        --toggle-ico: rgba(0, 0, 0, 0.6);
+        --placeholder: rgba(0, 0, 0, 0.25);
+        --icon-info: rgba(0, 0, 0, 0.4);
+        --success-bg: rgba(22, 163, 74, 0.08);
+        --success-bd: rgba(22, 163, 74, 0.25);
+        --success-cl: #16a34a;
+        --err-bg: rgba(220, 38, 38, 0.07);
+        --err-bd: rgba(220, 38, 38, 0.25);
+        --err-cl: #dc2626;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
+      }
+
+      .bg-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background-image:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 60px 60px;
+      }
+
+      /* ─── NAV ─── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg-nav);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border-nav);
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .nav-logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 26px;
+        color: var(--text);
+        text-decoration: none;
+        letter-spacing: 2px;
+      }
+      .nav-logo span {
+        color: var(--logo-dot);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .nav-back {
+        font-size: 13px;
+        color: var(--text-mid);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .nav-back:hover {
+        color: var(--text);
+      }
+
+      .theme-toggle {
+        width: 38px;
+        height: 38px;
+        background: var(--toggle-bg);
+        border: 1px solid var(--toggle-bd);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.25s;
+        color: var(--toggle-ico);
+        font-size: 15px;
+      }
+      .theme-toggle:hover {
+        background: var(--bg-card-h);
+        border-color: var(--border-h);
+        transform: rotate(15deg) scale(1.05);
+      }
+      [data-theme='dark'] .icon-sun {
+        display: none;
+      }
+      [data-theme='dark'] .icon-moon {
+        display: block;
+      }
+      [data-theme='light'] .icon-sun {
+        display: block;
+      }
+      [data-theme='light'] .icon-moon {
+        display: none;
+      }
+
+      /* ─── CONTAINER ─── */
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 70px 24px 100px;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* ─── HEADER ─── */
+      .page-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--text-mid);
+        text-transform: uppercase;
+        margin-bottom: 28px;
+      }
+      .page-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(52px, 12vw, 110px);
+        line-height: 0.92;
+        letter-spacing: 3px;
+        margin-bottom: 18px;
+        background: var(--hero-grad);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .page-desc {
+        font-size: 16px;
+        color: var(--text-muted);
+        line-height: 1.8;
+        max-width: 520px;
+        margin-bottom: 60px;
+      }
+      .page-desc strong {
+        color: var(--text-strong);
+      }
+
+      /* ─── LAYOUT ─── */
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 32px;
+        align-items: start;
+      }
+      @media (max-width: 720px) {
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+        .contact-info {
+          order: 2;
+        }
+      }
+
+      /* ─── FORM ─── */
+      .form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 36px 32px;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .form-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 22px;
+        letter-spacing: 2px;
+        margin-bottom: 28px;
+        color: var(--text);
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--text-label);
+        margin-bottom: 8px;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 13px 16px;
+        background: var(--bg-input);
+        border: 1px solid var(--border-input);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition:
+          background 0.2s,
+          border-color 0.2s,
+          box-shadow 0.2s;
+        -webkit-appearance: none;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--placeholder);
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        background: var(--bg-input-f);
+        border-color: var(--border-inp-f);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+      }
+      [data-theme='light'] input:focus,
+      [data-theme='light'] select:focus,
+      [data-theme='light'] textarea:focus {
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+      }
+      textarea {
+        resize: vertical;
+        min-height: 130px;
+        line-height: 1.6;
+      }
+      select {
+        cursor: pointer;
+      }
+      /* custom select arrow */
+      .select-wrap {
+        position: relative;
+      }
+      .select-wrap::after {
+        content: '\f107';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-mid);
+        pointer-events: none;
+        font-size: 13px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 500px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--btn-fill-bg);
+        color: var(--btn-fill-cl);
+        border: none;
+        border-radius: 8px;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      .submit-btn:hover {
+        background: var(--btn-fill-h);
+        transform: translateY(-2px);
+      }
+      .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* Alerts */
+      .alert {
+        display: none;
+        padding: 14px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        border: 1px solid;
+        align-items: center;
+        gap: 10px;
+      }
+      .alert.show {
+        display: flex;
+      }
+      .alert-success {
+        background: var(--success-bg);
+        border-color: var(--success-bd);
+        color: var(--success-cl);
+      }
+      .alert-error {
+        background: var(--err-bg);
+        border-color: var(--err-bd);
+        color: var(--err-cl);
+      }
+
+      /* ─── INFO SIDEBAR ─── */
+      .sec-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 12px;
+        letter-spacing: 3px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        background: var(--bg-info);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+        text-decoration: none;
+        color: inherit;
+      }
+      a.info-item:hover {
+        border-color: var(--border-h);
+        background: var(--bg-card-h);
+      }
+      .info-ico {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: var(--icon-info);
+        transition:
+          background 0.3s,
+          border-color 0.3s,
+          color 0.3s;
+      }
+      .info-label {
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-bottom: 3px;
+      }
+      .info-val {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-strong);
+      }
+
+      .avail-card {
+        background: var(--bg-info);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 32px;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .avail-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .avail-dot {
+        width: 7px;
+        height: 7px;
+        background: #4ade80;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+        flex-shrink: 0;
+      }
+      .avail-status {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .avail-detail {
+        font-size: 12px;
+        color: var(--text-dim);
+        line-height: 1.6;
+      }
+
+      .social-row {
+        display: flex;
+        gap: 10px;
+      }
+      .social-btn {
+        flex: 1;
+        padding: 11px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--text-mid);
+        font-size: 16px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .social-btn:hover {
+        border-color: var(--border-h);
+        color: var(--text);
+        transform: translateY(-2px);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        border-top: 1px solid var(--border-nav);
+        padding: 28px 24px;
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-footer);
+        position: relative;
+        z-index: 2;
+        transition:
+          border-color 0.3s,
+          color 0.3s;
+      }
+      footer a {
+        color: var(--text-mid);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      footer a:hover {
+        color: var(--text);
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* spinner */
+      .spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      [data-theme='light'] .spinner {
+        border-color: rgba(255, 255, 255, 0.3);
+        border-top-color: currentColor;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+
+    <nav>
+      <a href="https://grchetan.github.io/" class="nav-logo"
+        >CP<span>.</span></a
+      >
+      <div class="nav-right">
+        <button
+          class="theme-toggle"
+          id="themeToggle"
+          title="Toggle theme"
+          aria-label="Toggle dark/light mode"
+        >
+          <i class="fa-solid fa-sun icon-sun"></i>
+          <i class="fa-solid fa-moon icon-moon"></i>
+        </button>
+        <a href="hire.html" class="nav-back">← Hire Me</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="page-chip">
+        <i class="fa-solid fa-envelope" style="font-size: 10px"></i>&nbsp; Get
+        In Touch
+      </div>
+      <div class="page-title">LET'S<br />TALK.</div>
+      <p class="page-desc">
+        Have a project in mind? Looking for a <strong>developer</strong> or
+        <strong>video editor</strong>?<br />
+        Fill out the form and I'll get back to you within 24 hours.
+      </p>
+
+      <div class="contact-grid">
+        <!-- FORM -->
+        <div class="form-card">
+          <div class="form-title">SEND A MESSAGE</div>
+
+          <div class="alert alert-success" id="successMsg">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Message sent! I'll reply within 24 hours.</span>
+          </div>
+          <div class="alert alert-error" id="errorMsg">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Something went wrong. Please email me directly.</span>
+          </div>
+
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fname">Your Name *</label>
+                <input
+                  type="text"
+                  id="fname"
+                  name="name"
+                  placeholder="Rahul Sharma"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="rahul@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="purpose">Purpose *</label>
+              <div class="select-wrap">
+                <select id="purpose" name="purpose" required>
+                  <option value="" disabled selected>Select Purpose...</option>
+                  <option value="Hiring">Hiring (HR)</option>
+                  <option value="Freelance">Freelance Project</option>
+                  <option value="Collab">Collaboration</option>
+                  <option value="Internship">Internship</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="budget"
+                >Budget
+                <span style="opacity: 0.5; font-size: 11px"
+                  >(optional)</span
+                ></label
+              >
+              <input
+                type="text"
+                id="budget"
+                name="budget"
+                placeholder="e.g. ₹5000 / $200 / Unpaid"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Hey Chetan, I'd love to work with you on..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+              <span id="btnText">Send Message →</span>
+              <span class="spinner" id="spinner"></span>
+            </button>
+            <p
+              style="
+                text-align: center;
+                font-size: 11px;
+                color: var(--text-dim);
+                margin-top: 12px;
+              "
+            >
+              <i class="fa-solid fa-shield-check"></i> Saves directly to Google
+              Sheet
+            </p>
+          </form>
+        </div>
+
+        <!-- INFO SIDEBAR -->
+        <div class="contact-info">
+          <div class="sec-title">Availability</div>
+          <div class="avail-card">
+            <div class="avail-row">
+              <div class="avail-dot"></div>
+              <div class="avail-status">Open for Work</div>
+            </div>
+            <div class="avail-detail">
+              Available for freelance projects, internships, and full-time
+              opportunities starting immediately.
+            </div>
+          </div>
+
+          <div class="sec-title">Contact Info</div>
+          <div class="info-list">
+            <a
+              class="info-item"
+              href="/cdn-cgi/l/email-protection#44272b2a302527306a272c2130252a3436252e25342530042329252d286a272b29"
+            >
+              <div class="info-ico"><i class="fa-solid fa-envelope"></i></div>
+              <div>
+                <div class="info-label">Email</div>
+                <div class="info-val">
+                  contact.chetanprajapat<br />@gmail.com
+                </div>
+              </div>
+            </a>
+            <div class="info-item">
+              <div class="info-ico">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <div class="info-label">Location</div>
+                <div class="info-val">Indore, Madhya Pradesh</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <div class="info-ico"><i class="fa-solid fa-clock"></i></div>
+              <div>
+                <div class="info-label">Response Time</div>
+                <div class="info-val">Within 24 hours</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec-title">Social Links</div>
+          <div class="social-row">
+            <a
+              href="https://github.com/grchetan"
+              target="_blank"
+              class="social-btn"
+              title="GitHub"
+            >
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a
+              href="https://linkedin.com/in/grchetan"
+              target="_blank"
+              class="social-btn"
+              title="LinkedIn"
+            >
+              <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+            <a
+              href="https://twitter.com/grchetan"
+              target="_blank"
+              class="social-btn"
+              title="Twitter / X"
+            >
+              <i class="fa-brands fa-x-twitter"></i>
+            </a>
+            <a
+              href="https://instagram.com/grchetan"
+              target="_blank"
+              class="social-btn"
+              title="Instagram"
+            >
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        © 2026 Chetan Prajapat ·
+        <a href="https://grchetan.github.io/">Portfolio</a> ·
+        <a href="hire.html">Hire Me</a> · <a href="resume.html">Resume</a>
+      </p>
+    </footer>
+
+    <script
+      data-cfasync="false"
+      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
+    ></script>
+    <script>
+      /* ─── THEME SYSTEM ─── */
+      const html = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+
+      function getSystemTheme() {
+        return window.matchMedia('(prefers-color-scheme: light)').matches
+          ? 'light'
+          : 'dark';
+      }
+      function loadTheme() {
+        return localStorage.getItem('cp-theme') || getSystemTheme();
+      }
+      function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('cp-theme', theme);
+      }
+
+      applyTheme(loadTheme());
+
+      btn.addEventListener('click', () => {
+        applyTheme(
+          html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark',
+        );
+      });
+
+      /* ─── FORM SUBMIT → GOOGLE SHEET ─── */
+      const SHEET_URL =
+        'https://script.google.com/macros/s/AKfycbyZd1whs9lwiH2rWKS8SJ6re6EdkSGrnPChJUFSfiFmVAtQOqDenLHKSxuro1ssbGEjxA/exec';
+
+      const form = document.getElementById('contactForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        successMsg.classList.remove('show');
+        errorMsg.classList.remove('show');
+
+        const name = document.getElementById('fname').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const purpose = document.getElementById('purpose').value.trim();
+        const budget = document.getElementById('budget').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        // Validation
+        if (!name || !email || !purpose || !message) {
+          errorMsg.querySelector('span').textContent =
+            '⚠️ Name, Email, Purpose and Message are required!';
+          errorMsg.classList.add('show');
+          return;
+        }
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) {
+          errorMsg.querySelector('span').textContent =
+            '⚠️ Please enter a valid email address.';
+          errorMsg.classList.add('show');
+          return;
+        }
+
+        // Loading state
+        submitBtn.disabled = true;
+        btnText.textContent = 'Sending...';
+        spinner.style.display = 'block';
+
+        const payload = { name, email, purpose, budget, message };
+
+        try {
+          await fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: new URLSearchParams(payload),
+          });
+
+          // no-cors won't give us response status, so assume success
+          successMsg.querySelector('span').textContent =
+            "✅ Message sent! I'll reply within 24 hours.";
+          successMsg.classList.add('show');
+          form.reset();
+        } catch (err) {
+          errorMsg.querySelector('span').textContent =
+            '❌ Network error! Please try emailing directly.';
+          errorMsg.classList.add('show');
+          console.error(err);
+        } finally {
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Message →';
+          spinner.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>
