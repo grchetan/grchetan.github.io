@@ -63,6 +63,10 @@
         --err-bg: rgba(248, 113, 113, 0.1);
         --err-bd: rgba(248, 113, 113, 0.3);
         --err-cl: #f87171;
+        /* select specific */
+        --select-bg: #141414;
+        --select-opt-bg: #1a1a1a;
+        --select-opt-cl: #ffffff;
       }
 
       [data-theme='light'] {
@@ -102,6 +106,10 @@
         --err-bg: rgba(220, 38, 38, 0.07);
         --err-bd: rgba(220, 38, 38, 0.25);
         --err-cl: #dc2626;
+        /* select specific */
+        --select-bg: rgba(255, 255, 255, 0.7);
+        --select-opt-bg: #ffffff;
+        --select-opt-cl: #0a0a0a;
       }
 
       body {
@@ -289,7 +297,6 @@
         transition: color 0.3s;
       }
       input,
-      select,
       textarea {
         width: 100%;
         padding: 13px 16px;
@@ -311,14 +318,12 @@
         color: var(--placeholder);
       }
       input:focus,
-      select:focus,
       textarea:focus {
         background: var(--bg-input-f);
         border-color: var(--border-inp-f);
         box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
       }
       [data-theme='light'] input:focus,
-      [data-theme='light'] select:focus,
       [data-theme='light'] textarea:focus {
         box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
       }
@@ -327,9 +332,41 @@
         min-height: 130px;
         line-height: 1.6;
       }
+
+      /* ── SELECT — fully custom ── */
       select {
+        width: 100%;
+        padding: 13px 40px 13px 16px;
+        background-color: var(--select-bg);
+        border: 1px solid var(--border-input);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        outline: none;
         cursor: pointer;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        transition:
+          background-color 0.2s,
+          border-color 0.2s,
+          box-shadow 0.2s,
+          color 0.2s;
       }
+      select option {
+        background-color: var(--select-opt-bg);
+        color: var(--select-opt-cl);
+        font-size: 14px;
+      }
+      select:focus {
+        border-color: var(--border-inp-f);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+      }
+      [data-theme='light'] select:focus {
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+      }
+
       /* custom select arrow */
       .select-wrap {
         position: relative;
@@ -732,10 +769,7 @@
 
           <div class="sec-title">Contact Info</div>
           <div class="info-list">
-            <a
-              class="info-item"
-              href="/cdn-cgi/l/email-protection#44272b2a302527306a272c2130252a3436252e25342530042329252d286a272b29"
-            >
+            <a class="info-item" href="mailto:contact.chetanprajapat@gmail.com">
               <div class="info-ico"><i class="fa-solid fa-envelope"></i></div>
               <div>
                 <div class="info-label">Email</div>
@@ -809,10 +843,6 @@
       </p>
     </footer>
 
-    <script
-      data-cfasync="false"
-      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
-    ></script>
     <script>
       /* ─── THEME SYSTEM ─── */
       const html = document.documentElement;
@@ -861,7 +891,6 @@
         const budget = document.getElementById('budget').value.trim();
         const message = document.getElementById('message').value.trim();
 
-        // Validation
         if (!name || !email || !purpose || !message) {
           errorMsg.querySelector('span').textContent =
             '⚠️ Name, Email, Purpose and Message are required!';
@@ -876,7 +905,6 @@
           return;
         }
 
-        // Loading state
         submitBtn.disabled = true;
         btnText.textContent = 'Sending...';
         spinner.style.display = 'block';
@@ -890,7 +918,6 @@
             body: new URLSearchParams(payload),
           });
 
-          // no-cors won't give us response status, so assume success
           successMsg.querySelector('span').textContent =
             "✅ Message sent! I'll reply within 24 hours.";
           successMsg.classList.add('show');
