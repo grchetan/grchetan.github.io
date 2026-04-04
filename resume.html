@@ -25,7 +25,6 @@
         box-sizing: border-box;
       }
 
-      /* ── DARK (default — exactly as original) ── */
       [data-theme='dark'] {
         --bg: #080808;
         --nav-bg: rgba(8, 8, 8, 0.92);
@@ -52,7 +51,6 @@
         --toggle-icon: rgba(255, 255, 255, 0.5);
       }
 
-      /* ── LIGHT ── */
       [data-theme='light'] {
         --bg: #f2f0eb;
         --nav-bg: rgba(242, 240, 235, 0.92);
@@ -120,7 +118,6 @@
         align-items: center;
       }
 
-      /* Theme toggle button */
       .theme-btn {
         width: 36px;
         height: 36px;
@@ -171,7 +168,6 @@
         padding: 60px 24px 100px;
       }
 
-      /* Header */
       .r-header {
         display: flex;
         justify-content: space-between;
@@ -223,7 +219,6 @@
         font-size: 11px;
       }
 
-      /* Divider */
       .sec-divider {
         border: none;
         border-top: 1px solid var(--border);
@@ -231,7 +226,6 @@
         transition: border-color 0.3s;
       }
 
-      /* Section */
       .r-sec {
         margin-bottom: 40px;
       }
@@ -255,7 +249,6 @@
         transition: background 0.3s;
       }
 
-      /* Items */
       .r-item {
         margin-bottom: 28px;
       }
@@ -301,7 +294,6 @@
         transition: color 0.3s;
       }
 
-      /* Skills */
       .skills-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -331,7 +323,6 @@
         transition: color 0.3s;
       }
 
-      /* Tags */
       .tags {
         display: flex;
         flex-wrap: wrap;
@@ -350,7 +341,6 @@
           color 0.3s;
       }
 
-      /* Summary */
       .r-summary {
         font-size: 15px;
         color: var(--text-mid);
@@ -358,7 +348,6 @@
         transition: color 0.3s;
       }
 
-      /* Project links */
       .proj-link {
         color: var(--link-color);
         text-decoration: none;
@@ -411,9 +400,7 @@
         <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
           <i class="fa-solid fa-moon" id="themeIcon"></i>
         </button>
-        <a href="mailto:contact.chetanprajapat@gmail.com" class="btn-dl"
-          >Hire Me →</a
-        >
+        <a href="hire-me" class="btn-dl">Hire Me →</a>
       </div>
     </nav>
 
@@ -448,19 +435,65 @@
 
       <hr class="sec-divider" />
 
+      <!-- SUMMARY -->
       <div class="r-sec">
         <div class="r-sec-title">Summary</div>
         <p class="r-summary">
-          Passionate Full Stack Developer with 2+ years of experience building
-          responsive, high-performance web applications using React.js, Node.js,
-          and MongoDB. Creative video editor skilled in digital content
-          production. Currently seeking opportunities to contribute to
-          world-class teams and products.
+          BCA student and Passionate Full Stack Web Developer with 2+ years of
+          experience building responsive, high-performance web applications
+          using HTML, React.js, Node.js, Express, MongoDB, and SQL. Creative
+          video editor skilled in digital content production and SEO. Currently
+          seeking opportunities to contribute to world-class teams and products.
         </p>
       </div>
 
+      <!-- WORK EXPERIENCE -->
+      <div class="r-sec">
+        <div class="r-sec-title">Work Experience</div>
+        <div class="r-item">
+          <div class="r-item-head">
+            <div>
+              <div class="r-item-title">Full Stack Web Developer Intern</div>
+              <div class="r-item-company">Rebenok Infotech</div>
+            </div>
+            <div class="r-item-date">Apr 2023 – Aug 2023</div>
+          </div>
+          <ul class="r-list">
+            <li>
+              Worked as a part-time Video Editor for social media content.
+            </li>
+            <li>Updated website content to keep pages accurate and current.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
       <div class="r-sec">
         <div class="r-sec-title">Projects</div>
+
+        <div class="r-item">
+          <div class="r-item-head">
+            <div>
+              <div class="r-item-title">Crafting Fit Bridge</div>
+              <div class="r-item-company">
+                <a
+                  href="https://github.com/grchetan"
+                  target="_blank"
+                  class="proj-link"
+                  >GitHub Repository ↗</a
+                >
+              </div>
+            </div>
+            <div class="r-item-date">2025</div>
+          </div>
+          <ul class="r-list">
+            <li>
+              A fitness platform for workout, diet planning, and body
+              transformation with a user-friendly UI and robust backend.
+            </li>
+            <li>Built with React.js, Node.js, Express, and MongoDB.</li>
+          </ul>
+        </div>
 
         <div class="r-item">
           <div class="r-item-head">
@@ -471,7 +504,7 @@
                   href="https://grchetan.github.io/Travel-Itinerary-Generator/"
                   target="_blank"
                   class="proj-link"
-                  >grchetan.github.io/Travel-Itinerary-Generator</a
+                  >grchetan.github.io/Travel-Itinerary-Generator ↗</a
                 >
               </div>
             </div>
@@ -480,9 +513,9 @@
           <ul class="r-list">
             <li>
               AI-powered web app generating custom travel itineraries based on
-              user preferences
+              user preferences using n8n AI automation.
             </li>
-            <li>Built with HTML, CSS, JavaScript and integrated AI API</li>
+            <li>Built with HTML, CSS, JavaScript and integrated AI API.</li>
           </ul>
         </div>
 
@@ -495,7 +528,7 @@
                   href="https://grchetan.github.io/Rog-Asus/"
                   target="_blank"
                   class="proj-link"
-                  >grchetan.github.io/Rog-Asus</a
+                  >grchetan.github.io/Rog-Asus ↗</a
                 >
               </div>
             </div>
@@ -504,9 +537,9 @@
           <ul class="r-list">
             <li>
               Pixel-perfect clone of ASUS ROG website with modern UI and gaming
-              aesthetics
+              aesthetics.
             </li>
-            <li>Focused on performance, animations, and responsive design</li>
+            <li>Focused on performance, animations, and responsive design.</li>
           </ul>
         </div>
 
@@ -520,15 +553,16 @@
           <ul class="r-list">
             <li>
               Real-time weather app with live API integration for any global
-              location
+              location.
             </li>
             <li>
-              Clean UI with search functionality and live forecast data display
+              Clean UI with search functionality and live forecast data display.
             </li>
           </ul>
         </div>
       </div>
 
+      <!-- SKILLS -->
       <div class="r-sec">
         <div class="r-sec-title">Skills</div>
         <div class="skills-grid">
@@ -551,12 +585,17 @@
             </div>
           </div>
           <div class="skill-group">
+            <div class="skill-cat">Marketing</div>
+            <div class="skill-list">SEO Optimization · Canva</div>
+          </div>
+          <div class="skill-group">
             <div class="skill-cat">Other</div>
-            <div class="skill-list">Video Editing · Canva · Python · Java</div>
+            <div class="skill-list">Video Editing · Python · Java</div>
           </div>
         </div>
       </div>
 
+      <!-- CERTIFICATIONS -->
       <div class="r-sec">
         <div class="r-sec-title">Certifications</div>
         <div class="tags">
@@ -564,21 +603,21 @@
           <span class="tag">Cursor AI — Sunstone (Feb 2026)</span>
           <span class="tag">Git &amp; GitHub — Sunstone (Feb 2025)</span>
           <span class="tag">Ethical Hacking — Udemy (Jan 2025)</span>
-          <span class="tag"
-            >C Programming — Ministry of Tribal Affairs (Apr 2025)</span
-          >
+          <span class="tag">C Programming — Sunstone (Apr 2025)</span>
           <span class="tag">Canva Editing — Canva (Jul 2024)</span>
           <span class="tag">Typing Speed — Typing Club (Oct 2022)</span>
         </div>
       </div>
 
+      <!-- EDUCATION -->
       <div class="r-sec">
         <div class="r-sec-title">Education</div>
+
         <div class="r-item">
           <div class="r-item-head">
             <div>
               <div class="r-item-title">
-                Bachelor of Computer Application - BCA
+                Bachelor of Computer Application (BCA)
               </div>
               <div class="r-item-company">
                 Sage University Indore, Powered by Sunstone
@@ -587,14 +626,69 @@
             <div class="r-item-date">2024 – 2027</div>
           </div>
         </div>
+
+        <div class="r-item">
+          <div class="r-item-head">
+            <div>
+              <div class="r-item-title">Class XII (Commerce)</div>
+              <div class="r-item-company">Keshav International School</div>
+            </div>
+            <div class="r-item-date">2023 – 2024</div>
+          </div>
+        </div>
+
+        <div class="r-item">
+          <div class="r-item-head">
+            <div>
+              <div class="r-item-title">Class X</div>
+              <div class="r-item-company">Keshav International School</div>
+            </div>
+            <div class="r-item-date">2020 – 2021</div>
+          </div>
+        </div>
+
+        <div class="r-item">
+          <div class="r-item-head">
+            <div>
+              <div class="r-item-title">Computer Institute</div>
+              <div class="r-item-company">Rebenok Infotech</div>
+            </div>
+            <div class="r-item-date">2018</div>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- Download Resume Button -->
+    <div style="text-align: center; padding: 0 24px 60px">
+      <button
+        id="downloadBtn"
+        style="
+          background: var(--btn-bg);
+          color: var(--btn-text);
+          border: none;
+          padding: 14px 36px;
+          border-radius: 8px;
+          font-family: 'DM Sans', sans-serif;
+          font-weight: 700;
+          font-size: 15px;
+          letter-spacing: 1px;
+          cursor: pointer;
+          transition: all 0.2s;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <i class="fa-solid fa-download"></i> Download Resume
+      </button>
     </div>
 
     <footer>
       <p>
         © 2026 Chetan Prajapat ·
         <a href="https://grchetan.github.io/">Portfolio</a> ·
-        <a href="privacy-policy.html">Privacy</a>
+        <a href="privacy-policy">Privacy</a>
       </p>
     </footer>
 
@@ -620,6 +714,14 @@
         icon.className =
           theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
       }
+
+      // Download PDF resume from assets folder
+      document.getElementById('downloadBtn').addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = 'assets/chetan_prajapat_resume.pdf';
+        a.download = 'chetan_prajapat_resume.pdf';
+        a.click();
+      });
     </script>
   </body>
 </html>
