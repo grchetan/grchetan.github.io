@@ -1,16 +1,12 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 — Page Not Found | Chetan Prajapat</title>
+    <title>404 — Chetan Prajapat</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <style>
       *,
@@ -20,177 +16,676 @@
         padding: 0;
         box-sizing: border-box;
       }
+
+      :root {
+        --bg: #05050a;
+        --surface: #0e0e1a;
+        --accent: #7c6dff;
+        --accent2: #ff6d6d;
+        --text: #f0f0ff;
+        --muted: rgba(240, 240, 255, 0.35);
+        --line: rgba(124, 109, 255, 0.18);
+      }
+
       body {
-        background: #080808;
-        color: #fff;
-        font-family: 'DM Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Syne', sans-serif;
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center;
         overflow: hidden;
+        cursor: none;
       }
-      .bg-grid {
+
+      /* ── custom cursor ── */
+      .cursor {
+        position: fixed;
+        width: 12px;
+        height: 12px;
+        background: var(--accent);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          transform 0.08s,
+          background 0.2s;
+        mix-blend-mode: screen;
+      }
+      .cursor-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid rgba(124, 109, 255, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+          left 0.12s ease,
+          top 0.12s ease,
+          width 0.2s,
+          height 0.2s;
+      }
+
+      /* ── noise overlay ── */
+      body::before {
+        content: '';
         position: fixed;
         inset: 0;
-        z-index: 0;
-        background-image:
-          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-        background-size: 60px 60px;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        background-size: 180px;
+        opacity: 0.45;
+        pointer-events: none;
+        z-index: 1;
       }
-      .glow {
+
+      /* ── animated bg blobs ── */
+      .blob {
         position: fixed;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.05) 0%,
-          transparent 65%
-        );
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        filter: blur(90px);
+        opacity: 0.18;
         pointer-events: none;
         z-index: 0;
+        animation: drift 14s ease-in-out infinite alternate;
       }
+      .blob-1 {
+        width: 520px;
+        height: 520px;
+        background: var(--accent);
+        top: -160px;
+        left: -100px;
+        animation-delay: 0s;
+      }
+      .blob-2 {
+        width: 420px;
+        height: 420px;
+        background: var(--accent2);
+        bottom: -120px;
+        right: -80px;
+        animation-delay: -6s;
+      }
+      .blob-3 {
+        width: 300px;
+        height: 300px;
+        background: #3dffd0;
+        top: 50%;
+        left: 50%;
+        margin: -150px;
+        animation-delay: -3s;
+        opacity: 0.08;
+      }
+
+      @keyframes drift {
+        from {
+          transform: translate(0, 0) scale(1);
+        }
+        to {
+          transform: translate(40px, 30px) scale(1.08);
+        }
+      }
+
+      /* ── scanlines ── */
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 3px,
+          rgba(0, 0, 0, 0.12) 3px,
+          rgba(0, 0, 0, 0.12) 4px
+        );
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0.4;
+      }
+
+      /* ── main content ── */
       .wrap {
         position: relative;
-        z-index: 2;
+        z-index: 10;
+        width: min(860px, 95vw);
         padding: 40px 20px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      /* ── glitch 404 ── */
+      .glitch-wrap {
+        position: relative;
+        line-height: 1;
+        user-select: none;
       }
       .big-num {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: clamp(130px, 26vw, 240px);
-        line-height: 0.9;
-        background: linear-gradient(180deg, #fff 0%, #333 100%);
+        font-family: 'Space Mono', monospace;
+        font-weight: 700;
+        font-size: clamp(140px, 22vw, 260px);
+        color: transparent;
+        -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.08);
+        letter-spacing: -4px;
+        position: relative;
+        display: block;
+        animation: appear 1s ease both;
+      }
+      .big-num-fill {
+        font-family: 'Space Mono', monospace;
+        font-weight: 700;
+        font-size: clamp(140px, 22vw, 260px);
+        letter-spacing: -4px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent2) 60%,
+          #3dffd0 100%
+        );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        letter-spacing: 6px;
-        animation: fadeDown 0.8s ease both;
+        clip-path: inset(0 60% 0 0);
+        animation: revealFill 1.4s 0.3s cubic-bezier(0.77, 0, 0.18, 1) both;
       }
-      .title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: clamp(22px, 4vw, 38px);
-        letter-spacing: 4px;
-        color: rgba(255, 255, 255, 0.7);
-        margin: 10px 0 18px;
-        animation: fadeUp 0.8s 0.2s ease both;
-      }
-      .desc {
-        font-size: 15px;
-        color: rgba(255, 255, 255, 0.4);
-        max-width: 360px;
-        margin: 0 auto 36px;
-        line-height: 1.8;
-        animation: fadeUp 0.8s 0.3s ease both;
-      }
-      .desc strong {
-        color: #fff;
-      }
-      .btns {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-        animation: fadeUp 0.8s 0.4s ease both;
-      }
-      .btn-fill {
-        background: #fff;
-        color: #000;
-        padding: 12px 26px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 14px;
-        letter-spacing: 1px;
-        transition: all 0.2s;
-      }
-      .btn-fill:hover {
-        background: #ddd;
-        transform: translateY(-2px);
-      }
-      .btn-out {
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #fff;
-        padding: 12px 26px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 14px;
-        transition: all 0.2s;
-      }
-      .btn-out:hover {
-        border-color: #fff;
-        transform: translateY(-2px);
-      }
-      .counter {
-        margin-top: 36px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.25);
-        animation: fadeUp 0.8s 0.5s ease both;
-      }
-      .counter span {
-        color: rgba(255, 255, 255, 0.6);
-        font-weight: 700;
-      }
-      @keyframes fadeDown {
+      @keyframes revealFill {
         from {
-          opacity: 0;
-          transform: translateY(-30px);
+          clip-path: inset(0 100% 0 0);
         }
         to {
-          opacity: 1;
-          transform: none;
+          clip-path: inset(0 0% 0 0);
         }
       }
+
+      /* glitch layers */
+      .big-num::before,
+      .big-num::after {
+        content: '404';
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-family: 'Space Mono', monospace;
+        font-size: inherit;
+        font-weight: 700;
+        letter-spacing: -4px;
+      }
+      .big-num::before {
+        color: var(--accent2);
+        opacity: 0;
+        animation: glitch1 6s 2s infinite;
+        clip-path: inset(40% 0 30% 0);
+      }
+      .big-num::after {
+        color: var(--accent);
+        opacity: 0;
+        animation: glitch2 6s 2.2s infinite;
+        clip-path: inset(60% 0 10% 0);
+      }
+      @keyframes glitch1 {
+        0%,
+        88%,
+        100% {
+          opacity: 0;
+          transform: none;
+        }
+        90% {
+          opacity: 0.8;
+          transform: translate(-6px, 2px) skewX(-3deg);
+        }
+        93% {
+          opacity: 0.8;
+          transform: translate(5px, -1px);
+        }
+        96% {
+          opacity: 0;
+        }
+      }
+      @keyframes glitch2 {
+        0%,
+        88%,
+        100% {
+          opacity: 0;
+          transform: none;
+        }
+        91% {
+          opacity: 0.7;
+          transform: translate(7px, 1px) skewX(2deg);
+        }
+        94% {
+          opacity: 0.7;
+          transform: translate(-4px, 2px);
+        }
+        97% {
+          opacity: 0;
+        }
+      }
+
+      /* ── divider line ── */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 4px 0 28px;
+        animation: fadeUp 0.8s 0.6s ease both;
+      }
+      .divider::before {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+      .divider-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+      }
+      .divider::after {
+        content: '';
+        width: 60px;
+        height: 1px;
+        background: var(--line);
+      }
+
+      /* ── bottom row ── */
+      .bottom {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 32px;
+        flex-wrap: wrap;
+      }
+
+      .left-col {
+        flex: 1;
+        min-width: 220px;
+      }
+
+      .label {
+        font-family: 'Space Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 3px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+        animation: fadeUp 0.8s 0.7s ease both;
+      }
+      .title {
+        font-size: clamp(22px, 3.5vw, 34px);
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 14px;
+        animation: fadeUp 0.8s 0.8s ease both;
+      }
+      .title em {
+        font-style: normal;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .desc {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.9;
+        max-width: 320px;
+        animation: fadeUp 0.8s 0.9s ease both;
+      }
+
+      /* ── buttons ── */
+      .btns {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-end;
+        animation: fadeUp 0.8s 1s ease both;
+        flex-shrink: 0;
+      }
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, var(--accent), #a06fff);
+        color: #fff;
+        padding: 14px 28px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 0 0 rgba(124, 109, 255, 0);
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .btn-primary::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(124, 109, 255, 0.45);
+      }
+      .btn-primary:hover::before {
+        opacity: 1;
+      }
+
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        padding: 13px 28px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 13px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-ghost:hover {
+        border-color: rgba(124, 109, 255, 0.5);
+        color: var(--text);
+        transform: translateY(-3px);
+      }
+
+      /* ── terminal counter ── */
+      .terminal {
+        margin-top: 40px;
+        background: rgba(14, 14, 26, 0.8);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+        animation: fadeUp 0.8s 1.1s ease both;
+        backdrop-filter: blur(12px);
+      }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid var(--line);
+      }
+      .dot-r {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #ff6d6d;
+      }
+      .dot-y {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #ffd166;
+      }
+      .dot-g {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: #3dffd0;
+      }
+      .terminal-title {
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-left: 8px;
+        letter-spacing: 2px;
+      }
+      .terminal-body {
+        padding: 18px 20px;
+        font-family: 'Space Mono', monospace;
+        font-size: 13px;
+        line-height: 2;
+      }
+      .t-line {
+        display: flex;
+        gap: 10px;
+      }
+      .t-prompt {
+        color: var(--accent);
+      }
+      .t-cmd {
+        color: rgba(240, 240, 255, 0.6);
+      }
+      .t-out {
+        color: var(--muted);
+      }
+      .t-accent {
+        color: var(--accent2);
+      }
+      .t-green {
+        color: #3dffd0;
+      }
+      .t-sec {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .cursor-blink {
+        display: inline-block;
+        width: 8px;
+        height: 14px;
+        background: var(--accent);
+        animation: blink 1s step-end infinite;
+        vertical-align: middle;
+        margin-left: 2px;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ── progress bar ── */
+      .progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 20px 18px;
+        font-family: 'Space Mono', monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .progress-bar {
+        flex: 1;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.07);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 2px;
+        transition: width 1s linear;
+        box-shadow: 0 0 8px var(--accent);
+      }
+
       @keyframes fadeUp {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(22px);
         }
         to {
           opacity: 1;
           transform: none;
+        }
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .bottom {
+          flex-direction: column;
+        }
+        .btns {
+          align-items: flex-start;
+          flex-direction: row;
+          flex-wrap: wrap;
         }
       }
     </style>
   </head>
   <body>
-    <div class="bg-grid"></div>
-    <div class="glow"></div>
+    <div class="cursor" id="cur"></div>
+    <div class="cursor-ring" id="curRing"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="scanlines"></div>
+
     <div class="wrap">
-      <div class="big-num">404</div>
-      <div class="title">PAGE NOT FOUND</div>
-      <p class="desc">
-        This URL doesn't exist.<br /><strong>Wrong link</strong> or the page was
-        removed.
-      </p>
-      <div class="btns">
-        <a href="https://grchetan.github.io/" class="btn-fill"
-          >← Back to Home</a
-        >
-        <a href="contact" class="btn-out"
-          >Contact Me</a
-        >
+      <!-- glitch number -->
+      <div class="glitch-wrap">
+        <span class="big-num">404</span>
+        <span class="big-num-fill">404</span>
       </div>
-      <div class="counter">
-        Auto redirect in <span id="count">10</span> seconds...
+
+      <div class="divider"><div class="divider-dot"></div></div>
+
+      <div class="bottom">
+        <div class="left-col">
+          <div class="label">// error · chetan prajapat</div>
+          <div class="title">You've wandered<br />into <em>the void.</em></div>
+          <p class="desc">
+            This page doesn't exist — wrong link, broken URL, or it was
+            moved.<br />
+            Let's get you back to somewhere real.
+          </p>
+        </div>
+
+        <div class="btns">
+          <a href="https://grchetan.github.io/" class="btn-primary">
+            ← Back to Home
+          </a>
+          <a href="contact" class="btn-ghost"> Contact Me </a>
+        </div>
+      </div>
+
+      <!-- terminal -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot-r"></div>
+          <div class="dot-y"></div>
+          <div class="dot-g"></div>
+          <span class="terminal-title">bash — zsh</span>
+        </div>
+        <div class="terminal-body">
+          <div class="t-line">
+            <span class="t-prompt">❯</span
+            ><span class="t-cmd"
+              >curl https://grchetan.github.io<span id="reqPath"></span
+            ></span>
+          </div>
+          <div class="t-line">
+            <span class="t-out">HTTP/1.1 &nbsp;</span
+            ><span class="t-accent">404 NOT FOUND</span>
+          </div>
+          <div class="t-line">
+            <span class="t-out">Server: &nbsp;&nbsp;&nbsp;</span
+            ><span class="t-cmd">GitHub Pages</span>
+          </div>
+          <div class="t-line">
+            <span class="t-out">Redirect: &nbsp;</span
+            ><span class="t-green">/ &nbsp;</span><span class="t-out">in </span
+            ><span class="t-sec" id="secDisplay">10</span
+            ><span class="t-out">s</span>
+          </div>
+          <div class="t-line">
+            <span class="t-prompt">❯</span><span class="cursor-blink"></span>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <span id="pctLabel">0%</span>
+          <div class="progress-bar">
+            <div class="progress-fill" id="pFill"></div>
+          </div>
+          <span id="countLabel">redirecting in 10s</span>
+        </div>
       </div>
     </div>
+
     <script>
+      // cursor
+      const cur = document.getElementById('cur');
+      const ring = document.getElementById('curRing');
+      document.addEventListener('mousemove', (e) => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top = e.clientY + 'px';
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+      });
+      document.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('mouseenter', () => {
+          cur.style.transform = 'translate(-50%,-50%) scale(2.5)';
+          cur.style.background = 'var(--accent2)';
+        });
+        a.addEventListener('mouseleave', () => {
+          cur.style.transform = 'translate(-50%,-50%) scale(1)';
+          cur.style.background = 'var(--accent)';
+        });
+      });
+
+      // show path in terminal
+      document.getElementById('reqPath').textContent =
+        window.location.pathname !== '/' ? window.location.pathname : '/404';
+
+      // countdown
       let sec = 10;
-      const el = document.getElementById('count');
-      const t = setInterval(() => {
+      const secEl = document.getElementById('secDisplay');
+      const fill = document.getElementById('pFill');
+      const pct = document.getElementById('pctLabel');
+      const lbl = document.getElementById('countLabel');
+
+      const tick = setInterval(() => {
         sec--;
-        el.textContent = sec;
+        secEl.textContent = sec;
+        const p = Math.round((10 - sec) * 10);
+        fill.style.width = p + '%';
+        pct.textContent = p + '%';
+        lbl.textContent = sec > 0 ? `redirecting in ${sec}s` : 'redirecting…';
         if (sec <= 0) {
-          clearInterval(t);
+          clearInterval(tick);
           window.location.href = 'https://grchetan.github.io/';
         }
       }, 1000);
+
+      // kick off first fill tick
+      setTimeout(() => {
+        fill.style.width = '10%';
+        pct.textContent = '10%';
+      }, 50);
     </script>
   </body>
 </html>
