@@ -1063,3 +1063,101 @@ body.dark-mode img {
     transform: scale(1.06);
   }
 }
+
+/* ===================== LEETCODE STATS ===================== */
+.section-leetcode {
+  padding: var(--section-pad-y) var(--section-pad-x);
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.leetcode-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+  transition:
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.leetcode-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+
+.lc-card-img-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.lc-card-img {
+  width: 100%;
+  max-width: 495px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.lc-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.lc-badges img {
+  height: 28px;
+  border-radius: 6px;
+}
+
+.lc-quote {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.lc-btns {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 22px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+  cursor: pointer;
+}
+
+.lc-btn-filled {
+  background: #f59e0b;
+  border: 2px solid #f59e0b;
+  color: #111;
+}
+
+.lc-btn-filled:hover {
+  background: #d97706;
+  border-color: #d97706;
+  transform: scale(1.04);
+}

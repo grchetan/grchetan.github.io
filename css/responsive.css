@@ -474,3 +474,10 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+.lc-card-img {
+  max-width: 100%;
+}
+.lc-badges img {
+  height: 24px;
+}
