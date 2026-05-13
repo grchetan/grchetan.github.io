@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,6 +9,7 @@
       content="Dev tips, project breakdowns, tutorials and thoughts by Chetan Prajapat — Full Stack Developer from Mumbai."
     />
     <meta name="author" content="Chetan Prajapat" />
+
     <link
       href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap"
       rel="stylesheet"
@@ -17,6 +18,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <link rel="stylesheet" href="css/universal.css" />
     <style>
       [data-theme='dark'] {
         --bg: #080808;
@@ -53,19 +55,13 @@
         --search-bg: rgba(0, 0, 0, 0.05);
       }
       *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
       html {
         scroll-behavior: smooth;
       }
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: 'DM Sans', sans-serif;
+
         min-height: 100vh;
         transition:
           background 0.3s,
@@ -103,199 +99,6 @@
         inset: 0;
         pointer-events: none;
         z-index: 9999;
-      }
-
-      /* MOBILE MENU */
-      .mobile-menu {
-        position: fixed;
-        inset: 0;
-        z-index: 999;
-        background: var(--bg);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 32px;
-        transform: translateX(100%);
-        transition: transform 0.35s cubic-bezier(0.77, 0, 0.18, 1);
-      }
-      .mobile-menu.open {
-        transform: translateX(0);
-      }
-      .mob-close-btn {
-        position: absolute;
-        top: 22px;
-        right: 24px;
-        background: none;
-        border: none;
-        color: var(--text);
-        font-size: 22px;
-        cursor: none;
-      }
-      .mob-links {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 28px;
-      }
-      .mob-links a {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 38px;
-        letter-spacing: 3px;
-        color: var(--text);
-        text-decoration: none;
-        transition: opacity 0.2s;
-      }
-      .mob-links a:hover {
-        opacity: 0.5;
-      }
-      .mob-footer {
-        display: flex;
-        gap: 20px;
-      }
-      .mob-social {
-        color: var(--text2);
-        font-size: 18px;
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      .mob-social:hover {
-        color: var(--text);
-      }
-
-      /* NAV */
-      #main-nav {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: var(--nav-bg);
-        backdrop-filter: blur(18px);
-        border-bottom: 1px solid transparent;
-        transition:
-          border-color 0.3s,
-          background 0.3s;
-      }
-      #main-nav.scrolled {
-        border-bottom-color: var(--border);
-      }
-      .nav-inner {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 64px;
-      }
-      .nav-logo {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 28px;
-        letter-spacing: 2px;
-        color: var(--text);
-        text-decoration: none;
-      }
-      .nav-logo span {
-        color: var(--logo-span);
-      }
-      .nav-links {
-        display: flex;
-        gap: 32px;
-        list-style: none;
-      }
-      .nav-links a {
-        color: var(--text2);
-        text-decoration: none;
-        font-size: 13px;
-        letter-spacing: 1px;
-        transition: color 0.2s;
-      }
-      .nav-links a:hover,
-      .nav-links a.active {
-        color: var(--text);
-      }
-      .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-      .theme-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: none;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        padding: 6px 14px;
-        color: var(--text2);
-        font-size: 11px;
-        letter-spacing: 1.5px;
-        cursor: none;
-        transition: all 0.2s;
-        font-family: 'DM Sans', sans-serif;
-      }
-      .theme-btn:hover {
-        border-color: var(--border-h);
-        color: var(--text);
-      }
-      .t-track {
-        width: 28px;
-        height: 16px;
-        background: var(--border);
-        border-radius: 999px;
-        position: relative;
-        transition: background 0.3s;
-      }
-      .t-knob {
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 12px;
-        height: 12px;
-        background: var(--text);
-        border-radius: 50%;
-        transition: transform 0.3s;
-      }
-      [data-theme='light'] .t-knob {
-        transform: translateX(12px);
-      }
-      .nav-cta {
-        background: var(--text);
-        color: var(--bg);
-        padding: 8px 18px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        transition: opacity 0.2s;
-      }
-      .nav-cta:hover {
-        opacity: 0.8;
-      }
-      .hamburger {
-        display: none;
-        flex-direction: column;
-        gap: 5px;
-        background: none;
-        border: none;
-        cursor: none;
-        padding: 4px;
-      }
-      .ham-line {
-        width: 22px;
-        height: 2px;
-        background: var(--text);
-        transition: all 0.3s;
-        border-radius: 2px;
-      }
-      .hamburger.open .ham-line:nth-child(1) {
-        transform: translateY(7px) rotate(45deg);
-      }
-      .hamburger.open .ham-line:nth-child(2) {
-        opacity: 0;
-      }
-      .hamburger.open .ham-line:nth-child(3) {
-        transform: translateY(-7px) rotate(-45deg);
       }
 
       /* LAYOUT */
@@ -1000,12 +803,7 @@
           border-left: none;
           border-top: 1px solid var(--border);
         }
-        .nav-links {
-          display: none;
-        }
-        .hamburger {
-          display: flex;
-        }
+
         .blog-grid {
           grid-template-columns: 1fr;
         }
@@ -1029,80 +827,91 @@
     <div class="toast" id="toast"></div>
     <div class="bg-grid"></div>
 
-    <!-- ══ Mobile Menu ══ -->
-    <div class="mobile-menu" id="mob-menu">
-      <button class="mob-close-btn" id="mob-close-btn" onclick="closeMob()">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <nav class="mob-links">
-        <a href="https://grchetan.github.io/#home" onclick="closeMob()">Home</a>
-        <a href="https://grchetan.github.io/#about" onclick="closeMob()"
-          >About</a
-        >
-        <a href="https://grchetan.github.io/#projects" onclick="closeMob()"
-          >Projects</a
-        >
-        <a href="https://grchetan.github.io/#certs" onclick="closeMob()"
-          >Certs</a
-        >
-        <a href="blog" onclick="closeMob()">Blog</a>
-        <a href="contact" onclick="closeMob()">Contact</a>
-      </nav>
-      <div class="mob-footer">
-        <a
-          href="https://www.instagram.com/chetanprajapat_/"
-          target="_blank"
-          class="mob-social"
-          ><i class="fab fa-instagram"></i
-        ></a>
-        <a
-          href="https://www.linkedin.com/in/chetan-prajapat-58350b285/"
-          target="_blank"
-          class="mob-social"
-          ><i class="fab fa-linkedin"></i
-        ></a>
-        <a href="https://github.com/grchetan" target="_blank" class="mob-social"
-          ><i class="fab fa-github"></i
-        ></a>
-        <a
-          href="https://twitter.com/grchetann"
-          target="_blank"
-          class="mob-social"
-          ><i class="fab fa-twitter"></i
-        ></a>
-      </div>
-    </div>
-
-    <!-- ══ NAV ══ -->
-    <nav id="main-nav">
-      <div class="nav-inner">
-        <a href="https://grchetan.github.io/" class="nav-logo"
-          >CP<span>.</span></a
-        >
-        <ul class="nav-links">
-          <li><a href="https://grchetan.github.io/#home">Home</a></li>
-          <li><a href="https://grchetan.github.io/#about">About</a></li>
-          <li><a href="https://grchetan.github.io/#projects">Projects</a></li>
-          <li><a href="https://grchetan.github.io/#certs">Certs</a></li>
-          <li><a href="blog" class="active">Blog</a></li>
-          <li><a href="contact">Contact</a></li>
-        </ul>
-        <div class="nav-right">
-          <button class="theme-btn" id="theme-btn" title="Toggle theme">
-            <div class="t-track"><div class="t-knob"></div></div>
-            <span class="t-label" id="t-label">DARK</span>
-          </button>
-          <a href="https://github.com/grchetan" target="_blank" class="nav-cta"
-            >GitHub →</a
+    <!-- ===================== HEADER NAVBAR===================== -->
+    <header role="banner">
+      <nav class="navbar" id="navbar" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="/" class="nav-logo" aria-label="Chetan Prajapat Home">
+          <span class="nav-logo-bracket">&lt;</span>CP<span
+            class="nav-logo-bracket"
+            >/&gt;</span
           >
-          <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-            <div class="ham-line"></div>
-            <div class="ham-line"></div>
-            <div class="ham-line"></div>
+        </a>
+
+        <!-- Desktop Links -->
+        <ul class="nav-links" id="navLinks" role="list">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/blog" class="nav-link active">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
+
+        <!-- Right: Theme Pill + Hamburger -->
+        <div class="nav-actions">
+          <!-- 3-option theme pill -->
+          <div
+            class="theme-pill"
+            id="themePill"
+            role="group"
+            aria-label="Theme switcher"
+          >
+            <button
+              class="tp-btn"
+              data-mode="light"
+              title="Light mode"
+              onclick="ThemeManager.setTheme('light')"
+            >
+              ☀️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="system"
+              title="System default"
+              onclick="ThemeManager.setTheme('system')"
+            >
+              ⚙️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="dark"
+              title="Dark mode"
+              onclick="ThemeManager.setTheme('dark')"
+            >
+              🌙
+            </button>
+          </div>
+
+          <button
+            class="nav-hamburger"
+            id="hamburger"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
           </button>
         </div>
+      </nav>
+
+      <!-- Mobile Drawer -->
+      <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+        <ul role="list" class="mobile-navbar">
+          <li><a href="/" class="nav-link">Home</a></li>
+          <li><a href="/blog" class="nav-link active">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </header>
 
     <!-- ══ BLOG HERO ══ -->
     <div class="blog-hero">
@@ -1509,49 +1318,11 @@
 
       // ── Theme (syncs with main portfolio localStorage) ──
       const html = document.documentElement;
-      const themeBtn = document.getElementById('theme-btn');
-      const tLabel = document.getElementById('t-label');
       const sv = localStorage.getItem('cp-theme') || 'dark';
       html.setAttribute('data-theme', sv);
-      tLabel.textContent = sv === 'dark' ? 'DARK' : 'LIGHT';
-      themeBtn.addEventListener('click', () => {
-        const n = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', n);
-        localStorage.setItem('cp-theme', n);
-        tLabel.textContent = n === 'dark' ? 'DARK' : 'LIGHT';
-      });
-
-      // ── Hamburger ──
-      const ham = document.getElementById('hamburger');
-      const mob = document.getElementById('mob-menu');
-      function closeMob() {
-        ham.classList.remove('open');
-        mob.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-      ham.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = mob.classList.toggle('open');
-        ham.classList.toggle('open', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      });
-      document.addEventListener('click', (e) => {
-        if (
-          mob.classList.contains('open') &&
-          !mob.contains(e.target) &&
-          !ham.contains(e.target)
-        )
-          closeMob();
-      });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMob();
-      });
 
       // ── Nav scroll ──
       window.addEventListener('scroll', () => {
-        document
-          .getElementById('main-nav')
-          .classList.toggle('scrolled', window.scrollY > 50);
         document
           .getElementById('top-btn')
           .classList.toggle('show', window.scrollY > 350);
@@ -1768,5 +1539,8 @@
           });
       })();
     </script>
+
+    <script src="javascript/script.js"></script>
+    <script src="javascript/theme.js"></script>
   </body>
 </html>

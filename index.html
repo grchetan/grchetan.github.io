@@ -17,7 +17,7 @@
     />
     <meta
       name="keywords"
-      content="Chetan Prajapat, Full Stack Developer, Web Developer, Frontend Developer, Backend Developer, JavaScript Developer, React Developer, Node.js Developer, Chetan prajapat portfolio, grchetan, chetan prajapat indore, BCA developer, freelance web developer india, full stack developer indore"
+      content="Chetan Prajapat, Full Stack Developer, Web Developer, Frontend Developer, Backend Developer, JavaScript Developer, React Developer, Node.js Developer, Chetan prajapat portfolio, grchetan, chetan portfolio, BCA developer, freelance web developer india, full stack developer indore"
     />
     <meta name="author" content="Chetan Prajapat" />
     <meta
@@ -91,10 +91,10 @@
     <!-- ===================== FONTS ===================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
+    <!-- <link
       href="https://fonts.googleapis.com/css2?family=Anton&family=Arsenal+SC:ital,wght@0,400;0,700;1,400;1,700&family=Bebas+Neue&family=Carrois+Gothic&family=Denk+One&family=Hind+Siliguri:wght@300;400;500;600;700&family=Holtwood+One+SC&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Sulphur+Point:wght@300;400;700&family=Zen+Dots&display=swap"
       rel="stylesheet"
-    />
+    /> -->
 
     <!-- ===================== ICONS & STYLESHEETS ===================== -->
     <!--Social icon fonts-->
@@ -115,6 +115,7 @@
     />
     <noscript><link rel="stylesheet" href="css/styles.css" /></noscript>
     <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/universal.css" />
 
     <!-- AOS Animation CSS -->
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
@@ -206,11 +207,89 @@
       </video>
     </div>
     <!------------End ------------------------>
-
-    <!-- ===================== HEADER ===================== -->
+    <!-- ===================== HEADER NAVBAR===================== -->
     <header role="banner">
-      <div id="toggle-container">
-        <button id="darkModeToggle" aria-label="Toggle dark mode">🌙</button>
+      <nav class="navbar" id="navbar" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="/" class="nav-logo" aria-label="Chetan Prajapat Home">
+          <span class="nav-logo-bracket">&lt;</span>CP<span
+            class="nav-logo-bracket"
+            >/&gt;</span
+          >
+        </a>
+
+        <!-- Desktop Links -->
+        <ul class="nav-links" id="navLinks" role="list">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/blog" class="nav-link">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
+
+        <!-- Right: Theme Pill + Hamburger -->
+        <div class="nav-actions">
+          <!-- 3-option theme pill -->
+          <div
+            class="theme-pill"
+            id="themePill"
+            role="group"
+            aria-label="Theme switcher"
+          >
+            <button
+              class="tp-btn"
+              data-mode="light"
+              title="Light mode"
+              onclick="ThemeManager.setTheme('light')"
+            >
+              ☀️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="system"
+              title="System default"
+              onclick="ThemeManager.setTheme('system')"
+            >
+              ⚙️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="dark"
+              title="Dark mode"
+              onclick="ThemeManager.setTheme('dark')"
+            >
+              🌙
+            </button>
+          </div>
+
+          <button
+            class="nav-hamburger"
+            id="hamburger"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Drawer -->
+      <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+        <ul role="list" class="mobile-navbar">
+          <li><a href="/" class="nav-link active">Home</a></li>
+          <li><a href="/blog" class="nav-link">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
       </div>
     </header>
 
@@ -838,28 +917,38 @@
 
       <!-- ===================== CIRCULAR SCROLL PROGRESS INDICATOR ===================== -->
       <div class="top-btn" id="scrollTopBtn" aria-label="Scroll back to top">
-        <svg width="50" height="50" aria-hidden="true">
-          <!-- Background Circle -->
+        <svg width="54" height="54" viewBox="0 0 54 54" aria-hidden="true">
+          <defs>
+            <linearGradient
+              id="progressGrad"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="100%"
+            >
+              <stop offset="0%" stop-color="#3b82f6" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+          </defs>
+          <!-- Track -->
           <circle
-            id="bgCircle"
-            cx="25"
-            cy="25"
-            r="20"
-            stroke="gray"
-            stroke-width="4"
+            cx="27"
+            cy="27"
+            r="22"
+            stroke-width="2.5"
             fill="none"
+            class="progress-track"
           />
-          <!-- Progress Circle -->
+          <!-- Progress -->
           <circle
             id="progressCircle"
-            cx="25"
-            cy="25"
-            r="20"
-            stroke="black"
-            stroke-width="4"
+            cx="27"
+            cy="27"
+            r="22"
+            stroke="url(#progressGrad)"
+            stroke-width="2.5"
             fill="none"
-            stroke-dasharray="125.6"
-            stroke-dashoffset="125.6"
+            stroke-linecap="round"
           />
         </svg>
         <a href="#top" aria-label="Back to top"
@@ -995,6 +1084,7 @@
 
     <!-- ===================== SCRIPTS ===================== -->
     <script src="javascript/script.js"></script>
+    <script src="javascript/theme.js"></script>
 
     <!-- AOS Animation JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

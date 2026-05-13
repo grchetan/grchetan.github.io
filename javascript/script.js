@@ -1,60 +1,58 @@
-// Get elements
-const toggleButton = document.getElementById("darkModeToggle");
-const lightVideo = document.querySelector(".background-video.light-mode");
-const darkVideo = document.querySelector(".background-video.dark-mode");
-const body = document.body;
+/* ============================================================
+   CHETAN PRAJAPAT — MAIN SCRIPT
+   script.js
+   ============================================================ */
 
-// Event listener for the toggle button
-toggleButton.addEventListener("click", () => {
-  body.classList.toggle("dark-mode");
+document.addEventListener('DOMContentLoaded', () => {
+  /* ===================== NAVBAR — SCROLL SHADOW + HAMBURGER ===================== */
+  const navbar = document.getElementById('navbar');
+  const hamburger = document.getElementById('hamburger');
+  const navDrawer = document.getElementById('navDrawer');
 
-  // Change videos and emoji based on dark mode status
-  if (body.classList.contains("dark-mode")) {
-    lightVideo.style.display = "none"; // Hide light mode video
-    darkVideo.style.display = "block"; // Show dark mode video
-    toggleButton.textContent = "☀️"; // Sun emoji for dark mode
-  } else {
-    lightVideo.style.display = "block"; // Show light mode video
-    darkVideo.style.display = "none"; // Hide dark mode video
-    toggleButton.textContent = "🌙"; // Moon emoji for light mode
-  }
+  hamburger.addEventListener('click', () => {
+    const isOpen = hamburger.classList.toggle('open');
+    navDrawer.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+    navDrawer.setAttribute('aria-hidden', !isOpen);
+  });
 
-  // Add and remove animation class
-  toggleButton.classList.add("animate");
+  navDrawer.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navDrawer.classList.remove('open');
+    });
+  });
+
+  /* ===================== SCROLL — PROGRESS + BACK TO TOP ===================== */
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  const progressCircle = document.getElementById('progressCircle');
+  const circleLength = progressCircle.getTotalLength();
+
+  // Set dasharray via JS so it matches getTotalLength exactly
+  progressCircle.style.strokeDasharray = circleLength;
+  progressCircle.style.strokeDashoffset = circleLength;
+
+  scrollBtn.style.display = 'none';
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const scrollPct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+    progressCircle.style.strokeDashoffset =
+      circleLength - (scrollPct / 100) * circleLength;
+
+    navbar.classList.toggle('scrolled', scrollTop > 10);
+
+    // Fixed: was 'displasy' (typo) — now correctly 'display'
+    scrollBtn.style.display = scrollTop > 100 ? 'flex' : 'none';
+  });
+
+  scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 });
-
-// Animation effect for the emoji transition
-toggleButton.addEventListener("animationend", () => {
-  toggleButton.classList.remove("animate");
-});
-
-// Scrool top
-
-let scrollBtn = document.getElementById("scrollTopBtn");
-let progressCircle = document.getElementById("progressCircle");
-let circleLength = progressCircle.getTotalLength(); // Circle ka total length
-
-// ✅ Page load par direct hide
-window.onload = function () {
-  scrollBtn.style.display = "none";
-};
-
-window.addEventListener("scroll", () => {
-  let scrollTop = document.documentElement.scrollTop;
-  let scrollHeight =
-    document.documentElement.scrollHeight -
-    document.documentElement.clientHeight;
-  let scrollPercentage = (scrollTop / scrollHeight) * 100;
-
-  // Circle ka progress update karna
-  let progressOffset = circleLength - (scrollPercentage / 100) * circleLength;
-  progressCircle.style.strokeDashoffset = progressOffset;
-
-  // ✅ Scroll button dikhana/chhupana
-  scrollBtn.style.display = scrollTop > 100 ? "flex" : "none";
-});
-
-// Scroll to top on click
-scrollBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+// Theme logic has been moved to javascript/theme.js
+// It now runs from <head> before DOM paint — no flash.

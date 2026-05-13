@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,6 +16,9 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <!-- Theme — load FIRST to prevent flash -->
+
+    <link rel="stylesheet" href="css/universal.css" />
     <style>
       *,
       *::before,
@@ -84,82 +87,6 @@
         transition:
           background 0.3s,
           color 0.3s;
-      }
-
-      nav {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: var(--nav-bg);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--border);
-        padding: 16px 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        transition:
-          background 0.3s,
-          border-color 0.3s;
-      }
-      .nav-logo {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 26px;
-        color: var(--text);
-        text-decoration: none;
-        letter-spacing: 2px;
-        transition: color 0.3s;
-      }
-      .nav-logo span {
-        color: var(--text-mid);
-      }
-      .nav-right {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-      }
-
-      .theme-btn {
-        width: 36px;
-        height: 36px;
-        background: var(--toggle-bg);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--toggle-icon);
-        font-size: 14px;
-        transition: all 0.25s;
-        flex-shrink: 0;
-      }
-      .theme-btn:hover {
-        background: var(--btn-bg);
-        color: var(--btn-text);
-      }
-
-      .btn-dl {
-        background: var(--btn-bg);
-        color: var(--btn-text);
-        padding: 9px 20px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 13px;
-        letter-spacing: 1px;
-        transition: all 0.2s;
-      }
-      .btn-dl:hover {
-        background: var(--btn-hover);
-      }
-      .nav-back {
-        font-size: 13px;
-        color: var(--text-mid);
-        text-decoration: none;
-        transition: color 0.2s;
-      }
-      .nav-back:hover {
-        color: var(--text);
       }
 
       .container {
@@ -391,18 +318,91 @@
     </style>
   </head>
   <body>
-    <nav>
-      <a href="https://grchetan.github.io/" class="nav-logo"
-        >CP<span>.</span></a
-      >
-      <div class="nav-right">
-        <a href="https://grchetan.github.io/" class="nav-back">← Portfolio</a>
-        <button class="theme-btn" id="themeBtn" title="Toggle light/dark mode">
-          <i class="fa-solid fa-moon" id="themeIcon"></i>
-        </button>
-        <a href="hire-me" class="btn-dl">Hire Me →</a>
+    <!-- ===================== HEADER NAVBAR===================== -->
+    <header role="banner">
+      <nav class="navbar" id="navbar" aria-label="Main navigation">
+        <!-- Logo -->
+        <a href="/" class="nav-logo" aria-label="Chetan Prajapat Home">
+          <span class="nav-logo-bracket">&lt;</span>CP<span
+            class="nav-logo-bracket"
+            >/&gt;</span
+          >
+        </a>
+
+        <!-- Desktop Links -->
+        <ul class="nav-links" id="navLinks" role="list">
+          <li><a href="/" class="nav-link ">Home</a></li>
+          <li><a href="/blog" class="nav-link">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link active">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
+
+        <!-- Right: Theme Pill + Hamburger -->
+        <div class="nav-actions">
+          <!-- 3-option theme pill -->
+          <div
+            class="theme-pill"
+            id="themePill"
+            role="group"
+            aria-label="Theme switcher"
+          >
+            <button
+              class="tp-btn"
+              data-mode="light"
+              title="Light mode"
+              onclick="ThemeManager.setTheme('light')"
+            >
+              ☀️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="system"
+              title="System default"
+              onclick="ThemeManager.setTheme('system')"
+            >
+              ⚙️
+            </button>
+
+            <button
+              class="tp-btn"
+              data-mode="dark"
+              title="Dark mode"
+              onclick="ThemeManager.setTheme('dark')"
+            >
+              🌙
+            </button>
+          </div>
+
+          <button
+            class="nav-hamburger"
+            id="hamburger"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Drawer -->
+      <div class="nav-drawer" id="navDrawer" aria-hidden="true">
+        <ul role="list" class="mobile-navbar">
+          <li><a href="/" class="nav-link ">Home</a></li>
+          <li><a href="/blog" class="nav-link">Blog</a></li>
+          <li><a href="/contact" class="nav-link">Contact</a></li>
+          <li><a href="/resume" class="nav-link active">Resume</a></li>
+          <li>
+            <a href="/hire-me" class="nav-link nav-hire">Hire Me ✦</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </header>
 
     <div class="container">
       <div class="r-header">
@@ -692,29 +692,11 @@
       </p>
     </footer>
 
+    <!-- /* ====JAVASCRIPT FOR THEME TOGGLE==== */ -->
+    <script src="javascript/script.js"></script>
+    <script src="javascript/theme.js"></script>
+
     <script>
-      const btn = document.getElementById('themeBtn');
-      const icon = document.getElementById('themeIcon');
-      const html = document.documentElement;
-
-      // Load saved theme
-      const saved = localStorage.getItem('cp-theme') || 'dark';
-      html.setAttribute('data-theme', saved);
-      updateIcon(saved);
-
-      btn.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        html.setAttribute('data-theme', next);
-        localStorage.setItem('cp-theme', next);
-        updateIcon(next);
-      });
-
-      function updateIcon(theme) {
-        icon.className =
-          theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-      }
-
       // Download PDF resume from assets folder
       document.getElementById('downloadBtn').addEventListener('click', () => {
         const a = document.createElement('a');
