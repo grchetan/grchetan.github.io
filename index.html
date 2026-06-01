@@ -88,6 +88,60 @@
       gtag('config', 'G-HLS482HB27');
     </script>
 
+    <!-- google exelsheet data analytics & visit counter -->
+    <script>
+      (function () {
+        var url =
+          'https://script.google.com/macros/s/AKfycby0cm2hNwFnaxwGEcOsrk3KJefwNUDcrcDhSUHndZ01xNFDa1Dkv0EMVjdPRWGKH3z5/exec';
+        
+        // 1. Track visit
+        fetch(
+          url +
+            '?action=track&page=' +
+            encodeURIComponent(location.pathname) +
+            '&ref=' +
+            encodeURIComponent(document.referrer) +
+            '&ua=' +
+            encodeURIComponent(navigator.userAgent) +
+            '&screen=' +
+            encodeURIComponent(screen.width + 'x' + screen.height),
+          { mode: 'no-cors' },
+        );
+
+        // 2. Fetch stats to display total profile visits
+        document.addEventListener('DOMContentLoaded', function () {
+          fetch(url + '?action=stats')
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (data && typeof data.total !== 'undefined') {
+                var countEl = document.getElementById('visitCount');
+                var containerEl = document.getElementById('visitCounterContainer');
+                if (countEl && containerEl) {
+                  animateValue(countEl, 0, data.total, 1500);
+                  containerEl.style.display = 'inline-flex';
+                }
+              }
+            })
+            .catch(function (err) {
+              console.warn('Error fetching visit stats:', err);
+            });
+        });
+
+        function animateValue(obj, start, end, duration) {
+          var startTimestamp = null;
+          var step = function (timestamp) {
+            if (!startTimestamp) startTimestamp = timestamp;
+            var progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString();
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            }
+          };
+          window.requestAnimationFrame(step);
+        }
+      })();
+    </script>
+
     <!-- ===================== FONTS ===================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -337,9 +391,27 @@
           performance-driven web solutions.
         </p>
 
-        <!-------arrow------------>
-        <div class="arrow-container" aria-hidden="true">
-          <div class="arrow-down"></div>
+        <!-------profile visit count------------>
+        <div class="arrow-container visit-counter-wrapper" id="visitCounterContainer" style="display: none;">
+          <div class="visit-counter-badge">
+            <i class="fa-solid fa-eye visit-icon"></i>
+            <span class="visit-label">Profile Visits</span>
+            <span class="visit-count" id="visitCount">0</span>
+          </div>
+        </div>
+
+        <!------- Sleek Creative Down Arrow (Scroll Indicator) ------->
+        <div class="scroll-indicator-container">
+          <a href="#about" class="scroll-indicator" aria-label="Scroll to About section">
+            <span class="scroll-text">Explore</span>
+            <div class="scroll-mouse">
+              <div class="scroll-wheel"></div>
+            </div>
+            <div class="scroll-chevrons">
+              <span></span>
+              <span></span>
+            </div>
+          </a>
         </div>
       </div>
     </div>
