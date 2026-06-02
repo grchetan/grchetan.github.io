@@ -19,6 +19,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link rel="stylesheet" href="css/universal.css" />
+    <script src="javascript/theme.js"></script>
     <style>
       [data-theme='dark'] {
         --bg: #080808;
@@ -1316,11 +1317,6 @@
       // ── Year ──
       document.getElementById('yr').textContent = new Date().getFullYear();
 
-      // ── Theme (syncs with main portfolio localStorage) ──
-      const html = document.documentElement;
-      const sv = localStorage.getItem('cp-theme') || 'dark';
-      html.setAttribute('data-theme', sv);
-
       // ── Nav scroll ──
       window.addEventListener('scroll', () => {
         document
@@ -1541,6 +1537,5 @@
     </script>
 
     <script src="javascript/script.js"></script>
-    <script src="javascript/theme.js"></script>
   </body>
 </html>

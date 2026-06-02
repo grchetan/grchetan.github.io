@@ -4,22 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CP. Admin — Portfolio Control Center</title>
-    
+
     <!-- Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    
+
     <!-- Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    
+
     <!-- ChartJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-    
+
     <style>
       :root {
         --accent: #3b82f6; /* Premium Tech-Blue */
@@ -27,44 +27,46 @@
         --accent-glow: rgba(59, 130, 246, 0.25);
         --accent-border: rgba(59, 130, 246, 0.2);
         --accent-dim: rgba(59, 130, 246, 0.08);
-        
-        --bg: #0f0f13;
-        --bg-panel: #14141d;
-        --bg-input: #1a1a24;
-        --card: rgba(30, 33, 45, 0.35);
-        --border: rgba(255, 255, 255, 0.08);
-        --border-hover: rgba(59, 130, 246, 0.3);
-        
+
+        --bg: #0b0c10;
+        --bg-panel: rgba(17, 18, 26, 0.75);
+        --bg-input: #151622;
+        --card: rgba(26, 29, 41, 0.45);
+        --border: rgba(255, 255, 255, 0.07);
+        --border-hover: rgba(59, 130, 246, 0.35);
+
         --white: #f3f4f6;
         --text-primary: #f3f4f6;
-        --text-secondary: #d1d5db;
-        --text-muted: #9ca3af;
-        --text-dark: #6b7280;
-        
+        --text-secondary: #cbd5e1;
+        --text-muted: #94a3b8;
+        --text-dark: #64748b;
+
         --font-d: 'Bebas Neue', sans-serif;
         --font-b: 'DM Sans', sans-serif;
         --font-m: 'Montserrat', sans-serif;
-        
+
         --r: 16px;
-        --shadow: rgba(0, 0, 0, 0.5);
-        --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        --shadow: rgba(0, 0, 0, 0.6);
+        --shadow-glow: rgba(59, 130, 246, 0.15);
+        --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       /* Light Theme Variables Override */
       [data-theme='light'] {
-        --bg: #f3f4f6;
-        --bg-panel: #ffffff;
-        --bg-input: #f9fafb;
-        --card: rgba(255, 255, 255, 0.6);
-        --border: rgba(0, 0, 0, 0.08);
-        --border-hover: rgba(59, 130, 246, 0.4);
-        
-        --white: #111827;
-        --text-primary: #111827;
-        --text-secondary: #374151;
-        --text-muted: #6b7280;
-        --text-dark: #9ca3af;
-        --shadow: rgba(0, 0, 0, 0.08);
+        --bg: #f1f5f9;
+        --bg-panel: rgba(255, 255, 255, 0.8);
+        --bg-input: #f8fafc;
+        --card: rgba(255, 255, 255, 0.55);
+        --border: rgba(0, 0, 0, 0.06);
+        --border-hover: rgba(59, 130, 246, 0.45);
+
+        --white: #0f172a;
+        --text-primary: #0f172a;
+        --text-secondary: #334155;
+        --text-muted: #64748b;
+        --text-dark: #94a3b8;
+        --shadow: rgba(15, 23, 42, 0.06);
+        --shadow-glow: rgba(59, 130, 246, 0.08);
       }
 
       *,
@@ -74,18 +76,20 @@
         padding: 0;
         box-sizing: border-box;
       }
-      
+
       html {
         scroll-behavior: smooth;
       }
-      
+
       body {
         background: var(--bg);
         font-family: var(--font-b);
         color: var(--text-primary);
         min-height: 100vh;
         overflow-x: hidden;
-        transition: background 0.3s ease, color 0.3s ease;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
       }
 
       /* ── Noise Overlay ── */
@@ -122,7 +126,7 @@
         padding: 44px 40px;
         width: 380px;
         max-width: 90vw;
-        box-shadow: 
+        box-shadow:
           0 20px 50px var(--shadow),
           0 0 40px rgba(59, 130, 246, 0.1);
         animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -197,14 +201,25 @@
         animation: shake 0.4s ease-in-out;
       }
       @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-8px); }
-        75% { transform: translateX(8px); }
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-8px);
+        }
+        75% {
+          transform: translateX(8px);
+        }
       }
       .lock-btn {
         width: 100%;
         padding: 14px;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent-alt) 100%
+        );
         color: #ffffff;
         font-family: var(--font-b);
         font-size: 13px;
@@ -248,17 +263,14 @@
         display: grid;
         grid-template-columns: 260px 1fr;
       }
-      @media (max-width: 991px) {
-        #app.show {
-          grid-template-columns: 1fr;
-        }
-      }
 
       /* ─── SIDEBAR NAVIGATION ─── */
       .sidebar {
         background: var(--bg-panel);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-right: 1px solid var(--border);
-        padding: 30px 20px;
+        padding: 35px 24px;
         display: flex;
         flex-direction: column;
         height: 100vh;
@@ -272,17 +284,18 @@
         align-items: center;
         gap: 12px;
         margin-bottom: 40px;
-        padding-left: 10px;
+        padding-left: 8px;
       }
       .sb-logo {
         font-family: var(--font-d);
-        font-size: 24px;
+        font-size: 26px;
         letter-spacing: 2px;
         color: var(--text-primary);
         text-decoration: none;
       }
       .sb-logo span {
         color: var(--accent);
+        text-shadow: 0 0 15px var(--accent-glow);
       }
       .sb-badge {
         padding: 3px 8px;
@@ -299,9 +312,38 @@
         list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
         flex-grow: 1;
+        position: relative;
       }
+      
+      /* Neon Sliding Indicator background */
+      .sb-active-indicator {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 48px;
+        background: var(--accent-dim);
+        border: 1px solid var(--accent-border);
+        border-radius: 12px;
+        z-index: 0;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        opacity: 0;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.05);
+      }
+      .sb-active-indicator::before {
+        content: '';
+        position: absolute;
+        left: -1px;
+        top: 20%;
+        height: 60%;
+        width: 3.5px;
+        background: var(--accent);
+        box-shadow: 0 0 12px var(--accent);
+        border-radius: 100px;
+      }
+
       .sb-item-btn {
         width: 100%;
         display: flex;
@@ -318,6 +360,8 @@
         cursor: pointer;
         text-align: left;
         transition: var(--transition);
+        position: relative;
+        z-index: 1; /* Above indicator */
       }
       .sb-item-btn i {
         font-size: 15px;
@@ -327,22 +371,22 @@
         transition: var(--transition);
       }
       .sb-item-btn:hover {
-        background: var(--card);
         color: var(--text-primary);
+        transform: translateX(4px);
       }
       .sb-item-btn:hover i {
         color: var(--accent);
+        transform: scale(1.1);
       }
       .sb-item-btn.active {
-        background: var(--accent-dim);
-        border-color: var(--accent-border);
         color: var(--accent);
         font-weight: 700;
       }
       .sb-item-btn.active i {
         color: var(--accent);
+        transform: scale(1.05);
       }
-      
+
       .sb-footer {
         display: flex;
         flex-direction: column;
@@ -353,11 +397,25 @@
       .sb-theme-toggle {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        position: relative;
         background: var(--bg-input);
         border: 1px solid var(--border);
         border-radius: 100px;
         padding: 4px;
+        z-index: 1;
+      }
+      .theme-slider {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: calc(50% - 4px);
+        height: calc(100% - 8px);
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 0;
       }
       .theme-btn {
         flex: 1;
@@ -372,16 +430,111 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 1;
+        position: relative;
       }
       .theme-btn.active {
-        background: var(--bg-panel);
         color: var(--accent);
-        box-shadow: 0 4px 10px var(--shadow);
+        font-weight: 700;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
       }
       .sb-copyright {
         font-size: 10px;
         color: var(--text-dark);
         text-align: center;
+      }
+
+      /* ─── MOBILE BOTTOM NAV DOCK ─── */
+      .mobile-bottom-dock {
+        display: none;
+      }
+      @media (max-width: 991px) {
+        .mobile-bottom-dock {
+          display: flex;
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 90%;
+          max-width: 480px;
+          background: rgba(20, 20, 29, 0.75);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid var(--border);
+          border-radius: 100px;
+          padding: 8px 12px;
+          justify-content: space-around;
+          align-items: center;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+          z-index: 999;
+          animation: slideUpDock 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        [data-theme='light'] .mobile-bottom-dock {
+          background: rgba(255, 255, 255, 0.75);
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        }
+        @keyframes slideUpDock {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 40px);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+          }
+        }
+        .mb-dock-btn {
+          background: transparent;
+          border: none;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 4px;
+          color: var(--text-muted);
+          font-family: var(--font-b);
+          font-size: 10px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: var(--transition);
+          position: relative;
+          padding: 6px 12px;
+        }
+        .mb-dock-btn i {
+          font-size: 18px;
+          transition: var(--transition);
+        }
+        .mb-dock-btn.active {
+          color: var(--accent);
+          font-weight: 700;
+        }
+        .mb-dock-btn.active i {
+          transform: translateY(-2px);
+          text-shadow: 0 0 10px var(--accent);
+        }
+        .mb-dock-btn.active::after {
+          content: '';
+          position: absolute;
+          bottom: -4px;
+          width: 4px;
+          height: 4px;
+          background: var(--accent);
+          border-radius: 50%;
+          box-shadow: 0 0 8px var(--accent);
+        }
+        
+        /* Hide side panel buttons and menu on mobile */
+        .mobile-menu-toggle {
+          display: none !important;
+        }
+        .sidebar {
+          display: none !important;
+        }
+        #app.show {
+          grid-template-columns: 1fr;
+        }
+        .content-wrapper {
+          padding-bottom: 100px !important; /* spacing so bottom dock doesn't overlay elements */
+        }
       }
 
       /* ─── MAIN CONTENT CONTAINER ─── */
@@ -391,7 +544,7 @@
         min-height: 100vh;
         overflow-y: auto;
       }
-      
+
       /* ─── TOP HEADER BAR ─── */
       .top-nav {
         background: var(--bg-panel);
@@ -448,8 +601,13 @@
         animation: blink 2s infinite;
       }
       @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.2; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.2;
+        }
       }
       .tn-actions {
         display: flex;
@@ -479,7 +637,9 @@
         animation: rotating 0.8s linear infinite;
       }
       @keyframes rotating {
-        to { transform: rotate(360deg); }
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       /* ─── TAB CONTENT PANELS ─── */
@@ -500,8 +660,14 @@
         }
       }
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       /* Page Headings */
@@ -517,7 +683,11 @@
         margin-bottom: 4px;
       }
       .page-title span {
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent-alt) 100%
+        );
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -543,7 +713,7 @@
           grid-template-columns: 1fr;
         }
       }
-      
+
       .stat-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -556,7 +726,7 @@
       .stat-card:hover {
         border-color: var(--accent);
         transform: translateY(-5px);
-        box-shadow: 
+        box-shadow:
           0 12px 36px var(--shadow),
           0 0 25px rgba(59, 130, 246, 0.15);
       }
@@ -567,7 +737,12 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
         opacity: 0;
         transition: opacity 0.3s;
       }
@@ -632,7 +807,7 @@
           grid-template-columns: 1fr;
         }
       }
-      
+
       .panel {
         background: var(--card);
         border: 1px solid var(--border);
@@ -704,7 +879,11 @@
       }
       .ref-bar-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent) 0%, var(--accent-alt) 100%);
+        background: linear-gradient(
+          90deg,
+          var(--accent) 0%,
+          var(--accent-alt) 100%
+        );
         border-radius: 100px;
         transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
@@ -826,7 +1005,7 @@
         align-items: center;
         justify-content: center;
       }
-      
+
       /* Active Pages Progress Grid */
       .active-pages-list {
         display: flex;
@@ -859,7 +1038,11 @@
       }
       .page-hit-bar-fill {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent) 0%, var(--accent-alt) 100%);
+        background: linear-gradient(
+          90deg,
+          var(--accent) 0%,
+          var(--accent-alt) 100%
+        );
         border-radius: 100px;
         transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
       }
@@ -902,7 +1085,7 @@
         border-color: var(--accent);
         box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
       }
-      
+
       .filter-badges {
         display: flex;
         align-items: center;
@@ -920,7 +1103,8 @@
         cursor: pointer;
         transition: var(--transition);
       }
-      .filter-badge:hover, .filter-badge.active {
+      .filter-badge:hover,
+      .filter-badge.active {
         background: var(--accent-dim);
         border-color: var(--accent-border);
         color: var(--accent);
@@ -937,7 +1121,7 @@
           grid-template-columns: 1fr;
         }
       }
-      
+
       .msg-card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -993,11 +1177,27 @@
         letter-spacing: 0.5px;
         text-transform: uppercase;
       }
-      .pb-hiring { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.25); color: #60a5fa; }
-      .pb-freelance { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: #34d399; }
-      .pb-collab { background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.25); color: #c084fc; }
-      .pb-other { background: rgba(107, 114, 128, 0.1); border: 1px solid rgba(107, 114, 128, 0.25); color: #9ca3af; }
-      
+      .pb-hiring {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1px solid rgba(59, 130, 246, 0.25);
+        color: #60a5fa;
+      }
+      .pb-freelance {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        color: #34d399;
+      }
+      .pb-collab {
+        background: rgba(167, 139, 250, 0.1);
+        border: 1px solid rgba(167, 139, 250, 0.25);
+        color: #c084fc;
+      }
+      .pb-other {
+        background: rgba(107, 114, 128, 0.1);
+        border: 1px solid rgba(107, 114, 128, 0.25);
+        color: #9ca3af;
+      }
+
       .budget-badge {
         padding: 4px 10px;
         background: rgba(245, 158, 11, 0.08);
@@ -1065,7 +1265,7 @@
           grid-template-columns: 1fr;
         }
       }
-      
+
       /* Circular Audits Gauges */
       .audit-gauges-wrap {
         display: grid;
@@ -1253,7 +1453,7 @@
           grid-template-columns: 1fr;
         }
       }
-      
+
       .settings-form {
         display: flex;
         flex-direction: column;
@@ -1292,7 +1492,11 @@
       }
       .settings-btn-save {
         padding: 13px 28px;
-        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+        background: linear-gradient(
+          135deg,
+          var(--accent) 0%,
+          var(--accent-alt) 100%
+        );
         border: none;
         border-radius: 100px;
         font-family: var(--font-b);
@@ -1384,7 +1588,7 @@
   </head>
   <body>
     <!-- Radial Audits Gradients Definitions for SVG Gauges -->
-    <svg style="width:0;height:0;position:absolute;">
+    <svg style="width: 0; height: 0; position: absolute">
       <defs>
         <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#3b82f6" />
@@ -1398,7 +1602,7 @@
       <div class="lock-box">
         <div class="lock-logo">CP<span>.</span> ADMIN</div>
         <div class="lock-sub">Admin Control Panel</div>
-        
+
         <label class="lock-label">Authorized Access Password</label>
         <input
           type="password"
@@ -1407,12 +1611,14 @@
           placeholder="••••••••••••"
           autocomplete="off"
         />
-        <div class="lock-err" id="lock-err">❌ Wrong password. Access Denied.</div>
-        
+        <div class="lock-err" id="lock-err">
+          ❌ Wrong password. Access Denied.
+        </div>
+
         <button class="lock-btn" onclick="checkPass()">
           <i class="fa-solid fa-unlock-keyhole"></i> Unlock Console
         </button>
-        
+
         <div
           style="
             font-size: 10px;
@@ -1430,15 +1636,15 @@
 
     <!-- ════════ MAIN APP LAYOUT ════════ -->
     <div id="app">
-      
       <!-- ─── SIDEBAR NAVIGATION ─── -->
       <nav class="sidebar" id="sidebar">
         <div class="sb-header">
           <a href="/" class="sb-logo">CP<span>.</span></a>
           <span class="sb-badge">Admin</span>
         </div>
-        
+
         <ul class="sb-menu">
+          <div class="sb-active-indicator"></div>
           <li>
             <button class="sb-item-btn active" data-target="panel-overview">
               <i class="fa-solid fa-chart-pie"></i>Overview
@@ -1460,32 +1666,43 @@
             </button>
           </li>
         </ul>
-        
+
         <div class="sb-footer">
           <div class="sb-theme-toggle">
-            <button class="theme-btn" data-mode="light" title="Light theme">☀️</button>
-            <button class="theme-btn active" data-mode="dark" title="Dark theme">🌙</button>
+            <div class="theme-slider"></div>
+            <button class="theme-btn" data-mode="light" title="Light theme">
+              ☀️
+            </button>
+            <button
+              class="theme-btn active"
+              data-mode="dark"
+              title="Dark theme"
+            >
+              🌙
+            </button>
           </div>
-          <div class="sb-copyright">
-            &copy; Chetan Prajapat
-          </div>
+          <div class="sb-copyright">&copy; Chetan Prajapat</div>
         </div>
       </nav>
 
       <!-- ─── CONTENT AREA ─── -->
       <div class="content-wrapper">
-        
         <!-- TOP NAV HEADER -->
         <header class="top-nav">
           <div class="tn-title-area">
-            <button class="mobile-menu-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+            <button
+              class="mobile-menu-toggle"
+              id="sidebarToggle"
+              onclick="toggleSidebar()"
+            >
               <i class="fa-solid fa-bars-staggered"></i>
             </button>
             <span class="live-indicator">
-              <div class="live-dot"></div>Live Stream
+              <div class="live-dot"></div>
+              Live Stream
             </span>
           </div>
-          
+
           <div class="tn-actions">
             <button class="refresh-btn" onclick="loadData(true)">
               <i class="fa-solid fa-arrows-rotate" id="ref-icon"></i>Sync Sheets
@@ -1497,10 +1714,10 @@
         <main class="tab-panel active" id="panel-overview">
           <div class="page-intro">
             <h1 class="page-title">VISITOR <span>ANALYTICS</span></h1>
-            <p class="page-desc">Real-time spreadsheet metrics from your portfolio visitors.</p>
+            <p class="page-desc">
+              Real-time spreadsheet metrics from your portfolio visitors.
+            </p>
           </div>
-
-
 
           <!-- Quick Metrics Cards -->
           <div class="stats-grid">
@@ -1514,33 +1731,39 @@
                 <i class="fa-solid fa-circle-check"></i> Real-time records
               </div>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-header">
                 <span class="stat-label">Visits Today</span>
-                <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                <div class="stat-icon">
+                  <i class="fa-solid fa-calendar-day"></i>
+                </div>
               </div>
               <div class="stat-num loading" id="s-today">—</div>
               <div class="stat-footer">
                 <i class="fa-solid fa-bolt"></i> Past 24 hours
               </div>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-header">
                 <span class="stat-label">Weekly Total</span>
-                <div class="stat-icon"><i class="fa-solid fa-calendar-week"></i></div>
+                <div class="stat-icon">
+                  <i class="fa-solid fa-calendar-week"></i>
+                </div>
               </div>
               <div class="stat-num loading" id="s-week">—</div>
               <div class="stat-footer">
                 <i class="fa-solid fa-arrow-trend-up"></i> Past 7 days
               </div>
             </div>
-            
+
             <div class="stat-card">
               <div class="stat-header">
                 <span class="stat-label">Monthly Total</span>
-                <div class="stat-icon"><i class="fa-solid fa-calendar"></i></div>
+                <div class="stat-icon">
+                  <i class="fa-solid fa-calendar"></i>
+                </div>
               </div>
               <div class="stat-num loading" id="s-month">—</div>
               <div class="stat-footer">
@@ -1560,7 +1783,7 @@
                 <canvas id="visits-chart"></canvas>
               </div>
             </div>
-            
+
             <div class="panel">
               <div class="panel-head">
                 <div class="panel-title">Traffic Channels</div>
@@ -1581,7 +1804,7 @@
               <div class="panel-title">Recent Portfolio Visitor Sessions</div>
               <span class="panel-tag">Live Feed</span>
             </div>
-            
+
             <div class="table-responsive">
               <table>
                 <thead>
@@ -1612,7 +1835,10 @@
         <main class="tab-panel" id="panel-audience">
           <div class="page-intro">
             <h1 class="page-title">AUDIENCE <span>INSIGHTS</span></h1>
-            <p class="page-desc">Demographics, platforms, and active sections breakdown of your visitors.</p>
+            <p class="page-desc">
+              Demographics, platforms, and active sections breakdown of your
+              visitors.
+            </p>
           </div>
 
           <div class="audience-grid">
@@ -1625,7 +1851,7 @@
                 <canvas id="device-chart"></canvas>
               </div>
             </div>
-            
+
             <div class="panel">
               <div class="panel-head">
                 <div class="panel-title">Browser Breakdown</div>
@@ -1643,7 +1869,7 @@
               <div class="panel-title">Active Portfolio Pages Hit Ratio</div>
               <span class="panel-tag">Analytics breakdown</span>
             </div>
-            
+
             <div class="active-pages-list" id="active-pages-progress">
               <div class="empty-state">
                 <i class="fa-solid fa-spinner fa-spin"></i>
@@ -1657,7 +1883,9 @@
         <main class="tab-panel" id="panel-inbox">
           <div class="page-intro">
             <h1 class="page-title">CONTACT <span>MESSAGES</span></h1>
-            <p class="page-desc">Read and manage inquiries sent through your portfolio form.</p>
+            <p class="page-desc">
+              Read and manage inquiries sent through your portfolio form.
+            </p>
           </div>
 
           <div class="inbox-controls">
@@ -1671,13 +1899,43 @@
                 oninput="filterMessages()"
               />
             </div>
-            
+
             <div class="filter-badges">
-              <button class="filter-badge active" data-filter="all" onclick="setInboxFilter('all')">All Messages</button>
-              <button class="filter-badge" data-filter="Hiring" onclick="setInboxFilter('Hiring')">💼 Hiring</button>
-              <button class="filter-badge" data-filter="Freelance" onclick="setInboxFilter('Freelance')">⚡ Freelance</button>
-              <button class="filter-badge" data-filter="Collab" onclick="setInboxFilter('Collab')">🤝 Collab</button>
-              <button class="filter-badge" data-filter="Other" onclick="setInboxFilter('Other')">📎 Other</button>
+              <button
+                class="filter-badge active"
+                data-filter="all"
+                onclick="setInboxFilter('all')"
+              >
+                All Messages
+              </button>
+              <button
+                class="filter-badge"
+                data-filter="Hiring"
+                onclick="setInboxFilter('Hiring')"
+              >
+                💼 Hiring
+              </button>
+              <button
+                class="filter-badge"
+                data-filter="Freelance"
+                onclick="setInboxFilter('Freelance')"
+              >
+                ⚡ Freelance
+              </button>
+              <button
+                class="filter-badge"
+                data-filter="Collab"
+                onclick="setInboxFilter('Collab')"
+              >
+                🤝 Collab
+              </button>
+              <button
+                class="filter-badge"
+                data-filter="Other"
+                onclick="setInboxFilter('Other')"
+              >
+                📎 Other
+              </button>
             </div>
           </div>
 
@@ -1694,7 +1952,9 @@
         <main class="tab-panel" id="panel-actions">
           <div class="page-intro">
             <h1 class="page-title">QUICK <span>ACTIONS</span></h1>
-            <p class="page-desc">Automated portfolio health audits and shortcuts.</p>
+            <p class="page-desc">
+              Automated portfolio health audits and shortcuts.
+            </p>
           </div>
 
           <div class="layout-grid-actions">
@@ -1704,43 +1964,75 @@
                 <div class="gauge-svg-wrap">
                   <svg class="gauge-svg" width="100" height="100">
                     <circle class="gauge-circle-bg" cx="50" cy="50" r="40" />
-                    <circle class="gauge-circle-fill" id="g-speed" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                    <circle
+                      class="gauge-circle-fill"
+                      id="g-speed"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="251.2"
+                      stroke-dashoffset="251.2"
+                    />
                   </svg>
                   <div class="gauge-text">98%</div>
                 </div>
                 <div class="gauge-label">Page Load Speed</div>
                 <div class="gauge-desc">Speed Index: Excellent</div>
               </div>
-              
+
               <div class="gauge-card">
                 <div class="gauge-svg-wrap">
                   <svg class="gauge-svg" width="100" height="100">
                     <circle class="gauge-circle-bg" cx="50" cy="50" r="40" />
-                    <circle class="gauge-circle-fill" id="g-seo" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                    <circle
+                      class="gauge-circle-fill"
+                      id="g-seo"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="251.2"
+                      stroke-dashoffset="251.2"
+                    />
                   </svg>
                   <div class="gauge-text">100%</div>
                 </div>
                 <div class="gauge-label">SEO Audit</div>
                 <div class="gauge-desc">Optimized Tags & Sitemap</div>
               </div>
-              
+
               <div class="gauge-card">
                 <div class="gauge-svg-wrap">
                   <svg class="gauge-svg" width="100" height="100">
                     <circle class="gauge-circle-bg" cx="50" cy="50" r="40" />
-                    <circle class="gauge-circle-fill" id="g-secure" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                    <circle
+                      class="gauge-circle-fill"
+                      id="g-secure"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="251.2"
+                      stroke-dashoffset="251.2"
+                    />
                   </svg>
                   <div class="gauge-text">100%</div>
                 </div>
                 <div class="gauge-label">SSL Security</div>
                 <div class="gauge-desc">Certificate Status: Verified</div>
               </div>
-              
+
               <div class="gauge-card">
                 <div class="gauge-svg-wrap">
                   <svg class="gauge-svg" width="100" height="100">
                     <circle class="gauge-circle-bg" cx="50" cy="50" r="40" />
-                    <circle class="gauge-circle-fill" id="g-access" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" />
+                    <circle
+                      class="gauge-circle-fill"
+                      id="g-access"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-dasharray="251.2"
+                      stroke-dashoffset="251.2"
+                    />
                   </svg>
                   <div class="gauge-text">96%</div>
                 </div>
@@ -1753,32 +2045,42 @@
             <div class="action-cards">
               <a href="/resume" class="action-card-btn">
                 <div class="acb-left">
-                  <div class="acb-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                  <div class="acb-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                  </div>
                   <div class="acb-details">
                     <span class="acb-title">Verify Portfolio Resume</span>
-                    <span class="acb-desc">Download or update your curriculum vitae PDF.</span>
+                    <span class="acb-desc"
+                      >Download or update your curriculum vitae PDF.</span
+                    >
                   </div>
                 </div>
                 <i class="fa-solid fa-chevron-right acb-arrow"></i>
               </a>
-              
+
               <a href="/blog" class="action-card-btn">
                 <div class="acb-left">
-                  <div class="acb-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                  <div class="acb-icon">
+                    <i class="fa-solid fa-pen-nib"></i>
+                  </div>
                   <div class="acb-details">
                     <span class="acb-title">Write / Manage Blog</span>
-                    <span class="acb-desc">Compose technical articles and check current blogs.</span>
+                    <span class="acb-desc"
+                      >Compose technical articles and check current blogs.</span
+                    >
                   </div>
                 </div>
                 <i class="fa-solid fa-chevron-right acb-arrow"></i>
               </a>
-              
+
               <a href="/" target="_blank" class="action-card-btn">
                 <div class="acb-left">
                   <div class="acb-icon"><i class="fa-solid fa-globe"></i></div>
                   <div class="acb-details">
                     <span class="acb-title">Go to Live Portfolio</span>
-                    <span class="acb-desc">Open the portfolio homepage in a new tab.</span>
+                    <span class="acb-desc"
+                      >Open the portfolio homepage in a new tab.</span
+                    >
                   </div>
                 </div>
                 <i class="fa-solid fa-chevron-right acb-arrow"></i>
@@ -1786,16 +2088,38 @@
             </div>
           </div>
         </main>
-
+      </div>
+      
+      <!-- ─── MOBILE BOTTOM NAV DOCK ─── -->
+      <div class="mobile-bottom-dock">
+        <button class="mb-dock-btn active" data-target="panel-overview">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Overview</span>
+        </button>
+        <button class="mb-dock-btn" data-target="panel-audience">
+          <i class="fa-solid fa-users"></i>
+          <span>Audience</span>
+        </button>
+        <button class="mb-dock-btn" data-target="panel-inbox">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Inbox</span>
+        </button>
+        <button class="mb-dock-btn" data-target="panel-actions">
+          <i class="fa-solid fa-square-check"></i>
+          <span>Actions</span>
+        </button>
       </div>
     </div>
 
     <!-- ════════ JAVASCRIPT AND API INTEGRATION ════════ -->
     <script>
       // ══ CONFIGURATION CONSTANTS ══
-      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0cm2hNwFnaxwGEcOsrk3KJefwNUDcrcDhSUHndZ01xNFDa1Dkv0EMVjdPRWGKH3z5/exec';
-      const CONTACT_URL = 'https://script.google.com/macros/s/AKfycbx9Tc27-31h6KF4cJTbmlSwWatNE01FSBprTtLI80EQLbS7_6zmCFckW68TevOda_zuqg/exec';
-      const PASS_HASH = 'de0de6b65a4118bfd8e562245ea0e5ff1d17b0ed71074be8b8329d72b1a794d3'; // Hash for chetan@123
+      const SCRIPT_URL =
+        'https://script.google.com/macros/s/AKfycby0cm2hNwFnaxwGEcOsrk3KJefwNUDcrcDhSUHndZ01xNFDa1Dkv0EMVjdPRWGKH3z5/exec';
+      const CONTACT_URL =
+        'https://script.google.com/macros/s/AKfycbx9Tc27-31h6KF4cJTbmlSwWatNE01FSBprTtLI80EQLbS7_6zmCFckW68TevOda_zuqg/exec';
+      const PASS_HASH =
+        'de0de6b65a4118bfd8e562245ea0e5ff1d17b0ed71074be8b8329d72b1a794d3'; // Hash for chetan@123
 
       let chart = null;
       let deviceChart = null;
@@ -1807,7 +2131,10 @@
 
       // ══ CRYPTO HASH FUNCTION ══
       async function sha256(msg) {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+        const buf = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode(msg),
+        );
         return Array.from(new Uint8Array(buf))
           .map((b) => b.toString(16).padStart(2, '0'))
           .join('');
@@ -1842,7 +2169,7 @@
       function initApp() {
         initTabs();
         initTheme();
-        
+
         loadData(false);
         loadContactInboxData();
 
@@ -1855,43 +2182,66 @@
 
       // ══ SIDEBAR TAB NAVIGATION ══
       function initTabs() {
-        const buttons = document.querySelectorAll('.sb-item-btn');
-        buttons.forEach(btn => {
+        const sbButtons = document.querySelectorAll('.sb-item-btn');
+        const dockButtons = document.querySelectorAll('.mb-dock-btn');
+        const allButtons = [...sbButtons, ...dockButtons];
+
+        allButtons.forEach((btn) => {
           btn.addEventListener('click', () => {
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
             const target = btn.getAttribute('data-target');
             switchTab(target);
           });
         });
+
+        // Set initial sliding indicator position and window resize handler
+        setTimeout(updateSidebarIndicator, 100);
+        window.addEventListener('resize', updateSidebarIndicator);
+      }
+
+      function updateSidebarIndicator() {
+        const activeBtn = document.querySelector('.sb-item-btn.active');
+        const indicator = document.querySelector('.sb-active-indicator');
+        if (activeBtn && indicator) {
+          indicator.style.top = activeBtn.offsetTop + 'px';
+          indicator.style.height = activeBtn.offsetHeight + 'px';
+          indicator.style.opacity = '1';
+        }
       }
 
       function switchTab(targetId) {
+        // Sync Sidebar Buttons
+        document.querySelectorAll('.sb-item-btn').forEach((btn) => {
+          if (btn.getAttribute('data-target') === targetId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // Sync Mobile Dock Buttons
+        document.querySelectorAll('.mb-dock-btn').forEach((btn) => {
+          if (btn.getAttribute('data-target') === targetId) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        // Update indicator positions
+        updateSidebarIndicator();
+
         const panels = document.querySelectorAll('.tab-panel');
-        panels.forEach(p => p.classList.remove('active'));
-        
+        panels.forEach((p) => p.classList.remove('active'));
+
         const activePanel = document.getElementById(targetId);
-        activePanel.classList.add('active');
+        if (activePanel) {
+          activePanel.classList.add('active');
+        }
         activeTabId = targetId;
 
-        // Auto collapse sidebar on mobile after clicking
-        if (window.innerWidth <= 991) {
-          document.getElementById('sidebar').style.transform = 'translateX(-100%)';
-        }
-
-        // Re-animate gauges or adjust charts if switching tabs
+        // Re-animate gauges if switching to Quick Actions
         if (targetId === 'panel-actions') {
-          animateGauges();
-        }
-      }
-
-      function toggleSidebar() {
-        const sb = document.getElementById('sidebar');
-        if (sb.style.transform === 'translateX(0px)') {
-          sb.style.transform = 'translateX(-100%)';
-        } else {
-          sb.style.transform = 'translateX(0px)';
+          setTimeout(animateGauges, 100);
         }
       }
 
@@ -1901,11 +2251,11 @@
         setTheme(savedTheme);
 
         const themeButtons = document.querySelectorAll('.theme-btn');
-        themeButtons.forEach(btn => {
+        themeButtons.forEach((btn) => {
           btn.addEventListener('click', () => {
-            themeButtons.forEach(b => b.classList.remove('active'));
+            themeButtons.forEach((b) => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             const mode = btn.getAttribute('data-mode');
             setTheme(mode);
           });
@@ -1915,18 +2265,23 @@
       function setTheme(mode) {
         document.documentElement.setAttribute('data-theme', mode);
         localStorage.setItem('cp-admin-theme', mode);
-        
+
         const btn = document.querySelector(`.theme-btn[data-mode="${mode}"]`);
         if (btn) {
-          document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+          document
+            .querySelectorAll('.theme-btn')
+            .forEach((b) => b.classList.remove('active'));
           btn.classList.add('active');
+        }
+
+        const slider = document.querySelector('.theme-slider');
+        if (slider) {
+          slider.style.transform = mode === 'dark' ? 'translateX(100%)' : 'translateX(0)';
         }
 
         // Adjust chart colors if loaded
         if (chart) loadData(false);
       }
-
-
 
       // ══ DATA LOAD CONTROLLER ══
       async function loadData(showSpin) {
@@ -1943,7 +2298,10 @@
           const data = await res.json();
           renderData(data, false);
         } catch (e) {
-          console.warn('Google sheets API fetch failed, displaying dummy stats:', e);
+          console.warn(
+            'Google sheets API fetch failed, displaying dummy stats:',
+            e,
+          );
           loadDemoData();
         } finally {
           if (showSpin) {
@@ -1970,8 +2328,21 @@
         }
 
         const recent = [];
-        const pages = ['/', '/#about', '/#projects', '/contact', '/resume', '/blog'];
-        const refs = ['direct', 'linkedin.com', 'github.com', 'google.co.in', 'instagram.com'];
+        const pages = [
+          '/',
+          '/#about',
+          '/#projects',
+          '/contact',
+          '/resume',
+          '/blog',
+        ];
+        const refs = [
+          'direct',
+          'linkedin.com',
+          'github.com',
+          'google.co.in',
+          'instagram.com',
+        ];
         const uas = [
           'Mozilla/5.0 (Windows NT 10.0) Chrome/121',
           'Mozilla/5.0 (iPhone; CPU iPhone OS 17) Safari/604',
@@ -1985,22 +2356,25 @@
             time: d.toISOString(),
             page: pages[Math.floor(Math.random() * pages.length)],
             ref: refs[Math.floor(Math.random() * refs.length)],
-            ua: uas[Math.floor(Math.random() * uas.length)]
+            ua: uas[Math.floor(Math.random() * uas.length)],
           });
         }
 
         const refsObj = {};
-        refs.forEach(r => refsObj[r] = Math.floor(Math.random() * 50) + 10);
+        refs.forEach((r) => (refsObj[r] = Math.floor(Math.random() * 50) + 10));
 
-        renderData({
-          total: 489,
-          today: 28,
-          week: 142,
-          month: 310,
-          daily,
-          refs: refsObj,
-          recent
-        }, true);
+        renderData(
+          {
+            total: 489,
+            today: 28,
+            week: 142,
+            month: 310,
+            daily,
+            refs: refsObj,
+            recent,
+          },
+          true,
+        );
       }
 
       // ══ METRICS RENDERING ══
@@ -2013,7 +2387,7 @@
         renderAreaChart(data.daily);
         renderRefs(data.refs);
         renderTable(data.recent);
-        
+
         // Extract demographics OS & Browser counts from UA details
         compileDemographics(data.recent, isDemo);
         compilePagesBreakdown(data.recent, isDemo);
@@ -2033,16 +2407,22 @@
 
       // ── Chart 1: Daily Visits Area ──
       function renderAreaChart(daily) {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const gridColor = isLight ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)';
+        const isLight =
+          document.documentElement.getAttribute('data-theme') === 'light';
+        const gridColor = isLight
+          ? 'rgba(0, 0, 0, 0.05)'
+          : 'rgba(255, 255, 255, 0.05)';
         const tickColor = isLight ? '#6b7280' : '#9ca3af';
 
         const now = new Date();
-        const labels = [], values = [];
+        const labels = [],
+          values = [];
         for (let i = 6; i >= 0; i--) {
           const d = new Date(now - i * 86400000);
           const k = d.toISOString().split('T')[0];
-          labels.push(d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' }));
+          labels.push(
+            d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' }),
+          );
           values.push(daily[k] || 0);
         }
 
@@ -2056,20 +2436,22 @@
           type: 'line',
           data: {
             labels,
-            datasets: [{
-              label: 'Visits',
-              data: values,
-              borderColor: '#3b82f6',
-              backgroundColor: gradient,
-              borderWidth: 3,
-              pointBackgroundColor: '#06b6d4',
-              pointBorderColor: isLight ? '#ffffff' : '#14141d',
-              pointBorderWidth: 2,
-              pointRadius: 6,
-              pointHoverRadius: 8,
-              tension: 0.4,
-              fill: true
-            }]
+            datasets: [
+              {
+                label: 'Visits',
+                data: values,
+                borderColor: '#3b82f6',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                pointBackgroundColor: '#06b6d4',
+                pointBorderColor: isLight ? '#ffffff' : '#14141d',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                tension: 0.4,
+                fill: true,
+              },
+            ],
           },
           options: {
             responsive: true,
@@ -2085,39 +2467,50 @@
                 padding: 12,
                 cornerRadius: 8,
                 callbacks: {
-                  label: (ctx) => ' ' + ctx.parsed.y + ' visitors'
-                }
-              }
+                  label: (ctx) => ' ' + ctx.parsed.y + ' visitors',
+                },
+              },
             },
             scales: {
               x: {
                 grid: { color: gridColor },
-                ticks: { color: tickColor, font: { size: 10, family: 'DM Sans' } }
+                ticks: {
+                  color: tickColor,
+                  font: { size: 10, family: 'DM Sans' },
+                },
               },
               y: {
                 grid: { color: gridColor },
-                ticks: { color: tickColor, font: { size: 10, family: 'DM Sans' }, stepSize: 1 },
-                beginAtZero: true
-              }
-            }
-          }
+                ticks: {
+                  color: tickColor,
+                  font: { size: 10, family: 'DM Sans' },
+                  stepSize: 1,
+                },
+                beginAtZero: true,
+              },
+            },
+          },
         });
       }
 
       // ── Channels Progress Bars ──
       function renderRefs(refs) {
-        const sorted = Object.entries(refs).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const sorted = Object.entries(refs)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
         const max = sorted[0]?.[1] || 1;
         const el = document.getElementById('ref-list');
 
         if (!sorted.length) {
-          el.innerHTML = '<div class="empty-state"><i class="fa-solid fa-compass"></i> No referrers recorded yet</div>';
+          el.innerHTML =
+            '<div class="empty-state"><i class="fa-solid fa-compass"></i> No referrers recorded yet</div>';
           return;
         }
 
-        el.innerHTML = sorted.map(([ref, count]) => {
-          const cleanRef = ref === 'direct' ? '🔗 Direct / Bookmarks' : ref;
-          return `
+        el.innerHTML = sorted
+          .map(([ref, count]) => {
+            const cleanRef = ref === 'direct' ? '🔗 Direct / Bookmarks' : ref;
+            return `
             <div class="ref-row">
               <div class="ref-name" title="${ref}">${cleanRef}</div>
               <div class="ref-bar-bg">
@@ -2126,26 +2519,40 @@
               <div class="ref-count">${count}</div>
             </div>
           `;
-        }).join('');
+          })
+          .join('');
       }
 
       // ── Visitor Logs Feed Table ──
       function renderTable(recent) {
         const tbody = document.getElementById('visits-table');
         if (!recent || !recent.length) {
-          tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-inbox"></i> Feed is empty</div></td></tr>';
+          tbody.innerHTML =
+            '<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-inbox"></i> Feed is empty</div></td></tr>';
           return;
         }
 
-        tbody.innerHTML = recent.slice(0, 15).map((r, i) => {
-          const d = new Date(r.time);
-          const timeString = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-          const device = getDeviceDetails(r.ua || '');
-          const refClean = r.ref && r.ref !== 'direct' && r.ref.startsWith('http')
-            ? `<a href="${r.ref}" target="_blank" class="td-ref-link">${new URL(r.ref).hostname}</a>`
-            : r.ref || 'direct';
+        tbody.innerHTML = recent
+          .slice(0, 15)
+          .map((r, i) => {
+            const d = new Date(r.time);
+            const timeString =
+              d.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+              }) +
+              ' · ' +
+              d.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+            const device = getDeviceDetails(r.ua || '');
+            const refClean =
+              r.ref && r.ref !== 'direct' && r.ref.startsWith('http')
+                ? `<a href="${r.ref}" target="_blank" class="td-ref-link">${new URL(r.ref).hostname}</a>`
+                : r.ref || 'direct';
 
-          return `
+            return `
             <tr>
               <td class="td-time">${i + 1}</td>
               <td class="td-time">${timeString}</td>
@@ -2154,7 +2561,8 @@
               <td><span class="device-badge">${device}</span></td>
             </tr>
           `;
-        }).join('');
+          })
+          .join('');
       }
 
       function getDeviceDetails(ua) {
@@ -2168,15 +2576,29 @@
 
       // ══ DEMOGRAPHICS CHARTS COMPILATION ══
       function compileDemographics(recent, isDemo) {
-        const devices = { 'Windows': 0, 'Mac': 0, 'iOS': 0, 'Android': 0, 'Other': 0 };
-        const browsers = { 'Chrome': 0, 'Safari': 0, 'Firefox': 0, 'Edge': 0, 'Other': 0 };
+        const devices = { Windows: 0, Mac: 0, iOS: 0, Android: 0, Other: 0 };
+        const browsers = {
+          Chrome: 0,
+          Safari: 0,
+          Firefox: 0,
+          Edge: 0,
+          Other: 0,
+        };
 
         if (isDemo) {
           // Preset mock values for charts
-          devices['Windows'] = 45; devices['Mac'] = 25; devices['iOS'] = 30; devices['Android'] = 20; devices['Other'] = 5;
-          browsers['Chrome'] = 65; browsers['Safari'] = 30; browsers['Firefox'] = 15; browsers['Edge'] = 10; browsers['Other'] = 5;
+          devices['Windows'] = 45;
+          devices['Mac'] = 25;
+          devices['iOS'] = 30;
+          devices['Android'] = 20;
+          devices['Other'] = 5;
+          browsers['Chrome'] = 65;
+          browsers['Safari'] = 30;
+          browsers['Firefox'] = 15;
+          browsers['Edge'] = 10;
+          browsers['Other'] = 5;
         } else {
-          recent.forEach(r => {
+          recent.forEach((r) => {
             const ua = r.ua || '';
             // Compile Devices
             if (/Windows/i.test(ua)) devices['Windows']++;
@@ -2194,12 +2616,25 @@
           });
         }
 
-        renderDonut('device-chart', devices, ['#3b82f6', '#06b6d4', '#a78bfa', '#10b981', '#6b7280']);
-        renderDonut('browser-chart', browsers, ['#06b6d4', '#f59e0b', '#ef4444', '#3b82f6', '#9ca3af']);
+        renderDonut('device-chart', devices, [
+          '#3b82f6',
+          '#06b6d4',
+          '#a78bfa',
+          '#10b981',
+          '#6b7280',
+        ]);
+        renderDonut('browser-chart', browsers, [
+          '#06b6d4',
+          '#f59e0b',
+          '#ef4444',
+          '#3b82f6',
+          '#9ca3af',
+        ]);
       }
 
       function renderDonut(id, dataset, colors) {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const isLight =
+          document.documentElement.getAttribute('data-theme') === 'light';
         const labels = Object.keys(dataset);
         const values = Object.values(dataset);
 
@@ -2211,13 +2646,15 @@
           type: 'doughnut',
           data: {
             labels,
-            datasets: [{
-              data: values,
-              backgroundColor: colors,
-              borderWidth: isLight ? 2 : 0,
-              borderColor: isLight ? '#ffffff' : '#14141d',
-              hoverOffset: 4
-            }]
+            datasets: [
+              {
+                data: values,
+                backgroundColor: colors,
+                borderWidth: isLight ? 2 : 0,
+                borderColor: isLight ? '#ffffff' : '#14141d',
+                hoverOffset: 4,
+              },
+            ],
           },
           options: {
             responsive: true,
@@ -2230,8 +2667,8 @@
                   color: isLight ? '#111827' : '#d1d5db',
                   font: { size: 11, family: 'DM Sans' },
                   boxWidth: 10,
-                  padding: 8
-                }
+                  padding: 8,
+                },
               },
               tooltip: {
                 backgroundColor: isLight ? '#ffffff' : '#1a1a24',
@@ -2239,10 +2676,10 @@
                 bodyColor: isLight ? '#374151' : '#d1d5db',
                 borderWidth: 1,
                 borderColor: 'rgba(59, 130, 246, 0.1)',
-                padding: 10
-              }
-            }
-          }
+                padding: 10,
+              },
+            },
+          },
         };
 
         if (id === 'device-chart') {
@@ -2261,7 +2698,7 @@
           pageCounts['/blog'] = 45;
           pageCounts['/contact'] = 32;
         } else {
-          recent.forEach(r => {
+          recent.forEach((r) => {
             const path = r.page || '/';
             pageCounts[path] = (pageCounts[path] || 0) + 1;
           });
@@ -2272,13 +2709,15 @@
         const el = document.getElementById('active-pages-progress');
 
         if (!sorted.length) {
-          el.innerHTML = '<div class="empty-state">No page data compiled.</div>';
+          el.innerHTML =
+            '<div class="empty-state">No page data compiled.</div>';
           return;
         }
 
-        el.innerHTML = sorted.map(([url, count]) => {
-          const percent = Math.round((count / max) * 100);
-          return `
+        el.innerHTML = sorted
+          .map(([url, count]) => {
+            const percent = Math.round((count / max) * 100);
+            return `
             <div class="page-hit-row">
               <div class="page-hit-header">
                 <span class="page-hit-url">${url}</span>
@@ -2289,19 +2728,20 @@
               </div>
             </div>
           `;
-        }).join('');
+          })
+          .join('');
       }
 
       // ══ AUDIT GAUGES ANIMATIONS ══
       function animateGauges() {
         const indicators = [
           { id: 'g-speed', target: 251.2 * (1 - 0.98) }, // 98%
-          { id: 'g-seo', target: 251.2 * (1 - 1.00) },   // 100%
-          { id: 'g-secure', target: 251.2 * (1 - 1.00) },// 100%
-          { id: 'g-access', target: 251.2 * (1 - 0.96) } // 96%
+          { id: 'g-seo', target: 251.2 * (1 - 1.0) }, // 100%
+          { id: 'g-secure', target: 251.2 * (1 - 1.0) }, // 100%
+          { id: 'g-access', target: 251.2 * (1 - 0.96) }, // 96%
         ];
 
-        indicators.forEach(gauge => {
+        indicators.forEach((gauge) => {
           const el = document.getElementById(gauge.id);
           if (el) el.style.strokeDashoffset = gauge.target;
         });
@@ -2348,17 +2788,24 @@
 
       function renderInbox() {
         const deck = document.getElementById('inbox-messages-deck');
-        const query = document.getElementById('inbox-search').value.toLowerCase();
+        const query = document
+          .getElementById('inbox-search')
+          .value.toLowerCase();
 
-        const filtered = inboxMessages.filter(msg => {
+        const filtered = inboxMessages.filter((msg) => {
           // Category filter
-          if (inboxFilter !== 'all' && msg.purpose !== inboxFilter) return false;
-          
+          if (inboxFilter !== 'all' && msg.purpose !== inboxFilter)
+            return false;
+
           // Search query filter
           if (query) {
             const matchesName = (msg.name || '').toLowerCase().includes(query);
-            const matchesEmail = (msg.email || '').toLowerCase().includes(query);
-            const matchesMsg = (msg.message || '').toLowerCase().includes(query);
+            const matchesEmail = (msg.email || '')
+              .toLowerCase()
+              .includes(query);
+            const matchesMsg = (msg.message || '')
+              .toLowerCase()
+              .includes(query);
             return matchesName || matchesEmail || matchesMsg;
           }
           return true;
@@ -2374,13 +2821,26 @@
           return;
         }
 
-        deck.innerHTML = filtered.map(msg => {
-          const d = new Date(msg.timestamp);
-          const timeString = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }) + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-          const pbClass = getPurposeBadgeClass(msg.purpose);
-          const budgetClean = msg.budget && msg.budget !== 'N/A' && msg.budget !== 'N/A' ? `<span class="budget-badge">${msg.budget}</span>` : '';
+        deck.innerHTML = filtered
+          .map((msg) => {
+            const d = new Date(msg.timestamp);
+            const timeString =
+              d.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+              }) +
+              ' · ' +
+              d.toLocaleTimeString('en-IN', {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+            const pbClass = getPurposeBadgeClass(msg.purpose);
+            const budgetClean =
+              msg.budget && msg.budget !== 'N/A' && msg.budget !== 'N/A'
+                ? `<span class="budget-badge">${msg.budget}</span>`
+                : '';
 
-          return `
+            return `
             <div class="msg-card">
               <div class="msg-header">
                 <div class="msg-sender">
@@ -2402,22 +2862,28 @@
               </div>
             </div>
           `;
-        }).join('');
+          })
+          .join('');
       }
 
       function getPurposeBadgeClass(purpose) {
         switch (purpose) {
-          case 'Hiring': return 'pb-hiring';
-          case 'Freelance': return 'pb-freelance';
-          case 'Collab': return 'pb-collab';
-          default: return 'pb-other';
+          case 'Hiring':
+            return 'pb-hiring';
+          case 'Freelance':
+            return 'pb-freelance';
+          case 'Collab':
+            return 'pb-collab';
+          default:
+            return 'pb-other';
         }
       }
 
       function setInboxFilter(category) {
         inboxFilter = category;
-        document.querySelectorAll('.filter-badge').forEach(btn => {
-          if (btn.getAttribute('data-filter') === category) btn.classList.add('active');
+        document.querySelectorAll('.filter-badge').forEach((btn) => {
+          if (btn.getAttribute('data-filter') === category)
+            btn.classList.add('active');
           else btn.classList.remove('active');
         });
         renderInbox();
@@ -2428,7 +2894,9 @@
       }
 
       function copySenderMail(email) {
-        navigator.clipboard.writeText(email).then(() => alert('Sender email copied: ' + email));
+        navigator.clipboard
+          .writeText(email)
+          .then(() => alert('Sender email copied: ' + email));
       }
     </script>
   </body>

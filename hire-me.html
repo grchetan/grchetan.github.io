@@ -17,6 +17,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
     <link rel="stylesheet" href="css/universal.css" />
+    <script src="javascript/theme.js"></script>
     <style>
       *,
       *::before,
@@ -559,51 +560,7 @@
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
     </script>
-    <!-- /* ====JAVASCRIPT FOR THEME TOGGLE==== */ -->
+    <!-- /* ====JAVASCRIPT FOR MAIN FUNCTIONS==== */ -->
     <script src="javascript/script.js"></script>
-    <script src="javascript/theme.js"></script>
-
-    <script>
-      const html = document.documentElement;
-      const btn = document.getElementById('themeToggle');
-
-      // 1. Detect system preference
-      function getSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: light)').matches
-          ? 'light'
-          : 'dark';
-      }
-
-      // 2. Load saved preference OR fall back to system
-      function loadTheme() {
-        const saved = localStorage.getItem('cp-theme');
-        return saved || getSystemTheme();
-      }
-
-      // 3. Apply theme
-      function applyTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        localStorage.setItem('cp-theme', theme);
-      }
-
-      // 4. Initial load
-      applyTheme(loadTheme());
-
-      // 5. Toggle button
-      btn.addEventListener('click', () => {
-        const current = html.getAttribute('data-theme');
-        applyTheme(current === 'dark' ? 'light' : 'dark');
-      });
-
-      // 6. Listen for system preference changes (if user hasn't manually toggled)
-      window
-        .matchMedia('(prefers-color-scheme: light)')
-        .addEventListener('change', (e) => {
-          // Only follow system if user hasn't saved a manual preference
-          // (We always save on toggle, so skip auto-follow after manual toggle)
-          // If you want pure system-follow, remove the localStorage save above.
-          // Current behavior: system followed on first visit, manual after that.
-        });
-    </script>
   </body>
 </html>

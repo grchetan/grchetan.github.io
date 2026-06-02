@@ -4,6 +4,14 @@
    Runs BEFORE body renders — prevents flash of wrong theme.
    ============================================================ */
 (function () {
+  // Prevent transitions during page load
+  document.documentElement.classList.add('preload');
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.documentElement.classList.remove('preload');
+    }, 50);
+  });
+
   const KEY = 'cp-theme';
 
   function getEffective(mode) {
@@ -19,24 +27,45 @@
     const effective = getEffective(mode);
     const isDark = effective === 'dark';
 
-    // index.html style (body.dark-mode class)
-    document.body.classList.toggle('dark-mode', isDark);
-
-    // blog.html + other pages style (html[data-theme])
+    // 1. Apply immediately to HTML element (this exists even in <head>)
     document.documentElement.setAttribute('data-theme', effective);
+    document.documentElement.classList.toggle('dark-mode', isDark);
 
-    // index.html background videos
-    const lv = document.querySelector('.background-video.light-mode');
-    const dv = document.querySelector('.background-video.dark-mode');
-    if (lv && dv) {
-      lv.style.display = isDark ? 'none' : 'block';
-      dv.style.display = isDark ? 'block' : 'none';
+    // 2. Also toggle class on body when DOM is loaded
+    if (document.body) {
+      document.body.classList.toggle('dark-mode', isDark);
+    } else {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.toggle('dark-mode', isDark);
+      });
+    }
+
+    // index.html background videos (only runs if elements are already loaded)
+    const toggleVideos = () => {
+      const lv = document.querySelector('.background-video.light-mode');
+      const dv = document.querySelector('.background-video.dark-mode');
+      if (lv && dv) {
+        lv.style.display = isDark ? 'none' : 'block';
+        dv.style.display = isDark ? 'block' : 'none';
+      }
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', toggleVideos);
+    } else {
+      toggleVideos();
     }
 
     // Update pill buttons active state
-    document.querySelectorAll('.tp-btn').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.mode === mode);
-    });
+    const updateButtons = () => {
+      document.querySelectorAll('.tp-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateButtons);
+    } else {
+      updateButtons();
+    }
   }
 
   function setTheme(mode) {
