@@ -357,6 +357,24 @@
           opacity: 0.3;
         }
       }
+
+      /* ─── NAVBAR HIRE-ME FIX ─── */
+      /* Force white text on the gradient Hire Me button regardless of --text variable */
+      .nav-hire,
+      .nav-hire:hover,
+      .nav-hire:visited,
+      .nav-hire:focus,
+      .nav-hire:active {
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+      }
+
+      /* ─── LIGHT MODE TEXT FIXES ─── */
+      [data-theme='light'] .s-name,
+      [data-theme='light'] .why-title,
+      [data-theme='light'] .cta-title {
+        color: #0a0a0a;
+      }
     </style>
   </head>
   <body>
