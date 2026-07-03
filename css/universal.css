@@ -763,3 +763,91 @@ body.dark-mode button.resume-btn:hover,
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===================== PREMIUM INTERACTIVE CURSOR ===================== */
+.custom-cursor-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.03);
+  border: 1.5px solid rgba(59, 130, 246, 0.45);
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform, width, height, background-color, border-color;
+  transition: 
+    width 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+    height 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  display: none;
+}
+
+.custom-cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, rgba(59, 130, 246, 0.04) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 99998;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform, width, height;
+  transition: 
+    width 0.25s cubic-bezier(0.25, 1, 0.5, 1),
+    height 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  mix-blend-mode: screen;
+  filter: blur(4px);
+  display: none;
+}
+
+[data-theme='light'] .custom-cursor-follower,
+body.light-mode .custom-cursor-follower {
+  border-color: rgba(59, 130, 246, 0.55);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+[data-theme='light'] .custom-cursor-glow,
+body.light-mode .custom-cursor-glow {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, rgba(59, 130, 246, 0.02) 50%, transparent 70%);
+  mix-blend-mode: multiply;
+}
+
+.custom-cursor-follower.cursor-hover {
+  width: 44px;
+  height: 44px;
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.75);
+}
+
+.custom-cursor-glow.cursor-hover {
+  width: 150px;
+  height: 150px;
+}
+
+#cursor-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99997;
+  pointer-events: none;
+  user-select: none;
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .custom-cursor-follower,
+  .custom-cursor-glow,
+  #cursor-canvas {
+    display: none !important;
+  }
+}
