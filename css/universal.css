@@ -261,29 +261,68 @@ body.dark-mode .nav-link.active,
 
 /* Hire Me pill */
 .nav-hire {
-  padding: 6px 16px;
+  padding: 6px 18px;
+  position: relative;
+  overflow: hidden;
   background: linear-gradient(90deg, var(--accent), var(--accent-alt));
   border: none !important;
   border-radius: var(--radius-full);
   color: #ffffff !important;
-  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.25);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 14px -3px rgba(59, 130, 246, 0.35);
   transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast),
-    filter var(--transition-fast) !important;
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.25s ease,
+    background 0.25s ease !important;
+}
+
+/* Shimmer sweep layer */
+.nav-hire::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+  transition: none;
+  opacity: 0;
 }
 
 .nav-hire:hover {
-  transform: translateY(-1.5px) scale(1.02);
-  filter: brightness(1.1);
-  box-shadow: 0 6px 16px -2px rgba(59, 130, 246, 0.35);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 22px -4px rgba(59, 130, 246, 0.5);
   color: #ffffff !important;
+  background: linear-gradient(90deg, #4f9dff, #22d3ee) !important;
+}
+
+.nav-hire:hover::before {
+  opacity: 1;
+  animation: nav-hire-shimmer 0.55s ease forwards;
+}
+
+.nav-hire:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 4px 10px -3px rgba(59, 130, 246, 0.3);
 }
 
 .nav-hire.active {
   border: none !important;
   background: linear-gradient(90deg, var(--accent), var(--accent-alt)) !important;
   box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.25) !important;
+}
+
+@keyframes nav-hire-shimmer {
+  0%   { left: -75%; opacity: 1; }
+  100% { left: 130%;  opacity: 0; }
 }
 
 /* Right actions */
