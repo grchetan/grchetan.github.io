@@ -67,10 +67,24 @@
   `;
   document.head.appendChild(style);
 
-  // 3. Inject follower DOM element
-  const follower = document.createElement('div');
-  follower.className = 'cursor-glow-follower';
-  document.body.appendChild(follower);
+  // Clean up any legacy cursor canvases or follower divs left behind in DOM due to browser caching/hot-reloads
+  const legacyElements = document.querySelectorAll('.custom-cursor-follower, .custom-cursor-glow, #cursor-canvas');
+  legacyElements.forEach(el => el.remove());
+
+  // Clean up untagged fixed canvases created by the older trail script
+  document.querySelectorAll('canvas').forEach(canvas => {
+    if (canvas.style.position === 'fixed') {
+      canvas.remove();
+    }
+  });
+
+  // 3. Inject follower DOM element safely (prevents duplicates during development hot-reloads)
+  let follower = document.querySelector('.cursor-glow-follower');
+  if (!follower) {
+    follower = document.createElement('div');
+    follower.className = 'cursor-glow-follower';
+    document.body.appendChild(follower);
+  }
 
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;
