@@ -356,9 +356,14 @@
 
     <!-- ===================== HERO SECTION ===================== -->
     <div class="hero-section">
-
       <!-- Left side abstract vector SVG decoration -->
-      <svg class="hero-deco-left-svg" viewBox="0 0 400 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <svg
+        class="hero-deco-left-svg"
+        viewBox="0 0 400 800"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
         <defs>
           <!-- Gradient for main ribbon paths -->
           <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -375,7 +380,7 @@
             <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.12" />
             <stop offset="100%" stop-color="#22D3EE" stop-opacity="0.05" />
           </linearGradient>
-          
+
           <!-- Subtle glow filter -->
           <filter id="svg-glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="6" result="blur" />
@@ -386,32 +391,124 @@
         <!-- Dynamic wavy paths representing ribbon strokes -->
         <g filter="url(#svg-glow)">
           <!-- Wave Line 1 -->
-          <path class="wave-stroke wave-1" d="M -20,50 Q 80,200 30,350 T 150,550 T 10,750" stroke="url(#wave-grad-1)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <path
+            class="wave-stroke wave-1"
+            d="M -20,50 Q 80,200 30,350 T 150,550 T 10,750"
+            stroke="url(#wave-grad-1)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"
+          />
           <!-- Wave Line 2 -->
-          <path class="wave-stroke wave-2" d="M -40,100 Q 120,240 50,420 T 190,620 T -10,820" stroke="url(#wave-grad-2)" stroke-width="1.5" fill="none" stroke-linecap="round" />
+          <path
+            class="wave-stroke wave-2"
+            d="M -40,100 Q 120,240 50,420 T 190,620 T -10,820"
+            stroke="url(#wave-grad-2)"
+            stroke-width="1.5"
+            fill="none"
+            stroke-linecap="round"
+          />
           <!-- Wave Line 3 (Thin Accent) -->
-          <path class="wave-stroke wave-3" d="M -10,20 Q 50,150 10,300 T 110,480 T -30,680" stroke="url(#wave-grad-3)" stroke-width="1" fill="none" stroke-dasharray="4 4" />
+          <path
+            class="wave-stroke wave-3"
+            d="M -10,20 Q 50,150 10,300 T 110,480 T -30,680"
+            stroke="url(#wave-grad-3)"
+            stroke-width="1"
+            fill="none"
+            stroke-dasharray="4 4"
+          />
           <!-- Wave Line 4 -->
-          <path class="wave-stroke wave-4" d="M -30,150 Q 140,320 20,500 T 170,720" stroke="url(#wave-grad-1)" stroke-width="2" fill="none" stroke-linecap="round" />
+          <path
+            class="wave-stroke wave-4"
+            d="M -30,150 Q 140,320 20,500 T 170,720"
+            stroke="url(#wave-grad-1)"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+          />
         </g>
 
         <!-- Decorative particles / geometric dots & crosses -->
         <g class="deco-particles">
           <!-- Floating circles -->
-          <circle cx="70" cy="180" r="3" fill="#22D3EE" opacity="0.3" class="float-dot-1" />
-          <circle cx="140" cy="380" r="5" fill="none" stroke="#3B82F6" stroke-width="1" opacity="0.25" class="float-circle-1" />
-          <circle cx="45" cy="530" r="2.5" fill="#3B82F6" opacity="0.35" class="float-dot-2" />
-          <circle cx="160" cy="220" r="2" fill="#3B82F6" opacity="0.2" class="float-dot-3" />
-          <circle cx="95" cy="610" r="6" fill="none" stroke="#22D3EE" stroke-width="0.75" opacity="0.2" class="float-circle-2" />
-          <circle cx="180" cy="470" r="2" fill="#22D3EE" opacity="0.4" class="float-dot-4" />
+          <circle
+            cx="70"
+            cy="180"
+            r="3"
+            fill="#22D3EE"
+            opacity="0.3"
+            class="float-dot-1"
+          />
+          <circle
+            cx="140"
+            cy="380"
+            r="5"
+            fill="none"
+            stroke="#3B82F6"
+            stroke-width="1"
+            opacity="0.25"
+            class="float-circle-1"
+          />
+          <circle
+            cx="45"
+            cy="530"
+            r="2.5"
+            fill="#3B82F6"
+            opacity="0.35"
+            class="float-dot-2"
+          />
+          <circle
+            cx="160"
+            cy="220"
+            r="2"
+            fill="#3B82F6"
+            opacity="0.2"
+            class="float-dot-3"
+          />
+          <circle
+            cx="95"
+            cy="610"
+            r="6"
+            fill="none"
+            stroke="#22D3EE"
+            stroke-width="0.75"
+            opacity="0.2"
+            class="float-circle-2"
+          />
+          <circle
+            cx="180"
+            cy="470"
+            r="2"
+            fill="#22D3EE"
+            opacity="0.4"
+            class="float-dot-4"
+          />
 
           <!-- Minimal crosses / plus signs -->
           <!-- Cross 1 -->
-          <path d="M 100,280 L 108,280 M 104,276 L 104,284" stroke="#22D3EE" stroke-width="1" opacity="0.25" class="float-cross-1" />
+          <path
+            d="M 100,280 L 108,280 M 104,276 L 104,284"
+            stroke="#22D3EE"
+            stroke-width="1"
+            opacity="0.25"
+            class="float-cross-1"
+          />
           <!-- Cross 2 -->
-          <path d="M 60,450 L 66,450 M 63,447 L 63,453" stroke="#3B82F6" stroke-width="0.8" opacity="0.3" class="float-cross-2" />
+          <path
+            d="M 60,450 L 66,450 M 63,447 L 63,453"
+            stroke="#3B82F6"
+            stroke-width="0.8"
+            opacity="0.3"
+            class="float-cross-2"
+          />
           <!-- Cross 3 -->
-          <path d="M 120,680 L 128,680 M 124,676 L 124,684" stroke="#22D3EE" stroke-width="1" opacity="0.2" class="float-cross-3" />
+          <path
+            d="M 120,680 L 128,680 M 124,676 L 124,684"
+            stroke="#22D3EE"
+            stroke-width="1"
+            opacity="0.2"
+            class="float-cross-3"
+          />
         </g>
       </svg>
 
@@ -1169,7 +1266,7 @@
           </a>
 
           <a
-            href="mailto:chetanprajapat340@gmail.com"
+            href="mailto:contact.chetanprajapat@gmail.com"
             aria-label="Email Chetan Prajapat"
           >
             <i class="fas fa-envelope" aria-hidden="true"></i>
