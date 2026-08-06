@@ -20,6 +20,15 @@ if (fs.existsSync(destHtml)) {
   console.error("Error: dist/index.html not found!");
 }
 
+// 3. Copy dist/index.html to dist/404.html
+const dest404Html = path.join(distDir, "404.html");
+if (fs.existsSync(destHtml)) {
+  fs.copyFileSync(destHtml, dest404Html);
+  console.log("Successfully copied dist/index.html to dist/404.html");
+} else {
+  console.error("Error: dist/index.html not found for 404!");
+}
+
 // 3. Copy vercel.json to dist/vercel.json
 const rootVercelJson = path.join(rootDir, "vercel.json");
 const distVercelJson = path.join(distDir, "vercel.json");
