@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { useRef } from "react";
-import portrait from "@/assets/portrait.png";
+import portrait from "@/assets/portrait-main.jpg";
 import inkTexture from "@/assets/texture-ink.jpg";
 import { Magnetic, RegMark, Rule } from "@/components/site/primitives";
 import { profile } from "@/data/portfolio";
