@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "node scripts/prebuild.js && vite build && node scripts/postbuild.js",
     "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "node scripts/deploy.js",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

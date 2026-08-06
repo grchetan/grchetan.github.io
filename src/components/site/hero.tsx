@@ -7,6 +7,7 @@ import { Magnetic, RegMark, Rule } from "@/components/site/primitives";
 import { profile } from "@/data/portfolio";
 import { VisitCounter } from "@/components/site/visit-counter";
 import HeroSectionTextHover from "@/components/mage-ui/hero/hero-section-text-hover";
+import versionData from "../../../version.json";
 
 const index = [
   { k: "Discipline", v: "Full stack engineering" },
@@ -38,7 +39,7 @@ export function Hero() {
       <div className="relative mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-14">
         {/* masthead line */}
         <div className="flex items-baseline justify-between gap-6">
-          <span className="label">Portfolio · Edition MMXXVI</span>
+          <span className="label">Portfolio · Edition MMXXVI · v{versionData.version}</span>
           <span className="caption hidden tracking-[0.2em] sm:block">No. 001 — Paste-up</span>
         </div>
         <Rule className="mt-3" />
