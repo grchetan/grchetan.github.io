@@ -5,29 +5,27 @@ const rootDir = process.cwd();
 const distDir = path.resolve(rootDir, "dist");
 const adminDir = path.join(distDir, "admin");
 
-// 1. Rename dist/template.html to dist/index.html
-const compiledTemplate = path.join(distDir, "template.html");
-const destHtml = path.join(distDir, "index.html");
-
-if (fs.existsSync(compiledTemplate)) {
-  fs.renameSync(compiledTemplate, destHtml);
-  console.log("Successfully renamed dist/template.html to dist/index.html");
-} else {
-  console.log("dist/template.html not found, checking if dist/index.html already exists...");
-}
-
-// 2. Create dist/admin directory if it doesn't exist
+// 1. Create dist/admin directory if it doesn't exist
 if (!fs.existsSync(adminDir)) {
   fs.mkdirSync(adminDir, { recursive: true });
 }
 
-// 3. Copy dist/index.html to dist/admin/index.html
+// 2. Copy dist/index.html to dist/admin/index.html
+const destHtml = path.join(distDir, "index.html");
 const adminDestHtml = path.join(adminDir, "index.html");
 if (fs.existsSync(destHtml)) {
   fs.copyFileSync(destHtml, adminDestHtml);
   console.log("Successfully copied dist/index.html to dist/admin/index.html");
 } else {
   console.error("Error: dist/index.html not found!");
+}
+
+// 3. Copy vercel.json to dist/vercel.json
+const rootVercelJson = path.join(rootDir, "vercel.json");
+const distVercelJson = path.join(distDir, "vercel.json");
+if (fs.existsSync(rootVercelJson)) {
+  fs.copyFileSync(rootVercelJson, distVercelJson);
+  console.log("Successfully copied vercel.json to dist/vercel.json");
 }
 
 // Helper to recursively copy directories

@@ -32,13 +32,6 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
   ],
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(process.cwd(), "template.html"),
-      },
-    },
-  },
   server: {
     port: 5173,
     open: true,
