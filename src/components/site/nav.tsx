@@ -242,7 +242,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
               </button>
             </div>
 
-            <ul className="mt-10 flex-1 overflow-y-auto">
+            <ul className="mt-10 flex-1 overflow-y-auto pr-2">
               {pages.map((p, i) => (
                 <motion.li
                   key={p.to}
@@ -254,7 +254,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
                   <Link
                     to={p.to}
                     onClick={() => setOpen(false)}
-                    className="flex items-baseline justify-between gap-4 py-4"
+                    className="flex items-baseline justify-between gap-4 py-4 pr-4"
                   >
                     <span className="font-display text-[1.75rem] leading-none text-ink">{p.label}</span>
                     <span className="caption tracking-[0.2em]">{String(i + 1).padStart(2, "0")}</span>
