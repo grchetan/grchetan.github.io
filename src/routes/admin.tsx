@@ -1818,8 +1818,31 @@ function AdminPage() {
 
   if (!checked) {
     return (
-      <div className="admin-shell grid min-h-screen place-items-center">
-        <span className="label">Checking session…</span>
+      <div className="admin-shell relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="pointer-events-none absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-500/10 blur-[120px] dark:bg-violet-400/5" />
+        <div className="pointer-events-none absolute -bottom-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-indigo-500/10 blur-[120px] dark:bg-indigo-400/5" />
+
+        <div className="relative flex flex-col items-center gap-6 text-center">
+          {/* Glowing Animated Spinner */}
+          <div className="relative flex h-16 w-16 items-center justify-center">
+            {/* Outer spinning ring */}
+            <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-violet-500/10 border-t-violet-500 dark:border-violet-400/10 dark:border-t-violet-400" />
+            {/* Inner reversing ring */}
+            <div className="absolute h-10 w-10 animate-spin rounded-full border-2 border-indigo-500/10 border-b-indigo-500 [animation-direction:reverse] [animation-duration:1.2s] dark:border-indigo-400/10 dark:border-b-indigo-400" />
+            {/* Pulsing center dot */}
+            <div className="h-3.5 w-3.5 animate-pulse rounded-full bg-gradient-to-tr from-violet-500 to-indigo-500 dark:from-violet-400 dark:to-indigo-400 shadow-md shadow-violet-500/30" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="font-display text-sm font-bold uppercase tracking-[0.25em] text-ink">
+              Verifying Session
+            </h2>
+            <p className="font-mono text-[10px] tracking-widest text-ink-soft/75 animate-pulse [animation-duration:1.5s]">
+              Securing connection to console...
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
