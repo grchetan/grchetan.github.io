@@ -117,9 +117,6 @@ export function Hero() {
             >
               <img
                 src="/portrait.png"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = portrait;
-                }}
                 alt="Portrait of Chetan Prajapat, full stack developer"
                 width={1024}
                 height={1280}
