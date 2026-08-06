@@ -1,88 +1,29 @@
-# 🌐 Chetan Prajapat — Full Stack Web Developer
+# Welcome to your Lovable project
 
-Welcome to my personal portfolio repository!  
-This project showcases my skills, projects, and journey as a **Full Stack Web Developer**.
+This project was built with [Lovable](https://lovable.dev).
 
----
+## Build with Lovable
 
-## 🚀 About Me
+Open your project in the [Lovable editor](https://lovable.dev) and keep building.
 
-Hi! I’m **Chetan Prajapat**, a BCA student and Full Stack Web Developer passionate about building modern, responsive, and performance-driven web applications.  
-I enjoy working across the full stack and continuously improving my skills through hands-on projects.
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
+- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
 
----
+## Development
 
-## 🛠️ Tech Stack & Skills
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-### Frontend
-- HTML5, CSS3, JavaScript (ES6+)
-- React.js
-- Responsive & Accessible UI Design
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```
 
-### Backend
-- Node.js
-- Express.js
-- RESTful APIs
+## Built with
 
-### Database
-- SQL / Relational Databases
-
-### Programming Languages
-- JavaScript
-- Python
-- Java
-
-### Tools & Other Skills
-- Git & GitHub
-- Linux & Windows
-- Figma (Basic UI/UX)
-- SEO Optimization
-- Video Editing & Animation
-
----
-
-## 📂 Projects
-
-Some highlighted projects included in this portfolio:
-- Personal Portfolio Website
-- Digital Watch & Date App
-- Gaming Website
-- Learning Zone Platform
-- UI Clone Projects
-
-More details are available directly on the website.
-
----
-
-## 🌱 What I’m Currently Working On
-
-- Improving full-stack development skills (React + Node + SQL)
-- Learning secure coding practices
-- Exploring cybersecurity fundamentals
-- Building scalable and real-world projects
-
----
-
-## 🌍 Live Portfolio
-
-🔗 **Website:** https://grchetan.github.io  
-
----
-
-## 📬 Contact & Social Links
-
-- GitHub: https://github.com/grchetan  
-- LinkedIn: https://www.linkedin.com/in/chetan-prajapat-58350b285/  
-- Instagram: https://www.instagram.com/chetanprajapat_/  
-- Twitter (X): https://twitter.com/grchetann  
-
----
-
-## 📌 Note
-
-This repository is part of my personal learning and professional journey.  
-Feedback and suggestions are always welcome!
-
----
-
-⭐ If you like my work, feel free to star this repository!
+- TanStack Start
+- TypeScript
+- React
+- Tailwind CSS
