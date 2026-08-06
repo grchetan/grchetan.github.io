@@ -1,114 +1,20 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Chetan Prajapat — Full Stack Web Developer | React & TypeScript Portfolio</title>
-    <meta
-      name="description"
-      content="Chetan Prajapat is a Full Stack Web Developer & Freelancer from Indore, India, specializing in React, TypeScript, Node.js, and modern web solutions. Explore projects & achievements."
-    />
-    <meta
-      name="keywords"
-      content="Chetan Prajapat, Chetan Prajapat Portfolio, grchetan, grchetan.github.io, chetan portfolio, Full Stack Web Developer, Full Stack Developer Indore, React Developer India, TypeScript Developer Portfolio, Node.js Developer, Frontend Developer Portfolio, BCA Developer Indore, Freelance Web Developer India, Signal Rush Game, Arcade Leaderboard"
-    />
-    <meta name="author" content="Chetan Prajapat" />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href="https://grchetan.github.io/" />
-
-    <!-- Google Search Console Verification -->
-    <meta name="google-site-verification" content="sa0TnhDstpu8c3FA9sFQazfLt4rzppbvun_64e3zkUUh8" />
-
-    <!-- Google Analytics (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HLS482HB27"></script>
+    <meta charset="utf-8">
+    <title>Chetan Prajapat Portfolio</title>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-HLS482HB27');
+      var pathSegmentsToKeep = 0;
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/~and~/g, '&') : '') +
+        l.hash
+      );
     </script>
-
-    <!-- Cache control meta tags for instant deployment updates -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://grchetan.github.io/" />
-    <meta property="og:site_name" content="Chetan Prajapat Portfolio" />
-    <meta property="og:title" content="Chetan Prajapat — Full Stack Web Developer | Portfolio" />
-    <meta
-      property="og:description"
-      content="Full Stack Web Developer crafting scalable, responsive, and performance-driven web applications using React, TypeScript, and Node.js."
-    />
-    <meta property="og:image" content="https://grchetan.github.io/og-image.png" />
-    <meta property="og:locale" content="en_IN" />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@grchetann" />
-    <meta name="twitter:creator" content="@grchetann" />
-    <meta name="twitter:title" content="Chetan Prajapat — Full Stack Developer" />
-    <meta
-      name="twitter:description"
-      content="Building modern, scalable web apps with clean UI & powerful backend. Explore my portfolio and projects."
-    />
-    <meta name="twitter:image" content="https://grchetan.github.io/og-image.png" />
-
-    <!-- Structured Data: Schema.org Person -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Chetan Prajapat",
-      "url": "https://grchetan.github.io/",
-      "jobTitle": "Full Stack Web Developer",
-      "description": "Full Stack Web Developer skilled in React, TypeScript, Node.js, JavaScript, HTML, CSS, and SQL. Building scalable, responsive, and SEO-optimized web applications.",
-      "image": "https://grchetan.github.io/og-image.png",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Indore",
-        "addressRegion": "Madhya Pradesh",
-        "addressCountry": "IN"
-      },
-      "alumniOf": {
-        "@type": "CollegeOrUniversity",
-        "name": "Sage University Indore"
-      },
-      "knowsAbout": [
-        "HTML5",
-        "CSS3",
-        "JavaScript",
-        "TypeScript",
-        "React.js",
-        "Node.js",
-        "Full Stack Development",
-        "Web Performance & SEO"
-      ],
-      "sameAs": [
-        "https://github.com/grchetan",
-        "https://www.linkedin.com/in/chetan-prajapat-bb5a79277",
-        "https://www.hackerrank.com/profile/chetanprajapat"
-      ]
-    }
-    </script>
-
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="shortcut icon" href="/favicon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap"
-    />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
