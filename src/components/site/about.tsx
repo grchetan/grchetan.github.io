@@ -89,7 +89,7 @@ export function TechStack() {
                 <Rule className="mt-3 lg:mt-4" />
               </div>
               <div className="lg:col-span-8">
-                <ul className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+                <ul className="flex flex-wrap gap-2.5 items-center">
                   {group.items.map((item, i) => (
                     <motion.li
                       key={item}
@@ -97,7 +97,8 @@ export function TechStack() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.55, delay: i * 0.025 }}
-                      className="font-display text-[clamp(1.2rem,2.2vw,1.8rem)] leading-tight text-ink"
+                      whileHover={{ scale: 1.04, y: -2 }}
+                      className="rounded-xl border border-ink/10 bg-ink/[0.03] px-3.5 py-1.5 font-mono text-[11px] font-bold uppercase tracking-widest text-ink/80 transition-all duration-300 hover:border-violet-500/30 hover:bg-violet-500/5 hover:text-violet-600 dark:hover:text-violet-400 shadow-sm"
                     >
                       {item}
                     </motion.li>
