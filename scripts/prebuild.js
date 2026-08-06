@@ -11,3 +11,18 @@ if (fs.existsSync(backupHtml)) {
 } else {
   console.error("Prebuild Error: index.html.backup not found!");
 }
+
+// Copy version.json to public/version.json
+const rootVersion = path.join(rootDir, "version.json");
+const publicDir = path.join(rootDir, "public");
+const destVersion = path.join(publicDir, "version.json");
+
+if (fs.existsSync(rootVersion)) {
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+  fs.copyFileSync(rootVersion, destVersion);
+  console.log("Prebuild: Successfully copied version.json to public/version.json");
+} else {
+  console.error("Prebuild Error: version.json not found!");
+}
