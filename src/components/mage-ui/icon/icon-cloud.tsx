@@ -310,6 +310,75 @@ export function IconCloud({ images, labels, className, min = 220, max = 520 }: I
     setHover(null);
   };
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    
+    const canvas = canvasRef.current;
+    const rect = canvas?.getBoundingClientRect();
+    if (!rect || !canvas) return;
+    const s = sizeRef.current || size;
+    const radiusScale = s / 400;
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+
+    for (const icon of iconPositions) {
+      const cosX = Math.cos(rotationRef.current.x);
+      const sinX = Math.sin(rotationRef.current.x);
+      const cosY = Math.cos(rotationRef.current.y);
+      const sinY = Math.sin(rotationRef.current.y);
+      const rotatedX = icon.x * cosY - icon.z * sinY;
+      const rotatedZ = icon.x * sinY + icon.z * cosY;
+      const rotatedY = icon.y * cosX + rotatedZ * sinX;
+      const screenX = s / 2 + rotatedX * radiusScale;
+      const screenY = s / 2 + rotatedY * radiusScale;
+      const scale = (rotatedZ + 200) / 300;
+      const radius = 20 * scale * radiusScale;
+      const dx = x - screenX;
+      const dy = y - screenY;
+      if (dx * dx + dy * dy < radius * radius) {
+        const targetX = -Math.atan2(icon.y, Math.sqrt(icon.x * icon.x + icon.z * icon.z));
+        const targetY = Math.atan2(icon.x, icon.z);
+        const currentX = rotationRef.current.x;
+        const currentY = rotationRef.current.y;
+        const distance = Math.hypot(targetX - currentX, targetY - currentY);
+        targetRotationRef.current = {
+          x: targetX,
+          y: targetY,
+          startX: currentX,
+          startY: currentY,
+          startTime: performance.now(),
+          duration: Math.min(2000, Math.max(800, distance * 1000)),
+        };
+        return;
+      }
+    }
+
+    draggingRef.current = true;
+    lastMouseRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const touch = e.touches[0];
+    if (!touch || !draggingRef.current) return;
+
+    const deltaX = touch.clientX - lastMouseRef.current.x;
+    const deltaY = touch.clientY - lastMouseRef.current.y;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      rotationRef.current = {
+        x: rotationRef.current.x,
+        y: rotationRef.current.y + deltaX * 0.003,
+      };
+    }
+
+    lastMouseRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = () => {
+    draggingRef.current = false;
+  };
+
   /* ------- single stable render loop (no restart on pointer move) ------- */
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -390,7 +459,10 @@ export function IconCloud({ images, labels, className, min = 220, max = 520 }: I
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
-        style={{ width: size || undefined, height: size || undefined, touchAction: "none" }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{ width: size || undefined, height: size || undefined, touchAction: "pan-y" }}
         className="mx-auto block max-w-full cursor-grab active:cursor-grabbing"
         aria-label="Interactive 3D cloud of technology logos"
         role="img"
