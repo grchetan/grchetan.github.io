@@ -24,6 +24,7 @@ function versionPlugin(): Plugin {
 }
 
 export default defineConfig({
+  base: "./",
   plugins: [
     versionPlugin(),
     TanStackRouterVite({ routesDirectory: "./src/routes", generatedRouteTree: "./src/routeTree.gen.ts" }),

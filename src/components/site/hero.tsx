@@ -116,7 +116,7 @@ export function Hero() {
               className="plate relative mx-auto max-w-[19rem] p-2.5 lg:absolute lg:top-4 lg:right-0 lg:mx-0 lg:max-w-none lg:w-[21rem]"
             >
               <img
-                src="/portrait.png"
+                src={portrait}
                 alt="Portrait of Chetan Prajapat, full stack developer"
                 width={1024}
                 height={1280}

@@ -28,7 +28,7 @@ import {
   type Player,
   type RankedRow,
 } from "@/lib/arcade";
-const coffeeCupSvg = "/coffee-cup.svg";
+import coffeeCupSvg from "@/assets/coffee-cup.svg";
 import { cn } from "@/lib/utils";
 
 export function BuyMeACoffee() {
