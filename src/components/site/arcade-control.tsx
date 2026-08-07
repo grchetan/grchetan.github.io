@@ -5,6 +5,7 @@ import {
   useArcadeConfig,
   updateArcadeConfig,
   useLeaderboard,
+  usePlayersCodes,
   deleteScore,
   deleteAllScores,
   deletePlayerScores,
@@ -30,6 +31,7 @@ import { cn } from "@/lib/utils";
 export function ArcadeControlManager() {
   const { data: config = { mode: "always_on", bannedPlayers: [] }, isLoading: isConfigLoading } = useArcadeConfig();
   const { data: leaderboard = [], refetch } = useLeaderboard();
+  const { data: playersCodes } = usePlayersCodes();
 
   const [mode, setMode] = useState<ArcadeMode>(config.mode ?? "always_on");
   const [offlineMessage, setOfflineMessage] = useState(
@@ -1430,13 +1432,14 @@ export function ArcadeControlManager() {
                       <div className="font-mono text-xs text-ink-soft">{row.handle}</div>
                       <div
                         className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-0.5"
-                        title="Click to copy Player ID"
+                        title="Click to copy Login ID (Secret Code)"
                         onClick={() => {
-                          navigator.clipboard.writeText(row.playerId);
-                          toast.success("Player ID copied!");
+                          const loginCode = playersCodes?.get(row.playerId) || row.playerId;
+                          navigator.clipboard.writeText(loginCode);
+                          toast.success("Login ID copied!");
                         }}
                       >
-                        ID: {row.playerId}
+                        Login ID: {playersCodes?.get(row.playerId) || row.playerId}
                       </div>
                     </td>
                     <td className="p-3 font-mono text-ink font-semibold">{row.score.toLocaleString()}</td>
@@ -1825,13 +1828,14 @@ export function ArcadeControlManager() {
                         <div className="font-mono text-[0.68rem] text-ink-soft mt-0.5">@{p.handle}</div>
                         <div
                           className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-1"
-                          title="Click to copy Player ID"
+                          title="Click to copy Login ID (Secret Code)"
                           onClick={() => {
-                            navigator.clipboard.writeText(p.id);
-                            toast.success("Player ID copied!");
+                            const loginCode = playersCodes?.get(p.id) || p.id;
+                            navigator.clipboard.writeText(loginCode);
+                            toast.success("Login ID copied!");
                           }}
                         >
-                          ID: {p.id}
+                          Login ID: {playersCodes?.get(p.id) || p.id}
                         </div>
                       </div>
                       <button

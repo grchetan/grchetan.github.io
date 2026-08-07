@@ -577,6 +577,38 @@ export function useLeaderboard() {
   return result;
 }
 
+export function usePlayersCodes() {
+  return useQuery({
+    queryKey: ["arcade", "players-codes"],
+    queryFn: async () => {
+      if (!isFirebaseConfigured) {
+        const localPlayers = readLocal().players;
+        const map = new Map<string, string>();
+        for (const p of localPlayers) {
+          map.set(p.id, p.code);
+        }
+        return map;
+      }
+      try {
+        const db = await getDb();
+        const { collection, getDocs } = await import("firebase/firestore");
+        const snap = await getDocs(collection(db, PLAYERS));
+        const map = new Map<string, string>();
+        snap.docs.forEach((d) => {
+          const raw = d.data();
+          if (raw["code"]) {
+            map.set(d.id, raw["code"] as string);
+          }
+        });
+        return map;
+      } catch (err) {
+        console.error("[usePlayersCodes Error]:", err);
+        return new Map<string, string>();
+      }
+    },
+    staleTime: 60 * 1000,
+  });
+}
 
 /** Certificate tier for a rank — automatic, top 100 only. */
 export function tierFor(rank: number) {
