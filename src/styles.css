@@ -517,6 +517,46 @@
   color: var(--ink);
 }
 
+/* Dark mode overrides for the admin panel */
+.dark .admin-shell {
+  --paper: oklch(0.16 0.035 285);
+  --paper-tint: oklch(0.21 0.045 285);
+  --ink: oklch(0.97 0.012 290);
+  --ink-soft: oklch(0.84 0.03 290);
+  --rule: oklch(0.87 0.09 290 / 18%);
+  
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: oklch(0.22 0.045 285 / 65%);
+  --popover: oklch(0.19 0.04 285);
+  --muted: oklch(0.24 0.045 285);
+  --muted-foreground: oklch(0.75 0.04 290);
+  --border: var(--rule);
+  --input: oklch(0.87 0.09 290 / 26%);
+}
+
+.dark .admin-shell .plate {
+  background: var(--card);
+  border: 1px solid color-mix(in oklab, var(--chrome-1) 18%, transparent);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 8%) inset,
+    0 18px 40px -32px rgba(0, 0, 0, 0.7);
+}
+
+.dark .admin-shell .press-btn-outline {
+  color: var(--ink);
+  background: var(--card);
+  border-color: color-mix(in oklab, var(--chrome-1) 32%, transparent);
+}
+
+.dark .admin-shell .press-btn-outline:hover {
+  background: oklch(0.24 0.045 285);
+}
+
+.dark .admin-shell .admin-table th {
+  background: color-mix(in oklab, var(--paper-tint) 92%, oklch(0.16 0.035 285));
+}
+
 .admin-shell .plate {
   background: var(--card);
   border: 1px solid color-mix(in oklab, var(--chrome-1) 14%, transparent);
