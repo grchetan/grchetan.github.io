@@ -939,7 +939,7 @@ function ContentManager() {
                 <li
                   key={i.id}
                   className={cn(
-                    "flex items-center gap-4 rounded-xl border bg-paper p-3 transition-colors",
+                    "flex items-center gap-4 rounded-xl border bg-paper p-3 transition-colors min-w-0",
                     editing === i.id ? "border-chrome-1/60 bg-chrome-1/[0.06]" : "border-ink/10 hover:border-chrome-1/40",
                   )}
                 >
