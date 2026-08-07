@@ -9,6 +9,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
+import { isProfane, sanitizeName } from "@/lib/profanity";
 
 const PLAYERS = "players";
 const SCORES = "scores";
@@ -105,43 +106,7 @@ export const DEFAULT_FORBIDDEN_WORDS = [
 ];
 
 export function containsProfanity(name: string, customWords?: string[]): boolean {
-  const words = new Set(
-    [...DEFAULT_FORBIDDEN_WORDS, ...(customWords ?? [])].map((w) => w.toLowerCase().trim()).filter(Boolean)
-  );
-
-  const cleanLower = name.toLowerCase().trim();
-  const cleanTokens = cleanLower.split(/[\s._-]+/);
-
-  const normalised = cleanLower
-    .replace(/0/g, "o")
-    .replace(/1/g, "i")
-    .replace(/3/g, "e")
-    .replace(/4/g, "a")
-    .replace(/5/g, "s")
-    .replace(/8/g, "b")
-    .replace(/@/g, "a")
-    .replace(/\$/g, "s")
-    .replace(/[^a-z]/g, "");
-
-  for (const word of words) {
-    const rawWord = word.toLowerCase().trim();
-    if (!rawWord) continue;
-
-    // Rule 1: Short words (3 chars or fewer like "bc", "mc") MUST match as standalone tokens only
-    if (rawWord.length <= 3) {
-      if (cleanTokens.includes(rawWord)) return true;
-      const boundaryRegex = new RegExp(`(?:^|[^a-z0-9])${rawWord}(?:$|[^a-z0-9])`, "i");
-      if (boundaryRegex.test(cleanLower)) return true;
-    } else {
-      // Rule 2: Longer bad words (4+ chars like "fuck", "bhenchod", "chutiya", "madarchod")
-      const cleanTarget = rawWord.replace(/[^a-z]/g, "");
-      if (cleanTokens.includes(rawWord) || (cleanTarget && normalised.includes(cleanTarget))) {
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return isProfane(name);
 }
 
 export function validateName(raw: string, customWords?: string[]): string | null {
@@ -435,7 +400,12 @@ export function rank(rows: ScoreRow[]): RankedRow[] {
       a.row.createdAt - b.row.createdAt,
     )
     .slice(0, 100)
-    .map((entry, i) => ({ ...entry.row, plays: entry.plays, rank: i + 1 }));
+    .map((entry, i) => ({
+      ...entry.row,
+      name: sanitizeName(entry.row.name),
+      plays: entry.plays,
+      rank: i + 1,
+    }));
 }
 
 /**
@@ -475,7 +445,7 @@ export async function fetchLeaderboard(): Promise<ScoreRow[]> {
         return {
           id: d.id,
           playerId: (raw["playerId"] as string) || d.id,
-          name: (raw["name"] as string) || "Anonymous",
+          name: sanitizeName((raw["name"] as string) || "Anonymous"),
           handle: (raw["handle"] as string) || "player",
           score: Number(raw["score"] ?? 0),
           accuracy: Number(raw["accuracy"] ?? 0),
@@ -546,7 +516,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
               return {
                 id: d.id,
                 playerId: (raw["playerId"] as string) || d.id,
-                name: (raw["name"] as string) || "Anonymous",
+                name: sanitizeName((raw["name"] as string) || "Anonymous"),
                 handle: (raw["handle"] as string) || "player",
                 score: Number(raw["score"] ?? 0),
                 accuracy: Number(raw["accuracy"] ?? 0),
