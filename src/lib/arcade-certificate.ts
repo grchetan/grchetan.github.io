@@ -112,7 +112,9 @@ export async function buildArcadeCertificate(row: RankedRow, customTitle?: strin
   pdf.text("Full stack developer · Arcade host", W - 72, H - 58, { align: "right" });
 
   // verification link back to the portfolio
-  const site = "https://grchetan.github.io/";
+  const site = typeof window !== "undefined" && window.location.origin.includes("chetanprajapat.in")
+    ? "https://www.chetanprajapat.in/"
+    : "https://grchetan.github.io/";
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(9.5);
   pdf.setTextColor(blue[0], blue[1], blue[2]);

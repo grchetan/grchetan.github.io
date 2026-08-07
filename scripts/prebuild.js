@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { execSync } from "child_process";
 
 const rootDir = process.cwd();
 const backupHtml = path.join(rootDir, "index.html.backup");
@@ -25,4 +26,11 @@ if (fs.existsSync(rootVersion)) {
   console.log("Prebuild: Successfully copied version.json to public/version.json");
 } else {
   console.error("Prebuild Error: version.json not found!");
+}
+
+// Generate sitemap dynamically
+try {
+  execSync("node scripts/generate-sitemap.js", { stdio: "inherit" });
+} catch (e) {
+  console.error("Prebuild Error: sitemap generation failed:", e);
 }

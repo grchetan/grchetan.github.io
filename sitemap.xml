@@ -1,176 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Core Static Pages -->
   <url>
-    <loc>https://grchetan.github.io/</loc>
+    <loc>https://www.chetanprajapat.in/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/about</loc>
+    <loc>https://www.chetanprajapat.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects</loc>
+    <loc>https://www.chetanprajapat.in/projects</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps</loc>
+    <loc>https://www.chetanprajapat.in/apps</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/freelance</loc>
+    <loc>https://www.chetanprajapat.in/freelance</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/services</loc>
+    <loc>https://www.chetanprajapat.in/services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/resume</loc>
+    <loc>https://www.chetanprajapat.in/resume</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/certificates</loc>
+    <loc>https://www.chetanprajapat.in/certificates</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/contact</loc>
+    <loc>https://www.chetanprajapat.in/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/hire-me</loc>
+    <loc>https://www.chetanprajapat.in/hire-me</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/arcade</loc>
+    <loc>https://www.chetanprajapat.in/arcade</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/blog</loc>
+    <loc>https://www.chetanprajapat.in/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Project Detail Pages -->
   <url>
-    <loc>https://grchetan.github.io/projects/siteready-pro</loc>
+    <loc>https://www.chetanprajapat.in/projects/siteready-pro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/learning-management-website</loc>
+    <loc>https://www.chetanprajapat.in/projects/learning-management-website</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/ecommerce-website</loc>
+    <loc>https://www.chetanprajapat.in/projects/ecommerce-website</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/admin-dashboard-system</loc>
+    <loc>https://www.chetanprajapat.in/projects/admin-dashboard-system</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/password-manager</loc>
+    <loc>https://www.chetanprajapat.in/projects/password-manager</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/task-management-app</loc>
+    <loc>https://www.chetanprajapat.in/projects/task-management-app</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/authentication-system</loc>
+    <loc>https://www.chetanprajapat.in/projects/authentication-system</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/projects/expense-tracker</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- App Detail Pages -->
-  <url>
-    <loc>https://grchetan.github.io/apps/taskflow</loc>
+    <loc>https://www.chetanprajapat.in/projects/expense-tracker</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps/spendwise</loc>
+    <loc>https://www.chetanprajapat.in/apps/taskflow</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps/fittrack</loc>
+    <loc>https://www.chetanprajapat.in/apps/spendwise</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps/weather-app</loc>
+    <loc>https://www.chetanprajapat.in/apps/fittrack</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps/movie-discovery-app</loc>
+    <loc>https://www.chetanprajapat.in/apps/weather-app</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/apps/focus-clock</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Freelance Detail Pages -->
-  <url>
-    <loc>https://grchetan.github.io/freelance/virar-special</loc>
+    <loc>https://www.chetanprajapat.in/apps/movie-discovery-app</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/freelance/shree-interiors</loc>
+    <loc>https://www.chetanprajapat.in/apps/focus-clock</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/freelance/eduprime-classes</loc>
+    <loc>https://www.chetanprajapat.in/freelance/virar-special</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/freelance/restaurant-booking-site</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Blog Post Detail Pages -->
-  <url>
-    <loc>https://grchetan.github.io/blog/how-i-built-my-portfolio</loc>
+    <loc>https://www.chetanprajapat.in/freelance/shree-interiors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/blog/firebase-admin-panel-lessons</loc>
+    <loc>https://www.chetanprajapat.in/freelance/eduprime-classes</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://grchetan.github.io/blog/learning-full-stack-fast</loc>
+    <loc>https://www.chetanprajapat.in/freelance/restaurant-booking-site</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.chetanprajapat.in/blog/how-i-built-my-portfolio</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.chetanprajapat.in/blog/firebase-admin-panel-lessons</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.chetanprajapat.in/blog/learning-full-stack-fast</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

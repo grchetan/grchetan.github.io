@@ -3,6 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- DNS Prefetch and Preconnect for third-party scripts and assets -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
+
     <title>Chetan Prajapat — Full Stack Web Developer | React & TypeScript Portfolio</title>
     <meta
       name="description"
@@ -10,11 +22,13 @@
     />
     <meta
       name="keywords"
-      content="Chetan Prajapat, Chetan Prajapat Portfolio, grchetan, grchetan.github.io, chetan portfolio, Full Stack Web Developer, Full Stack Developer Indore, React Developer India, TypeScript Developer Portfolio, Node.js Developer, Frontend Developer Portfolio, BCA Developer Indore, Freelance Web Developer India, Signal Rush Game, Arcade Leaderboard"
+      content="Chetan Prajapat, Chetan Prajapat Portfolio, chetanprajapat.in, chetan portfolio, Full Stack Web Developer, Full Stack Developer Indore, React Developer India, TypeScript Developer Portfolio, Node.js Developer, Frontend Developer Portfolio, BCA Developer Indore, Freelance Web Developer India, Signal Rush Game, Arcade Leaderboard"
     />
     <meta name="author" content="Chetan Prajapat" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="canonical" href="https://grchetan.github.io/" />
+    
+    <!-- Canonical link defaults to the custom domain (will be updated dynamically at runtime by TanStack Router) -->
+    <link rel="canonical" href="https://www.chetanprajapat.in/" />
 
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="sa0TnhDstpu8c3FA9sFQazfLt4rzppbvun_64e3zkUUh8" />
@@ -47,16 +61,20 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
+    <!-- Mobile Theme & PWA Manifest -->
+    <meta name="theme-color" content="#c4b5fd" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://grchetan.github.io/" />
+    <meta property="og:url" content="https://www.chetanprajapat.in/" />
     <meta property="og:site_name" content="Chetan Prajapat Portfolio" />
     <meta property="og:title" content="Chetan Prajapat — Full Stack Web Developer | Portfolio" />
     <meta
       property="og:description"
       content="Full Stack Web Developer crafting scalable, responsive, and performance-driven web applications using React, TypeScript, and Node.js."
     />
-    <meta property="og:image" content="https://grchetan.github.io/og-image.png" />
+    <meta property="og:image" content="https://www.chetanprajapat.in/portrait.png" />
     <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
@@ -68,42 +86,70 @@
       name="twitter:description"
       content="Building modern, scalable web apps with clean UI & powerful backend. Explore my portfolio and projects."
     />
-    <meta name="twitter:image" content="https://grchetan.github.io/og-image.png" />
+    <meta name="twitter:image" content="https://www.chetanprajapat.in/portrait.png" />
 
-    <!-- Structured Data: Schema.org Person -->
+    <!-- Structured Data: JSON-LD Graph for Person, Website, and Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Chetan Prajapat",
-      "url": "https://grchetan.github.io/",
-      "jobTitle": "Full Stack Web Developer",
-      "description": "Full Stack Web Developer skilled in React, TypeScript, Node.js, JavaScript, HTML, CSS, and SQL. Building scalable, responsive, and SEO-optimized web applications.",
-      "image": "https://grchetan.github.io/og-image.png",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Indore",
-        "addressRegion": "Madhya Pradesh",
-        "addressCountry": "IN"
-      },
-      "alumniOf": {
-        "@type": "CollegeOrUniversity",
-        "name": "Sage University Indore"
-      },
-      "knowsAbout": [
-        "HTML5",
-        "CSS3",
-        "JavaScript",
-        "TypeScript",
-        "React.js",
-        "Node.js",
-        "Full Stack Development",
-        "Web Performance & SEO"
-      ],
-      "sameAs": [
-        "https://github.com/grchetan",
-        "https://www.linkedin.com/in/chetan-prajapat-bb5a79277",
-        "https://www.hackerrank.com/profile/chetanprajapat"
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://www.chetanprajapat.in/#person",
+          "name": "Chetan Prajapat",
+          "url": "https://www.chetanprajapat.in/",
+          "jobTitle": "Full Stack Web Developer",
+          "description": "Full Stack Web Developer skilled in React, TypeScript, Node.js, JavaScript, HTML, CSS, and SQL. Building scalable, responsive, and SEO-optimized web applications.",
+          "image": "https://www.chetanprajapat.in/portrait.png",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Indore",
+            "addressRegion": "Madhya Pradesh",
+            "addressCountry": "IN"
+          },
+          "alumniOf": {
+            "@type": "CollegeOrUniversity",
+            "name": "Sage University Indore"
+          },
+          "knowsAbout": [
+            "HTML5",
+            "CSS3",
+            "JavaScript",
+            "TypeScript",
+            "React.js",
+            "Node.js",
+            "Full Stack Development",
+            "Web Performance & SEO"
+          ],
+          "sameAs": [
+            "https://github.com/grchetan",
+            "https://www.linkedin.com/in/chetan-prajapat-bb5a79277",
+            "https://www.hackerrank.com/profile/chetanprajapat"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://www.chetanprajapat.in/#website",
+          "url": "https://www.chetanprajapat.in/",
+          "name": "Chetan Prajapat Portfolio",
+          "publisher": {
+            "@id": "https://www.chetanprajapat.in/#person"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.chetanprajapat.in/#organization",
+          "name": "Chetan Prajapat Portfolio",
+          "url": "https://www.chetanprajapat.in/",
+          "logo": "https://www.chetanprajapat.in/favicon.png",
+          "founder": {
+            "@id": "https://www.chetanprajapat.in/#person"
+          },
+          "sameAs": [
+            "https://github.com/grchetan",
+            "https://www.linkedin.com/in/chetan-prajapat-bb5a79277"
+          ]
+        }
       ]
     }
     </script>

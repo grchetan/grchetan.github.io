@@ -52,6 +52,26 @@ function RootComponent() {
     trackPageView(pathname);
   }, [pathname]);
 
+  // Dynamic canonical link update for SEO and multi-domain fallback
+  useEffect(() => {
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    const currentOrigin = window.location.origin;
+    // If the domain is chetanprajapat.in, use it. Otherwise, match the current active domain (handling local/expiring fallbacks gracefully).
+    const base = currentOrigin.includes("chetanprajapat.in")
+      ? "https://www.chetanprajapat.in"
+      : currentOrigin.includes("github.io")
+        ? "https://grchetan.github.io"
+        : currentOrigin;
+        
+    const cleanPath = pathname === "/" ? "" : pathname.replace(/\/$/, "");
+    canonical.setAttribute("href", `${base}${cleanPath}`);
+  }, [pathname]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <MotionPreferenceProvider>

@@ -31,7 +31,7 @@ export const resumeDefault: ResumeData = {
   role: "Full Stack Developer & Video Editor",
   email: "contact.chetanprajapat@gmail.com",
   location: "",
-  links: ["github.com/grchetan", "linkedin.com/in/chetan-prajapat", "grchetan.github.io"],
+  links: ["github.com/grchetan", "linkedin.com/in/chetan-prajapat", "chetanprajapat.in"],
   summary:
     "BCA student and passionate full stack web developer with 2+ years of experience building responsive, high-performance web applications using HTML, React.js, Node.js, Express, MongoDB and SQL. Creative video editor skilled in digital content production and SEO. Currently seeking opportunities to contribute to world-class teams and products.",
   sections: [
@@ -68,9 +68,9 @@ export const resumeDefault: ResumeData = {
         },
         {
           title: "Travel Itinerary Generator",
-          subtitle: "grchetan.github.io/Travel-Itinerary-Generator",
+          subtitle: "chetanprajapat.in/Travel-Itinerary-Generator",
           meta: "2025",
-          link: "https://grchetan.github.io/Travel-Itinerary-Generator",
+          link: "https://www.chetanprajapat.in/Travel-Itinerary-Generator",
           bullets: [
             "AI-powered web app generating custom travel itineraries based on user preferences using n8n AI automation.",
             "Built with HTML, CSS, JavaScript and an integrated AI API.",
@@ -78,9 +78,9 @@ export const resumeDefault: ResumeData = {
         },
         {
           title: "ASUS ROG Website Clone",
-          subtitle: "grchetan.github.io/Rog-Asus",
+          subtitle: "chetanprajapat.in/Rog-Asus",
           meta: "2024",
-          link: "https://grchetan.github.io/Rog-Asus",
+          link: "https://www.chetanprajapat.in/Rog-Asus",
           bullets: [
             "Pixel-perfect clone of the ASUS ROG website with modern UI and gaming aesthetics.",
             "Focused on performance, animations and responsive design.",
