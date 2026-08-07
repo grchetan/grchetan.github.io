@@ -1428,7 +1428,16 @@ export function ArcadeControlManager() {
                     <td className="p-3">
                       <div className="font-semibold text-ink">{row.name}</div>
                       <div className="font-mono text-xs text-ink-soft">{row.handle}</div>
-                      <div className="font-mono text-[0.58rem] text-ink-soft/60">{row.playerId.slice(0, 14)}…</div>
+                      <div
+                        className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-0.5"
+                        title="Click to copy Player ID"
+                        onClick={() => {
+                          navigator.clipboard.writeText(row.playerId);
+                          toast.success("Player ID copied!");
+                        }}
+                      >
+                        ID: {row.playerId}
+                      </div>
                     </td>
                     <td className="p-3 font-mono text-ink font-semibold">{row.score.toLocaleString()}</td>
                     <td className="p-3 font-mono text-ink-soft">{row.accuracy}%</td>
@@ -1814,6 +1823,16 @@ export function ArcadeControlManager() {
                       <div>
                         <div className="font-semibold text-ink">{p.name}</div>
                         <div className="font-mono text-[0.68rem] text-ink-soft mt-0.5">@{p.handle}</div>
+                        <div
+                          className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-1"
+                          title="Click to copy Player ID"
+                          onClick={() => {
+                            navigator.clipboard.writeText(p.id);
+                            toast.success("Player ID copied!");
+                          }}
+                        >
+                          ID: {p.id}
+                        </div>
                       </div>
                       <button
                         type="button"
