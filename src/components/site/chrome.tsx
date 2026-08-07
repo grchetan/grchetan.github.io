@@ -12,7 +12,7 @@ import {
 import { profile } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
-import loaderChrome from "@/assets/loader-chrome-main.jpg";
+import loaderChrome from "@/assets/window-loader.jpg";
 
 
 
