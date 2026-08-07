@@ -509,6 +509,7 @@
   --muted-foreground: oklch(0.5 0.03 285);
   --border: var(--rule);
   --input: oklch(0.3 0.03 285 / 18%);
+  --input-bg: oklch(1 0 0);
 
   background:
     radial-gradient(90rem 40rem at 8% -10%, color-mix(in oklab, var(--chrome-1) 12%, transparent), transparent 70%),
@@ -533,6 +534,7 @@
   --muted-foreground: oklch(0.75 0.04 290);
   --border: var(--rule);
   --input: oklch(0.87 0.09 290 / 26%);
+  --input-bg: oklch(0.12 0.03 285);
 }
 
 .dark .admin-shell .plate {
@@ -763,7 +765,7 @@
   width: 100%;
   border-radius: 0.7rem;
   border: 1px solid color-mix(in oklab, var(--chrome-1) 18%, transparent);
-  background: oklch(1 0 0);
+  background: var(--input-bg);
   padding: 0.6rem 0.8rem;
   font-size: 0.9rem;
   color: var(--ink);
