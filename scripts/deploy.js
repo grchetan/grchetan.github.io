@@ -41,24 +41,14 @@ const now = new Date();
 const pad = (n) => String(n).padStart(2, "0");
 const formattedDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
-// 4. Git operations
-console.log("Staging changes...");
-execSync("git add .", { stdio: "inherit" });
-
-// Reset scratch files to avoid committing them
-try {
-  execSync("git reset -- scratch/", { stdio: "ignore" });
-} catch (e) {}
-
 const commitMsg = `build: deploy v${newVersion} (${formattedDate})`;
-console.log(`Committing: "${commitMsg}"`);
-execSync(`git commit -m "${commitMsg}"`, { stdio: "inherit" });
 
-console.log("Pushing to main branch...");
-execSync("git push origin main", { stdio: "inherit" });
-
-// 5. Deploy to gh-pages
-console.log("Deploying to gh-pages...");
-execSync("npx gh-pages -d dist", { stdio: "inherit" });
-
-console.log(`\n🎉 Deployment of v${newVersion} completed successfully!`);
+console.log("\n=======================================================");
+console.log("🚀 BUILD COMPLETED SUCCESSFULLY (v" + newVersion + ")");
+console.log("=======================================================");
+console.log("\nBhai, aap niche diye commands ko manually CMD/Terminal me run kijiye:\n");
+console.log(`git add .`);
+console.log(`git commit -m "${commitMsg}"`);
+console.log(`git push origin main`);
+console.log("\n(Note: Agar aap GitHub Pages par deploy karna chahein, toh push karne ke baad ye command bhi chala sakte hain: npx gh-pages -d dist)");
+console.log("=======================================================\n");
