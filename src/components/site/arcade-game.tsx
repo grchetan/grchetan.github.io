@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { Bug, Play, RotateCcw, Sparkles, Zap } from "lucide-react";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import { cn } from "@/lib/utils";
+import bugImg from "@/assets/bug.png";
+import tilesImg from "@/assets/tiles.png";
 
 const GRID = 16; // 4 x 4
 const ROUND_SECONDS = 45;
@@ -39,7 +41,7 @@ export function SignalRush({
   const [bestCombo, setBestCombo] = useState(1);
   const [hits, setHits] = useState(0);
   const [taps, setTaps] = useState(0);
-  const [flash, setFlash] = useState<{ id: number; index: number; value: string; good: boolean } | null>(null);
+  const [popups, setPopups] = useState<{ id: number; index: number; value: string; good: boolean }[]>([]);
 
   const seq = useRef(0);
   const phaseRef = useRef<Phase>("idle");
@@ -54,7 +56,7 @@ export function SignalRush({
     setHits(0);
     setTaps(0);
     setLeft(ROUND_SECONDS);
-    setFlash(null);
+    setPopups([]);
   }, []);
 
   const start = useCallback(() => {
@@ -147,10 +149,15 @@ export function SignalRush({
     setTaps((t) => t + 1);
     setCells((prev) => prev.filter((c) => c.id !== cell.id));
 
+    const popupId = cell.id;
+
     if (cell.kind === "bug") {
       setCombo(1);
       setScore((s) => Math.max(0, s - 40));
-      setFlash({ id: cell.id, index: cell.index, value: "-40", good: false });
+      setPopups((prev) => [...prev, { id: popupId, index: cell.index, value: "-40", good: false }]);
+      setTimeout(() => {
+        setPopups((prev) => prev.filter((p) => p.id !== popupId));
+      }, 600);
       return;
     }
 
@@ -162,14 +169,11 @@ export function SignalRush({
       setBestCombo((b) => Math.max(b, next));
       return next;
     });
-    setFlash({ id: cell.id, index: cell.index, value: `+${gained}`, good: true });
+    setPopups((prev) => [...prev, { id: popupId, index: cell.index, value: `+${gained}`, good: true }]);
+    setTimeout(() => {
+      setPopups((prev) => prev.filter((p) => p.id !== popupId));
+    }, 600);
   };
-
-  useEffect(() => {
-    if (!flash) return;
-    const t = window.setTimeout(() => setFlash(null), 480);
-    return () => window.clearTimeout(t);
-  }, [flash]);
 
   const accuracy = taps ? Math.round((hits / taps) * 100) : 0;
   const tiles = useMemo(() => Array.from({ length: GRID }, (_, i) => i), []);
@@ -196,7 +200,7 @@ export function SignalRush({
         <div className="grid grid-cols-4 gap-2 sm:gap-3">
           {tiles.map((i) => {
             const cell = cells.find((c) => c.index === i);
-            const hit = flash?.index === i ? flash : null;
+            const cellPopups = popups.filter((p) => p.index === i);
             return (
               <button
                 key={i}
@@ -215,13 +219,18 @@ export function SignalRush({
                 }}
                 aria-label={cell ? (cell.kind === "bug" ? "Bug — avoid" : "Signal — tap") : "Empty tile"}
                 className={cn(
-                  "relative aspect-square overflow-hidden rounded-2xl border transition-colors touch-none select-none active:scale-95",
+                  "relative aspect-square overflow-hidden rounded-2xl border transition-all duration-300 touch-none select-none active:scale-95 shadow-md",
                   cell
                     ? cell.kind === "bug"
-                      ? "border-[var(--prism-red)]/50 bg-[var(--prism-red)]/15"
-                      : "border-[var(--prism-blue)]/50 bg-[var(--prism-blue)]/12"
-                    : "border-ink/10 bg-paper/50",
+                      ? "border-[var(--prism-red)]/70 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                      : "border-[var(--prism-blue)]/70 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
+                    : "border-ink/10 opacity-70 hover:opacity-90"
                 )}
+                style={{
+                  backgroundImage: `url(${tilesImg})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
               >
                 <AnimatePresence>
                   {cell && (
@@ -235,34 +244,60 @@ export function SignalRush({
                       style={{
                         backgroundImage:
                           cell.kind === "bug"
-                            ? "linear-gradient(140deg, var(--prism-red), var(--prism-pink))"
+                            ? "linear-gradient(140deg, rgba(239,68,68,0.3), rgba(244,63,94,0.3))"
                             : "linear-gradient(140deg, var(--prism-yellow), var(--prism-pink) 45%, var(--prism-blue))",
                       }}
                     >
                       {cell.kind === "bug" ? (
-                        <Bug className="size-5 text-paper" strokeWidth={2.2} />
+                        <motion.img
+                          src={bugImg}
+                          alt="Bug"
+                          className="size-11 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
+                          animate={{ y: [0, -3, 0] }}
+                          transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                        />
                       ) : (
-                        <Sparkles className="size-5 text-paper" strokeWidth={2.2} />
+                        <Sparkles className="size-6 text-paper drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]" strokeWidth={2.2} />
                       )}
                     </motion.span>
                   )}
                 </AnimatePresence>
 
                 <AnimatePresence>
-                  {hit && (
-                    <motion.span
-                      key={hit.id}
-                      initial={{ y: 6, opacity: 0 }}
-                      animate={{ y: -10, opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className={cn(
-                        "pointer-events-none absolute inset-0 grid place-items-center font-mono text-sm font-bold",
-                        hit.good ? "text-ink" : "text-[var(--prism-red)]",
-                      )}
-                    >
-                      {hit.value}
-                    </motion.span>
-                  )}
+                  {cellPopups.map((hit) => (
+                    <div key={hit.id} className="pointer-events-none absolute inset-0 z-30">
+                      {/* Shockwave Ring */}
+                      <motion.span
+                        initial={{ scale: 0.6, opacity: 0.8 }}
+                        animate={{ scale: 2.2, opacity: 0 }}
+                        transition={{ duration: 0.45, ease: "easeOut" }}
+                        className={cn(
+                          "absolute inset-0 rounded-2xl border-2",
+                          hit.good ? "border-emerald-400" : "border-rose-500"
+                        )}
+                      />
+                      {/* Floating Text */}
+                      <motion.span
+                        initial={{ y: 12, scale: 0.5, rotate: -10, opacity: 0 }}
+                        animate={{ y: -30, scale: 1.35, rotate: 8, opacity: 1 }}
+                        exit={{ y: -50, scale: 1.6, opacity: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 240,
+                          damping: 11
+                        }}
+                        className="absolute inset-0 grid place-items-center font-display text-[1.15rem] font-black"
+                        style={{
+                          color: hit.good ? "#10B981" : "#EF4444",
+                          textShadow: hit.good
+                            ? "0 0 10px rgba(16,185,129,0.9), 0 0 20px rgba(16,185,129,0.5), 0 2px 4px rgba(0,0,0,0.6)"
+                            : "0 0 10px rgba(239,68,68,0.9), 0 0 20px rgba(239,68,68,0.5), 0 2px 4px rgba(0,0,0,0.6)",
+                        }}
+                      >
+                        {hit.value}
+                      </motion.span>
+                    </div>
+                  ))}
                 </AnimatePresence>
               </button>
             );
