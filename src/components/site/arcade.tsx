@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert, Users } from "lucide-react";
+import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert, Users, RefreshCw } from "lucide-react";
 import { Section, SectionHeading, Reveal, RegMark } from "@/components/site/primitives";
 import { SignalRush, type RunResult } from "@/components/site/arcade-game";
 import { downloadArcadeCertificate } from "@/lib/arcade-certificate";
