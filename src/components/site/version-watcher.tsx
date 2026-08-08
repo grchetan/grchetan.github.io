@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Background watcher that polls version.json.
@@ -16,10 +16,10 @@ export function VersionWatcher() {
     const checkVersion = async () => {
       try {
         const res = await fetch(`/version.json?t=${Date.now()}`, {
-          cache: "no-store",
+          cache: 'no-store',
           headers: {
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
           },
         });
         if (!res.ok) return;
@@ -28,9 +28,12 @@ export function VersionWatcher() {
 
         if (!currentVersion.current) {
           currentVersion.current = data.version;
-        } else if (currentVersion.current !== data.version && !isReloading.current) {
+        } else if (
+          currentVersion.current !== data.version &&
+          !isReloading.current
+        ) {
           isReloading.current = true;
-          toast.info("New website update available. Applying changes…", {
+          toast.info('New website update available. Applying changes…', {
             duration: 4000,
           });
           setTimeout(() => {
@@ -49,16 +52,16 @@ export function VersionWatcher() {
     }, 60000);
 
     const onFocus = () => void checkVersion();
-    window.addEventListener("focus", onFocus);
+    window.addEventListener('focus', onFocus);
     const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") void checkVersion();
+      if (document.visibilityState === 'visible') void checkVersion();
     };
-    document.addEventListener("visibilitychange", onVisibilityChange);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
       clearInterval(timer);
-      window.removeEventListener("focus", onFocus);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 

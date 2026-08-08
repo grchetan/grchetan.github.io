@@ -1,7 +1,7 @@
-import { AnimatePresence, motion } from "motion/react";
-import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronDown, Menu, Moon, Sun, X, Zap, ZapOff } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from 'motion/react';
+import { Link, useRouterState } from '@tanstack/react-router';
+import { ChevronDown, Menu, Moon, Sun, X, Zap, ZapOff } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,46 +9,50 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { useMotionPreference } from "@/hooks/use-motion-preference";
-import { profile } from "@/data/portfolio";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/command';
+import { useMotionPreference } from '@/hooks/use-motion-preference';
+import { profile } from '@/data/portfolio';
+import { cn } from '@/lib/utils';
 
 /** Links shown directly in the desktop bar — kept short on purpose. */
 const primary = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Projects", to: "/projects" },
-  { label: "Apps", to: "/apps" },
-  { label: "Freelance", to: "/freelance" },
+  { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
+  { label: 'Projects', to: '/projects' },
+  { label: 'Apps', to: '/apps' },
+  { label: 'Freelance', to: '/freelance' },
 ] as const;
 
 /** Secondary links, folded into the “More” menu. */
 const secondary = [
-  { label: "Arcade", to: "/arcade" },
-  { label: "Blog", to: "/blog" },
-  { label: "Services", to: "/services" },
-  { label: "Certificates", to: "/certificates" },
-  { label: "Record", to: "/record" },
-  { label: "Resume", to: "/resume" },
+  { label: 'Arcade', to: '/arcade' },
+  { label: 'Blog', to: '/blog' },
+  { label: 'Services', to: '/services' },
+  { label: 'Certificates', to: '/certificates' },
+  { label: 'Record', to: '/record' },
+  { label: 'Resume', to: '/resume' },
 ] as const;
 
-export const pages = [...primary, ...secondary, { label: "Contact", to: "/contact" }] as const;
+export const pages = [
+  ...primary,
+  ...secondary,
+  { label: 'Contact', to: '/contact' },
+] as const;
 
 function useTheme() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const isDark = localStorage.getItem("press-theme") === "dark";
+    const isDark = localStorage.getItem('press-theme') === 'dark';
     setDark(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   }, []);
 
   const toggle = useCallback(() => {
     setDark((d) => {
       const next = !d;
-      document.documentElement.classList.toggle("dark", next);
-      localStorage.setItem("press-theme", next ? "dark" : "light");
+      document.documentElement.classList.toggle('dark', next);
+      localStorage.setItem('press-theme', next ? 'dark' : 'light');
       return next;
     });
   }, []);
@@ -57,16 +61,24 @@ function useTheme() {
 }
 
 const linkBase =
-  "relative rounded-full px-3 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-ink";
+  'relative rounded-full px-3 py-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:text-ink';
 
-function NavLink({ to, label, onClick }: { to: string; label: string; onClick?: () => void }) {
+function NavLink({
+  to,
+  label,
+  onClick,
+}: {
+  to: string;
+  label: string;
+  onClick?: () => void;
+}) {
   return (
     <Link
       to={to}
       onClick={onClick}
       className={linkBase}
-      activeProps={{ className: "text-ink bg-ink/[0.07]" }}
-      activeOptions={{ exact: to === "/" }}
+      activeProps={{ className: 'text-ink bg-ink/[0.07]' }}
+      activeOptions={{ exact: to === '/' }}
     >
       {label}
     </Link>
@@ -85,8 +97,8 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   useEffect(() => {
@@ -99,14 +111,14 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
     const onDown = (e: MouseEvent) => {
       if (!moreRef.current?.contains(e.target as Node)) setMoreOpen(false);
     };
-    window.addEventListener("mousedown", onDown);
-    return () => window.removeEventListener("mousedown", onDown);
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
   }, [moreOpen]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = open ? 'hidden' : '';
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [open]);
 
@@ -116,10 +128,10 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-[65] w-full border-b transition-all duration-300 backdrop-blur-xl",
+          'fixed inset-x-0 top-0 z-[65] w-full border-b transition-all duration-300 backdrop-blur-xl',
           scrolled
-            ? "border-ink/10 bg-paper/85 shadow-md"
-            : "border-ink/5 bg-paper/65"
+            ? 'border-ink/10 bg-paper/85 shadow-md'
+            : 'border-ink/5 bg-paper/65',
         )}
       >
         <nav className="mx-auto flex w-full max-w-[84rem] items-center justify-between gap-4 px-4 py-3 sm:px-8">
@@ -141,13 +153,16 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
                 aria-expanded={moreOpen}
                 className={cn(
                   linkBase,
-                  "inline-flex items-center gap-1",
-                  (moreOpen || secondaryActive) && "bg-ink/[0.07] text-ink",
+                  'inline-flex items-center gap-1',
+                  (moreOpen || secondaryActive) && 'bg-ink/[0.07] text-ink',
                 )}
               >
                 More
                 <ChevronDown
-                  className={cn("size-3 transition-transform duration-300", moreOpen && "rotate-180")}
+                  className={cn(
+                    'size-3 transition-transform duration-300',
+                    moreOpen && 'rotate-180',
+                  )}
                   strokeWidth={1.6}
                 />
               </button>
@@ -167,7 +182,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
                         to={s.to}
                         onClick={() => setMoreOpen(false)}
                         className="block rounded-xl px-3 py-2.5 font-mono text-[0.66rem] uppercase tracking-[0.16em] text-ink-soft transition-colors hover:bg-ink/[0.06] hover:text-ink"
-                        activeProps={{ className: "bg-ink/[0.07] text-ink" }}
+                        activeProps={{ className: 'bg-ink/[0.07] text-ink' }}
                       >
                         {s.label}
                       </Link>
@@ -191,19 +206,27 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
               aria-label="Toggle theme"
               className="grid size-8 place-items-center rounded-full border border-ink/15 text-ink-soft transition-colors hover:border-ink/30 hover:text-ink"
             >
-              {dark ? <Sun className="size-3.5" strokeWidth={1.5} /> : <Moon className="size-3.5" strokeWidth={1.5} />}
+              {dark ? (
+                <Sun className="size-3.5" strokeWidth={1.5} />
+              ) : (
+                <Moon className="size-3.5" strokeWidth={1.5} />
+              )}
             </button>
             <button
               onClick={toggleMotion}
-              aria-label={reduced ? "Enable motion" : "Reduce motion"}
+              aria-label={reduced ? 'Enable motion' : 'Reduce motion'}
               aria-pressed={reduced}
               className={cn(
-                "grid size-8 place-items-center rounded-full border text-ink-soft transition-colors hover:border-ink/30 hover:text-ink",
-                reduced ? "border-chrome-2/40 bg-chrome-2/10" : "border-ink/15",
+                'grid size-8 place-items-center rounded-full border text-ink-soft transition-colors hover:border-ink/30 hover:text-ink',
+                reduced ? 'border-chrome-2/40 bg-chrome-2/10' : 'border-ink/15',
               )}
-              title={reduced ? "Motion reduced" : "Reduce motion"}
+              title={reduced ? 'Motion reduced' : 'Reduce motion'}
             >
-              {reduced ? <ZapOff className="size-3.5" strokeWidth={1.5} /> : <Zap className="size-3.5" strokeWidth={1.5} />}
+              {reduced ? (
+                <ZapOff className="size-3.5" strokeWidth={1.5} />
+              ) : (
+                <Zap className="size-3.5" strokeWidth={1.5} />
+              )}
             </button>
             <Link
               to="/contact"
@@ -256,8 +279,12 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
                     onClick={() => setOpen(false)}
                     className="flex items-baseline justify-between gap-4 py-4 pr-4"
                   >
-                    <span className="font-display text-[1.75rem] leading-none text-ink">{p.label}</span>
-                    <span className="caption tracking-[0.2em]">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="font-display text-[1.75rem] leading-none text-ink">
+                      {p.label}
+                    </span>
+                    <span className="caption tracking-[0.2em]">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                   </Link>
                 </motion.li>
               ))}
@@ -271,19 +298,25 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
   );
 }
 
-export function CommandMenu({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+export function CommandMenu({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (v: boolean) => void;
+}) {
   const [target, setTarget] = useState<string | null>(null);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) {
+      if (e.key.toLowerCase() === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen(!open);
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [open, setOpen]);
 
   useEffect(() => {
@@ -297,7 +330,12 @@ export function CommandMenu({ open, setOpen }: { open: boolean; setOpen: (v: boo
         <CommandEmpty>Nothing filed under that name.</CommandEmpty>
         <CommandGroup heading="Pages">
           {pages.map((p) => (
-            <CommandItem key={p.to} value={p.label} onSelect={() => setTarget(p.to)} asChild>
+            <CommandItem
+              key={p.to}
+              value={p.label}
+              onSelect={() => setTarget(p.to)}
+              asChild
+            >
               <Link to={p.to} onClick={() => setOpen(false)}>
                 {p.label}
               </Link>

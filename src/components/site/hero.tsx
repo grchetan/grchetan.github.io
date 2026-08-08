@@ -8,6 +8,7 @@ import { Magnetic, RegMark, Rule } from "@/components/site/primitives";
 import { profile } from "@/data/portfolio";
 import { VisitCounter } from "@/components/site/visit-counter";
 import HeroSectionTextHover from "@/components/mage-ui/hero/hero-section-text-hover";
+import { SwapText } from "@/components/ui/swap-text";
 import versionData from "../../../version.json";
 
 const index = [

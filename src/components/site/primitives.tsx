@@ -1,7 +1,14 @@
-import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from "motion/react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { cn } from "@/lib/utils";
-import { useMotionPreference } from "@/hooks/use-motion-preference";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+import { useMotionPreference } from '@/hooks/use-motion-preference';
 
 /* ---------------- motion primitives ---------------- */
 
@@ -21,9 +28,13 @@ export function Reveal({
     <motion.div
       initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: reduced ? 0 : 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={cn("will-change-transform", className)}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{
+        duration: reduced ? 0 : 0.8,
+        delay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={cn('will-change-transform', className)}
     >
       {children}
     </motion.div>
@@ -42,8 +53,16 @@ export function Magnetic({
 }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLSpanElement>(null);
-  const x = useSpring(useMotionValue(0), { stiffness: 220, damping: 18, mass: 0.5 });
-  const y = useSpring(useMotionValue(0), { stiffness: 220, damping: 18, mass: 0.5 });
+  const x = useSpring(useMotionValue(0), {
+    stiffness: 220,
+    damping: 18,
+    mass: 0.5,
+  });
+  const y = useSpring(useMotionValue(0), {
+    stiffness: 220,
+    damping: 18,
+    mass: 0.5,
+  });
 
   if (reduced) return <span className={className}>{children}</span>;
 
@@ -51,13 +70,17 @@ export function Magnetic({
     <motion.span
       ref={ref}
       style={{ x, y }}
-      className={cn("inline-block will-change-transform", className)}
+      className={cn('inline-block will-change-transform', className)}
       onPointerMove={(e) => {
         const el = ref.current;
         if (!el) return;
         const r = el.getBoundingClientRect();
-        x.set(((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * strength);
-        y.set(((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * strength);
+        x.set(
+          ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * strength,
+        );
+        y.set(
+          ((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * strength,
+        );
       }}
       onPointerLeave={() => {
         x.set(0);
@@ -70,44 +93,62 @@ export function Magnetic({
 }
 
 /** hairline that draws itself in, like a rule pulled across a board */
-export function Rule({ className, delay = 0 }: { className?: string; delay?: number }) {
+export function Rule({
+  className,
+  delay = 0,
+}: {
+  className?: string;
+  delay?: number;
+}) {
   const { reduced } = useMotionPreference();
   return (
     <motion.div
       aria-hidden
       initial={reduced ? { scaleX: 1 } : { scaleX: 0 }}
       whileInView={{ scaleX: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
+      viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: reduced ? 0 : 1, delay, ease: [0.16, 1, 0.3, 1] }}
-      style={{ transformOrigin: "left" }}
-      className={cn("h-px w-full bg-ink/20 will-change-transform", className)}
+      style={{ transformOrigin: 'left' }}
+      className={cn('h-px w-full bg-ink/20 will-change-transform', className)}
     />
   );
 }
 
-
-export function TextReveal({ text, className }: { text: string; className?: string }) {
+export function TextReveal({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
   const { reduced } = useMotionPreference();
-  const words = text.split(" ");
+  const words = text.split(' ');
   return (
-    <span className={cn("inline", className)}>
+    <span className={cn('inline', className)}>
       {words.map((word, i) => (
         <motion.span
           key={`${word}-${i}`}
           className="inline-block will-change-transform"
-          initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: "0.3em", rotate: 2 }}
+          initial={
+            reduced
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: '0.3em', rotate: 2 }
+          }
           whileInView={{ opacity: 1, y: 0, rotate: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: reduced ? 0 : 0.7, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+          transition={{
+            duration: reduced ? 0 : 0.7,
+            delay: i * 0.04,
+            ease: [0.16, 1, 0.3, 1],
+          }}
         >
           {word}
-          {i < words.length - 1 ? "\u00A0" : ""}
+          {i < words.length - 1 ? '\u00A0' : ''}
         </motion.span>
       ))}
     </span>
   );
 }
-
 
 /** registration crosshair — printer's alignment mark */
 export function RegMark({ className }: { className?: string }) {
@@ -115,7 +156,7 @@ export function RegMark({ className }: { className?: string }) {
     <svg
       aria-hidden
       viewBox="0 0 24 24"
-      className={cn("size-4 text-ink/35", className)}
+      className={cn('size-4 text-ink/35', className)}
       fill="none"
       stroke="currentColor"
       strokeWidth="0.75"
@@ -133,39 +174,47 @@ export function SectionHeading({
   figure,
   title,
   description,
-  align = "left",
+  align = 'left',
   className,
 }: {
   eyebrow: string;
   figure?: string;
   title: React.ReactNode;
   description?: string;
-  align?: "left" | "center";
+  align?: 'left' | 'center';
   className?: string;
 }) {
   return (
-    <div className={cn("relative z-10", align === "center" ? "text-center" : "text-left", className)}>
+    <div
+      className={cn(
+        'relative z-10',
+        align === 'center' ? 'text-center' : 'text-left',
+        className,
+      )}
+    >
       <div
         className={cn(
-          "flex items-baseline gap-4",
-          align === "center" ? "justify-center" : "justify-start",
+          'flex items-baseline gap-4',
+          align === 'center' ? 'justify-center' : 'justify-start',
         )}
       >
         <span className="label">{eyebrow}</span>
-        {figure ? <span className="caption tracking-[0.2em]">Fig. {figure}</span> : null}
+        {figure ? (
+          <span className="caption tracking-[0.2em]">Fig. {figure}</span>
+        ) : null}
       </div>
       <Rule className="mt-3" />
       <Reveal delay={0.05}>
         <h2 className="mt-6 text-[clamp(2.4rem,6vw,4.5rem)]">
-          {typeof title === "string" ? <TextReveal text={title} /> : title}
+          {typeof title === 'string' ? <TextReveal text={title} /> : title}
         </h2>
       </Reveal>
       {description ? (
         <Reveal delay={0.12}>
           <p
             className={cn(
-              "mt-5 max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground",
-              align === "center" ? "mx-auto" : "",
+              'mt-5 max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground',
+              align === 'center' ? 'mx-auto' : '',
             )}
           >
             {description}
@@ -192,8 +241,8 @@ export function Section({
     <section
       id={id}
       className={cn(
-        "relative z-10 overflow-hidden px-5 py-24 sm:px-8 md:py-32 lg:px-14",
-        tint ? "bg-paper-tint/70 backdrop-blur-[2px]" : "bg-transparent",
+        'relative z-10 overflow-hidden px-5 py-24 sm:px-8 md:py-32 lg:px-14',
+        tint ? 'bg-paper-tint/70 backdrop-blur-[2px]' : 'bg-transparent',
         className,
       )}
     >
@@ -204,12 +253,17 @@ export function Section({
 
 /* ---------------- data display ---------------- */
 
-export function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+export function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: '-60px' });
   const mv = useMotionValue(0);
-  const spring = useSpring(mv, reduced ? { stiffness: 1000, damping: 100 } : { stiffness: 55, damping: 20 });
+  const spring = useSpring(
+    mv,
+    reduced
+      ? { stiffness: 1000, damping: 100 }
+      : { stiffness: 55, damping: 20 },
+  );
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
@@ -217,7 +271,7 @@ export function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
   }, [inView, mv, to]);
 
   useEffect(() => {
-    const unsub = spring.on("change", (v) => setDisplay(Math.round(v)));
+    const unsub = spring.on('change', (v) => setDisplay(Math.round(v)));
     return () => unsub();
   }, [spring]);
 
@@ -255,20 +309,34 @@ export function Plate({
 }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const parallax = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [22, -22]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const parallax = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduced ? [0, 0] : [22, -22],
+  );
 
   return (
     <motion.figure
       ref={ref}
-      initial={reduced ? { opacity: 1, y: 0, rotate: tilt } : { opacity: 0, y: 26, rotate: tilt * 1.8 }}
+      initial={
+        reduced
+          ? { opacity: 1, y: 0, rotate: tilt }
+          : { opacity: 0, y: 26, rotate: tilt * 1.8 }
+      }
       whileInView={{ opacity: 1, y: 0, rotate: tilt }}
       {...(reduced ? {} : { whileHover: { rotate: 0, scale: 1.015 } })}
-      viewport={{ once: true, margin: "-60px" }}
+      viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
-      className={cn("plate group/plate p-2", className)}
+      className={cn('plate group/plate p-2', className)}
     >
-      <motion.div {...(reduced ? {} : { style: { y: parallax } })} className="overflow-hidden">
+      <motion.div
+        {...(reduced ? {} : { style: { y: parallax } })}
+        className="overflow-hidden"
+      >
         <img
           loading="lazy"
           decoding="async"
@@ -277,7 +345,7 @@ export function Plate({
           width={width}
           height={height}
           className={cn(
-            "w-full h-auto object-contain transition-[transform,filter] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/plate:scale-[1.03] group-hover/plate:saturate-125",
+            'w-full h-auto object-contain transition-[transform,filter] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/plate:scale-[1.03] group-hover/plate:saturate-125',
             imgClassName,
           )}
         />
@@ -285,10 +353,11 @@ export function Plate({
       {caption || figure ? (
         <figcaption className="mt-2 flex items-baseline justify-between gap-4 px-1 pb-1">
           <span className="caption">{caption}</span>
-          {figure ? <span className="caption tracking-[0.2em]">{figure}</span> : null}
+          {figure ? (
+            <span className="caption tracking-[0.2em]">{figure}</span>
+          ) : null}
         </figcaption>
       ) : null}
     </motion.figure>
   );
 }
-

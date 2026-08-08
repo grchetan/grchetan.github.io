@@ -1,6 +1,6 @@
-@import "tailwindcss" source(none);
+@import 'tailwindcss' source(none);
 @source "../src";
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -26,7 +26,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--chrome-2), var(--chrome-1), var(--chrome-3));
+  background: linear-gradient(
+    180deg,
+    var(--chrome-2),
+    var(--chrome-1),
+    var(--chrome-3)
+  );
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -34,7 +39,12 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--chrome-1), var(--chrome-3), var(--chrome-2));
+  background: linear-gradient(
+    180deg,
+    var(--chrome-1),
+    var(--chrome-3),
+    var(--chrome-2)
+  );
   background-clip: padding-box;
   box-shadow: 0 0 14px color-mix(in oklab, var(--chrome-1) 60%, transparent);
 }
@@ -57,9 +67,9 @@
   --radius-3xl: 3rem;
   --radius-4xl: 4rem;
 
-  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, monospace;
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -194,15 +204,23 @@
 
   /* faint chrome bloom fixed over the whole page */
   body::before {
-    content: "";
+    content: '';
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
     opacity: 0.5;
     background:
-      radial-gradient(60rem 40rem at 12% -10%, color-mix(in oklab, var(--chrome-2) 30%, transparent), transparent 70%),
-      radial-gradient(50rem 36rem at 92% 8%, color-mix(in oklab, var(--chrome-3) 24%, transparent), transparent 70%);
+      radial-gradient(
+        60rem 40rem at 12% -10%,
+        color-mix(in oklab, var(--chrome-2) 30%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        50rem 36rem at 92% 8%,
+        color-mix(in oklab, var(--chrome-3) 24%, transparent),
+        transparent 70%
+      );
   }
 
   h1,
@@ -321,7 +339,7 @@
 @utility ink-underline {
   position: relative;
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     bottom: -0.24em;
@@ -342,14 +360,20 @@
   align-items: center;
   gap: 0.5rem;
   border-radius: 999px;
-  background: linear-gradient(100deg, var(--chrome-2), var(--chrome-1) 55%, var(--chrome-3));
+  background: linear-gradient(
+    100deg,
+    var(--chrome-2),
+    var(--chrome-1) 55%,
+    var(--chrome-3)
+  );
   color: oklch(0.17 0.04 285);
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 0.7rem 1.1rem;
-  box-shadow: 0 18px 40px -20px color-mix(in oklab, var(--chrome-2) 80%, transparent);
+  box-shadow: 0 18px 40px -20px
+    color-mix(in oklab, var(--chrome-2) 80%, transparent);
   transition:
     transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.35s ease;
@@ -361,7 +385,8 @@
   }
   &:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 26px 54px -18px color-mix(in oklab, var(--chrome-2) 90%, transparent);
+    box-shadow: 0 26px 54px -18px
+      color-mix(in oklab, var(--chrome-2) 90%, transparent);
   }
 }
 
@@ -397,7 +422,9 @@
 /* images keep their colour but pick up a chrome cast */
 @utility duotone {
   filter: saturate(1.05) contrast(1.04);
-  transition: filter 0.6s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    filter 0.6s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @utility marquee-track {
@@ -453,8 +480,8 @@
   .blob,
   .marquee-track,
   .chrome-text,
-  [class*="animate-trailSpin"],
-  [class*="motion-safe:animate-"] {
+  [class*='animate-trailSpin'],
+  [class*='motion-safe:animate-'] {
     animation: none !important;
   }
 }
@@ -471,8 +498,8 @@
 .reduce-motion .blob,
 .reduce-motion .marquee-track,
 .reduce-motion .chrome-text,
-.reduce-motion [class*="animate-trailSpin"],
-.reduce-motion [class*="motion-safe:animate-"] {
+.reduce-motion [class*='animate-trailSpin'],
+.reduce-motion [class*='motion-safe:animate-'] {
   animation: none !important;
 }
 
@@ -480,7 +507,6 @@
 .reduce-motion .cursor-hidden * {
   cursor: auto !important;
 }
-
 
 /* ---------------- admin panel: bright studio-white workspace ---------------- */
 .admin-shell {
@@ -493,7 +519,6 @@
   --prism-yellow: oklch(0.76 0.16 85);
   --prism-pink: oklch(0.63 0.2 350);
   --prism-blue: oklch(0.6 0.17 250);
-
 
   --paper: oklch(0.995 0.003 290);
   --paper-tint: oklch(0.972 0.008 290);
@@ -512,8 +537,16 @@
   --input-bg: oklch(1 0 0);
 
   background:
-    radial-gradient(90rem 40rem at 8% -10%, color-mix(in oklab, var(--chrome-1) 12%, transparent), transparent 70%),
-    radial-gradient(70rem 34rem at 100% 0%, color-mix(in oklab, var(--chrome-3) 12%, transparent), transparent 70%),
+    radial-gradient(
+      90rem 40rem at 8% -10%,
+      color-mix(in oklab, var(--chrome-1) 12%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      70rem 34rem at 100% 0%,
+      color-mix(in oklab, var(--chrome-3) 12%, transparent),
+      transparent 70%
+    ),
     var(--paper);
   color: var(--ink);
 }
@@ -525,7 +558,7 @@
   --ink: oklch(0.97 0.012 290);
   --ink-soft: oklch(0.84 0.03 290);
   --rule: oklch(0.87 0.09 290 / 18%);
-  
+
   --background: var(--paper);
   --foreground: var(--ink);
   --card: oklch(0.22 0.045 285 / 65%);
@@ -571,7 +604,8 @@
 .admin-shell .press-btn {
   color: oklch(0.995 0.004 290);
   padding: 0.72rem 1.25rem;
-  box-shadow: 0 12px 26px -16px color-mix(in oklab, var(--chrome-2) 70%, transparent);
+  box-shadow: 0 12px 26px -16px
+    color-mix(in oklab, var(--chrome-2) 70%, transparent);
 }
 
 .admin-shell .press-btn-outline {
@@ -640,7 +674,7 @@
 }
 
 .admin-shell .font-mono,
-.admin-shell [class*="tracking-["] {
+.admin-shell [class*='tracking-['] {
   font-family: var(--font-sans);
 }
 
@@ -756,10 +790,6 @@
   }
 }
 
-
-
-
-
 @utility admin-field {
   margin-top: 0.5rem;
   width: 100%;
@@ -770,7 +800,9 @@
   font-size: 0.9rem;
   color: var(--ink);
   outline: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
   &::placeholder {
     color: color-mix(in oklab, var(--ink) 40%, transparent);
   }
@@ -801,7 +833,7 @@
 }
 
 .admin-shell .skeleton::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
@@ -856,7 +888,8 @@ img {
 
 /* ---- Glitch & Twinkle Animation Keyframes ---- */
 @keyframes twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(0.8);
   }
@@ -891,7 +924,9 @@ img {
 .glitch-arcade-text::before {
   left: -2px;
   color: #00f0ff;
-  text-shadow: 2px 0 #00f0ff, -1px -1px 0 #00f0ff;
+  text-shadow:
+    2px 0 #00f0ff,
+    -1px -1px 0 #00f0ff;
   animation: glitch-anim-1 2.2s infinite linear alternate-reverse;
   opacity: 0.85;
 }
@@ -899,13 +934,16 @@ img {
 .glitch-arcade-text::after {
   left: 2px;
   color: #ff00ea;
-  text-shadow: -2px 0 #ff00ea, 1px 1px 0 #ff00ea;
+  text-shadow:
+    -2px 0 #ff00ea,
+    1px 1px 0 #ff00ea;
   animation: glitch-anim-2 3.1s infinite linear alternate-reverse;
   opacity: 0.85;
 }
 
 @keyframes glitch-color-shift {
-  0%, 100% {
+  0%,
+  100% {
     color: #ffffff;
   }
   20% {
@@ -973,7 +1011,8 @@ img {
 }
 
 /* ---- Lenis Smooth Scroll CSS Helper Rules ---- */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 

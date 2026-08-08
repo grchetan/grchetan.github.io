@@ -1,7 +1,7 @@
-import { motion } from "motion/react";
-import { ArrowUpRight, Quote } from "lucide-react";
-import plateMobile from "@/assets/plate-mobile.jpg";
-import inkTexture from "@/assets/texture-ink.jpg";
+import { motion } from 'motion/react';
+import { ArrowUpRight, Quote } from 'lucide-react';
+import plateMobile from '@/assets/plate-mobile.jpg';
+import inkTexture from '@/assets/texture-ink.jpg';
 import {
   Counter,
   Plate,
@@ -10,7 +10,7 @@ import {
   Rule,
   Section,
   SectionHeading,
-} from "@/components/site/primitives";
+} from '@/components/site/primitives';
 import {
   achievements,
   certificates,
@@ -24,7 +24,7 @@ import {
   processSteps,
   testimonials,
   whyHireMe,
-} from "@/data/portfolio";
+} from '@/data/portfolio';
 
 /* ---------------- Freelance: case-study spreads ---------------- */
 
@@ -40,33 +40,42 @@ export function Freelance() {
 
       <div className="mt-16 space-y-16">
         {freelanceWork.map((w, i) => (
-          <article key={w.client} className="grid gap-8 lg:grid-cols-12 lg:gap-10">
+          <article
+            key={w.client}
+            className="grid gap-8 lg:grid-cols-12 lg:gap-10"
+          >
             <div className="lg:col-span-4">
-              <span className="caption tracking-[0.2em]">Case {String(i + 1).padStart(2, "0")}</span>
+              <span className="caption tracking-[0.2em]">
+                Case {String(i + 1).padStart(2, '0')}
+              </span>
               <Reveal>
-                <h3 className="mt-3 text-[clamp(1.8rem,3vw,2.5rem)] leading-[1.05]">{w.client}</h3>
+                <h3 className="mt-3 text-[clamp(1.8rem,3vw,2.5rem)] leading-[1.05]">
+                  {w.client}
+                </h3>
               </Reveal>
               <p className="caption mt-3">{w.project}</p>
-              <p className="caption mt-6 text-ink">{w.tech.join(" · ")}</p>
+              <p className="caption mt-6 text-ink">{w.tech.join(' · ')}</p>
             </div>
 
             <div className="lg:col-span-8">
               <Rule />
               {[
-                { k: "Brief", v: w.problem },
-                { k: "Method", v: w.solution },
-                { k: "Result", v: w.result },
+                { k: 'Brief', v: w.problem },
+                { k: 'Method', v: w.solution },
+                { k: 'Result', v: w.result },
               ].map((row, ri) => (
                 <motion.div
                   key={row.k}
                   initial={{ opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
+                  viewport={{ once: true, margin: '-40px' }}
                   transition={{ duration: 0.6, delay: ri * 0.07 }}
                   className="grid gap-x-8 gap-y-1.5 border-b border-ink/10 py-5 sm:grid-cols-[7rem_minmax(0,1fr)]"
                 >
                   <span className="label pt-1">{row.k}</span>
-                  <p className="text-[0.95rem] leading-[1.75] text-ink-soft">{row.v}</p>
+                  <p className="text-[0.95rem] leading-[1.75] text-ink-soft">
+                    {row.v}
+                  </p>
                 </motion.div>
               ))}
 
@@ -102,18 +111,22 @@ export function MobileAppsSection() {
                 key={a.name}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
+                viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.6, delay: i * 0.07 }}
                 className="border-b border-ink/10 py-5"
               >
                 <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="text-[1.3rem] leading-tight text-ink">{a.name}</h3>
+                  <h3 className="text-[1.3rem] leading-tight text-ink">
+                    {a.name}
+                  </h3>
                   <span className="caption tracking-[0.2em]">
-                    {String(i + 1).padStart(2, "0")}
+                    {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
-                <p className="mt-2 text-[0.88rem] leading-relaxed text-muted-foreground">{a.desc}</p>
-                <p className="caption mt-2 text-ink">{a.tech.join(" · ")}</p>
+                <p className="mt-2 text-[0.88rem] leading-relaxed text-muted-foreground">
+                  {a.desc}
+                </p>
+                <p className="caption mt-2 text-ink">{a.tech.join(' · ')}</p>
               </motion.div>
             ))}
           </div>
@@ -141,7 +154,11 @@ export function MobileAppsSection() {
 export function Certificates() {
   return (
     <Section id="certificates" tint>
-      <SectionHeading eyebrow="Credentials" figure="08" title="Learning, verified." />
+      <SectionHeading
+        eyebrow="Credentials"
+        figure="08"
+        title="Learning, verified."
+      />
 
       <div className="mt-14">
         <Rule />
@@ -150,14 +167,18 @@ export function Certificates() {
             key={c.title}
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-30px" }}
+            viewport={{ once: true, margin: '-30px' }}
             transition={{ duration: 0.55, delay: (i % 5) * 0.04 }}
             className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-4 border-b border-ink/10 py-4 sm:grid-cols-[3rem_minmax(0,22rem)_minmax(0,1fr)_5rem] sm:gap-x-6"
           >
             <span className="caption tracking-[0.2em]">{c.year}</span>
             <h3 className="text-[1.1rem] leading-snug text-ink">{c.title}</h3>
-            <p className="caption col-span-2 mt-1 sm:col-span-1 sm:mt-0">{c.issuer}</p>
-            <p className="caption col-span-2 sm:col-span-1 sm:text-right">{c.category}</p>
+            <p className="caption col-span-2 mt-1 sm:col-span-1 sm:mt-0">
+              {c.issuer}
+            </p>
+            <p className="caption col-span-2 sm:col-span-1 sm:text-right">
+              {c.category}
+            </p>
           </motion.div>
         ))}
       </div>
@@ -189,22 +210,32 @@ export function Experience() {
               key={e.role}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
+              viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.65, delay: i * 0.05 }}
               className="grid gap-4 border-t border-ink/15 py-8 lg:grid-cols-12 lg:gap-10"
             >
               <div className="lg:col-span-3">
-                <span className="caption tracking-[0.2em] text-ink">{e.period}</span>
+                <span className="caption tracking-[0.2em] text-ink">
+                  {e.period}
+                </span>
                 <p className="label mt-2">{e.kind}</p>
               </div>
               <div className="lg:col-span-4">
-                <h3 className="text-[1.5rem] leading-tight text-ink">{e.role}</h3>
+                <h3 className="text-[1.5rem] leading-tight text-ink">
+                  {e.role}
+                </h3>
                 <p className="caption mt-1.5">{e.org}</p>
               </div>
               <ul className="space-y-2 lg:col-span-5">
                 {e.points.map((pt) => (
-                  <li key={pt} className="flex gap-3 text-[0.9rem] leading-relaxed text-ink-soft">
-                    <span aria-hidden className="mt-2 h-px w-4 shrink-0 bg-ink/40" />
+                  <li
+                    key={pt}
+                    className="flex gap-3 text-[0.9rem] leading-relaxed text-ink-soft"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-2 h-px w-4 shrink-0 bg-ink/40"
+                    />
                     {pt}
                   </li>
                 ))}
@@ -223,7 +254,11 @@ export function Experience() {
 export function Achievements() {
   return (
     <Section id="achievements" tint>
-      <SectionHeading eyebrow="Achievements" figure="10" title="Numbers that keep climbing." />
+      <SectionHeading
+        eyebrow="Achievements"
+        figure="10"
+        title="Numbers that keep climbing."
+      />
 
       <div className="mt-14 grid grid-cols-2 gap-px border border-ink/15 bg-ink/15 md:grid-cols-4">
         {achievements.map((a, i) => (
@@ -231,11 +266,14 @@ export function Achievements() {
             key={a.label}
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.6, delay: i * 0.05 }}
             className="relative overflow-hidden bg-paper-tint px-5 py-9 sm:px-7 sm:py-12"
           >
-            <span aria-hidden className="hatch absolute -right-4 -top-6 size-24 rotate-12" />
+            <span
+              aria-hidden
+              className="hatch absolute -right-4 -top-6 size-24 rotate-12"
+            />
             <p className="relative font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none text-ink">
               <Counter to={a.value} suffix={a.suffix} />
             </p>
@@ -269,21 +307,25 @@ export function CodingProfiles() {
             rel="noreferrer noopener"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.55, delay: i * 0.05 }}
             className="group relative bg-paper p-6 transition-colors hover:bg-paper-tint sm:p-7"
           >
             <div className="flex items-start justify-between gap-4">
-              <h3 className="text-[1.4rem] leading-tight text-ink">{p.platform}</h3>
+              <h3 className="text-[1.4rem] leading-tight text-ink">
+                {p.platform}
+              </h3>
               <ArrowUpRight
                 className="size-3.5 text-ink/30 transition-all group-hover:translate-x-0.5 group-hover:text-ink"
                 strokeWidth={1.5}
               />
             </div>
             <p className="caption mt-2">{p.username}</p>
-            <p className="mt-6 font-display text-[1.6rem] leading-none text-ink">{p.stat}</p>
+            <p className="mt-6 font-display text-[1.6rem] leading-none text-ink">
+              {p.stat}
+            </p>
             <p className="caption mt-2">{p.meta}</p>
-            <p className="label mt-5">{p.badges.join(" / ")}</p>
+            <p className="label mt-5">{p.badges.join(' / ')}</p>
           </motion.a>
         ))}
       </div>
@@ -298,7 +340,11 @@ export function GitHubSection() {
     <Section id="github" tint>
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
-          <SectionHeading eyebrow="GitHub" figure="12" title="Committed, most days." />
+          <SectionHeading
+            eyebrow="GitHub"
+            figure="12"
+            title="Committed, most days."
+          />
 
           <div className="mt-10">
             <span className="label">Language distribution</span>
@@ -313,9 +359,13 @@ export function GitHubSection() {
                   <motion.div
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: l.pct / 100 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ duration: 1.1, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                    style={{ transformOrigin: "left" }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{
+                      duration: 1.1,
+                      delay: i * 0.08,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    style={{ transformOrigin: 'left' }}
                     className="h-[3px] -translate-y-[1px] bg-ink"
                   />
                 </div>
@@ -343,9 +393,7 @@ export function GitHubSection() {
                   </h3>
                   <p className="caption mt-1">{r.desc}</p>
                 </div>
-                <p className="caption tabular-nums">
-                  {r.lang}
-                </p>
+                <p className="caption tabular-nums">{r.lang}</p>
               </a>
             ))}
           </div>
@@ -355,7 +403,10 @@ export function GitHubSection() {
             <Rule className="mt-3" />
             <ul className="mt-1">
               {githubActivity.map((a) => (
-                <li key={a} className="caption border-b border-ink/10 py-3 text-ink">
+                <li
+                  key={a}
+                  className="caption border-b border-ink/10 py-3 text-ink"
+                >
                   {a}
                 </li>
               ))}
@@ -395,7 +446,7 @@ export function Testimonials() {
               key={t.name}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
+              viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.6, delay: i * 0.07 }}
               className="border-b border-ink/10 py-5"
             >
@@ -431,14 +482,20 @@ export function Process() {
             key={s.step}
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.6, delay: (i % 2) * 0.06 }}
             className="grid grid-cols-[3.6rem_minmax(0,1fr)] items-baseline gap-x-5 border-b border-ink/10 py-6"
           >
-            <span className="font-display text-[2.2rem] leading-none text-ink/35">{s.step}</span>
+            <span className="font-display text-[2.2rem] leading-none text-ink/35">
+              {s.step}
+            </span>
             <div>
-              <h3 className="text-[1.35rem] leading-tight text-ink">{s.title}</h3>
-              <p className="mt-2 text-[0.88rem] leading-relaxed text-muted-foreground">{s.desc}</p>
+              <h3 className="text-[1.35rem] leading-tight text-ink">
+                {s.title}
+              </h3>
+              <p className="mt-2 text-[0.88rem] leading-relaxed text-muted-foreground">
+                {s.desc}
+              </p>
             </div>
           </motion.div>
         ))}
@@ -463,12 +520,16 @@ export function WhyHireMe() {
               key={w.title}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
+              viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.55, delay: (i % 4) * 0.05 }}
               className="grid items-baseline gap-x-8 gap-y-1 border-b border-ink/10 py-5 sm:grid-cols-[14rem_minmax(0,1fr)]"
             >
-              <h3 className="text-[1.15rem] leading-snug text-ink">{w.title}</h3>
-              <p className="text-[0.88rem] leading-relaxed text-muted-foreground">{w.desc}</p>
+              <h3 className="text-[1.15rem] leading-snug text-ink">
+                {w.title}
+              </h3>
+              <p className="text-[0.88rem] leading-relaxed text-muted-foreground">
+                {w.desc}
+              </p>
             </motion.li>
           ))}
         </ul>
