@@ -219,7 +219,7 @@ export function SignalRush({
                 }}
                 aria-label={cell ? (cell.kind === "bug" ? "Bug — avoid" : "Signal — tap") : "Empty tile"}
                 className={cn(
-                  "relative aspect-square overflow-hidden rounded-2xl border transition-all duration-300 touch-none select-none active:scale-95 shadow-md",
+                  "relative aspect-square rounded-2xl border transition-all duration-300 touch-none select-none active:scale-95 shadow-md",
                   cell
                     ? cell.kind === "bug"
                       ? "border-[var(--prism-red)]/70 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
