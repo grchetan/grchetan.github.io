@@ -3,6 +3,7 @@ import { Outlet, createRootRouteWithContext, useRouter, useRouterState } from "@
 import { useEffect } from "react";
 
 import { Toaster } from "../components/ui/sonner";
+import { toast } from "sonner";
 import { NotFoundScape, ServerErrorScape } from "../components/site/error-pages";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGoogleAnalytics, trackPageView } from "../lib/site-analytics";
@@ -75,6 +76,23 @@ function RootComponent() {
     canonical.setAttribute("href", `${base}${cleanPath}`);
   }, [pathname]);
 
+  useEffect(() => {
+    const handleCopy = () => {
+      const selection = window.getSelection()?.toString().trim();
+      if (selection && selection.length > 0) {
+        const preview = selection.length > 30 ? `${selection.slice(0, 30)}...` : selection;
+        toast.success("Copied to clipboard!", {
+          description: `"${preview}"`,
+          position: "bottom-right",
+          duration: 3000,
+        });
+      }
+    };
+
+    document.addEventListener("copy", handleCopy);
+    return () => document.removeEventListener("copy", handleCopy);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <MotionPreferenceProvider>
@@ -91,7 +109,7 @@ function RootComponent() {
         <ClickSpark sparkColor="#38bdf8" sparkRadius={28} sparkCount={10} sparkSize={12}>
           <Outlet />
         </ClickSpark>
-        <Toaster />
+        <Toaster position="bottom-right" richColors />
       </MotionPreferenceProvider>
     </QueryClientProvider>
   );
