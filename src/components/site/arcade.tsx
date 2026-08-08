@@ -223,6 +223,7 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
 
           <form onSubmit={create} className="mt-6 flex flex-col gap-3 sm:flex-row">
             <input
+              id="player-name-input"
               value={name}
               onChange={(e) => setName(cleanName(e.target.value))}
               placeholder="Your name"
@@ -1052,7 +1053,22 @@ export function ArcadeStage() {
                   </div>
                 ) : null}
 
-                <SignalRush onFinish={finish} disabled={!player} />
+                <SignalRush
+                  onFinish={finish}
+                  disabled={!player}
+                  onDisabledClick={() => {
+                    toast.error("Pehle apna name enter kijiye aur Player ID banaiye! 🎮", {
+                      position: "top-center",
+                    });
+                    const inputEl = document.getElementById("player-name-input");
+                    if (inputEl) {
+                      inputEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                      setTimeout(() => {
+                        inputEl.focus();
+                      }, 500);
+                    }
+                  }}
+                />
                 {!player ? (
                   <p className="mt-3 caption">Claim a name or enter your saved player ID to start a run.</p>
                 ) : null}
