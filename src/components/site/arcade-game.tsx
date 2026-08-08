@@ -247,16 +247,16 @@ export function SignalRush({
                         <motion.img
                           src={bugImg}
                           alt="Bug"
-                          className="size-11 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
-                          animate={{ y: [0, -3, 0] }}
+                          className="w-[72%] h-[72%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                          animate={{ y: [0, -2, 0] }}
                           transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
                         />
                       ) : (
                         <motion.img
                           src={tilesImg}
                           alt="Signal"
-                          className="size-11 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
-                          animate={{ scale: [1, 1.08, 1] }}
+                          className="w-[72%] h-[72%] object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]"
+                          animate={{ scale: [1, 1.06, 1] }}
                           transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }}
                         />
                       )}
