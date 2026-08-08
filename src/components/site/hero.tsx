@@ -96,12 +96,12 @@ export function Hero() {
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Magnetic strength={10}>
-                  <a href="#contact" className="press-btn">
+                  <Link to="/contact" className="press-btn">
                     Commission a build <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
-                  </a>
+                  </Link>
                 </Magnetic>
                 <Magnetic strength={10}>
-                  <a href="#projects" className="press-btn-outline">
+                  <a href="#work" className="press-btn-outline">
                     Selected work <ArrowDownRight className="size-3.5" strokeWidth={1.5} />
                   </a>
                 </Magnetic>
