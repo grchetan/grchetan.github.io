@@ -133,13 +133,13 @@ function CodeReveal({ player, onContinue }: { player: Player; onContinue: () => 
   );
 }
 
-const PROFANITY_ROASTS = [
-  "Mat kar lala, mat kar! 🛑 Abusive names won't get you on the leaderboard. Try a clean name!",
-  "Bro thought he could sneak that past the algorithm... 💀 Type a real, clean name!",
-  "Nice try, champ! But this leaderboard is strictly a clean zone. Pick a proper name!",
-  "Still trying? Lala, system is 100x smarter than that! Enter a clean name!",
-  "Give it a rest, buddy! Clean names only or no Player ID for you. 🎮",
-  "Keyboard warrior detected! 🤖 Clean up the language and let's get playing!",
+const PROFANITY_WARNINGS = [
+  "Inappropriate or abusive language is not allowed on this leaderboard. Please enter a respectable name!",
+  "This name contains forbidden words. Please choose a clean, professional display name to proceed.",
+  "System filter activated: Please use respectful language for your player handle.",
+  "Profanity detected. Keep it clean and friendly for all players on the standings!",
+  "Name validation failed due to restricted words. Please select a clean display name.",
+  "Please enter a clean, appropriate name to register and claim your Player ID.",
 ];
 
 function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
@@ -265,10 +265,10 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
           {isProfane ? (
             <div className="mt-4 rounded-2xl border border-rose-600/40 bg-gradient-to-r from-rose-950/40 via-red-900/30 to-rose-950/40 p-4 shadow-[0_0_20px_rgba(225,29,72,0.3)] backdrop-blur-md animate-fade-in">
               <div className="flex items-center gap-2 text-rose-500 font-mono text-xs font-bold uppercase tracking-wider">
-                <span className="text-base">🚫</span> NOPE! NOT HAPPENING
+                <span className="text-base">🚫</span> INAPPROPRIATE NAME DETECTED
               </div>
               <p className="mt-1.5 font-sans text-xs leading-relaxed text-rose-200">
-                {PROFANITY_ROASTS[roastIndex % PROFANITY_ROASTS.length]}
+                {PROFANITY_WARNINGS[roastIndex % PROFANITY_WARNINGS.length]}
               </p>
             </div>
           ) : problem ? (
