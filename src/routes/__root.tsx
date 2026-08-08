@@ -7,6 +7,7 @@ import { NotFoundScape, ServerErrorScape } from "../components/site/error-pages"
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGoogleAnalytics, trackPageView } from "../lib/site-analytics";
 import { useNetworkStatus } from "../hooks/use-network-status";
+import { ClickSpark } from "../components/ui/click-spark";
 
 function NotFoundComponent() {
   return <NotFoundScape />;
@@ -87,7 +88,9 @@ function RootComponent() {
           </div>
         )}
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <ClickSpark sparkColor="#38bdf8" sparkRadius={28} sparkCount={10} sparkSize={12}>
+          <Outlet />
+        </ClickSpark>
         <Toaster />
       </MotionPreferenceProvider>
     </QueryClientProvider>
