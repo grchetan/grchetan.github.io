@@ -500,6 +500,7 @@ export async function fetchLeaderboard(): Promise<ScoreRow[]> {
 export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => void {
   let stop: (() => void) | null = null;
   let cancelled = false;
+  let latestRemote: ScoreRow[] = [];
 
   if (isFirebaseConfigured) {
     void (async () => {
@@ -510,7 +511,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
         stop = onSnapshot(
           query(collection(db, SCORES), orderBy("score", "desc"), limit(600)),
           (snap) => {
-            const remoteRows: ScoreRow[] = snap.docs.map((d) => {
+            latestRemote = snap.docs.map((d) => {
               const raw = d.data() as Record<string, unknown>;
               const ts = raw["createdAt"] as { toMillis?: () => number } | undefined;
               return {
@@ -524,7 +525,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
                 createdAt: ts?.toMillis?.() ?? Date.now(),
               };
             });
-            onRows(mergeRawScores(remoteRows, readLocal().scores));
+            onRows(mergeRawScores(latestRemote, readLocal().scores));
           },
           (err) => {
             console.error("[Firebase subscribeLeaderboard Snapshot Error]:", err);
@@ -540,7 +541,13 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
     })();
   }
 
-  const pushLocal = () => onRows(readLocal().scores);
+  const pushLocal = () => {
+    if (isFirebaseConfigured && latestRemote.length > 0) {
+      onRows(mergeRawScores(latestRemote, readLocal().scores));
+    } else {
+      onRows(readLocal().scores);
+    }
+  };
   const onEvt = () => pushLocal();
   if (typeof window !== "undefined") {
     window.addEventListener("arcade:scores", onEvt);

@@ -133,12 +133,22 @@ function CodeReveal({ player, onContinue }: { player: Player; onContinue: () => 
   );
 }
 
+const PROFANITY_ROASTS = [
+  "Mat kar lala, mat kar! 🛑 Abusive names won't get you on the leaderboard. Try a clean name!",
+  "Bro thought he could sneak that past the algorithm... 💀 Type a real, clean name!",
+  "Nice try, champ! But this leaderboard is strictly a clean zone. Pick a proper name!",
+  "Still trying? Lala, system is 100x smarter than that! Enter a clean name!",
+  "Give it a rest, buddy! Clean names only or no Player ID for you. 🎮",
+  "Keyboard warrior detected! 🤖 Clean up the language and let's get playing!",
+];
+
 function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
   const [mode, setMode] = useState<"create" | "resume">("create");
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [fresh, setFresh] = useState<Player | null>(null);
+  const [roastIndex, setRoastIndex] = useState(0);
 
   const { data: config = defaultArcadeConfig } = useArcadeConfig();
 
@@ -154,6 +164,9 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isProfane) {
+      setRoastIndex((prev) => prev + 1);
+    }
     const issue = validateName(name, config.forbiddenWords ?? defaultArcadeConfig.forbiddenWords);
     if (issue) {
       toast.error(issue);
@@ -250,13 +263,12 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
           </form>
 
           {isProfane ? (
-            <div className="mt-4 rounded-2xl border border-rose-600/40 bg-gradient-to-r from-rose-950/40 via-red-900/30 to-rose-950/40 p-4 shadow-[0_0_20px_rgba(225,29,72,0.3)] backdrop-blur-md">
+            <div className="mt-4 rounded-2xl border border-rose-600/40 bg-gradient-to-r from-rose-950/40 via-red-900/30 to-rose-950/40 p-4 shadow-[0_0_20px_rgba(225,29,72,0.3)] backdrop-blur-md animate-fade-in">
               <div className="flex items-center gap-2 text-rose-500 font-mono text-xs font-bold uppercase tracking-wider">
-                <span className="text-base">🩸</span> RESPECTFUL ROAST WARNING
+                <span className="text-base">🚫</span> NOPE! NOT HAPPENING
               </div>
               <p className="mt-1.5 font-sans text-xs leading-relaxed text-rose-200">
-                Nice try, my friend! But abusive or inappropriate language won't work on this leaderboard.
-                Please choose a clean, respectful name that you can be proud of!
+                {PROFANITY_ROASTS[roastIndex % PROFANITY_ROASTS.length]}
               </p>
             </div>
           ) : problem ? (
