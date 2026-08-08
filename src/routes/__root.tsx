@@ -78,7 +78,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <MotionPreferenceProvider>
         {!isOnline && (
-          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500 px-4 py-2 text-xs font-semibold tracking-wide font-mono shadow-xl text-white backdrop-blur-md animate-bounce">
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500/90 dark:bg-rose-600/90 px-4 py-2 text-xs font-semibold tracking-wide font-mono shadow-2xl text-white backdrop-blur-md animate-bounce">
             <span className="relative flex size-2">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
               <span className="relative inline-flex size-2 rounded-full bg-white" />
