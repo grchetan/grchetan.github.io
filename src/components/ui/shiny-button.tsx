@@ -15,15 +15,16 @@ interface ShinyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
   download?: boolean;
 }
 
-export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>(
+export const ShinyButton = React.forwardRef<any, ShinyButtonProps>(
   ({ children, className, variant = "solid", as: Component = "button", ...props }, ref) => {
     const isOutline = variant === "outline";
     const isCyan = variant === "cyan";
 
+    const MotionComponent = React.useMemo(() => motion.create(Component), [Component]);
+
     return (
-      <motion.button
+      <MotionComponent
         ref={ref}
-        as={Component}
         initial={{ "--x": "100%" } as any}
         animate={{ "--x": "-100%" } as any}
         whileHover={{ scale: 1.04 }}
@@ -43,7 +44,7 @@ export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>
           },
         }}
         className={cn(
-          "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] font-bold backdrop-blur-xl transition-all duration-300 select-none cursor-pointer border",
+          "relative inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] font-bold backdrop-blur-xl transition-all duration-300 select-none cursor-pointer border no-underline",
           isOutline
             ? "border-indigo-500/30 bg-paper/70 text-ink shadow-sm hover:border-indigo-500/60 dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.3)]"
             : isCyan
@@ -73,7 +74,7 @@ export const ShinyButton = React.forwardRef<HTMLButtonElement, ShinyButtonProps>
           }}
           className="absolute inset-0 z-20 pointer-events-none block rounded-[inherit] bg-[linear-gradient(-75deg,transparent_calc(var(--x)+15%),rgba(255,255,255,0.9)_calc(var(--x)+25%),transparent_calc(var(--x)+100%))] p-px"
         />
-      </motion.button>
+      </MotionComponent>
     );
   }
 );
