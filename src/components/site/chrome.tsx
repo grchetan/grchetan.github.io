@@ -99,6 +99,27 @@ export function LoadingScreen() {
     return () => clearTimeout(t);
   }, [reduced]);
 
+  // Prevent background scrolling while the loading screen is active
+  useEffect(() => {
+    if (done) return;
+
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    };
+  }, [done]);
+
   const bg = {
     backgroundImage: `url(${loaderChrome})`,
     backgroundPosition: "center",
