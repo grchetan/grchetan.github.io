@@ -224,13 +224,8 @@ export function SignalRush({
                     ? cell.kind === "bug"
                       ? "border-[var(--prism-red)]/70 shadow-[0_0_15px_rgba(239,68,68,0.4)]"
                       : "border-[var(--prism-blue)]/70 shadow-[0_0_15px_rgba(59,130,246,0.4)]"
-                    : "border-ink/10 opacity-70 hover:opacity-90"
+                    : "border-ink/10 bg-paper/50"
                 )}
-                style={{
-                  backgroundImage: `url(${tilesImg})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
               >
                 <AnimatePresence>
                   {cell && (
@@ -245,7 +240,7 @@ export function SignalRush({
                         backgroundImage:
                           cell.kind === "bug"
                             ? "linear-gradient(140deg, rgba(239,68,68,0.3), rgba(244,63,94,0.3))"
-                            : "linear-gradient(140deg, var(--prism-yellow), var(--prism-pink) 45%, var(--prism-blue))",
+                            : "linear-gradient(140deg, rgba(59,130,246,0.25), rgba(16,185,129,0.25))",
                       }}
                     >
                       {cell.kind === "bug" ? (
@@ -257,7 +252,13 @@ export function SignalRush({
                           transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
                         />
                       ) : (
-                        <Sparkles className="size-6 text-paper drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]" strokeWidth={2.2} />
+                        <motion.img
+                          src={tilesImg}
+                          alt="Signal"
+                          className="size-11 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]"
+                          animate={{ scale: [1, 1.08, 1] }}
+                          transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }}
+                        />
                       )}
                     </motion.span>
                   )}
