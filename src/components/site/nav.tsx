@@ -114,15 +114,15 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[65] px-3 pt-3 sm:px-5 sm:pt-4">
-        <nav
-          className={cn(
-            "mx-auto flex w-full max-w-[80rem] items-center justify-between gap-4 rounded-full border px-3 py-2 transition-all duration-500 sm:px-4",
-            scrolled
-              ? "border-ink/10 bg-paper/75 shadow-[0_10px_40px_-24px_rgb(0_0_0/0.35)] backdrop-blur-xl"
-              : "border-transparent bg-transparent",
-          )}
-        >
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-[65] w-full border-b transition-all duration-300 backdrop-blur-xl",
+          scrolled
+            ? "border-ink/10 bg-paper/85 shadow-md"
+            : "border-ink/5 bg-paper/65"
+        )}
+      >
+        <nav className="mx-auto flex w-full max-w-[84rem] items-center justify-between gap-4 px-4 py-3 sm:px-8">
           <Link
             to="/"
             className="min-w-0 shrink px-2 font-display text-[1.15rem] leading-none text-ink sm:text-[1.25rem]"
