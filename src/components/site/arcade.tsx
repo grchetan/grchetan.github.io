@@ -31,6 +31,7 @@ import {
 } from "@/lib/arcade";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { SlowTimeoutLoader } from "@/components/ui/slow-timeout-loader";
+import { MorphingText } from "@/components/ui/morphing-text";
 import coffeeCupSvg from "@/assets/coffee-cup.svg";
 import { cn } from "@/lib/utils";
 
@@ -1037,7 +1038,20 @@ export function ArcadeStage() {
         ) : null}
 
         <div id="arcade-arena" className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <SectionHeading eyebrow="Arcade" figure="01" title="Play a run." />
+          <SectionHeading
+            eyebrow="Arcade"
+            figure="01"
+            title={
+              <MorphingText
+                phrases={[
+                  "Play a run.",
+                  "Set a record.",
+                  "Climb the board.",
+                  "Claim your glory.",
+                ]}
+              />
+            }
+          />
           <BuyMeACoffee />
         </div>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">

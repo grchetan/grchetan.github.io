@@ -130,21 +130,21 @@ export function RegMark({ className }: { className?: string }) {
 
 export function SectionHeading({
   eyebrow,
+  figure,
   title,
   description,
-  figure,
   align = "left",
   className,
 }: {
   eyebrow: string;
-  title: string;
-  description?: string;
   figure?: string;
-  align?: "center" | "left";
+  title: React.ReactNode;
+  description?: string;
+  align?: "left" | "center";
   className?: string;
 }) {
   return (
-    <div className={cn(align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl", className)}>
+    <div className={cn("relative z-10", align === "center" ? "text-center" : "text-left", className)}>
       <div
         className={cn(
           "flex items-baseline gap-4",
@@ -157,7 +157,7 @@ export function SectionHeading({
       <Rule className="mt-3" />
       <Reveal delay={0.05}>
         <h2 className="mt-6 text-[clamp(2.4rem,6vw,4.5rem)]">
-          <TextReveal text={title} />
+          {typeof title === "string" ? <TextReveal text={title} /> : title}
         </h2>
       </Reveal>
       {description ? (
