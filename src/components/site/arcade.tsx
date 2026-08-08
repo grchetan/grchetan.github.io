@@ -590,6 +590,7 @@ export function ArcadeStage() {
   const isClosed = config.mode === "disabled" || isTimerExpired;
 
   const [boardTab, setBoardTab] = useState<"weekly" | "lifetime" | "contest">("weekly");
+  const [searchQuery, setSearchQuery] = useState("");
   const [registering, setRegistering] = useState(false);
   const [currentTime, setCurrentTime] = useState<number>(Date.now());
   const [contestSec, setContestSec] = useState<number>(0);
@@ -682,22 +683,31 @@ export function ArcadeStage() {
       return d.getTime();
     })();
 
+    let ranked: RankedRow[] = [];
     if (boardTab === "weekly") {
       // Use admin's manual reset timestamp if it was set more recently than this week's Monday
       const adminReset = config.weeklyResetAt ?? 0;
       const effectiveReset = adminReset > startOfWeek ? adminReset : startOfWeek;
       const resetTs = Math.min(effectiveReset, now);
       const weeklyFiltered = activeRuns.filter((r) => r.createdAt >= resetTs);
-      return rank(weeklyFiltered); // group by player and rank Weekly scores 1st, 2nd...
-    }
-    if (boardTab === "contest") {
+      ranked = rank(weeklyFiltered); // group by player and rank Weekly scores 1st, 2nd...
+    } else if (boardTab === "contest") {
       const startAt = config.contest?.startAt ?? 0;
       const endAt = config.contest?.endAt ?? Infinity;
       const contestFiltered = activeRuns.filter((r) => r.createdAt >= startAt && r.createdAt <= endAt);
-      return rank(contestFiltered); // group by player and rank Contest scores 1st, 2nd...
+      ranked = rank(contestFiltered); // group by player and rank Contest scores 1st, 2nd...
+    } else {
+      ranked = rank(activeRuns); // lifetime — group by player and rank of all time
     }
-    return rank(activeRuns); // lifetime — group by player and rank of all time
-  }, [rows, boardTab, config.weeklyResetAt, config.contest?.startAt, config.contest?.endAt, config.bannedPlayers]);
+
+    if (!searchQuery) return ranked;
+    const q = searchQuery.toLowerCase();
+    return ranked.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.handle.toLowerCase().includes(q)
+    );
+  }, [rows, boardTab, config.weeklyResetAt, config.contest?.startAt, config.contest?.endAt, config.bannedPlayers, searchQuery]);
 
   const me = useMemo(() => {
     if (!player) return null;
@@ -1057,7 +1067,7 @@ export function ArcadeStage() {
                   onFinish={finish}
                   disabled={!player}
                   onDisabledClick={() => {
-                    toast.error("Pehle apna name enter kijiye aur Player ID banaiye! 🎮", {
+                    toast.error("Please enter your name or log in with your Player ID first! 🎮", {
                       position: "top-center",
                     });
                     const inputEl = document.getElementById("player-name-input");
@@ -1086,15 +1096,26 @@ export function ArcadeStage() {
             title="Who is on top."
             description="Top 100 runs, ranked by score, then accuracy. Switch between Weekly, Lifetime, and Contest ranks."
           />
-          <div className="flex flex-col gap-3 sm:items-end">
-            <div className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 shrink-0 self-start sm:self-auto">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-              </span>
-              <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400 font-semibold">
-                Live · {filteredRows.length} players
-              </span>
+          <div className="flex flex-col gap-3 sm:items-end w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-3 justify-start sm:justify-end w-full">
+              <div className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 shrink-0">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+                </span>
+                <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  Live · {filteredRows.length} players
+                </span>
+              </div>
+              <div className="w-full sm:w-52 relative">
+                <input
+                  type="text"
+                  placeholder="Search player..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-full border border-ink/15 bg-paper/80 px-4 py-1.5 text-xs text-ink outline-none transition focus:border-[var(--prism-blue)] placeholder:text-ink-soft/50 font-mono"
+                />
+              </div>
             </div>
 
             <div className="inline-flex rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs">

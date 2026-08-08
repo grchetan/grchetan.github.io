@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { Gamepad2, Clock, ShieldAlert, Ban, Trash2, CheckCircle2, AlertTriangle, RefreshCw, Lock, Megaphone, Trophy, RotateCcw, Sparkles, Zap, Users, Star, Swords, Download } from "lucide-react";
+import { Gamepad2, Clock, ShieldAlert, Ban, Trash2, CheckCircle2, AlertTriangle, RefreshCw, Lock, Megaphone, Trophy, RotateCcw, Sparkles, Zap, Users, Star, Swords, Download, Search, History, Eye, EyeOff, ChevronDown, ChevronUp } from "lucide-react";
 import {
   useArcadeConfig,
   updateArcadeConfig,
   useLeaderboard,
   usePlayersCodes,
   deleteScore,
+  updateScore,
   deleteAllScores,
   deletePlayerScores,
   banPlayer,
@@ -52,7 +53,12 @@ export function ArcadeControlManager() {
   const [newWord, setNewWord] = useState("");
   const [busy, setBusy] = useState(false);
   const [remainingSec, setRemainingSec] = useState<number>(0);
-  const [lbTab, setLbTab] = useState<"weekly" | "lifetime" | "contest">("lifetime");
+  const [lbTab, setLbTab] = useState<"weekly" | "lifetime" | "contest" | "audit">("lifetime");
+  const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
+  const [editingRunId, setEditingRunId] = useState<string | null>(null);
+  const [editScoreValue, setEditScoreValue] = useState<string>("");
+  const [editAccuracyValue, setEditAccuracyValue] = useState<string>("");
+  const [editComboValue, setEditComboValue] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -155,6 +161,67 @@ export function ArcadeControlManager() {
       row.handle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.playerId.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Group all raw runs from leaderboard by player and calculate total runs & highest score
+  const groupedPlayers = useMemo(() => {
+    const playersMap = new Map<string, {
+      playerId: string;
+      name: string;
+      handle: string;
+      totalRuns: number;
+      highestScore: number;
+      highestAccuracy: number;
+      highestCombo: number;
+      latestRunAt: number;
+      allRuns: typeof leaderboard;
+    }>();
+
+    for (const r of leaderboard) {
+      const existing = playersMap.get(r.playerId);
+      if (!existing) {
+        playersMap.set(r.playerId, {
+          playerId: r.playerId,
+          name: r.name,
+          handle: r.handle,
+          totalRuns: 1,
+          highestScore: r.score,
+          highestAccuracy: r.accuracy,
+          highestCombo: r.combo,
+          latestRunAt: r.createdAt,
+          allRuns: [r],
+        });
+      } else {
+        existing.totalRuns += 1;
+        existing.allRuns.push(r);
+        if (r.createdAt > existing.latestRunAt) {
+          existing.latestRunAt = r.createdAt;
+        }
+        if (r.score > existing.highestScore) {
+          existing.highestScore = r.score;
+          existing.highestAccuracy = r.accuracy;
+          existing.highestCombo = r.combo;
+        }
+      }
+    }
+
+    // Sort allRuns for each player by score desc
+    for (const p of playersMap.values()) {
+      p.allRuns.sort((a, b) => b.score - a.score || b.accuracy - a.accuracy || b.createdAt - a.createdAt);
+    }
+
+    return [...playersMap.values()].sort((a, b) => b.highestScore - a.highestScore);
+  }, [leaderboard]);
+
+  const filteredGroupedPlayers = useMemo(() => {
+    if (!searchQuery) return groupedPlayers;
+    const q = searchQuery.toLowerCase();
+    return groupedPlayers.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.handle.toLowerCase().includes(q) ||
+        p.playerId.toLowerCase().includes(q)
+    );
+  }, [groupedPlayers, searchQuery]);
 
   // Derived details of players registered for current contest
   const registeredPlayersDetails = useMemo(() => {
@@ -1262,23 +1329,24 @@ export function ArcadeControlManager() {
         {/* Tab Bar + Search Input */}
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
           <div className="inline-flex rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs gap-1">
-            {(["weekly", "lifetime", "contest"] as const).map((t) => (
+            {(["weekly", "lifetime", "contest", "audit"] as const).map((t) => (
               <button
                 key={t}
                 type="button"
                 onClick={() => {
                   setLbTab(t);
                   setSearchQuery(""); // Clear search on tab switch
+                  setExpandedPlayerId(null); // Clear expanded view
                 }}
                 className={cn(
                   "flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] font-semibold transition-all",
                   lbTab === t
-                    ? t === "weekly" ? "bg-blue-500 text-white shadow-xs" : t === "contest" ? "bg-amber-500 text-slate-950 shadow-xs" : "bg-ink text-paper shadow-xs"
+                    ? t === "weekly" ? "bg-blue-500 text-white shadow-xs" : t === "contest" ? "bg-amber-500 text-slate-950 shadow-xs" : t === "audit" ? "bg-emerald-500 text-white shadow-xs" : "bg-ink text-paper shadow-xs"
                     : "text-ink-soft hover:text-ink hover:bg-ink/5"
                 )}
               >
-                {t === "weekly" ? <Zap className="size-3" /> : t === "lifetime" ? <Star className="size-3" /> : <Swords className="size-3" />}
-                {t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : "Contest"}
+                {t === "weekly" ? <Zap className="size-3" /> : t === "lifetime" ? <Star className="size-3" /> : t === "contest" ? <Swords className="size-3" /> : <History className="size-3" />}
+                {t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Player Search & History"}
               </button>
             ))}
           </div>
@@ -1410,144 +1478,511 @@ export function ArcadeControlManager() {
               </div>
             </>
           )}
+          {lbTab === "audit" && (
+            <>
+              <span className="font-mono text-xs text-ink-soft">
+                {filteredGroupedPlayers.length} unique players found
+              </span>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const csvRows: RankedRow[] = filteredGroupedPlayers.map((p, idx) => ({
+                      id: p.playerId,
+                      playerId: p.playerId,
+                      name: p.name,
+                      handle: p.handle,
+                      score: p.highestScore,
+                      accuracy: p.highestAccuracy,
+                      combo: p.highestCombo,
+                      createdAt: p.latestRunAt,
+                      plays: p.totalRuns,
+                      rank: idx + 1,
+                    }));
+                    downloadCSV(csvRows, "Player Directory & High Scores");
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/40 px-3 py-1.5 font-mono text-[0.65rem] uppercase font-semibold text-emerald-600 hover:bg-emerald-500/10 transition"
+                >
+                  <Download className="size-3" /> Export Player CSV
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Leaderboard Table */}
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/12 bg-paper-tint/30">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-ink/10 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft">
-                <th className="p-3">Rank</th>
-                <th className="p-3">Player</th>
-                <th className="p-3">Score</th>
-                <th className="p-3">Acc</th>
-                <th className="p-3">Runs</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink/10 font-sans text-sm">
-              {filteredModerationRows.length === 0 ? (
-                <tr><td colSpan={7} className="p-6 text-center caption">No players match the search criteria.</td></tr>
-              ) : filteredModerationRows.map((row) => {
-                const isBanned = (config.bannedPlayers ?? []).includes(row.playerId) || (config.bannedPlayers ?? []).includes(row.handle);
-                const isSuspicious = row.score > 25000 || (row.accuracy === 100 && row.score > 15000);
-
-                return (
-                  <tr
-                    key={row.id}
-                    className={cn(
-                      "transition-colors hover:bg-paper/60",
-                      isBanned ? "bg-rose-500/10" : isSuspicious ? "bg-amber-500/10" : ""
-                    )}
-                  >
-                    <td className="p-3 font-mono font-semibold text-ink">#{row.rank}</td>
-                    <td className="p-3">
-                      <div className="font-semibold text-ink">{row.name}</div>
-                      <div className="font-mono text-xs text-ink-soft">{row.handle}</div>
-                      <div
-                        className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-0.5"
-                        title="Click to copy Login ID (Secret Code)"
-                        onClick={() => {
-                          const loginCode = playersCodes?.get(row.playerId) || row.playerId;
-                          navigator.clipboard.writeText(loginCode);
-                          toast.success("Login ID copied!");
-                        }}
-                      >
-                        Login ID: {playersCodes?.get(row.playerId) || row.playerId}
-                      </div>
-                    </td>
-                    <td className="p-3 font-mono text-ink font-semibold">{row.score.toLocaleString()}</td>
-                    <td className="p-3 font-mono text-ink-soft">{row.accuracy}%</td>
-                    <td className="p-3 font-mono text-ink-soft">{row.plays}</td>
-                    <td className="p-3">
-                      {isBanned ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-300 font-mono text-[0.65rem] uppercase font-semibold">
-                          <Ban className="size-3" /> Banned
-                        </span>
-                      ) : isSuspicious ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 font-mono text-[0.65rem] uppercase font-semibold">
-                          <AlertTriangle className="size-3" /> Suspicious
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
-                          <CheckCircle2 className="size-3" /> OK
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-3 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            setBusy(true);
-                            try {
-                              if (isBanned) {
-                                await unbanPlayer(row.playerId);
-                                toast.success(`${row.name} unbanned.`);
-                              } else {
-                                await banPlayer(row.playerId);
-                                toast.success(`${row.name} banned.`);
-                              }
-                            } catch { toast.error("Failed to update ban."); }
-                            finally { setBusy(false); }
-                          }}
-                          disabled={busy}
-                          className={cn(
-                            "inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[0.65rem] uppercase font-medium border transition-colors",
-                            isBanned
-                              ? "border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
-                              : "border-rose-500/40 text-rose-600 hover:bg-rose-500/10"
-                          )}
-                        >
-                          <Ban className="size-3" /> {isBanned ? "Unban" : "Ban"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setConfirmConfig({
-                              isOpen: true,
-                              title: "Delete Player Account & Scores",
-                              message: `⚠️ Are you sure you want to delete the player account and ALL scores for ${row.name}? This will permanently remove all of their runs and release the username "${row.name}" so it can be registered again.`,
-                              confirmText: "Delete Account & Scores",
-                              cancelText: "Cancel",
-                              isDestructive: true,
-                              onConfirm: async () => {
-                                setBusy(true);
-                                try {
-                                  await deletePlayerScores(row.playerId);
-                                  void refetch();
-                                  toast.success(`All scores for ${row.name} deleted.`);
-                                } catch {
-                                  toast.error("Delete failed.");
-                                } finally {
-                                  setBusy(false);
-                                  setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
-                                }
-                              },
-                            });
-                          }}
-                          title="Delete all scores for this player"
-                          className="p-1.5 rounded-lg border border-rose-500/30 text-rose-600 hover:bg-rose-500/10 transition-colors"
-                        >
-                          <Users className="size-3.5" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => void handleDeleteScore(row.id, row.name)}
-                          className="p-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
-                          title="Delete this single score entry"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </button>
-                      </div>
+        {/* Leaderboard Table / Player Search Table */}
+        {lbTab === "audit" ? (
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/12 bg-paper-tint/30">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-ink/10 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft">
+                  <th className="p-3">Player</th>
+                  <th className="p-3">Personal Best</th>
+                  <th className="p-3">Best Acc</th>
+                  <th className="p-3">Best Combo</th>
+                  <th className="p-3">Plays (Runs)</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink/10 font-sans text-sm">
+                {filteredGroupedPlayers.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-6 text-center caption">
+                      No players match the search criteria.
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  filteredGroupedPlayers.map((p) => {
+                    const isBanned = (config.bannedPlayers ?? []).includes(p.playerId) || (config.bannedPlayers ?? []).includes(p.handle);
+                    const isExpanded = expandedPlayerId === p.playerId;
+                    const loginCode = playersCodes?.get(p.playerId) || p.playerId;
+
+                    return (
+                      <>
+                        <tr
+                          key={p.playerId}
+                          className={cn(
+                            "transition-colors hover:bg-paper/60",
+                            isBanned ? "bg-rose-500/10" : ""
+                          )}
+                        >
+                          <td className="p-3">
+                            <div className="font-semibold text-ink">{p.name}</div>
+                            <div className="font-mono text-xs text-ink-soft">{p.handle}</div>
+                            <div
+                              className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-0.5"
+                              title="Click to copy Login ID (Secret Code)"
+                              onClick={() => {
+                                navigator.clipboard.writeText(loginCode);
+                                toast.success("Login ID copied!");
+                              }}
+                            >
+                              Login ID: {loginCode}
+                            </div>
+                          </td>
+                          <td className="p-3 font-mono text-ink font-semibold">
+                            {p.highestScore.toLocaleString()}
+                          </td>
+                          <td className="p-3 font-mono text-ink-soft">
+                            {p.highestAccuracy}%
+                          </td>
+                          <td className="p-3 font-mono text-ink-soft">
+                            x{p.highestCombo}
+                          </td>
+                          <td className="p-3 font-mono text-ink-soft">
+                            {p.totalRuns} {p.totalRuns === 1 ? "run" : "runs"}
+                          </td>
+                          <td className="p-3">
+                            {isBanned ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-300 font-mono text-[0.65rem] uppercase font-semibold">
+                                <Ban className="size-3" /> Banned
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+                                <CheckCircle2 className="size-3" /> OK
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-3 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => setExpandedPlayerId(isExpanded ? null : p.playerId)}
+                                className={cn(
+                                  "inline-flex items-center gap-1 rounded-lg px-2.5 py-1 font-mono text-[0.65rem] uppercase font-semibold border transition-all",
+                                  isExpanded
+                                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600"
+                                    : "border-ink/20 text-ink hover:bg-ink/5"
+                                )}
+                              >
+                                <Eye className="size-3" /> {isExpanded ? "Hide History" : "View History"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  setBusy(true);
+                                  try {
+                                    if (isBanned) {
+                                      await unbanPlayer(p.playerId);
+                                      toast.success(`${p.name} unbanned.`);
+                                    } else {
+                                      await banPlayer(p.playerId);
+                                      toast.success(`${p.name} banned.`);
+                                    }
+                                  } catch {
+                                    toast.error("Failed to update ban.");
+                                  } finally {
+                                    setBusy(false);
+                                  }
+                                }}
+                                disabled={busy}
+                                className={cn(
+                                  "inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[0.65rem] uppercase font-medium border transition-colors",
+                                  isBanned
+                                    ? "border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
+                                    : "border-rose-500/40 text-rose-600 hover:bg-rose-500/10"
+                                )}
+                              >
+                                <Ban className="size-3" /> {isBanned ? "Unban" : "Ban"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setConfirmConfig({
+                                    isOpen: true,
+                                    title: "Delete Player Account & Scores",
+                                    message: `⚠️ Are you sure you want to delete the player account and ALL scores for ${p.name}? This will permanently remove all of their runs and release the username "${p.name}" so it can be registered again.`,
+                                    confirmText: "Delete Account & Scores",
+                                    cancelText: "Cancel",
+                                    isDestructive: true,
+                                    onConfirm: async () => {
+                                      setBusy(true);
+                                      try {
+                                        await deletePlayerScores(p.playerId);
+                                        void refetch();
+                                        toast.success(`All scores for ${p.name} deleted.`);
+                                      } catch {
+                                        toast.error("Delete failed.");
+                                      } finally {
+                                        setBusy(false);
+                                        setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
+                                      }
+                                    },
+                                  });
+                                }}
+                                title="Delete all scores for this player"
+                                className="p-1.5 rounded-lg border border-rose-500/30 text-rose-600 hover:bg-rose-500/10 transition-colors"
+                              >
+                                <Trash2 className="size-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+
+                        {isExpanded && (
+                          <tr className="bg-paper/40 animate-fade-in">
+                            <td colSpan={7} className="p-4 border-l-4 border-emerald-500">
+                              <div className="rounded-xl border border-ink/10 bg-paper/60 p-4 shadow-inner">
+                                <h4 className="font-mono text-[0.7rem] uppercase tracking-wider text-ink-soft mb-3 flex items-center gap-1.5">
+                                  <History className="size-3.5" /> Run History Audit for {p.name}
+                                </h4>
+                                <div className="overflow-x-auto">
+                                  <table className="w-full text-left border-collapse text-xs font-mono">
+                                    <thead>
+                                      <tr className="border-b border-ink/10 text-ink-soft">
+                                        <th className="pb-2">Run #</th>
+                                        <th className="pb-2">Score</th>
+                                        <th className="pb-2">Accuracy</th>
+                                        <th className="pb-2">Max Combo</th>
+                                        <th className="pb-2">Timestamp</th>
+                                        <th className="pb-2 text-right">Action</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-ink/5">
+                                      {p.allRuns.map((run, idx) => {
+                                        const isEditing = editingRunId === run.id;
+                                        return (
+                                          <tr key={run.id} className="hover:bg-paper/80">
+                                            <td className="py-2 text-ink-soft">Run {p.allRuns.length - idx}</td>
+                                            <td className="py-2 font-bold text-ink">
+                                              {isEditing ? (
+                                                <input
+                                                  type="number"
+                                                  value={editScoreValue}
+                                                  onChange={(e) => setEditScoreValue(e.target.value)}
+                                                  className="w-20 rounded border border-ink/20 bg-paper px-1.5 py-0.5 text-xs font-semibold text-ink outline-none"
+                                                />
+                                              ) : (
+                                                run.score.toLocaleString()
+                                              )}
+                                            </td>
+                                            <td className="py-2 text-ink-soft">
+                                              {isEditing ? (
+                                                <div className="flex items-center gap-1">
+                                                  <input
+                                                    type="number"
+                                                    value={editAccuracyValue}
+                                                    onChange={(e) => setEditAccuracyValue(e.target.value)}
+                                                    className="w-14 rounded border border-ink/20 bg-paper px-1.5 py-0.5 text-xs text-ink outline-none"
+                                                    min="0"
+                                                    max="100"
+                                                  />
+                                                  <span>%</span>
+                                                </div>
+                                              ) : (
+                                                `${run.accuracy}%`
+                                              )}
+                                            </td>
+                                            <td className="py-2 text-ink-soft">
+                                              {isEditing ? (
+                                                <div className="flex items-center gap-1">
+                                                  <span>x</span>
+                                                  <input
+                                                    type="number"
+                                                    value={editComboValue}
+                                                    onChange={(e) => setEditComboValue(e.target.value)}
+                                                    className="w-12 rounded border border-ink/20 bg-paper px-1.5 py-0.5 text-xs text-ink outline-none"
+                                                    min="1"
+                                                  />
+                                                </div>
+                                              ) : (
+                                                `x${run.combo}`
+                                              )}
+                                            </td>
+                                            <td className="py-2 text-ink-soft/80">
+                                              {new Date(run.createdAt).toLocaleString()}
+                                            </td>
+                                            <td className="py-2 text-right">
+                                              <div className="flex items-center justify-end gap-2">
+                                                {isEditing ? (
+                                                  <>
+                                                    <button
+                                                      type="button"
+                                                      onClick={async () => {
+                                                        const nScore = Math.max(0, parseInt(editScoreValue) || 0);
+                                                        const nAcc = Math.min(100, Math.max(0, parseFloat(editAccuracyValue) || 0));
+                                                        const nCombo = Math.max(1, parseInt(editComboValue) || 1);
+                                                        setBusy(true);
+                                                        try {
+                                                          await updateScore(run.id, {
+                                                            score: nScore,
+                                                            accuracy: nAcc,
+                                                            combo: nCombo,
+                                                          });
+                                                          setEditingRunId(null);
+                                                          void refetch();
+                                                          toast.success("Score updated successfully!");
+                                                        } catch {
+                                                          toast.error("Failed to update score.");
+                                                        } finally {
+                                                          setBusy(false);
+                                                        }
+                                                      }}
+                                                      disabled={busy}
+                                                      className="text-emerald-600 hover:text-emerald-500 font-mono text-[0.65rem] uppercase font-bold border border-emerald-500/20 rounded px-1.5 py-0.5 bg-emerald-500/5 transition-colors"
+                                                    >
+                                                      Save
+                                                    </button>
+                                                    <button
+                                                      type="button"
+                                                      onClick={() => setEditingRunId(null)}
+                                                      className="text-ink-soft hover:text-ink font-mono text-[0.65rem] uppercase font-bold border border-ink/20 rounded px-1.5 py-0.5 bg-paper transition-colors"
+                                                    >
+                                                      Cancel
+                                                    </button>
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <button
+                                                      type="button"
+                                                      onClick={() => {
+                                                        setEditingRunId(run.id);
+                                                        setEditScoreValue(String(run.score));
+                                                        setEditAccuracyValue(String(run.accuracy));
+                                                        setEditComboValue(String(run.combo));
+                                                      }}
+                                                      className="text-blue-600 hover:text-blue-500 font-mono text-[0.65rem] uppercase font-bold transition-colors"
+                                                    >
+                                                      Edit
+                                                    </button>
+                                                    <button
+                                                      type="button"
+                                                      onClick={async () => {
+                                                        setConfirmConfig({
+                                                          isOpen: true,
+                                                          title: "Delete Single Score Entry",
+                                                          message: `Are you sure you want to delete this specific score of ${run.score.toLocaleString()} submitted on ${new Date(run.createdAt).toLocaleDateString()}?`,
+                                                          confirmText: "Delete Run",
+                                                          cancelText: "Cancel",
+                                                          isDestructive: true,
+                                                          onConfirm: async () => {
+                                                            setBusy(true);
+                                                            try {
+                                                              await deleteScore(run.id);
+                                                              void refetch();
+                                                              toast.success("Single score run deleted.");
+                                                            } catch {
+                                                              toast.error("Failed to delete score.");
+                                                            } finally {
+                                                              setBusy(false);
+                                                              setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
+                                                            }
+                                                          },
+                                                        });
+                                                      }}
+                                                      className="text-rose-600 hover:text-rose-500 transition-colors p-1"
+                                                      title="Delete this single run"
+                                                    >
+                                                      <Trash2 className="size-3.5" />
+                                                    </button>
+                                                  </>
+                                                )}
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        );
+                                      })}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/12 bg-paper-tint/30">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-ink/10 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft">
+                  <th className="p-3">Rank</th>
+                  <th className="p-3">Player</th>
+                  <th className="p-3">Score</th>
+                  <th className="p-3">Acc</th>
+                  <th className="p-3">Runs</th>
+                  <th className="p-3">Status</th>
+                  <th className="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink/10 font-sans text-sm">
+                {filteredModerationRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="p-6 text-center caption">
+                      No players match the search criteria.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredModerationRows.map((row) => {
+                    const isBanned = (config.bannedPlayers ?? []).includes(row.playerId) || (config.bannedPlayers ?? []).includes(row.handle);
+                    const isSuspicious = row.score > 25000 || (row.accuracy === 100 && row.score > 15000);
+
+                    return (
+                      <tr
+                        key={row.id}
+                        className={cn(
+                          "transition-colors hover:bg-paper/60",
+                          isBanned ? "bg-rose-500/10" : isSuspicious ? "bg-amber-500/10" : ""
+                        )}
+                      >
+                        <td className="p-3 font-mono font-semibold text-ink">#{row.rank}</td>
+                        <td className="p-3">
+                          <div className="font-semibold text-ink">{row.name}</div>
+                          <div className="font-mono text-xs text-ink-soft">{row.handle}</div>
+                          <div
+                            className="font-mono text-[0.62rem] text-ink-soft/60 cursor-pointer select-all hover:text-chrome-1 active:text-chrome-2 transition-colors mt-0.5"
+                            title="Click to copy Login ID (Secret Code)"
+                            onClick={() => {
+                              const loginCode = playersCodes?.get(row.playerId) || row.playerId;
+                              navigator.clipboard.writeText(loginCode);
+                              toast.success("Login ID copied!");
+                            }}
+                          >
+                            Login ID: {playersCodes?.get(row.playerId) || row.playerId}
+                          </div>
+                        </td>
+                        <td className="p-3 font-mono text-ink font-semibold">{row.score.toLocaleString()}</td>
+                        <td className="p-3 font-mono text-ink-soft">{row.accuracy}%</td>
+                        <td className="p-3 font-mono text-ink-soft">{row.plays}</td>
+                        <td className="p-3">
+                          {isBanned ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-300 font-mono text-[0.65rem] uppercase font-semibold">
+                              <Ban className="size-3" /> Banned
+                            </span>
+                          ) : isSuspicious ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-300 font-mono text-[0.65rem] uppercase font-semibold">
+                              <AlertTriangle className="size-3" /> Suspicious
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-mono">
+                              <CheckCircle2 className="size-3" /> OK
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                setBusy(true);
+                                try {
+                                  if (isBanned) {
+                                    await unbanPlayer(row.playerId);
+                                    toast.success(`${row.name} unbanned.`);
+                                  } else {
+                                    await banPlayer(row.playerId);
+                                    toast.success(`${row.name} banned.`);
+                                  }
+                                } catch {
+                                  toast.error("Failed to update ban.");
+                                } finally {
+                                  setBusy(false);
+                                }
+                              }}
+                              disabled={busy}
+                              className={cn(
+                                "inline-flex items-center gap-1 rounded-lg px-2 py-1 font-mono text-[0.65rem] uppercase font-medium border transition-colors",
+                                isBanned
+                                  ? "border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
+                                  : "border-rose-500/40 text-rose-600 hover:bg-rose-500/10"
+                              )}
+                            >
+                              <Ban className="size-3" /> {isBanned ? "Unban" : "Ban"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setConfirmConfig({
+                                  isOpen: true,
+                                  title: "Delete Player Account & Scores",
+                                  message: `⚠️ Are you sure you want to delete the player account and ALL scores for ${row.name}? This will permanently remove all of their runs and release the username "${row.name}" so it can be registered again.`,
+                                  confirmText: "Delete Account & Scores",
+                                  cancelText: "Cancel",
+                                  isDestructive: true,
+                                  onConfirm: async () => {
+                                    setBusy(true);
+                                    try {
+                                      await deletePlayerScores(row.playerId);
+                                      void refetch();
+                                      toast.success(`All scores for ${row.name} deleted.`);
+                                    } catch {
+                                      toast.error("Delete failed.");
+                                    } finally {
+                                      setBusy(false);
+                                      setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
+                                    }
+                                  },
+                                });
+                              }}
+                              title="Delete all scores for this player"
+                              className="p-1.5 rounded-lg border border-rose-500/30 text-rose-600 hover:bg-rose-500/10 transition-colors"
+                            >
+                              <Users className="size-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void handleDeleteScore(row.id, row.name)}
+                              className="p-1.5 rounded-lg border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
+                              title="Delete this single score entry"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       {/* Profanity & Bad Words Censorship Panel */}

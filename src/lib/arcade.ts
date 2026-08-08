@@ -890,6 +890,33 @@ export async function deleteScore(scoreId: string): Promise<void> {
   }
 }
 
+export async function updateScore(
+  scoreId: string,
+  fields: { score: number; accuracy: number; combo: number }
+): Promise<void> {
+  const store = readLocal();
+  const index = store.scores.findIndex((s) => s.id === scoreId);
+  if (index !== -1) {
+    store.scores[index] = {
+      ...store.scores[index],
+      ...fields,
+    };
+    writeLocal(store);
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("arcade:scores"));
+  }
+
+  if (isFirebaseConfigured) {
+    try {
+      const db = await getDb();
+      const { doc, updateDoc } = await import("firebase/firestore");
+      await updateDoc(doc(db, SCORES, scoreId), fields);
+    } catch (err) {
+      console.warn("[Update Score Failed]:", err);
+      throw err;
+    }
+  }
+}
+
 export async function registerForContest(playerId: string): Promise<ArcadeConfig> {
   const current = await fetchArcadeConfig();
   if (!current.contest) return current;
