@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert, Users } from "lucide-react";
 import { Section, SectionHeading, Reveal, RegMark } from "@/components/site/primitives";
 import { SignalRush, type RunResult } from "@/components/site/arcade-game";
 import { downloadArcadeCertificate } from "@/lib/arcade-certificate";
@@ -789,6 +789,13 @@ export function ArcadeStage() {
                       {config.announcement.dateText}
                     </span>
                   ) : null}
+
+                  {config.contest?.active && (config.contest.registrations ?? []).length > 0 && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-[0.68rem] font-bold text-emerald-300">
+                      <Users className="size-3 text-emerald-400" />
+                      {(config.contest.registrations ?? []).length} {(config.contest.registrations ?? []).length === 1 ? "player" : "players"} registered
+                    </span>
+                  )}
                 </div>
 
                 <h3 className="font-display text-2xl font-extrabold tracking-tight bg-gradient-to-r from-amber-200 via-amber-300 to-yellow-400 bg-clip-text text-transparent sm:text-3xl">
@@ -922,6 +929,11 @@ export function ArcadeStage() {
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 font-mono text-[0.68rem] font-bold text-emerald-400">
                   <Check className="size-3.5" /> Contest Scores Auto-Recorded
                 </span>
+                {config.contest?.active && (config.contest.registrations ?? []).length > 0 && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-mono text-[0.68rem] font-bold text-indigo-400">
+                    <Users className="size-3.5" /> {(config.contest.registrations ?? []).length} {(config.contest.registrations ?? []).length === 1 ? "player" : "players"} registered
+                  </span>
+                )}
               </div>
             </div>
           </div>
