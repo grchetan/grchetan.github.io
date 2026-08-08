@@ -847,8 +847,8 @@ export function ArcadeStage() {
                           : `Registrations for ${config.contest.version} are closed. View final standings below!`}
                       </p>
                       <div className="flex items-center gap-2 font-mono text-[0.72rem] text-slate-300 mt-0.5">
-                        <strong className="font-extrabold text-amber-300 text-sm">{(config.contest.registrations ?? []).length}</strong>{" "}
-                        {(config.contest.registrations ?? []).length === 1 ? "player registered" : "total players registered"}
+                        <strong className="font-extrabold text-amber-300 text-sm">{activeContestParticipantsCount}</strong>{" "}
+                        {activeContestParticipantsCount === 1 ? "player registered" : "total players registered"}
                       </div>
                     </div>
                   ) : isContestLive ? (

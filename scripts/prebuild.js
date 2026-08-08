@@ -6,6 +6,18 @@ const rootDir = process.cwd();
 const backupHtml = path.join(rootDir, "index.html.backup");
 const destHtml = path.join(rootDir, "index.html");
 
+// Clean up old compiled folders to prevent asset accumulation and caching conflicts
+const assetsDir = path.join(rootDir, "assets");
+if (fs.existsSync(assetsDir)) {
+  fs.rmSync(assetsDir, { recursive: true, force: true });
+  console.log("Prebuild: Cleaned up old assets/ folder in root");
+}
+const distDir = path.join(rootDir, "dist");
+if (fs.existsSync(distDir)) {
+  fs.rmSync(distDir, { recursive: true, force: true });
+  console.log("Prebuild: Cleaned up old dist/ folder in root");
+}
+
 if (fs.existsSync(backupHtml)) {
   fs.copyFileSync(backupHtml, destHtml);
   console.log("Prebuild: Successfully restored index.html from index.html.backup");
