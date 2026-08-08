@@ -6,6 +6,7 @@ import { Footer } from "@/components/site/contact";
 import { AuroraBackground, CustomCursor, DotGrid } from "@/components/site/effects";
 import { CommandMenu, Navbar } from "@/components/site/nav";
 import { VersionWatcher } from "@/components/site/version-watcher";
+import { NetworkStatusWatcher } from "@/components/site/network-status";
 import { trackVisit } from "@/lib/content";
 import { MotionPreferenceProvider, useMotionPreference } from "@/hooks/use-motion-preference";
 
@@ -25,6 +26,7 @@ function SiteShellInner({ children }: { children: ReactNode }) {
   return (
     <div className="relative min-h-screen">
       <VersionWatcher />
+      <NetworkStatusWatcher />
       <AuroraBackground />
       <DotGrid />
       <CustomCursor />

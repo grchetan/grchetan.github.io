@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight, Download, Github } from "lucide-react";
 import AnimatedBorderTrail from "@/components/ui/animated-border-trail";
 import { ShinyButton } from "@/components/ui/shiny-button";
+import { ImageWithSkeleton } from "@/components/ui/image-with-skeleton";
 import { Rule } from "@/components/site/primitives";
 import { fallbackImages, type Entry } from "@/data/catalog";
 import { trackDownload } from "@/lib/content";
@@ -43,12 +44,11 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           contentClassName="plate flex h-full flex-col overflow-hidden"
         >
         <div className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30">
-          <img
-            loading="lazy"
-            decoding="async"
+          <ImageWithSkeleton
             src={cover}
             alt={`${entry.title} preview`}
             className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.03]"
+            skeletonHeight="min-h-[220px]"
           />
         </div>
 
@@ -137,7 +137,19 @@ export function EntryLinks({
 
 export function EntryGrid({ entries, className }: { entries: Entry[]; className?: string }) {
   if (!entries.length) {
-    return <p className="caption py-10">Nothing published under this heading yet.</p>;
+    return (
+      <div className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
+        {[1, 2, 3].map((n) => (
+          <div key={n} className="plate flex h-72 flex-col justify-between p-6 animate-pulse border border-ink/10">
+            <div className="h-40 w-full rounded-xl bg-paper-tint/60" />
+            <div className="space-y-2 pt-4">
+              <div className="h-4 w-1/3 rounded bg-paper-tint/60" />
+              <div className="h-3 w-2/3 rounded bg-paper-tint/40" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
   return (
     <div className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
@@ -153,7 +165,20 @@ export function EntryGrid({ entries, className }: { entries: Entry[]; className?
 export function EntryShowcase({ entries, className }: { entries: Entry[]; className?: string }) {
   const { reduced } = useMotionPreference();
   if (!entries.length) {
-    return <p className="caption py-10">Nothing published under this heading yet.</p>;
+    return (
+      <div className={cn("space-y-12", className)}>
+        {[1, 2].map((n) => (
+          <div key={n} className="grid gap-8 lg:grid-cols-12 animate-pulse plate p-8 border border-ink/10">
+            <div className="lg:col-span-7 h-64 rounded-2xl bg-paper-tint/60" />
+            <div className="lg:col-span-5 space-y-4 pt-4">
+              <div className="h-4 w-1/4 rounded bg-paper-tint/60" />
+              <div className="h-8 w-3/4 rounded bg-paper-tint/80" />
+              <div className="h-16 w-full rounded bg-paper-tint/40" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -189,18 +214,17 @@ export function EntryShowcase({ entries, className }: { entries: Entry[]; classN
                   className="group block rounded-[var(--radius-lg)]"
                 >
                   <AnimatedBorderTrail
-                    duration={flip ? "9s" : "7s"}
-                    trailSize="lg"
-                    trailColor={flip ? "var(--chrome-3)" : "var(--chrome-2)"}
-                    className="rounded-[var(--radius-lg)]"
-                    contentClassName="plate overflow-hidden p-2"
+                    duration={`${8 + (i % 3)}s`}
+                    trailSize="md"
+                    trailColor={i % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
+                    className="overflow-hidden rounded-[var(--radius-lg)]"
+                    contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
                   >
-                    <img
-                      loading="lazy"
-                      decoding="async"
+                    <ImageWithSkeleton
                       src={cover}
                       alt={`${entry.title} preview`}
                       className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                      skeletonHeight="min-h-[300px]"
                     />
                   </AnimatedBorderTrail>
                 </Link>
@@ -289,12 +313,11 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
               className={cn("plate overflow-hidden p-2", i === 0 && images.length > 1 ? "lg:col-span-2" : "")}
             >
 
-              <img
-                loading="lazy"
-                decoding="async"
+              <ImageWithSkeleton
                 src={src}
                 alt={`${entry.title} screen ${i + 1}`}
                 className="mx-auto max-h-[520px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
+                skeletonHeight="min-h-[320px]"
               />
             </motion.figure>
           ))}

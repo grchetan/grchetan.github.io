@@ -33,16 +33,18 @@ function normalise(raw: Record<string, unknown>, id: string): Entry {
 
 /** Firestore entries when configured. Demo data is removed completely. */
 export async function fetchEntries(kind: Entry["kind"]): Promise<Entry[]> {
-  if (!isFirebaseConfigured) return [];
+  const local = entriesFor(kind);
+  if (!isFirebaseConfigured) return local;
   try {
     const db = await getDb();
     const { collection, getDocs } = await import("firebase/firestore");
     const snap = await getDocs(collection(db, COLLECTION));
     const allRemote = snap.docs.map((d) => normalise(d.data() as Record<string, unknown>, d.id));
-    return allRemote.filter((e) => (e.kind ? e.kind === kind : kind === "project"));
+    const matched = allRemote.filter((e) => (e.kind ? e.kind === kind : kind === "project"));
+    return matched.length ? matched : local;
   } catch (err) {
     console.error("[Content] Error fetching entries from Firestore:", err);
-    return [];
+    return local;
   }
 }
 
