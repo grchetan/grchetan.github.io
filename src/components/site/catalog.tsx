@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ArrowRight, ArrowUpRight, Download, Github } from "lucide-react";
 import AnimatedBorderTrail from "@/components/ui/animated-border-trail";
+import { ShinyButton } from "@/components/ui/shiny-button";
 import { Rule } from "@/components/site/primitives";
 import { fallbackImages, type Entry } from "@/data/catalog";
 import { trackDownload } from "@/lib/content";
@@ -121,9 +122,9 @@ export function EntryLinks({
       ) : null}
 
       {entry.liveUrl ? (
-        <a href={entry.liveUrl} target="_blank" rel="noreferrer noopener" className={download ? "press-btn-outline" : primary}>
+        <ShinyButton as="a" href={entry.liveUrl} target="_blank" rel="noreferrer noopener" variant="cyan">
           Live preview <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
-        </a>
+        </ShinyButton>
       ) : null}
       {entry.repoUrl ? (
         <a href={entry.repoUrl} target="_blank" rel="noreferrer noopener" className="press-btn-outline">
@@ -233,9 +234,9 @@ export function EntryShowcase({ entries, className }: { entries: Entry[]; classN
               </dl>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
-                <Link to={routeFor[entry.kind]} params={{ slug: entry.slug }} className="press-btn">
+                <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
                   Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
-                </Link>
+                </ShinyButton>
                 <EntryLinks entry={entry} />
               </div>
             </div>
