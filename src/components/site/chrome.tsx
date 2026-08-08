@@ -58,8 +58,9 @@ export function SmoothScroll() {
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
+        smoothTouch: true,
         wheelMultiplier: 1.1,
-        touchMultiplier: 1.5,
+        touchMultiplier: 1.8,
         infinite: false,
       });
       const loop = (t: number) => {
@@ -257,17 +258,17 @@ export function LoadingScreen() {
 
 
 
-/* ---------------- Scroll progress: an inked rule ---------------- */
+/* ---------------- Scroll progress: a luminous neon rule ---------------- */
 
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
-  const width = useSpring(scrollYProgress, { stiffness: 90, damping: 24, restDelta: 0.001 });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 180, damping: 24, restDelta: 0.001 });
 
   return (
     <motion.div
       aria-hidden
-      style={{ scaleX: width, transformOrigin: "left" }}
-      className="fixed inset-x-0 top-0 z-[70] h-[2px] bg-gradient-to-r from-chrome-2 via-chrome-1 to-chrome-3"
+      style={{ scaleX, transformOrigin: "left" }}
+      className="fixed inset-x-0 top-0 z-[100] h-[3px] bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_14px_rgba(34,211,238,0.9)] pointer-events-none"
     />
   );
 }
