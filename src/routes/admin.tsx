@@ -201,12 +201,25 @@ function Login() {
     try {
       const auth = await getAuthClient();
       const { sendPasswordResetEmail } = await import("firebase/auth");
-      await sendPasswordResetEmail(auth, target, {
-        url: `${window.location.origin}/admin`,
-      });
-      toast.success("Reset link sent. Check that inbox (and spam).");
-    } catch {
-      toast.error("Could not send the reset link. Check the email and try again.");
+      try {
+        await sendPasswordResetEmail(auth, target, {
+          url: `${window.location.origin}/admin`,
+        });
+      } catch {
+        // Fallback without actionCodeSettings if origin domain is not whitelisted in Firebase Console
+        await sendPasswordResetEmail(auth, target);
+      }
+      toast.success("Reset link sent successfully. Check your inbox (and spam folder).");
+    } catch (err: any) {
+      console.error("Password reset error:", err);
+      const code = err?.code || "";
+      if (code === "auth/user-not-found") {
+        toast.error("No admin account found with this email address.");
+      } else if (code === "auth/invalid-email") {
+        toast.error("Invalid email address format. Please check and try again.");
+      } else {
+        toast.error(err?.message || "Could not send reset link. Check email and try again.");
+      }
     } finally {
       setResetting(false);
     }
