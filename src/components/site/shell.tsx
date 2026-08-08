@@ -65,7 +65,7 @@ export function PageHero({
   meta,
 }: {
   eyebrow: string;
-  title: string;
+  title: React.ReactNode;
   lead?: string;
   meta?: string[];
 }) {

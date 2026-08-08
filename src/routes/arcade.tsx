@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, SiteShell } from "@/components/site/shell";
 import { ArcadeStage } from "@/components/site/arcade";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { GlitchText } from "@/components/ui/glitch-text";
 
 const title = "Arcade — Signal Rush game & leaderboard | Chetan Prajapat";
 const description =
@@ -28,7 +29,7 @@ function ArcadePage() {
     <SiteShell>
       <PageHero
         eyebrow="Arcade"
-        title="Interactive Arena, Ranked."
+        title={<GlitchText text="Interactive Arena, Ranked." className="text-3xl sm:text-5xl md:text-6xl" />}
         lead="Name in, player ID out. Play Signal Rush, save your score, and watch the leaderboard sort everyone from 1st to 100th — certificates generated automatically."
         meta={["Name-only player IDs", "Live top-100 ranking", "Auto certificates for 1st, 2nd, 3rd & top 100"]}
       />
