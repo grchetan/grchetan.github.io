@@ -549,6 +549,17 @@ export function ArcadeStage() {
   const { data: config = defaultArcadeConfig } = useArcadeConfig();
   const qc = useQueryClient();
 
+  const activeContestParticipantsCount = useMemo(() => {
+    if (!config.contest) return 0;
+    const startAt = config.contest.startAt ?? 0;
+    const endAt = config.contest.endAt ?? Date.now();
+    const registrations = config.contest.registrations ?? [];
+    const playedPlayerIds = rows
+      .filter((r) => r.createdAt >= startAt && r.createdAt <= endAt)
+      .map((r) => r.playerId);
+    return new Set([...registrations, ...playedPlayerIds]).size;
+  }, [config.contest, rows]);
+
   const [remainingSec, setRemainingSec] = useState<number>(0);
 
   useEffect(() => {
@@ -790,10 +801,10 @@ export function ArcadeStage() {
                     </span>
                   ) : null}
 
-                  {config.contest?.active && (config.contest.registrations ?? []).length > 0 && (
+                  {config.contest?.active && activeContestParticipantsCount > 0 && (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 font-mono text-[0.68rem] font-bold text-emerald-300">
                       <Users className="size-3 text-emerald-400" />
-                      {(config.contest.registrations ?? []).length} {(config.contest.registrations ?? []).length === 1 ? "player" : "players"} registered
+                      {activeContestParticipantsCount} {activeContestParticipantsCount === 1 ? "player" : "players"} registered
                     </span>
                   )}
                 </div>
@@ -929,9 +940,9 @@ export function ArcadeStage() {
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-3 py-1.5 font-mono text-[0.68rem] font-bold text-emerald-400">
                   <Check className="size-3.5" /> Contest Scores Auto-Recorded
                 </span>
-                {config.contest?.active && (config.contest.registrations ?? []).length > 0 && (
+                {config.contest?.active && activeContestParticipantsCount > 0 && (
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/40 bg-indigo-500/15 px-3 py-1.5 font-mono text-[0.68rem] font-bold text-indigo-400">
-                    <Users className="size-3.5" /> {(config.contest.registrations ?? []).length} {(config.contest.registrations ?? []).length === 1 ? "player" : "players"} registered
+                    <Users className="size-3.5" /> {activeContestParticipantsCount} {activeContestParticipantsCount === 1 ? "player" : "players"} registered
                   </span>
                 )}
               </div>

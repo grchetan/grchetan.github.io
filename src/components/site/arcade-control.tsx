@@ -33,6 +33,17 @@ export function ArcadeControlManager() {
   const { data: leaderboard = [], refetch } = useLeaderboard();
   const { data: playersCodes } = usePlayersCodes();
 
+  const activeContestParticipantsCount = useMemo(() => {
+    if (!config.contest) return 0;
+    const startAt = config.contest.startAt ?? 0;
+    const endAt = config.contest.endAt ?? Date.now();
+    const registrations = config.contest.registrations ?? [];
+    const playedPlayerIds = leaderboard
+      .filter((r) => r.createdAt >= startAt && r.createdAt <= endAt)
+      .map((r) => r.playerId);
+    return new Set([...registrations, ...playedPlayerIds]).size;
+  }, [config.contest, leaderboard]);
+
   const [mode, setMode] = useState<ArcadeMode>(config.mode ?? "always_on");
   const [offlineMessage, setOfflineMessage] = useState(
     config.offlineMessage ?? "The Arcade has been temporarily closed by the administrator. Please check back later!"
@@ -392,11 +403,15 @@ export function ArcadeControlManager() {
       accuracy: r.accuracy,
     }));
 
+    const registrations = config.contest.registrations ?? [];
+    const playedPlayerIds = contestRows.map((r) => r.playerId);
+    const uniqueParticipants = Array.from(new Set([...registrations, ...playedPlayerIds]));
+
     const archiveEntry = {
       version: curVer,
       title: config.contest.title || `Contest ${curVer}`,
       endedAt: Date.now(),
-      totalRegistrations: (config.contest.registrations ?? []).length,
+      totalRegistrations: uniqueParticipants.length,
       winners,
     };
 
@@ -1091,7 +1106,7 @@ export function ArcadeControlManager() {
               })()}
             </div>
             <div className="font-mono text-xs text-ink-soft flex items-center gap-2">
-              <span>Registered Players: <span className="font-bold text-ink font-mono">{(config.contest?.registrations ?? []).length} players</span></span>
+              <span>Registered Players: <span className="font-bold text-ink font-mono">{activeContestParticipantsCount} {activeContestParticipantsCount === 1 ? "player" : "players"}</span></span>
               {(config.contest?.registrations ?? []).length > 0 && (
                 <button
                   type="button"
