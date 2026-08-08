@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 interface GlitchTextProps {
@@ -13,7 +14,7 @@ export function GlitchText({
   starCount = 45,
 }: GlitchTextProps) {
   return (
-    <div className="relative inline-flex w-full max-w-full items-center justify-center overflow-hidden rounded-2xl border border-purple-500/40 bg-gradient-to-b from-[#4B0082] via-[#3B0066] to-[#2B004A] px-4 py-6 sm:px-8 sm:py-10 shadow-2xl backdrop-blur-xl">
+    <div className="relative inline-flex w-full max-w-full items-center justify-center overflow-hidden rounded-2xl border border-purple-500/40 bg-gradient-to-b from-[#4B0082] via-[#3B0066] to-[#2B004A] px-4 py-5 sm:px-8 sm:py-7 shadow-2xl backdrop-blur-xl">
       {/* Background Starfield */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
         {Array.from({ length: starCount }).map((_, i) => (
@@ -31,17 +32,33 @@ export function GlitchText({
         ))}
       </div>
 
-      {/* Single-line Mobile-Responsive Glitch Heading */}
-      <div className="relative z-10 w-full max-w-full select-none text-center overflow-hidden">
-        <h1
-          className={cn(
-            "glitch-arcade-text relative inline-block whitespace-nowrap font-mono text-[clamp(0.95rem,3.8vw,4.2rem)] font-black uppercase tracking-tight text-white",
-            className
-          )}
-          data-text={text}
+      {/* Infinite Seamless Marquee Slider Container */}
+      <div className="relative z-10 w-full max-w-full select-none overflow-hidden py-1">
+        <motion.div
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            repeat: Infinity,
+            repeatType: "loop",
+            ease: "linear",
+            duration: 14,
+          }}
+          className="flex w-max items-center whitespace-nowrap"
         >
-          {text}
-        </h1>
+          {[1, 2, 3, 4].map((index) => (
+            <div key={index} className="flex items-center shrink-0 pr-8">
+              <h1
+                className={cn(
+                  "glitch-arcade-text relative inline-block font-mono text-[clamp(1.1rem,4vw,3.2rem)] font-black uppercase tracking-tight text-white",
+                  className
+                )}
+                data-text={text}
+              >
+                {text}
+              </h1>
+              <span className="ml-8 font-mono text-purple-400/70 opacity-80 text-lg">★</span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </div>
   );
