@@ -7,7 +7,7 @@
  */
 
 import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
 import { isProfane, sanitizeName } from "@/lib/profanity";
 
@@ -575,6 +575,82 @@ export function useLeaderboard() {
   }, [queryClient]);
 
   return result;
+}
+
+export type ScorePage = {
+  rows: ScoreRow[];
+  nextCursor: any; // QueryDocumentSnapshot
+};
+
+export async function fetchLeaderboardPage(
+  pageSize: number = 100,
+  pageParam: any = null
+): Promise<ScorePage> {
+  const localStore = readLocal();
+  const localRows = localStore.scores;
+
+  if (isFirebaseConfigured) {
+    try {
+      const db = await getDb();
+      const { collection, getDocs, query, orderBy, limit, startAfter } = await import("firebase/firestore");
+      
+      let q = query(collection(db, SCORES), orderBy("score", "desc"), limit(pageSize));
+      if (pageParam) {
+        q = query(collection(db, SCORES), orderBy("score", "desc"), startAfter(pageParam), limit(pageSize));
+      }
+      
+      const snap = await getDocs(q);
+      const lastVisible = snap.docs[snap.docs.length - 1] || null;
+      
+      const remoteRows: ScoreRow[] = snap.docs.map((d) => {
+        const raw = d.data() as Record<string, unknown>;
+        const ts = raw["createdAt"] as { toMillis?: () => number } | undefined;
+        return {
+          id: d.id,
+          playerId: (raw["playerId"] as string) || d.id,
+          name: sanitizeName((raw["name"] as string) || "Anonymous"),
+          handle: (raw["handle"] as string) || "player",
+          score: Number(raw["score"] ?? 0),
+          accuracy: Number(raw["accuracy"] ?? 0),
+          combo: Number(raw["combo"] ?? 0),
+          createdAt: ts?.toMillis?.() ?? Date.now(),
+        };
+      });
+
+      const merged = mergeRawScores(remoteRows, localRows);
+      
+      return {
+        rows: merged,
+        nextCursor: lastVisible,
+      };
+    } catch (err) {
+      console.error("[Firebase fetchLeaderboardPage Error]:", err);
+      setLastFirebaseError(err instanceof Error ? err.message : String(err));
+      throw err;
+    }
+  }
+
+  // Fallback to local mode
+  if (!pageParam) {
+    return {
+      rows: [...localRows].sort((a, b) => b.score - a.score || b.accuracy - a.accuracy || a.createdAt - b.createdAt),
+      nextCursor: null,
+    };
+  }
+  return {
+    rows: [],
+    nextCursor: null,
+  };
+}
+
+export function useInfiniteLeaderboard(pageSize: number = 100) {
+  return useInfiniteQuery({
+    queryKey: ["arcade", "leaderboard", "paginated", pageSize],
+    queryFn: ({ pageParam }) => fetchLeaderboardPage(pageSize, pageParam),
+    initialPageParam: null as any,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    retry: 2,
+  });
 }
 
 export function usePlayersCodes() {

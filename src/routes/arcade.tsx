@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, SiteShell } from "@/components/site/shell";
 import { ArcadeStage } from "@/components/site/arcade";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 const title = "Arcade — Signal Rush game & leaderboard | Chetan Prajapat";
 const description =
@@ -32,7 +33,9 @@ function ArcadePage() {
         meta={["Name-only player IDs", "Live top-100 ranking", "Auto certificates for 1st, 2nd, 3rd & top 100"]}
       />
 
-      <ArcadeStage />
+      <ErrorBoundary>
+        <ArcadeStage />
+      </ErrorBoundary>
     </SiteShell>
   );
 }

@@ -23,11 +23,14 @@ import {
   tierFor,
   useArcadeConfig,
   useLeaderboard,
+  useInfiniteLeaderboard,
   validateName,
   writeSessionPlayer,
   type Player,
   type RankedRow,
 } from "@/lib/arcade";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { SlowTimeoutLoader } from "@/components/ui/slow-timeout-loader";
 import coffeeCupSvg from "@/assets/coffee-cup.svg";
 import { cn } from "@/lib/utils";
 
@@ -493,9 +496,10 @@ function LeaderboardTable({
 
   if (!rows.length) {
     return (
-      <div className="rounded-3xl border border-dashed border-ink/15 bg-paper/50 p-10 text-center">
-        <p className="font-display text-2xl text-ink">No runs yet.</p>
-        <p className="mt-2 text-sm text-ink-soft">Be the first name on the board.</p>
+      <div className="rounded-[1.75rem] border border-dashed border-ink/15 bg-paper/50 p-12 text-center flex flex-col items-center justify-center">
+        <Gamepad2 className="size-8 text-ink/30 mb-3 animate-pulse" />
+        <p className="font-display text-xl text-ink">No scores yet — be the first!</p>
+        <p className="mt-2 text-xs text-ink-soft max-w-sm">Start a run above to submit your score and claim your place on the standings.</p>
       </div>
     );
   }
@@ -538,6 +542,52 @@ function LeaderboardTable({
 
 /* --------------------------------- stage ---------------------------------- */
 
+function LeaderboardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-[1.75rem] border border-ink/10 bg-paper-tint/30 backdrop-blur-xl animate-pulse">
+      {/* Header Skeleton */}
+      <div className="hidden grid-cols-[4rem_1fr_6rem_6rem_6rem_9rem] gap-3 border-b border-ink/10 px-5 py-3 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-ink-soft/40 md:grid">
+        <span>Rank</span>
+        <span>Player</span>
+        <span className="text-right">Score</span>
+        <span className="text-right">Accuracy</span>
+        <span className="text-right">Combo</span>
+        <span className="text-right">Certificate</span>
+      </div>
+      
+      {/* Rows Skeleton */}
+      <ul className="divide-y divide-ink/5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <li key={i} className="grid grid-cols-2 gap-3 px-5 py-4 items-center md:grid-cols-[4rem_1fr_6rem_6rem_6rem_9rem]">
+            {/* Rank */}
+            <div className="h-4 w-6 bg-ink/10 rounded" />
+            
+            {/* Player details */}
+            <div className="space-y-1.5">
+              <div className="h-4 w-32 bg-ink/10 rounded" />
+              <div className="h-3 w-20 bg-ink/5 rounded" />
+            </div>
+            
+            {/* Score */}
+            <div className="h-4 w-16 bg-ink/10 rounded ml-auto hidden md:block" />
+            
+            {/* Accuracy */}
+            <div className="h-4 w-12 bg-ink/5 rounded ml-auto hidden md:block" />
+            
+            {/* Combo */}
+            <div className="h-4 w-10 bg-ink/5 rounded ml-auto hidden md:block" />
+            
+            {/* Certificate */}
+            <div className="h-8 w-24 bg-ink/10 rounded-lg ml-auto hidden md:block" />
+          </li>
+        ))}
+      </ul>
+      
+      <SlowTimeoutLoader delayMs={5000} />
+    </div>
+  );
+}
+
 export function ArcadeStage() {
   const [player, setPlayer] = useState<Player | null>(null);
 
@@ -546,7 +596,20 @@ export function ArcadeStage() {
   }, []);
 
   const [last, setLast] = useState<RunResult | null>(null);
-  const { data: rows = [], isLoading } = useLeaderboard();
+  const {
+    data: infiniteData,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteLeaderboard(100);
+
+  const rows = useMemo(() => {
+    return infiniteData?.pages.flatMap((page) => page.rows) ?? [];
+  }, [infiniteData]);
+
   const { data: config = defaultArcadeConfig } = useArcadeConfig();
   const qc = useQueryClient();
 
@@ -1163,7 +1226,22 @@ export function ArcadeStage() {
           </div>
         </div>
         {isLoading ? (
-          <p className="caption">Loading the board…</p>
+          <LeaderboardSkeleton />
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center p-8 text-center border border-rose-500/20 bg-rose-500/5 rounded-[1.75rem]">
+            <AlertTriangle className="size-8 text-rose-500 mb-2 animate-bounce" />
+            <h3 className="font-mono text-sm font-semibold text-ink">Could not load standings</h3>
+            <p className="text-xs text-ink-soft mt-1 max-w-sm font-mono">
+              The leaderboard server is taking too long to respond. Please check your connectivity.
+            </p>
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-1.5 font-mono text-[0.68rem] uppercase font-semibold text-rose-600 hover:bg-rose-500/20 transition"
+            >
+              Retry loading
+            </button>
+          </div>
         ) : (
           <>
             <LeaderboardTable
@@ -1173,6 +1251,25 @@ export function ArcadeStage() {
               boardTab={boardTab}
               config={config}
             />
+
+            {hasNextPage && (
+              <div className="mt-6 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => void fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="press-btn text-[0.68rem] uppercase font-mono tracking-wider font-semibold disabled:opacity-50 inline-flex items-center gap-1.5"
+                >
+                  {isFetchingNextPage ? (
+                    <>
+                      <RefreshCw className="size-3 animate-spin" /> Loading more...
+                    </>
+                  ) : (
+                    "Load More Standings"
+                  )}
+                </button>
+              </div>
+            )}
 
             {bannedPlayersNames.length > 0 ? (
               <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 animate-fade-in">

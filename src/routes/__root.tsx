@@ -6,6 +6,7 @@ import { Toaster } from "../components/ui/sonner";
 import { NotFoundScape, ServerErrorScape } from "../components/site/error-pages";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGoogleAnalytics, trackPageView } from "../lib/site-analytics";
+import { useNetworkStatus } from "../hooks/use-network-status";
 
 function NotFoundComponent() {
   return <NotFoundScape />;
@@ -43,6 +44,7 @@ import { MotionPreferenceProvider } from "../hooks/use-motion-preference";
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isOnline = useNetworkStatus();
 
   useEffect(() => {
     initGoogleAnalytics();
@@ -75,6 +77,15 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <MotionPreferenceProvider>
+        {!isOnline && (
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500 px-4 py-2 text-xs font-semibold tracking-wide font-mono shadow-xl text-white backdrop-blur-md animate-bounce">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-white" />
+            </span>
+            You are offline. Showing cached data.
+          </div>
+        )}
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <Toaster />

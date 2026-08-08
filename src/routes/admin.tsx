@@ -29,6 +29,7 @@ import { CredentialsManager } from "@/components/site/credentials-editor";
 import { BlogManager } from "@/components/site/blog-editor";
 import { ArcadeControlManager } from "@/components/site/arcade-control";
 import { useTheme } from "@/components/site/chrome";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { allEntries, type Entry } from "@/data/catalog";
 import { getAuthClient, getDb, isFirebaseConfigured, uploadImage, uploadImageWithProgress, type UploadProgressInfo } from "@/lib/firebase";
 import { fetchDownloads, type DownloadEvent, type Message } from "@/lib/content";
@@ -1948,13 +1949,41 @@ function AdminPage() {
 
 
           <div className="mt-6 sm:mt-8">
-            {tab === "content" ? <ContentManager /> : null}
-            {tab === "arcade" ? <ArcadeControlManager /> : null}
-            {tab === "blog" ? <BlogManager /> : null}
-            {tab === "credentials" ? <CredentialsManager /> : null}
-            {tab === "resume" ? <ResumeManager /> : null}
-            {tab === "inbox" ? <InboxPanel /> : null}
-            {tab === "traffic" ? <TrafficPanel /> : null}
+            {tab === "content" ? (
+              <ErrorBoundary>
+                <ContentManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "arcade" ? (
+              <ErrorBoundary>
+                <ArcadeControlManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "blog" ? (
+              <ErrorBoundary>
+                <BlogManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "credentials" ? (
+              <ErrorBoundary>
+                <CredentialsManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "resume" ? (
+              <ErrorBoundary>
+                <ResumeManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "inbox" ? (
+              <ErrorBoundary>
+                <InboxPanel />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "traffic" ? (
+              <ErrorBoundary>
+                <TrafficPanel />
+              </ErrorBoundary>
+            ) : null}
           </div>
         </main>
       </div>
