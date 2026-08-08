@@ -27,7 +27,7 @@ function ArcadePage() {
     <SiteShell>
       <PageHero
         eyebrow="Arcade"
-        title="Fun activity, ranked."
+        title="Interactive Arena, Ranked."
         lead="Name in, player ID out. Play Signal Rush, save your score, and watch the leaderboard sort everyone from 1st to 100th — certificates generated automatically."
         meta={["Name-only player IDs", "Live top-100 ranking", "Auto certificates for 1st, 2nd, 3rd & top 100"]}
       />

@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Gamepad2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useRef } from "react";
 import portrait from "@/assets/portrait-main.jpg";
 import inkTexture from "@/assets/texture-ink.jpg";
@@ -103,6 +104,11 @@ export function Hero() {
                   <a href="#projects" className="press-btn-outline">
                     Selected work <ArrowDownRight className="size-3.5" strokeWidth={1.5} />
                   </a>
+                </Magnetic>
+                <Magnetic strength={10}>
+                  <Link to="/arcade" className="press-btn-outline border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 flex items-center gap-2">
+                    Play Arcade <Gamepad2 className="size-3.5 animate-pulse text-rose-500 dark:text-rose-400" strokeWidth={1.5} />
+                  </Link>
                 </Magnetic>
               </div>
             </motion.div>
