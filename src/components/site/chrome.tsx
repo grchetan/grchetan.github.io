@@ -491,7 +491,7 @@ export function FloatingActions() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 900);
+    const onScroll = () => setShow(window.scrollY > 400);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -501,15 +501,16 @@ export function FloatingActions() {
     <AnimatePresence>
       {show ? (
         <motion.button
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 12, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 12, scale: 0.8 }}
           transition={{ duration: 0.35 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className="plate fixed bottom-6 right-6 z-[66] grid size-12 place-items-center rounded-full text-ink transition-transform hover:scale-110"
+          title="Back to top"
+          className="plate fixed bottom-6 right-6 z-[80] grid size-12 place-items-center rounded-full border border-ink/15 bg-paper/90 text-ink shadow-lg backdrop-blur-md transition-transform hover:scale-110 cursor-pointer"
         >
-          <ArrowUp className="size-4" strokeWidth={1.5} />
+          <ArrowUp className="size-5" strokeWidth={2} />
         </motion.button>
       ) : null}
     </AnimatePresence>
