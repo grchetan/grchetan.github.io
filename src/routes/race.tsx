@@ -5,6 +5,7 @@ import { PageHero, SiteShell } from "@/components/site/shell";
 import { RaceGame } from "@/components/site/race-game";
 import { RaceLobby, RaceResults, type LobbyView } from "@/components/site/race-lobby";
 import { createPlayer, type Player } from "@/lib/arcade";
+import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Sparkles } from "lucide-react";
 import {
   createRaceRoom,
   finishRace,
@@ -166,6 +167,43 @@ function RacePage() {
     setView("menu");
   };
 
+  const steps = [
+    {
+      num: "01",
+      title: "Enter the Pits",
+      desc: "Pick a display name. We'll automatically generate a secure local player ID for you.",
+      icon: UserPlus,
+      color: "from-cyan-500 to-blue-500",
+      shadow: "shadow-cyan-500/10",
+    },
+    {
+      num: "02",
+      title: "Room Lobby",
+      desc: "Create a new private grid or enter a 4-letter room code shared by a friend to join them.",
+      icon: LinkIcon,
+      color: "from-blue-500 to-indigo-500",
+      shadow: "shadow-blue-500/10",
+    },
+    {
+      num: "03",
+      title: "Steer to Win",
+      desc: "Use WASD or Arrow Keys to steer your car. Mobile grids get automatic touch-button layout.",
+      icon: Keyboard,
+      color: "from-indigo-500 to-purple-500",
+      shadow: "shadow-indigo-500/10",
+    },
+    {
+      num: "04",
+      title: "Claim Records",
+      desc: "Complete the laps, set the fastest lap record, and climb the all-time live leaderboard.",
+      icon: Trophy,
+      color: "from-purple-500 to-rose-500",
+      shadow: "shadow-purple-500/10",
+    },
+  ];
+
+  const isRacing = view === "room" && room && room.phase === "racing";
+
   return (
     <SiteShell>
       <PageHero
@@ -225,6 +263,52 @@ function RacePage() {
               onCopyCode={handleCopyCode}
               onView={setView}
             />
+          )}
+
+          {/* How to Play Section */}
+          {!isRacing && (
+            <div className="mt-24 border-t border-ink/10 pt-16">
+              <div className="text-center max-w-xl mx-auto">
+                <span className="label text-cyan-400">Rules of engagement</span>
+                <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                  How to Play <span className="chrome-text">Chrome Circuit</span>
+                </h2>
+                <p className="mt-3 text-sm text-ink-soft leading-relaxed">
+                  Follow these quick steps to get behind the wheel, connect with friends, and start setting fast lap records.
+                </p>
+              </div>
+
+              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {steps.map((step, i) => (
+                  <div
+                    key={i}
+                    className="group relative rounded-3xl border border-ink/10 bg-paper-tint/30 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:bg-paper-tint/50"
+                  >
+                    {/* Hover Glow Effect */}
+                    <div className={`absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-10 bg-gradient-to-br ${step.color} blur-[12px] -z-10`} />
+
+                    <div className="flex items-center justify-between">
+                      {/* Step Number */}
+                      <span className={`font-mono text-xs font-black tracking-widest bg-gradient-to-r ${step.color} bg-clip-text text-transparent`}>
+                        STEP {step.num}
+                      </span>
+                      {/* Icon */}
+                      <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${step.color} p-2 text-white shadow-lg ${step.shadow} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                        <step.icon className="size-full" strokeWidth={1.5} />
+                      </div>
+                    </div>
+
+                    <h3 className="mt-6 font-display text-lg font-bold text-ink transition-colors duration-300 group-hover:text-cyan-400">
+                      {step.title}
+                    </h3>
+                    
+                    <p className="mt-2 text-xs leading-relaxed text-ink-soft">
+                      {step.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </section>
