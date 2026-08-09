@@ -17,18 +17,24 @@ const routeFor: Record<Entry["kind"], string> = {
   freelance: "/freelance/$slug",
 };
 
+/** True on touch/mobile devices — used to select animation strategy */
+const isMobileDevice =
+  typeof window !== "undefined" &&
+  (window.innerWidth < 768 || "ontouchstart" in window || navigator.maxTouchPoints > 0);
+
 export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }) {
   const { reduced } = useMotionPreference();
   const cover = entry.images[0] ?? fallbackImages[index % fallbackImages.length]!;
+  const staggerDelay = reduced ? 0 : (index % 3) * 0.1;
 
   return (
     <motion.article
-      initial={reduced ? false : { opacity: 0, y: 36, scale: 0.97 }}
+      initial={reduced ? false : { opacity: 0, y: 30, scale: 0.97 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-50px", amount: 0.1 }}
+      viewport={{ once: true, margin: "-40px", amount: 0.08 }}
       transition={{
-        duration: reduced ? 0 : 0.75,
-        delay: reduced ? 0 : (index % 3) * 0.11,
+        duration: reduced ? 0 : 0.7,
+        delay: staggerDelay,
         ease: [0.22, 1, 0.36, 1],
       }}
       className="group flex h-full flex-col rounded-[var(--radius-lg)]"
@@ -46,15 +52,21 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           className="h-full rounded-[var(--radius-lg)]"
           contentClassName="plate flex h-full flex-col overflow-hidden"
         >
-          {/* Image with smooth reveal */}
+          {/* Image reveal — clipPath wipe on desktop, simple fade+slide on mobile */}
           <motion.div
             className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30"
-            initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
-            whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
-            viewport={{ once: true, margin: "-40px" }}
+            initial={reduced ? false : isMobileDevice
+              ? { opacity: 0, y: 20 }
+              : { clipPath: "inset(100% 0% 0% 0%)" }
+            }
+            whileInView={isMobileDevice
+              ? { opacity: 1, y: 0 }
+              : { clipPath: "inset(0% 0% 0% 0%)" }
+            }
+            viewport={{ once: true, margin: "-30px" }}
             transition={{
-              duration: reduced ? 0 : 0.85,
-              delay: reduced ? 0 : (index % 3) * 0.11 + 0.15,
+              duration: reduced ? 0 : isMobileDevice ? 0.55 : 0.85,
+              delay: reduced ? 0 : staggerDelay + 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -79,12 +91,12 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
               {entry.tech.slice(0, 4).map((t, ti) => (
                 <motion.span
                   key={t}
-                  initial={reduced ? false : { opacity: 0, scale: 0.85 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={reduced ? false : { opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: reduced ? 0 : 0.45,
-                    delay: reduced ? 0 : (index % 3) * 0.11 + 0.35 + ti * 0.06,
+                    duration: reduced ? 0 : 0.4,
+                    delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
@@ -231,41 +243,34 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
         return (
           <motion.article
             key={`${entry.kind}-${entry.slug}`}
-            initial={reduced ? false : { opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-60px", amount: 0.08 }}
-            transition={{ duration: reduced ? 0 : 0.4, ease: "easeOut" }}
+            initial={reduced ? false : { opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px", amount: 0.06 }}
+            transition={{ duration: reduced ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
             className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
           >
-            {/* Image plate — enters with depth + slight rotation snap */}
+            {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : {
-                  opacity: 0,
-                  y: 50,
-                  rotate: flip ? 5 : -5,
-                  scale: 0.92,
-                  filter: "blur(8px)",
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                  rotate: flip ? -2.2 : 2.2,
-                  scale: 1,
-                  filter: "blur(0px)",
-                }}
-                viewport={{ once: true, margin: "-60px" }}
+                initial={reduced ? false : isMobileDevice
+                  ? { opacity: 0, y: 32, scale: 0.97 }
+                  : { opacity: 0, y: 50, rotate: flip ? 5 : -5, scale: 0.92, filter: "blur(8px)" }
+                }
+                whileInView={isMobileDevice
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1, filter: "blur(0px)" }
+                }
+                viewport={{ once: true, margin: "-40px" }}
                 transition={{
-                  duration: reduced ? 0 : 1.1,
+                  duration: reduced ? 0 : isMobileDevice ? 0.65 : 1.1,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="will-change-transform"
-                {...(reduced ? {} : {
+                {...(reduced || isMobileDevice ? {} : {
                   whileHover: {
                     rotate: 0,
                     scale: 1.02,
                     y: -8,
-                    filter: "blur(0px)",
                     transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
                   }
                 })}
@@ -283,15 +288,21 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     className="overflow-hidden rounded-[var(--radius-lg)]"
                     contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
                   >
-                    {/* Inner image wipe reveal */}
+                    {/* Image: wipe reveal on desktop, fade+slide on mobile */}
                     <motion.div
                       className="overflow-hidden rounded-[calc(var(--radius-lg)-0.35rem)]"
-                      initial={reduced ? false : { clipPath: "inset(0% 100% 0% 0%)" }}
-                      whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
-                      viewport={{ once: true, margin: "-60px" }}
+                      initial={reduced ? false : isMobileDevice
+                        ? { opacity: 0, y: 16 }
+                        : { clipPath: "inset(0% 100% 0% 0%)" }
+                      }
+                      whileInView={isMobileDevice
+                        ? { opacity: 1, y: 0 }
+                        : { clipPath: "inset(0% 0% 0% 0%)" }
+                      }
+                      viewport={{ once: true, margin: "-40px" }}
                       transition={{
-                        duration: reduced ? 0 : 1.0,
-                        delay: 0.15,
+                        duration: reduced ? 0 : isMobileDevice ? 0.55 : 1.0,
+                        delay: reduced ? 0 : 0.1,
                         ease: [0.22, 1, 0.36, 1],
                       }}
                     >
@@ -307,15 +318,15 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
               </motion.div>
             </div>
 
-            {/* Text panel — slides in from opposite side with stagger */}
+            {/* Text panel — simple slide-in (works on both mobile & desktop) */}
             <motion.div
               className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
-              initial={reduced ? false : { opacity: 0, x: flip ? -28 : 28 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
+              initial={reduced ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
               transition={{
-                duration: reduced ? 0 : 0.85,
-                delay: 0.2,
+                duration: reduced ? 0 : 0.7,
+                delay: 0.15,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
