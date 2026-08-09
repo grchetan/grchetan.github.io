@@ -82,11 +82,17 @@ export function SmoothScroll() {
 /* ---------------- Loading screen: chrome image over solid void ---------------- */
 
 export function LoadingScreen() {
-  const [done, setDone] = useState(false);
+  const [done, setDone] = useState(() => {
+    if (typeof window !== "undefined") {
+      return Boolean(sessionStorage.getItem("loaderShown"));
+    }
+    return false;
+  });
   const [imageLoaded, setImageLoaded] = useState(false);
   const { reduced } = useMotionPreference();
 
   useEffect(() => {
+    if (done) return;
     const img = new Image();
     img.src = loaderChrome;
     img.onload = () => setImageLoaded(true);
@@ -95,12 +101,16 @@ export function LoadingScreen() {
       img.onload = null;
       img.onerror = null;
     };
-  }, []);
+  }, [done]);
 
   useEffect(() => {
-    const t = setTimeout(() => setDone(true), reduced ? 900 : 1900);
+    if (done) return;
+    const t = setTimeout(() => {
+      setDone(true);
+      sessionStorage.setItem("loaderShown", "true");
+    }, reduced ? 150 : 300);
     return () => clearTimeout(t);
-  }, [reduced]);
+  }, [reduced, done]);
 
   // Prevent background scrolling while the loading screen is active
   useEffect(() => {
