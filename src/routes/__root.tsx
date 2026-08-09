@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext, useRouter, useRouterState } from "@tanstack/react-router";
+import { Outlet, ScrollRestoration, createRootRouteWithContext, useRouter, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { Toaster } from "../components/ui/sonner";
@@ -95,6 +95,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollRestoration />
       <MotionPreferenceProvider>
         {!isOnline && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500/90 dark:bg-rose-600/90 px-4 py-2 text-xs font-semibold tracking-wide font-mono shadow-2xl text-white backdrop-blur-md animate-bounce">

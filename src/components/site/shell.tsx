@@ -19,10 +19,6 @@ function SiteShellInner({ children }: { children: ReactNode }) {
     void trackVisit(path);
   }, [path]);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0 });
-  }, [path]);
-
   return (
     <div className="relative min-h-screen">
       <VersionWatcher />
