@@ -86,6 +86,10 @@ function RacePage() {
       setPlayer(p);
       toast.success(`Player ID created: ${p.handle}`);
       return p;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not create player ID";
+      toast.error(msg);
+      throw err;
     } finally {
       setIsCreatingPlayer(false);
     }
