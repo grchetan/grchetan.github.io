@@ -23,13 +23,16 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
 
   return (
     <motion.article
-      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: reduced ? 0 : 0.65, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      initial={reduced ? false : { opacity: 0, y: 36, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px", amount: 0.1 }}
+      transition={{
+        duration: reduced ? 0 : 0.75,
+        delay: reduced ? 0 : (index % 3) * 0.11,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       className="group flex h-full flex-col rounded-[var(--radius-lg)]"
     >
-
       <Link
         to={routeFor[entry.kind]}
         params={{ slug: entry.slug }}
@@ -43,39 +46,59 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           className="h-full rounded-[var(--radius-lg)]"
           contentClassName="plate flex h-full flex-col overflow-hidden"
         >
-        <div className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30">
-          <ImageWithSkeleton
-            src={cover}
-            alt={`${entry.title} preview`}
-            className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.03]"
-            skeletonHeight="min-h-[220px]"
-          />
-        </div>
+          {/* Image with smooth reveal */}
+          <motion.div
+            className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30"
+            initial={reduced ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
+            whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{
+              duration: reduced ? 0 : 0.85,
+              delay: reduced ? 0 : (index % 3) * 0.11 + 0.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            <ImageWithSkeleton
+              src={cover}
+              alt={`${entry.title} preview`}
+              className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              skeletonHeight="min-h-[220px]"
+            />
+          </motion.div>
 
-        <div className="flex flex-1 flex-col p-5 sm:p-6">
-          <div className="flex items-center justify-between gap-3">
-            <span className="label">{entry.tag}</span>
-            <span className="caption">{entry.year}</span>
+          <div className="flex flex-1 flex-col p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+              <span className="label">{entry.tag}</span>
+              <span className="caption">{entry.year}</span>
+            </div>
+            <h3 className="mt-3 text-[1.4rem] leading-tight text-ink">{entry.title}</h3>
+            <p className="mt-3 flex-1 text-[0.92rem] leading-[1.75] text-ink-soft">{entry.summary}</p>
+
+            {/* Tech tags — staggered reveal */}
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {entry.tech.slice(0, 4).map((t, ti) => (
+                <motion.span
+                  key={t}
+                  initial={reduced ? false : { opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: reduced ? 0 : 0.45,
+                    delay: reduced ? 0 : (index % 3) * 0.11 + 0.35 + ti * 0.06,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                >
+                  {t}
+                </motion.span>
+              ))}
+            </div>
+
+            <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
+              Read case
+              <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" strokeWidth={1.5} />
+            </span>
           </div>
-          <h3 className="mt-3 text-[1.4rem] leading-tight text-ink">{entry.title}</h3>
-          <p className="mt-3 flex-1 text-[0.92rem] leading-[1.75] text-ink-soft">{entry.summary}</p>
-
-          <div className="mt-5 flex flex-wrap gap-1.5">
-            {entry.tech.slice(0, 4).map((t) => (
-              <span
-                key={t}
-                className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
-              >
-                {t}
-              </span>
-            ))}
-          </div>
-
-          <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
-            Read case
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
-          </span>
-        </div>
         </AnimatedBorderTrail>
       </Link>
 
@@ -208,23 +231,45 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
         return (
           <motion.article
             key={`${entry.kind}-${entry.slug}`}
-            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-70px" }}
-            transition={{ duration: reduced ? 0 : 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial={reduced ? false : { opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, margin: "-60px", amount: 0.08 }}
+            transition={{ duration: reduced ? 0 : 0.4, ease: "easeOut" }}
             className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
           >
+            {/* Image plate — enters with depth + slight rotation snap */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? { opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 } : { opacity: 0, y: 40, rotate: flip ? 4.5 : -4.5, scale: 0.94 }}
-                whileInView={{ opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 }}
-                viewport={{ once: true, margin: "-70px" }}
-                transition={{ duration: reduced ? 0 : 1, ease: [0.16, 1, 0.3, 1] }}
+                initial={reduced ? false : {
+                  opacity: 0,
+                  y: 50,
+                  rotate: flip ? 5 : -5,
+                  scale: 0.92,
+                  filter: "blur(8px)",
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  rotate: flip ? -2.2 : 2.2,
+                  scale: 1,
+                  filter: "blur(0px)",
+                }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{
+                  duration: reduced ? 0 : 1.1,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 className="will-change-transform"
-                {...(reduced ? {} : { whileHover: { rotate: 0, scale: 1.015, y: -6 } })}
+                {...(reduced ? {} : {
+                  whileHover: {
+                    rotate: 0,
+                    scale: 1.02,
+                    y: -8,
+                    filter: "blur(0px)",
+                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                  }
+                })}
               >
-
-
                 <Link
                   to={routeFor[entry.kind]}
                   params={{ slug: entry.slug }}
@@ -238,20 +283,42 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     className="overflow-hidden rounded-[var(--radius-lg)]"
                     contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
                   >
-                    <ImageWithSkeleton
-                      src={cover}
-                      alt={`${entry.title} preview`}
-                      className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-                      skeletonHeight="min-h-[300px]"
-                    />
+                    {/* Inner image wipe reveal */}
+                    <motion.div
+                      className="overflow-hidden rounded-[calc(var(--radius-lg)-0.35rem)]"
+                      initial={reduced ? false : { clipPath: "inset(0% 100% 0% 0%)" }}
+                      whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+                      viewport={{ once: true, margin: "-60px" }}
+                      transition={{
+                        duration: reduced ? 0 : 1.0,
+                        delay: 0.15,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      <ImageWithSkeleton
+                        src={cover}
+                        alt={`${entry.title} preview`}
+                        className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        skeletonHeight="min-h-[300px]"
+                      />
+                    </motion.div>
                   </AnimatedBorderTrail>
                 </Link>
               </motion.div>
             </div>
 
-
-
-            <div className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}>
+            {/* Text panel — slides in from opposite side with stagger */}
+            <motion.div
+              className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
+              initial={reduced ? false : { opacity: 0, x: flip ? -28 : 28 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                duration: reduced ? 0 : 0.85,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <span className="label">{entry.tag}</span>
                 <span className="caption">{entry.year}</span>
@@ -281,7 +348,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                 </ShinyButton>
                 <EntryLinks entry={entry} />
               </div>
-            </div>
+            </motion.div>
           </motion.article>
         );
       })}
