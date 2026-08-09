@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
 import { ArrowUpRight, Quote } from 'lucide-react';
-import plateMobile from '@/assets/plate-mobile.jpg';
 import inkTexture from '@/assets/texture-ink.jpg';
 import {
   Counter,
@@ -134,8 +133,8 @@ export function MobileAppsSection() {
 
         <div className="lg:col-span-7 lg:pl-8 lg:pt-16">
           <Plate
-            src={plateMobile}
-            alt="Mobile application screens printed as paper plates"
+            src={inkTexture}
+            alt="Mobile application screens"
             caption="Screens, trimmed and laid out"
             figure="Pl. 05"
             tilt={-1.4}

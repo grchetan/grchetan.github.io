@@ -1,12 +1,5 @@
-import plate01 from "@/assets/plate-01.jpg";
-import plate02 from "@/assets/plate-02.jpg";
-import plateMobile from "@/assets/plate-mobile.jpg";
 import projectGeneric from "@/assets/project-generic.jpg";
-import mobileApp from "@/assets/mobile-app.jpg";
-import shotApps from "@/assets/shot-apps.jpg";
-import shotCommerce from "@/assets/shot-commerce.jpg";
-import shotDashboard from "@/assets/shot-dashboard.jpg";
-import shotFood from "@/assets/shot-food.jpg";
+
 
 export type Entry = {
   slug: string;
@@ -31,7 +24,7 @@ export type Entry = {
   featured?: boolean | undefined;
 };
 
-export const fallbackImages = [shotDashboard, plate01, plate02, shotCommerce, projectGeneric];
+export const fallbackImages: string[] = [projectGeneric];
 
 /* ---------------- personal / product projects ---------------- */
 
@@ -54,7 +47,7 @@ export const projectEntries: Entry[] = [
     result: "Quoting time dropped from days to minutes and every project now runs on a shared, visible timeline.",
     tech: ["React", "TypeScript", "Express.js", "Supabase", "Stripe", "Tailwind CSS"],
     features: ["Package builder", "Guided project brief", "Client portal", "Milestone tracking", "Invoice generation"],
-    images: [shotDashboard, plate01],
+    images: [],
     featured: true,
   },
   {
@@ -73,7 +66,7 @@ export const projectEntries: Entry[] = [
     result: "Course completion visibility went from zero to per-lesson, and admin time on tracking fell dramatically.",
     tech: ["Next.js", "MongoDB", "JWT", "Tailwind CSS"],
     features: ["Role-based access", "Video lessons", "Quiz engine", "Progress analytics", "Certificates"],
-    images: [plate01, shotDashboard],
+    images: [],
     featured: true,
   },
   {
@@ -91,7 +84,7 @@ export const projectEntries: Entry[] = [
     result: "The owner now runs sales and stock changes alone, with no code deploys.",
     tech: ["Next.js", "Express.js", "MySQL", "REST API"],
     features: ["Faceted search", "Cart & checkout", "Coupon engine", "Inventory admin", "Order history"],
-    images: [shotCommerce, plate02],
+    images: [],
     featured: true,
   },
   {
@@ -107,7 +100,7 @@ export const projectEntries: Entry[] = [
     solution: "A widget contract plus table primitives, keyboard navigation and token-driven theming.",
     tech: ["React", "TypeScript", "Recharts", "Tailwind CSS"],
     features: ["Composable widgets", "Data tables", "URL filter state", "Theme tokens", "Keyboard nav"],
-    images: [shotDashboard, projectGeneric],
+    images: [],
   },
   {
     slug: "password-manager",
@@ -122,7 +115,7 @@ export const projectEntries: Entry[] = [
     solution: "AES encryption with a derived key, a strong generator, tag-based search and automatic session lock.",
     tech: ["React", "Node.js", "MongoDB", "Web Crypto"],
     features: ["AES encryption", "Password generator", "Tags & search", "Session lock"],
-    images: [plate02, projectGeneric],
+    images: [],
   },
   {
     slug: "task-management-app",
@@ -137,7 +130,7 @@ export const projectEntries: Entry[] = [
     solution: "Boards, lists and cards with realtime sync, labels, assignees and an audit trail.",
     tech: ["React", "Node.js", "MongoDB", "Socket.IO"],
     features: ["Kanban board", "Realtime sync", "Labels & filters", "Activity log"],
-    images: [projectGeneric, shotDashboard],
+    images: [],
   },
   {
     slug: "authentication-system",
@@ -152,7 +145,7 @@ export const projectEntries: Entry[] = [
     solution: "One audited service with rotation, guards, lockouts and transactional email.",
     tech: ["Express.js", "JWT", "MongoDB", "Nodemailer"],
     features: ["Refresh rotation", "Email OTP", "Role guards", "Rate limiting", "Password reset"],
-    images: [plate01, projectGeneric],
+    images: [],
   },
   {
     slug: "expense-tracker",
@@ -167,7 +160,7 @@ export const projectEntries: Entry[] = [
     solution: "Envelope budgets with live alerts, category insights and instant offline entry.",
     tech: ["React", "Supabase", "Recharts"],
     features: ["Budget envelopes", "Alerts", "Category insights", "CSV export", "Offline cache"],
-    images: [shotDashboard, plate02],
+    images: [],
   },
 ];
 
@@ -190,7 +183,7 @@ export const appEntries: Entry[] = [
     result: "Zero lost writes on airplane mode and reminder delivery became reliable.",
     tech: ["React Native", "Expo", "SQLite", "Notifications API"],
     features: ["Offline-first sync", "Smart reminders", "Streaks", "Home-screen widget", "Dark mode"],
-    images: [shotApps, plateMobile],
+    images: [],
     featured: true,
   },
   {
@@ -208,7 +201,7 @@ export const appEntries: Entry[] = [
     result: "Median logging time fell to about three seconds, so entries actually get made.",
     tech: ["React Native", "Firebase", "Firestore", "Cloud Storage"],
     features: ["Quick-add sheet", "Budget envelopes", "Receipt capture", "Insight cards", "Cloud sync"],
-    images: [mobileApp, shotApps],
+    images: [],
     featured: true,
   },
   {
@@ -224,7 +217,7 @@ export const appEntries: Entry[] = [
     solution: "Per-exercise history with overload charts, auto rest timers and reusable plan templates.",
     tech: ["React Native", "Supabase", "Victory Charts"],
     features: ["Set logging keypad", "Overload charts", "Rest timers", "Plan templates", "Body metrics"],
-    images: [plateMobile, shotApps],
+    images: [],
     featured: true,
   },
   {
@@ -240,7 +233,7 @@ export const appEntries: Entry[] = [
     solution: "One screen, cached API responses and CSS-driven condition animations.",
     tech: ["JavaScript", "REST API", "CSS3"],
     features: ["Geolocation", "Hourly strip", "7-day forecast", "Unit toggle", "Animated states"],
-    images: [projectGeneric, shotApps],
+    images: [],
   },
   {
     slug: "movie-discovery-app",
@@ -248,14 +241,14 @@ export const appEntries: Entry[] = [
     kind: "app",
     tag: "Mini App",
     year: "2023",
-    summary: "Discovery app over a public movie API with search, genres, trailers and a watchlist.",
+    summary: "Movie discovery app over a public movie API with search, genres, trailers and a watchlist.",
     about:
       "A browsing app with debounced search, genre filters, infinite scroll and a persisted watchlist, built to practise clean data-fetching patterns.",
     problem: "Browsing catalogues on slow connections meant constant loading spinners.",
     solution: "Debounced queries, cached pages and skeletons that keep layout stable.",
     tech: ["React", "REST API", "Tailwind CSS"],
     features: ["Debounced search", "Genre filters", "Infinite scroll", "Trailer modal", "Watchlist"],
-    images: [shotApps, projectGeneric],
+    images: [],
   },
   {
     slug: "focus-clock",
@@ -270,7 +263,7 @@ export const appEntries: Entry[] = [
     solution: "One screen with themes, keyboard shortcuts and fullscreen ambient mode.",
     tech: ["JavaScript", "CSS3", "LocalStorage"],
     features: ["Multiple timezones", "Pomodoro stopwatch", "Themes", "Fullscreen mode"],
-    images: [projectGeneric, plate02],
+    images: [],
   },
 ];
 
@@ -293,7 +286,7 @@ export const freelanceEntries: Entry[] = [
     result: "Order errors dropped sharply and average order value rose about 22% in the first two months.",
     tech: ["Next.js", "Node.js", "MongoDB", "Tailwind CSS"],
     features: ["Live menu management", "Structured cart", "Order console", "WhatsApp handoff"],
-    images: [shotFood, plate01],
+    images: [],
     featured: true,
   },
   {
@@ -312,7 +305,7 @@ export const freelanceEntries: Entry[] = [
     result: "Enquiry quality improved and the studio now shortlists projects before meeting clients.",
     tech: ["React", "Firebase", "Tailwind CSS", "SEO"],
     features: ["Project gallery", "Room-type filter", "Qualified enquiry form", "Local SEO"],
-    images: [plate01, shotCommerce],
+    images: [],
     featured: true,
   },
   {
@@ -330,7 +323,7 @@ export const freelanceEntries: Entry[] = [
     result: "Repeat phone questions dropped noticeably and admissions enquiries arrived pre-filled.",
     tech: ["Next.js", "Firebase", "Tailwind CSS"],
     features: ["Batch listings", "Fee tables", "Results wall", "Enquiry routing"],
-    images: [plate02, shotDashboard],
+    images: [],
     featured: true,
   },
   {
@@ -348,7 +341,7 @@ export const freelanceEntries: Entry[] = [
     result: "Walk-in confusion fell and weekend bookings shifted mostly online.",
     tech: ["React", "Firebase", "Tailwind CSS"],
     features: ["Table booking", "Menu CMS", "Gallery", "Maps & directions"],
-    images: [shotFood, projectGeneric],
+    images: [],
   },
 ];
 

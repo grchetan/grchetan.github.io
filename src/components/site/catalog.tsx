@@ -135,8 +135,8 @@ export function EntryLinks({
   );
 }
 
-export function EntryGrid({ entries, className }: { entries: Entry[]; className?: string }) {
-  if (!entries.length) {
+export function EntryGrid({ entries, isLoading, className }: { entries: Entry[]; isLoading?: boolean; className?: string }) {
+  if (isLoading) {
     return (
       <div className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
         {[1, 2, 3].map((n) => (
@@ -151,6 +151,15 @@ export function EntryGrid({ entries, className }: { entries: Entry[]; className?
       </div>
     );
   }
+  if (!entries.length) {
+    return (
+      <div className={cn("flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-ink/15 bg-paper-tint/20 px-6 py-20 text-center", className)}>
+        <span className="text-3xl">📂</span>
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">Nothing published yet</p>
+        <p className="max-w-xs text-[0.88rem] leading-relaxed text-ink-soft/70">Check back soon — new work is added regularly.</p>
+      </div>
+    );
+  }
   return (
     <div className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
       {entries.map((e, i) => (
@@ -162,9 +171,9 @@ export function EntryGrid({ entries, className }: { entries: Entry[]; className?
 
 /* ---------------- alternating left/right showcase ---------------- */
 
-export function EntryShowcase({ entries, className }: { entries: Entry[]; className?: string }) {
+export function EntryShowcase({ entries, isLoading, className }: { entries: Entry[]; isLoading?: boolean; className?: string }) {
   const { reduced } = useMotionPreference();
-  if (!entries.length) {
+  if (isLoading) {
     return (
       <div className={cn("space-y-12", className)}>
         {[1, 2].map((n) => (
@@ -177,6 +186,15 @@ export function EntryShowcase({ entries, className }: { entries: Entry[]; classN
             </div>
           </div>
         ))}
+      </div>
+    );
+  }
+  if (!entries.length) {
+    return (
+      <div className={cn("flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-ink/15 bg-paper-tint/20 px-6 py-24 text-center", className)}>
+        <span className="text-4xl">📂</span>
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">Nothing published yet</p>
+        <p className="max-w-sm text-[0.9rem] leading-relaxed text-ink-soft/70">No entries in this section yet — check back soon, new work is added regularly.</p>
       </div>
     );
   }

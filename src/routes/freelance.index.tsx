@@ -26,7 +26,8 @@ export const Route = createFileRoute("/freelance/")({
 });
 
 function FreelancePage() {
-  const entries = useEntries("freelance").data ?? [];
+  const { data, isLoading } = useEntries("freelance");
+  const entries = data ?? [];
 
   return (
     <SiteShell>
@@ -38,7 +39,7 @@ function FreelancePage() {
       />
 
       <Section>
-        <EntryShowcase entries={entries} />
+        <EntryShowcase entries={entries} isLoading={isLoading} />
       </Section>
 
       <Section tint>

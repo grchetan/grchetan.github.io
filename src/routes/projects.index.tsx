@@ -27,7 +27,8 @@ export const Route = createFileRoute("/projects/")({
 });
 
 function ProjectsPage() {
-  const entries = useEntries("project").data ?? [];
+  const { data, isLoading } = useEntries("project");
+  const entries = data ?? [];
   const [tag, setTag] = useState("All");
 
   const tags = useMemo(() => ["All", ...new Set((entries ?? []).map((e) => e.tag))], [entries]);
@@ -60,7 +61,7 @@ function ProjectsPage() {
           ))}
         </div>
 
-        <EntryShowcase entries={filtered} className="mt-10" />
+        <EntryShowcase entries={filtered} isLoading={isLoading} className="mt-10" />
       </Section>
     </SiteShell>
   );
