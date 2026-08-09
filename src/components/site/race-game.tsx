@@ -169,6 +169,17 @@ function Track() {
     return shape;
   }, []);
 
+  const innerGrassShape = useMemo(() => {
+    const shape = new THREE.Shape();
+    const innerR = R_RADIUS - TRACK_HALF_WIDTH;
+    shape.moveTo(-L_LENGTH / 2, -innerR);
+    shape.lineTo(L_LENGTH / 2, -innerR);
+    shape.absarc(L_LENGTH / 2, 0, innerR, -Math.PI / 2, Math.PI / 2, false);
+    shape.lineTo(-L_LENGTH / 2, innerR);
+    shape.absarc(-L_LENGTH / 2, 0, innerR, Math.PI / 2, -Math.PI / 2, false);
+    return shape;
+  }, []);
+
   return (
     <group>
       {/* ground field */}
@@ -177,10 +188,16 @@ function Track() {
         <meshStandardMaterial color="#080c14" roughness={0.95} metalness={0.05} />
       </mesh>
 
-      {/* smooth curved track surface */}
+      {/* inner field (green grass) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <shapeGeometry args={[innerGrassShape]} />
+        <meshStandardMaterial color="#064e3b" roughness={1.0} side={THREE.DoubleSide} />
+      </mesh>
+
+      {/* smooth curved track surface (slate tarmac) */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
         <shapeGeometry args={[trackShape]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.7} />
+        <meshStandardMaterial color="#334155" roughness={0.7} side={THREE.DoubleSide} />
       </mesh>
 
       {/* Start / Finish line */}
@@ -202,7 +219,7 @@ function Track() {
             return (
               <mesh key={i} rotation={[-Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[curb.r - 0.5, curb.r, 32, 1, startAngle * curb.sign, Math.PI / 12]} />
-                <meshBasicMaterial color={color} />
+                <meshBasicMaterial color={color} side={THREE.DoubleSide} />
               </mesh>
             );
           })}
