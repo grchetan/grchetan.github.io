@@ -9,6 +9,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Flag,
   ImagePlus,
   Inbox,
   LayoutGrid,
@@ -28,6 +29,7 @@ import { ResumeManager } from "@/components/site/resume-editor";
 import { CredentialsManager } from "@/components/site/credentials-editor";
 import { BlogManager } from "@/components/site/blog-editor";
 import { ArcadeControlManager } from "@/components/site/arcade-control";
+import { RaceControlManager } from "@/components/site/race-control";
 import { useTheme } from "@/components/site/chrome";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { allEntries, type Entry } from "@/data/catalog";
@@ -58,7 +60,7 @@ export const Route = createFileRoute("/admin")({
   }),
 });
 
-type Tab = "content" | "arcade" | "blog" | "credentials" | "resume" | "inbox" | "traffic";
+type Tab = "content" | "arcade" | "race" | "blog" | "credentials" | "resume" | "inbox" | "traffic";
 
 function formatBytes(bytes?: number) {
   if (!bytes) return "0 B";
@@ -1867,7 +1869,8 @@ function AdminPage() {
 
   const tabs: { id: Tab; label: string; hint: string; icon: typeof LayoutGrid }[] = [
     { id: "content", label: "Content", hint: "Projects & apps", icon: LayoutGrid },
-    { id: "arcade", label: "Arcade", hint: "Timer & Bans", icon: Gamepad2 },
+    { id: "arcade", label: "Arcade", hint: "Signal Rush", icon: Gamepad2 },
+    { id: "race", label: "Race", hint: "Multiplayer rooms", icon: Flag },
     { id: "blog", label: "Blog", hint: "Posts & drafts", icon: PenLine },
     { id: "credentials", label: "Credentials", hint: "Certificates", icon: Award },
     { id: "resume", label: "Resume", hint: "Editor + PDF", icon: FileText },
@@ -1970,6 +1973,11 @@ function AdminPage() {
             {tab === "arcade" ? (
               <ErrorBoundary>
                 <ArcadeControlManager />
+              </ErrorBoundary>
+            ) : null}
+            {tab === "race" ? (
+              <ErrorBoundary>
+                <RaceControlManager />
               </ErrorBoundary>
             ) : null}
             {tab === "blog" ? (

@@ -20,6 +20,7 @@ import { Route as ArcadeRouteImport } from './routes/arcade'
 import { Route as CertificatesRouteImport } from './routes/certificates'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as HireMeRouteImport } from './routes/hire-me'
+import { Route as RaceRouteImport } from './routes/race'
 import { Route as RecordRouteImport } from './routes/record'
 import { Route as ResumeRouteImport } from './routes/resume'
 import { Route as ServicesRouteImport } from './routes/services'
@@ -85,6 +86,11 @@ const ContactRoute = ContactRouteImport.update({
 const HireMeRoute = HireMeRouteImport.update({
   id: '/hire-me',
   path: '/hire-me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RaceRoute = RaceRouteImport.update({
+  id: '/race',
+  path: '/race',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecordRoute = RecordRouteImport.update({
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/certificates': typeof CertificatesRoute
   '/contact': typeof ContactRoute
   '/hire-me': typeof HireMeRoute
+  '/race': typeof RaceRoute
   '/record': typeof RecordRoute
   '/resume': typeof ResumeRoute
   '/services': typeof ServicesRoute
@@ -179,6 +186,7 @@ export interface FileRoutesByTo {
   '/certificates': typeof CertificatesRoute
   '/contact': typeof ContactRoute
   '/hire-me': typeof HireMeRoute
+  '/race': typeof RaceRoute
   '/record': typeof RecordRoute
   '/resume': typeof ResumeRoute
   '/services': typeof ServicesRoute
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/certificates': typeof CertificatesRoute
   '/contact': typeof ContactRoute
   '/hire-me': typeof HireMeRoute
+  '/race': typeof RaceRoute
   '/record': typeof RecordRoute
   '/resume': typeof ResumeRoute
   '/services': typeof ServicesRoute
@@ -230,6 +239,7 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/contact'
     | '/hire-me'
+    | '/race'
     | '/record'
     | '/resume'
     | '/services'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/contact'
     | '/hire-me'
+    | '/race'
     | '/record'
     | '/resume'
     | '/services'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/contact'
     | '/hire-me'
+    | '/race'
     | '/record'
     | '/resume'
     | '/services'
@@ -303,6 +315,7 @@ export interface RootRouteChildren {
   CertificatesRoute: typeof CertificatesRoute
   ContactRoute: typeof ContactRoute
   HireMeRoute: typeof HireMeRoute
+  RaceRoute: typeof RaceRoute
   RecordRoute: typeof RecordRoute
   ResumeRoute: typeof ResumeRoute
   ServicesRoute: typeof ServicesRoute
@@ -393,6 +406,13 @@ declare module '@tanstack/react-router' {
       path: '/hire-me'
       fullPath: '/hire-me'
       preLoaderRoute: typeof HireMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/race': {
+      id: '/race'
+      path: '/race'
+      fullPath: '/race'
+      preLoaderRoute: typeof RaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/record': {
@@ -487,6 +507,7 @@ const rootRouteChildren: RootRouteChildren = {
   CertificatesRoute: CertificatesRoute,
   ContactRoute: ContactRoute,
   HireMeRoute: HireMeRoute,
+  RaceRoute: RaceRoute,
   RecordRoute: RecordRoute,
   ResumeRoute: ResumeRoute,
   ServicesRoute: ServicesRoute,
