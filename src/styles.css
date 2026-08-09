@@ -476,6 +476,32 @@
   animation: floatSlow 22s ease-in-out infinite;
 }
 
+/* ---- Mobile performance: reduce GPU-intensive effects on small screens ---- */
+@media (max-width: 767px) {
+  /* 1. Blob: drop blur + kill infinite animation (was the #1 GPU drain) */
+  .blob {
+    filter: blur(24px) !important;
+    animation: none !important;
+    will-change: auto !important;
+  }
+
+  /* 2. chromeShift: static gradient on mobile — background-clip:text + animation = repaint every frame */
+  .chrome-text {
+    animation: none !important;
+    background-position: 40% 50% !important;
+  }
+
+  /* 3. backdrop-filter: disable on mobile (very expensive on low-end GPUs) */
+  .plate-tint {
+    backdrop-filter: none !important;
+  }
+
+  /* 4. marquee: slow down on mobile to reduce repaint frequency */
+  .marquee-track {
+    animation-duration: 80s !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .blob,
   .marquee-track,

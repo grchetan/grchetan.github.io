@@ -53,6 +53,8 @@ export function Magnetic({
 }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLSpanElement>(null);
+  // Skip spring physics on touch devices — pointer tracking is useless on mobile
+  const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const x = useSpring(useMotionValue(0), {
     stiffness: 220,
     damping: 18,
@@ -64,7 +66,7 @@ export function Magnetic({
     mass: 0.5,
   });
 
-  if (reduced) return <span className={className}>{children}</span>;
+  if (reduced || isTouch) return <span className={className}>{children}</span>;
 
   return (
     <motion.span

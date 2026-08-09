@@ -29,7 +29,10 @@ export default function AnimatedBorderTrail({
   ...props
 }: AnimatedTrailProps) {
   const { reduced } = useMotionPreference();
+  // Disable spinning conic on mobile — each instance is a separate GPU composited layer
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const deg = arc[trailSize];
+  const showAnimation = !reduced && !isMobile;
 
   return (
     <div
@@ -37,7 +40,7 @@ export default function AnimatedBorderTrail({
       style={{ padding: borderWidth, ...style }}
       {...props}
     >
-      {!reduced ? (
+      {showAnimation ? (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-[-120%] motion-safe:animate-[trailSpin_var(--trail-duration)_linear_infinite]"
@@ -59,4 +62,3 @@ export default function AnimatedBorderTrail({
     </div>
   );
 }
-

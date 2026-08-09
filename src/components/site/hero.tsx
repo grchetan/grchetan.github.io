@@ -1,7 +1,7 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { ArrowDownRight, ArrowUpRight, Gamepad2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import portrait from "@/assets/portrait-main.jpg";
 import inkTexture from "@/assets/texture-ink.jpg";
 import { Magnetic, RegMark, Rule } from "@/components/site/primitives";
@@ -20,9 +20,11 @@ const index = [
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+  // Disable parallax on mobile (< 768px) — prevents per-frame layout thrashing
+  const isMobile = useMemo(() => typeof window !== "undefined" && window.innerWidth < 768, []);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const portraitY = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const typeY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, 90]);
+  const typeY = useTransform(scrollYProgress, [0, 1], isMobile ? [0, 0] : [0, -40]);
 
   return (
     <header ref={ref} id="top" className="relative z-10 overflow-hidden pb-20 pt-28 md:pb-28 md:pt-36">
