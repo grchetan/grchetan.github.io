@@ -43,9 +43,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const projects = useEntries("project").data ?? [];
-  const apps = useEntries("app").data ?? [];
-  const freelance = useEntries("freelance").data ?? [];
+  const projectsQuery = useEntries("project");
+  const appsQuery = useEntries("app");
+  const freelanceQuery = useEntries("freelance");
+
+  const projects = projectsQuery.data ?? [];
+  const apps = appsQuery.data ?? [];
+  const freelance = freelanceQuery.data ?? [];
 
   const pick = (list: typeof projects = []) => {
     const arr = list ?? [];
@@ -79,7 +83,7 @@ function Home() {
           title="Three builds worth your time."
           description="Product and personal builds. Each one has a full case page: problem, what I built, tech and screens."
         />
-        <EntryShowcase entries={pick(projects)} className="mt-12" />
+        <EntryShowcase entries={pick(projects)} isLoading={projectsQuery.isLoading} className="mt-12" />
         <Link to="/projects" className="press-btn mt-10">
           All projects <ArrowRight className="size-3.5" strokeWidth={1.5} />
         </Link>
@@ -92,7 +96,7 @@ function Home() {
           title="Apps I designed and shipped."
           description="Mobile and mini apps — offline-first data, native reminders and charts that actually inform a decision."
         />
-        <EntryShowcase entries={pick(apps)} className="mt-12" />
+        <EntryShowcase entries={pick(apps)} isLoading={appsQuery.isLoading} className="mt-12" />
         <Link to="/apps" className="press-btn mt-10">
           All apps <ArrowRight className="size-3.5" strokeWidth={1.5} />
         </Link>
@@ -105,7 +109,7 @@ function Home() {
           title="Client work, paid for and measured."
           description="Separate from my own projects: real businesses, real constraints, results I can point at."
         />
-        <EntryShowcase entries={pick(freelance)} className="mt-12" />
+        <EntryShowcase entries={pick(freelance)} isLoading={freelanceQuery.isLoading} className="mt-12" />
         <Link to="/freelance" className="press-btn mt-10">
           All freelance work <ArrowRight className="size-3.5" strokeWidth={1.5} />
         </Link>

@@ -156,7 +156,18 @@ export function IconCloud({ images, labels, className, min = 220, max = 520 }: I
           offCtx.restore();
           imagesLoadedRef.current[index] = true;
         };
-        img.onerror = fallback;
+        let attemptedFallback = false;
+        img.onerror = () => {
+          if (!attemptedFallback) {
+            attemptedFallback = true;
+            const slug = src.split("/").pop();
+            if (slug) {
+              img.src = `https://cdn.jsdelivr.net/npm/simple-icons@11.15.0/icons/${slug}.svg`;
+              return;
+            }
+          }
+          fallback();
+        };
         img.src = src;
       }
       return offscreen;

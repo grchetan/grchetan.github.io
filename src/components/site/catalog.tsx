@@ -17,10 +17,6 @@ const routeFor: Record<Entry["kind"], string> = {
   freelance: "/freelance/$slug",
 };
 
-/** True on touch/mobile devices — used to select animation strategy */
-const isMobileDevice =
-  typeof window !== "undefined" &&
-  (window.innerWidth < 768 || "ontouchstart" in window || navigator.maxTouchPoints > 0);
 
 export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }) {
   const { reduced } = useMotionPreference();
@@ -52,31 +48,15 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           className="h-full rounded-[var(--radius-lg)]"
           contentClassName="plate flex h-full flex-col overflow-hidden"
         >
-          {/* Image reveal — clipPath wipe on desktop, simple fade+slide on mobile */}
-          <motion.div
-            className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30"
-            initial={reduced ? false : isMobileDevice
-              ? { opacity: 0, y: 20 }
-              : { clipPath: "inset(100% 0% 0% 0%)" }
-            }
-            whileInView={isMobileDevice
-              ? { opacity: 1, y: 0 }
-              : { clipPath: "inset(0% 0% 0% 0%)" }
-            }
-            viewport={{ once: true, margin: "-30px" }}
-            transition={{
-              duration: reduced ? 0 : isMobileDevice ? 0.55 : 0.85,
-              delay: reduced ? 0 : staggerDelay + 0.12,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
+          {/* Image — plain div, card article handles the entrance animation */}
+          <div className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30">
             <ImageWithSkeleton
               src={cover}
               alt={`${entry.title} preview`}
               className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
               skeletonHeight="min-h-[220px]"
             />
-          </motion.div>
+          </div>
 
           <div className="flex flex-1 flex-col p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
@@ -252,28 +232,14 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
             {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : isMobileDevice
-                  ? { opacity: 0, y: 32, scale: 0.97 }
-                  : { opacity: 0, y: 50, rotate: flip ? 5 : -5, scale: 0.92, filter: "blur(8px)" }
-                }
-                whileInView={isMobileDevice
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1, filter: "blur(0px)" }
-                }
+                initial={reduced ? false : { opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{
-                  duration: reduced ? 0 : isMobileDevice ? 0.65 : 1.1,
+                  duration: reduced ? 0 : 0.85,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="will-change-transform"
-                {...(reduced || isMobileDevice ? {} : {
-                  whileHover: {
-                    rotate: 0,
-                    scale: 1.02,
-                    y: -8,
-                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-                  }
-                })}
               >
                 <Link
                   to={routeFor[entry.kind]}
@@ -288,31 +254,12 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     className="overflow-hidden rounded-[var(--radius-lg)]"
                     contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
                   >
-                    {/* Image: wipe reveal on desktop, fade+slide on mobile */}
-                    <motion.div
-                      className="overflow-hidden rounded-[calc(var(--radius-lg)-0.35rem)]"
-                      initial={reduced ? false : isMobileDevice
-                        ? { opacity: 0, y: 16 }
-                        : { clipPath: "inset(0% 100% 0% 0%)" }
-                      }
-                      whileInView={isMobileDevice
-                        ? { opacity: 1, y: 0 }
-                        : { clipPath: "inset(0% 0% 0% 0%)" }
-                      }
-                      viewport={{ once: true, margin: "-40px" }}
-                      transition={{
-                        duration: reduced ? 0 : isMobileDevice ? 0.55 : 1.0,
-                        delay: reduced ? 0 : 0.1,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                    >
-                      <ImageWithSkeleton
-                        src={cover}
-                        alt={`${entry.title} preview`}
-                        className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        skeletonHeight="min-h-[300px]"
-                      />
-                    </motion.div>
+                    <ImageWithSkeleton
+                      src={cover}
+                      alt={`${entry.title} preview`}
+                      className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      skeletonHeight="min-h-[300px]"
+                    />
                   </AnimatedBorderTrail>
                 </Link>
               </motion.div>

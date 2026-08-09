@@ -11,8 +11,8 @@ export function NetworkStatusWatcher() {
     const checkConnection = () => {
       const offline = !navigator.onLine;
       setIsOffline(offline);
+      if (offline) setDismissed(false);
 
-      // Check for slow connection using Network Information API if supported
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
       if (connection) {
@@ -22,22 +22,17 @@ export function NetworkStatusWatcher() {
     };
 
     checkConnection();
-
     window.addEventListener("online", checkConnection);
     window.addEventListener("offline", checkConnection);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const connection = (navigator as any).connection;
-    if (connection) {
-      connection.addEventListener("change", checkConnection);
-    }
+    if (connection) connection.addEventListener("change", checkConnection);
 
     return () => {
       window.removeEventListener("online", checkConnection);
       window.removeEventListener("offline", checkConnection);
-      if (connection) {
-        connection.removeEventListener("change", checkConnection);
-      }
+      if (connection) connection.removeEventListener("change", checkConnection);
     };
   }, []);
 
@@ -46,38 +41,31 @@ export function NetworkStatusWatcher() {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        key="network-toast"
+        initial={{ opacity: 0, y: 16, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-        className="fixed bottom-6 left-6 z-[99] flex items-center gap-3 rounded-full border border-amber-500/30 bg-paper/95 px-4 py-2.5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.4)] backdrop-blur-xl"
+        exit={{ opacity: 0, y: 12, scale: 0.96 }}
+        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[9998] flex items-center gap-2.5 rounded-full border border-white/10 bg-zinc-900/92 px-4 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.45)] backdrop-blur-xl"
       >
-        {isOffline ? (
-          <>
-            <span className="relative flex size-2.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-rose-500 opacity-75" />
-              <span className="relative inline-flex size-2.5 rounded-full bg-rose-500" />
-            </span>
-            <WifiOff className="size-4 text-rose-400" />
-            <span className="font-mono text-[0.72rem] text-ink">
-              Offline Mode · Showing cached portfolio
-            </span>
-          </>
-        ) : (
-          <>
-            <Zap className="size-4 text-amber-400 animate-pulse" />
-            <span className="font-mono text-[0.72rem] text-ink">
-              Slow Network Detected · Optimizing asset loading...
-            </span>
-          </>
-        )}
-
+        <span className="relative flex size-2 shrink-0">
+          <span className={`absolute inline-flex size-full animate-ping rounded-full opacity-60 ${isOffline ? "bg-rose-500" : "bg-amber-400"}`} />
+          <span className={`relative inline-flex size-2 rounded-full ${isOffline ? "bg-rose-400" : "bg-amber-400"}`} />
+        </span>
+        {isOffline
+          ? <WifiOff className="size-3.5 text-rose-400 shrink-0" />
+          : <Zap className="size-3.5 text-amber-400 shrink-0" />
+        }
+        <span className="font-mono text-[0.68rem] tracking-wide text-white/80 whitespace-nowrap">
+          {isOffline ? "Offline - cached view" : "Slow network detected"}
+        </span>
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          className="ml-1 rounded-full p-1 text-ink-soft hover:bg-ink/10 hover:text-ink transition-colors cursor-pointer"
-          title="Dismiss notification"
+          className="ml-0.5 rounded-full p-1 text-white/40 hover:text-white/80 hover:bg-white/10 transition-colors cursor-pointer"
+          title="Dismiss"
         >
-          <X className="size-3.5" />
+          <X className="size-3" />
         </button>
       </motion.div>
     </AnimatePresence>
