@@ -519,12 +519,12 @@ export function RaceGame({
 
       {/* touch buttons controls mode */}
       {controlsMode === "touch" && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-end justify-between px-6">
+        <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex items-end justify-between px-5">
           {/* Steering buttons */}
           <div className="pointer-events-auto flex gap-3">
             <button
               type="button"
-              className="flex size-14 items-center justify-center rounded-2xl border border-ink/15 bg-paper/80 font-bold text-2xl text-ink shadow-lg backdrop-blur-md active:bg-ink active:text-paper active:scale-90 transition-all select-none"
+              className="flex size-16 items-center justify-center rounded-2xl border border-ink/15 bg-paper/85 font-bold text-2xl text-ink shadow-xl backdrop-blur-md active:bg-ink active:text-paper active:scale-90 transition-all select-none"
               onTouchStart={() => (keys.current["arrowleft"] = true)}
               onTouchEnd={() => (keys.current["arrowleft"] = false)}
             >
@@ -532,7 +532,7 @@ export function RaceGame({
             </button>
             <button
               type="button"
-              className="flex size-14 items-center justify-center rounded-2xl border border-ink/15 bg-paper/80 font-bold text-2xl text-ink shadow-lg backdrop-blur-md active:bg-ink active:text-paper active:scale-90 transition-all select-none"
+              className="flex size-16 items-center justify-center rounded-2xl border border-ink/15 bg-paper/85 font-bold text-2xl text-ink shadow-xl backdrop-blur-md active:bg-ink active:text-paper active:scale-90 transition-all select-none"
               onTouchStart={() => (keys.current["arrowright"] = true)}
               onTouchEnd={() => (keys.current["arrowright"] = false)}
             >
@@ -544,7 +544,7 @@ export function RaceGame({
           <div className="pointer-events-auto flex gap-3">
             <button
               type="button"
-              className="flex size-14 items-center justify-center rounded-2xl border border-rose-500/20 bg-rose-500/10 font-mono text-[0.62rem] font-bold uppercase tracking-wider text-rose-500 shadow-lg backdrop-blur-md active:bg-rose-500 active:text-white active:scale-90 transition-all select-none"
+              className="flex size-16 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/15 font-mono text-[0.62rem] font-bold uppercase tracking-wider text-rose-500 shadow-xl backdrop-blur-md active:bg-rose-500 active:text-white active:scale-90 transition-all select-none"
               onTouchStart={() => (keys.current["arrowdown"] = true)}
               onTouchEnd={() => (keys.current["arrowdown"] = false)}
             >
@@ -552,7 +552,7 @@ export function RaceGame({
             </button>
             <button
               type="button"
-              className="flex size-14 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 font-mono text-[0.62rem] font-bold uppercase tracking-wider text-emerald-500 shadow-lg backdrop-blur-md active:bg-emerald-500 active:text-white active:scale-90 transition-all select-none"
+              className="flex size-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/15 font-mono text-[0.62rem] font-bold uppercase tracking-wider text-emerald-500 shadow-xl backdrop-blur-md active:bg-emerald-500 active:text-white active:scale-90 transition-all select-none"
               onTouchStart={() => (keys.current["arrowup"] = true)}
               onTouchEnd={() => (keys.current["arrowup"] = false)}
             >
@@ -562,20 +562,20 @@ export function RaceGame({
         </div>
       )}
 
-      {/* Manual mode selector panel */}
-      <div className="absolute bottom-4 left-4 z-10 flex flex-wrap items-center gap-2 rounded-2xl border border-ink/10 bg-paper/80 p-1.5 backdrop-blur-xl">
-        <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-soft pl-2 pr-1 select-none">Drive:</span>
+      {/* Manual mode selector panel — positioned top-center so it never overlaps touch buttons */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-2xl border border-ink/10 bg-paper/90 p-1.5 backdrop-blur-xl shadow-lg">
+        <span className="font-mono text-[0.52rem] uppercase tracking-widest text-ink-soft pl-1.5 pr-0.5 select-none whitespace-nowrap">Drive:</span>
         <button
           type="button"
           onClick={() => setControlsMode("keyboard")}
-          className={`rounded-xl px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase transition-all ${controlsMode === "keyboard" ? "bg-ink text-paper" : "text-ink-soft hover:bg-ink/5"}`}
+          className={`rounded-xl px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase transition-all whitespace-nowrap ${controlsMode === "keyboard" ? "bg-ink text-paper" : "text-ink-soft hover:bg-ink/5"}`}
         >
-          ⌨ Keyboard
+          ⌨ Keys
         </button>
         <button
           type="button"
           onClick={() => setControlsMode("touch")}
-          className={`rounded-xl px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase transition-all ${controlsMode === "touch" ? "bg-ink text-paper" : "text-ink-soft hover:bg-ink/5"}`}
+          className={`rounded-xl px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase transition-all whitespace-nowrap ${controlsMode === "touch" ? "bg-ink text-paper" : "text-ink-soft hover:bg-ink/5"}`}
         >
           📱 Touch
         </button>
