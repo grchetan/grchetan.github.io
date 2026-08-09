@@ -196,6 +196,15 @@ export function CustomCursor() {
     if (reduced) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
+    let animating = false;
+
+    const startAnimation = () => {
+      if (!animating) {
+        animating = true;
+        rafRef.current = requestAnimationFrame(loop);
+      }
+    };
+
     const updatePos = (e: PointerEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
@@ -205,6 +214,7 @@ export function CustomCursor() {
         initialized.current = true;
       }
       setVisible(true);
+      startAnimation();
     };
 
     const onPointerMove = (e: PointerEvent) => {
@@ -241,16 +251,24 @@ export function CustomCursor() {
 
     const loop = () => {
       if (initialized.current) {
-        // smooth lerp for outer magnetic ring
         const lerp = 0.25;
-        ringPos.current.x += (mouse.current.x - ringPos.current.x) * lerp;
-        ringPos.current.y += (mouse.current.y - ringPos.current.y) * lerp;
+        const dx = mouse.current.x - ringPos.current.x;
+        const dy = mouse.current.y - ringPos.current.y;
+
+        ringPos.current.x += dx * lerp;
+        ringPos.current.y += dy * lerp;
 
         if (dotRef.current) {
           dotRef.current.style.transform = `translate3d(${mouse.current.x}px, ${mouse.current.y}px, 0)`;
         }
         if (ringRef.current) {
           ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+        }
+
+        // If we are extremely close, stop the loop to save CPU/GPU cycles
+        if (Math.abs(dx) < 0.08 && Math.abs(dy) < 0.08) {
+          animating = false;
+          return;
         }
       }
 
@@ -263,7 +281,8 @@ export function CustomCursor() {
     document.documentElement.addEventListener("pointerleave", onPointerLeave);
     document.documentElement.addEventListener("pointerenter", onPointerEnter);
 
-    rafRef.current = requestAnimationFrame(loop);
+    // Initial trigger to position the cursor
+    startAnimation();
 
     return () => {
       cancelAnimationFrame(rafRef.current);

@@ -470,7 +470,7 @@
 @utility blob {
   position: absolute;
   border-radius: 999px;
-  filter: blur(70px);
+  filter: blur(45px);
   transform: translateZ(0);
   will-change: transform;
   animation: floatSlow 22s ease-in-out infinite;
