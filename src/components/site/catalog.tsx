@@ -21,16 +21,17 @@ const routeFor: Record<Entry["kind"], string> = {
 export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }) {
   const { reduced } = useMotionPreference();
   const cover = entry.images[0] ?? fallbackImages[index % fallbackImages.length]!;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const staggerDelay = reduced ? 0 : (index % 3) * 0.1;
 
   return (
     <motion.article
-      initial={reduced ? false : { opacity: 0, y: 30, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-40px", amount: 0.08 }}
+      initial={reduced ? false : isMobile ? { opacity: 0, y: 16 } : { opacity: 0, y: 30, scale: 0.97 }}
+      whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-30px", amount: 0.05 }}
       transition={{
-        duration: reduced ? 0 : 0.7,
-        delay: staggerDelay,
+        duration: reduced ? 0 : 0.6,
+        delay: isMobile ? 0 : staggerDelay,
         ease: [0.22, 1, 0.36, 1],
       }}
       className="group flex h-full flex-col rounded-[var(--radius-lg)]"
@@ -66,24 +67,36 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
             <h3 className="mt-3 text-[1.4rem] leading-tight text-ink">{entry.title}</h3>
             <p className="mt-3 flex-1 text-[0.92rem] leading-[1.75] text-ink-soft">{entry.summary}</p>
 
-            {/* Tech tags — staggered reveal */}
+            {/* Tech tags — staggered reveal only on desktop */}
             <div className="mt-5 flex flex-wrap gap-1.5">
-              {entry.tech.slice(0, 4).map((t, ti) => (
-                <motion.span
-                  key={t}
-                  initial={reduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: reduced ? 0 : 0.4,
-                    delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
-                >
-                  {t}
-                </motion.span>
-              ))}
+              {entry.tech.slice(0, 4).map((t, ti) => {
+                if (isMobile) {
+                  return (
+                    <span
+                      key={t}
+                      className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                    >
+                      {t}
+                    </span>
+                  );
+                }
+                return (
+                  <motion.span
+                    key={t}
+                    initial={reduced ? false : { opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: reduced ? 0 : 0.4,
+                      delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                  >
+                    {t}
+                  </motion.span>
+                );
+              })}
             </div>
 
             <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
@@ -219,24 +232,25 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
       {entries.map((entry, i) => {
         const flip = i % 2 === 1;
         const cover = entry.images[0] ?? fallbackImages[i % fallbackImages.length]!;
+        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
         return (
           <motion.article
             key={`${entry.kind}-${entry.slug}`}
-            initial={reduced ? false : { opacity: 0, y: 24 }}
+            initial={reduced ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px", amount: 0.06 }}
-            transition={{ duration: reduced ? 0 : 0.65, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-30px", amount: 0.05 }}
+            transition={{ duration: reduced ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
           >
             {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : { opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-40px" }}
+                initial={reduced ? false : isMobile ? { opacity: 0, y: 20 } : { opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-30px" }}
                 transition={{
-                  duration: reduced ? 0 : 0.85,
+                  duration: reduced ? 0 : 0.75,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="will-change-transform"

@@ -124,6 +124,12 @@ export function TextReveal({
   className?: string;
 }) {
   const { reduced } = useMotionPreference();
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  if (reduced || isMobile) {
+    return <span className={className}>{text}</span>;
+  }
+
   const words = text.split(' ');
   return (
     <span className={cn('inline', className)}>
@@ -131,15 +137,11 @@ export function TextReveal({
         <motion.span
           key={`${word}-${i}`}
           className="inline-block will-change-transform"
-          initial={
-            reduced
-              ? { opacity: 1, y: 0 }
-              : { opacity: 0, y: '0.3em', rotate: 2 }
-          }
+          initial={{ opacity: 0, y: '0.3em', rotate: 2 }}
           whileInView={{ opacity: 1, y: 0, rotate: 0 }}
           viewport={{ once: true }}
           transition={{
-            duration: reduced ? 0 : 0.7,
+            duration: 0.7,
             delay: i * 0.04,
             ease: [0.16, 1, 0.3, 1],
           }}

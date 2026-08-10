@@ -73,6 +73,21 @@ const HeroSectionTextHover: React.FC<HeroSectionTextHoverProps> = ({
   second,
   className,
 }) => {
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  if (isMobile) {
+    return (
+      <span className={cn("block cursor-default", className)}>
+        <span className="relative block">
+          <span className="relative z-[2] block">{first}</span>
+        </span>
+        <span className="relative block">
+          <span className="relative z-[2] block">{second}</span>
+        </span>
+      </span>
+    );
+  }
+
   return (
     <span className={cn("group block cursor-default", className)}>
       <span className="relative block">
