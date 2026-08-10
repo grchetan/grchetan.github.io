@@ -1244,15 +1244,16 @@ export function ArcadeControlManager() {
                     </div>
                   </div>
 
-                  <div className="mt-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-                    <table className="w-full min-w-[480px] text-left font-sans text-xs">
+                  <div className="mt-3 -mx-4 sm:mx-0">
+                    <div className="overflow-x-auto px-4 sm:px-0">
+                    <table className="w-full min-w-[420px] text-left font-sans text-xs">
                       <thead>
                         <tr className="font-mono uppercase text-[0.65rem] tracking-wider text-ink-soft border-b border-ink/10">
-                          <th className="py-2 pr-3 w-8">Rank</th>
-                          <th className="py-2 pr-3">Player</th>
-                          <th className="py-2 pr-3 w-20">Score</th>
-                          <th className="py-2 pr-3 w-20">Accuracy</th>
-                          <th className="py-2 text-right w-24">Certificate</th>
+                          <th className="py-2 pr-4">Rank</th>
+                          <th className="py-2 pr-4">Player</th>
+                          <th className="py-2 pr-4">Score</th>
+                          <th className="py-2 pr-4">Acc</th>
+                          <th className="py-2 text-right">Cert.</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-ink/10">
@@ -1260,13 +1261,16 @@ export function ArcadeControlManager() {
                           const tier = tierFor(w.rank);
                           return (
                             <tr key={w.rank}>
-                              <td className="py-2 pr-3 font-mono font-bold whitespace-nowrap">
+                              <td className="py-2 pr-4 font-mono font-bold whitespace-nowrap">
                                 {w.rank === 1 ? "🥇 1st" : w.rank === 2 ? "🥈 2nd" : w.rank === 3 ? "🥉 3rd" : `#${w.rank}`}
                               </td>
-                              <td className="py-2 pr-3 font-semibold text-ink">{w.name} <span className="text-ink-soft font-normal">({w.handle})</span></td>
-                              <td className="py-2 pr-3 font-mono font-bold text-amber-400 tabular-nums">{Math.round(w.score).toLocaleString()}</td>
-                              <td className="py-2 pr-3 font-mono text-ink-soft tabular-nums">{Math.round(w.accuracy)}%</td>
-                              <td className="py-2 text-right">
+                              <td className="py-2 pr-4 font-semibold text-ink">
+                                <div>{w.name}</div>
+                                <div className="text-ink-soft font-normal text-[0.6rem]">{w.handle}</div>
+                              </td>
+                              <td className="py-2 pr-4 font-mono font-bold text-amber-400 tabular-nums whitespace-nowrap">{Math.round(w.score).toLocaleString()}</td>
+                              <td className="py-2 pr-4 font-mono text-ink-soft tabular-nums whitespace-nowrap">{Math.round(w.accuracy)}%</td>
+                              <td className="py-2 text-right whitespace-nowrap">
                                 {tier ? (
                                   <button
                                     type="button"
@@ -1301,6 +1305,7 @@ export function ArcadeControlManager() {
                         })}
                       </tbody>
                     </table>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -1325,8 +1330,8 @@ export function ArcadeControlManager() {
         </div>
 
         {/* Tab Bar + Search Input */}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-          <div className="grid grid-cols-2 gap-1 rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs sm:inline-flex sm:gap-1">
+        <div className="mt-6 flex flex-col gap-3">
+          <div className="grid grid-cols-4 gap-1 rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs">
             {(["weekly", "lifetime", "contest", "audit"] as const).map((t) => (
               <button
                 key={t}
@@ -1337,28 +1342,27 @@ export function ArcadeControlManager() {
                   setExpandedPlayerId(null); // Clear expanded view
                 }}
                 className={cn(
-                  "flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 font-mono text-[0.65rem] uppercase tracking-[0.14em] font-semibold transition-all sm:py-1.5",
+                  "flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 font-mono text-[0.6rem] uppercase tracking-[0.1em] font-semibold transition-all min-w-0",
                   lbTab === t
                     ? t === "weekly" ? "bg-blue-500 text-white shadow-xs" : t === "contest" ? "bg-amber-500 text-slate-950 shadow-xs" : t === "audit" ? "bg-emerald-500 text-white shadow-xs" : "bg-ink text-paper shadow-xs"
                     : "text-ink-soft hover:text-ink hover:bg-ink/5"
                 )}
               >
-                {t === "weekly" ? <Zap className="size-3" /> : t === "lifetime" ? <Star className="size-3" /> : t === "contest" ? <Swords className="size-3" /> : <History className="size-3" />}
-                <span className="hidden sm:inline">{t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Player Search & History"}</span>
-                <span className="sm:hidden">{t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Search"}</span>
+                {t === "weekly" ? <Zap className="size-3 shrink-0" /> : t === "lifetime" ? <Star className="size-3 shrink-0" /> : t === "contest" ? <Swords className="size-3 shrink-0" /> : <History className="size-3 shrink-0" />}
+                <span className="truncate leading-tight text-center w-full px-0.5">
+                  {t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Search"}
+                </span>
               </button>
             ))}
           </div>
 
-          <div className="w-full sm:w-72">
-            <input
-              type="text"
-              placeholder="Search name, handle, or ID..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl border border-ink/15 bg-paper px-4 py-2 text-xs text-ink outline-none transition focus:border-chrome-1 font-mono"
-            />
-          </div>
+          <input
+            type="text"
+            placeholder="Search name, handle, or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-xl border border-ink/15 bg-paper px-4 py-2 text-xs text-ink outline-none transition focus:border-chrome-1 font-mono"
+          />
         </div>
 
         {/* Tab Actions */}
