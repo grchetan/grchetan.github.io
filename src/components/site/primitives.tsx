@@ -9,6 +9,9 @@ import {
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useMotionPreference } from '@/hooks/use-motion-preference';
+import { useCssReveal } from '@/hooks/use-css-reveal';
+
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
 
 /* ---------------- motion primitives ---------------- */
 
@@ -24,6 +27,23 @@ export function Reveal({
   className?: string;
 }) {
   const { reduced } = useMotionPreference();
+  const cssRef = useCssReveal<HTMLDivElement>();
+
+  // On mobile: pure CSS animation — zero JS overhead, runs on compositor thread
+  if (IS_MOBILE) {
+    const delayIdx = delay <= 0 ? undefined : delay <= 0.08 ? "1" : delay <= 0.16 ? "2" : delay <= 0.24 ? "3" : "4";
+    return (
+      <div
+        ref={cssRef}
+        data-reveal=""
+        {...(delayIdx ? { "data-delay": delayIdx } : {})}
+        className={className}
+      >
+        {children}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y }}
@@ -103,6 +123,15 @@ export function Rule({
   delay?: number;
 }) {
   const { reduced } = useMotionPreference();
+  // On mobile: use CSS animation directly — no motion overhead
+  if (IS_MOBILE) {
+    return (
+      <div
+        aria-hidden
+        className={cn('rule-in h-px w-full bg-ink/20', className)}
+      />
+    );
+  }
   return (
     <motion.div
       aria-hidden

@@ -1882,9 +1882,70 @@ function AdminPage() {
 
   return (
     <div className="admin-shell min-h-screen bg-paper text-ink transition-colors duration-300">
-      <div className="mx-auto grid w-full max-w-[92rem] gap-6 px-4 py-6 sm:gap-8 sm:px-6 sm:py-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:px-10 lg:py-12 xl:grid-cols-[16rem_minmax(0,1fr)] xl:px-12">
-        {/* sidebar */}
-        <aside className="lg:sticky lg:top-12 lg:self-start">
+      {/* ── Mobile horizontal tab bar (hidden on lg+) ── */}
+      <div className="sticky top-0 z-40 lg:hidden">
+        <div className="bg-paper/90 backdrop-blur-md border-b border-ink/10 px-2 py-2">
+          {/* top row: branding + quick actions */}
+          <div className="flex items-center justify-between gap-2 px-2 pb-2">
+            <div className="flex items-center gap-2">
+              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-chrome-2 to-chrome-3 font-display text-[0.85rem] text-white">
+                C
+              </span>
+              <span className="font-mono text-[0.66rem] uppercase tracking-wider text-ink-soft">Control room</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={toggleTheme}
+                className="grid size-7 place-items-center rounded-lg border border-ink/15 bg-paper text-ink transition hover:bg-ink hover:text-paper"
+                title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              >
+                {dark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
+              </button>
+              <Link to="/" className="grid size-7 place-items-center rounded-lg border border-ink/15 bg-paper text-ink-soft transition hover:bg-ink hover:text-paper" title="View site">
+                <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </Link>
+              <button
+                onClick={() => void signOutNow()}
+                className="grid size-7 place-items-center rounded-lg border border-ink/15 bg-paper text-ink-soft transition hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/30"
+                title="Sign out"
+              >
+                <LogOut className="size-3.5" strokeWidth={1.5} />
+              </button>
+            </div>
+          </div>
+          {/* scrollable tab row */}
+          <div className="flex gap-1 overflow-x-auto pb-0.5 scrollbar-none">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={cn(
+                  "flex shrink-0 flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 transition-colors",
+                  tab === t.id
+                    ? "bg-chrome-1/12 text-ink"
+                    : "text-ink-soft hover:bg-ink/[0.04] hover:text-ink",
+                )}
+              >
+                <span
+                  className={cn(
+                    "grid size-7 place-items-center rounded-lg border transition-colors",
+                    tab === t.id
+                      ? "border-transparent bg-gradient-to-br from-chrome-2 to-chrome-3 text-white"
+                      : "border-ink/12",
+                  )}
+                >
+                  <t.icon className="size-3.5" strokeWidth={1.5} />
+                </span>
+                <span className="font-mono text-[0.56rem] uppercase tracking-[0.12em]">{t.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto grid w-full max-w-[92rem] gap-6 px-4 py-4 sm:gap-8 sm:px-6 sm:py-6 lg:grid-cols-[15rem_minmax(0,1fr)] lg:px-10 lg:py-12 xl:grid-cols-[16rem_minmax(0,1fr)] xl:px-12">
+        {/* sidebar — only visible lg+ */}
+        <aside className="hidden lg:block lg:sticky lg:top-12 lg:self-start">
           <div className="plate overflow-hidden p-5">
             <div className="flex items-center gap-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-chrome-2 to-chrome-3 font-display text-[1.1rem] text-white">
@@ -1949,7 +2010,7 @@ function AdminPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleTheme}
-                className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-paper px-3 py-1.5 text-xs font-mono font-medium text-ink transition hover:bg-ink hover:text-paper"
+                className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-paper px-3 py-1.5 text-xs font-mono font-medium text-ink transition hover:bg-ink hover:text-paper"
                 title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               >
                 {dark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}

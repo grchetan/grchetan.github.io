@@ -8,8 +8,10 @@ import { Rule } from "@/components/site/primitives";
 import { fallbackImages, type Entry } from "@/data/catalog";
 import { trackDownload } from "@/lib/content";
 import { cn } from "@/lib/utils";
-
+import { useCssReveal, useCssRevealCallback } from "@/hooks/use-css-reveal";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
+
+const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
 
 const routeFor: Record<Entry["kind"], string> = {
   project: "/projects/$slug",
@@ -21,17 +23,76 @@ const routeFor: Record<Entry["kind"], string> = {
 export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }) {
   const { reduced } = useMotionPreference();
   const cover = entry.images[0] ?? fallbackImages[index % fallbackImages.length]!;
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const staggerDelay = reduced ? 0 : (index % 3) * 0.1;
+  const cssRef = useCssReveal<HTMLElement>();
+
+  // On mobile: plain article + CSS animation — no JS motion overhead
+  if (IS_MOBILE) {
+    return (
+      <article
+        ref={cssRef}
+        data-reveal=""
+        data-delay={String(Math.min((index % 3) + 1, 4)) as "1" | "2" | "3" | "4"}
+        className="group flex h-full flex-col rounded-[var(--radius-lg)]"
+      >
+        <Link
+          to={routeFor[entry.kind]}
+          params={{ slug: entry.slug }}
+          className="flex h-full flex-col"
+          aria-label={`Open ${entry.title}`}
+        >
+          <AnimatedBorderTrail
+            duration={`${9 + (index % 3)}s`}
+            trailSize="md"
+            trailColor={index % 2 ? "var(--chrome-3)" : "var(--chrome-2)"}
+            className="h-full rounded-[var(--radius-lg)]"
+            contentClassName="plate flex h-full flex-col overflow-hidden"
+          >
+            <div className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30">
+              <ImageWithSkeleton
+                src={cover}
+                alt={`${entry.title} preview`}
+                className="w-full h-auto object-contain"
+                skeletonHeight="min-h-[220px]"
+              />
+            </div>
+            <div className="flex flex-1 flex-col p-5 sm:p-6">
+              <div className="flex items-center justify-between gap-3">
+                <span className="label">{entry.tag}</span>
+                <span className="caption">{entry.year}</span>
+              </div>
+              <h3 className="mt-3 text-[1.4rem] leading-tight text-ink">{entry.title}</h3>
+              <p className="mt-3 flex-1 text-[0.92rem] leading-[1.75] text-ink-soft">{entry.summary}</p>
+              <div className="mt-5 flex flex-wrap gap-1.5">
+                {entry.tech.slice(0, 4).map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
+                Read case
+                <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" strokeWidth={1.5} />
+              </span>
+            </div>
+          </AnimatedBorderTrail>
+        </Link>
+        <EntryLinks entry={entry} className="px-5 pt-4 sm:px-6" />
+      </article>
+    );
+  }
 
   return (
     <motion.article
-      initial={reduced ? false : isMobile ? { opacity: 0, y: 16 } : { opacity: 0, y: 30, scale: 0.97 }}
-      whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+      initial={reduced ? false : { opacity: 0, y: 30, scale: 0.97 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-30px", amount: 0.05 }}
       transition={{
         duration: reduced ? 0 : 0.6,
-        delay: isMobile ? 0 : staggerDelay,
+        delay: staggerDelay,
         ease: [0.22, 1, 0.36, 1],
       }}
       className="group flex h-full flex-col rounded-[var(--radius-lg)]"
@@ -69,34 +130,22 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
 
             {/* Tech tags — staggered reveal only on desktop */}
             <div className="mt-5 flex flex-wrap gap-1.5">
-              {entry.tech.slice(0, 4).map((t, ti) => {
-                if (isMobile) {
-                  return (
-                    <span
-                      key={t}
-                      className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
-                    >
-                      {t}
-                    </span>
-                  );
-                }
-                return (
-                  <motion.span
-                    key={t}
-                    initial={reduced ? false : { opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: reduced ? 0 : 0.4,
-                      delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
-                  >
-                    {t}
-                  </motion.span>
-                );
-              })}
+              {entry.tech.slice(0, 4).map((t, ti) => (
+                <motion.span
+                  key={t}
+                  initial={reduced ? false : { opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: reduced ? 0 : 0.4,
+                    delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                >
+                  {t}
+                </motion.span>
+              ))}
             </div>
 
             <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
@@ -232,7 +281,19 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
       {entries.map((entry, i) => {
         const flip = i % 2 === 1;
         const cover = entry.images[0] ?? fallbackImages[i % fallbackImages.length]!;
-        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+        // On mobile: plain elements + CSS animations
+        if (IS_MOBILE) {
+          return (
+            <MobileShowcaseItem
+              key={`${entry.kind}-${entry.slug}`}
+              entry={entry}
+              flip={flip}
+              cover={cover}
+              index={i}
+            />
+          );
+        }
 
         return (
           <motion.article
@@ -246,8 +307,8 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
             {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : isMobile ? { opacity: 0, y: 20 } : { opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+                initial={reduced ? false : { opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{
                   duration: reduced ? 0 : 0.75,
@@ -279,7 +340,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
               </motion.div>
             </div>
 
-            {/* Text panel — simple slide-in (works on both mobile & desktop) */}
+            {/* Text panel */}
             <motion.div
               className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
               initial={reduced ? false : { opacity: 0, y: 20 }}
@@ -297,10 +358,8 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                 {entry.status ? <span className="caption">{entry.status}</span> : null}
               </div>
               <Rule className="mt-3" />
-
               <h3 className="mt-5 text-[clamp(1.7rem,3.2vw,2.5rem)] leading-[1.05] text-ink">{entry.title}</h3>
               <p className="mt-4 text-[0.95rem] leading-[1.8] text-ink-soft">{entry.summary}</p>
-
               <dl className="mt-6 space-y-3">
                 <div className="flex gap-5 border-t border-ink/10 pt-3">
                   <dt className="label w-16 shrink-0 pt-1">Tech</dt>
@@ -313,7 +372,6 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                   </div>
                 ) : null}
               </dl>
-
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
                   Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
@@ -325,6 +383,81 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
         );
       })}
     </div>
+  );
+}
+
+/** Showcase item for mobile — plain HTML + CSS reveal animation, zero motion/react */
+function MobileShowcaseItem({
+  entry,
+  flip,
+  cover,
+  index,
+}: {
+  entry: Entry;
+  flip: boolean;
+  cover: string;
+  index: number;
+}) {
+  const articleRef = useCssReveal<HTMLElement>();
+  return (
+    <article
+      ref={articleRef}
+      data-reveal=""
+      data-delay={String(Math.min(index + 1, 4)) as "1" | "2" | "3" | "4"}
+      className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
+    >
+      <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
+        <Link
+          to={routeFor[entry.kind]}
+          params={{ slug: entry.slug }}
+          aria-label={`Open ${entry.title}`}
+          className="group block rounded-[var(--radius-lg)]"
+        >
+          <AnimatedBorderTrail
+            duration={`${8 + (index % 3)}s`}
+            trailSize="md"
+            trailColor={index % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
+            className="overflow-hidden rounded-[var(--radius-lg)]"
+            contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
+          >
+            <ImageWithSkeleton
+              src={cover}
+              alt={`${entry.title} preview`}
+              className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
+              skeletonHeight="min-h-[300px]"
+            />
+          </AnimatedBorderTrail>
+        </Link>
+      </div>
+      <div className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <span className="label">{entry.tag}</span>
+          <span className="caption">{entry.year}</span>
+          {entry.status ? <span className="caption">{entry.status}</span> : null}
+        </div>
+        <Rule className="mt-3" />
+        <h3 className="mt-5 text-[clamp(1.7rem,3.2vw,2.5rem)] leading-[1.05] text-ink">{entry.title}</h3>
+        <p className="mt-4 text-[0.95rem] leading-[1.8] text-ink-soft">{entry.summary}</p>
+        <dl className="mt-6 space-y-3">
+          <div className="flex gap-5 border-t border-ink/10 pt-3">
+            <dt className="label w-16 shrink-0 pt-1">Tech</dt>
+            <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
+          </div>
+          {entry.features.length ? (
+            <div className="flex gap-5 border-t border-ink/10 pt-3">
+              <dt className="label w-16 shrink-0 pt-1">Built</dt>
+              <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
+            </div>
+          ) : null}
+        </dl>
+        <div className="mt-7 flex flex-wrap items-center gap-3">
+          <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
+            Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
+          </ShinyButton>
+          <EntryLinks entry={entry} />
+        </div>
+      </div>
+    </article>
   );
 }
 

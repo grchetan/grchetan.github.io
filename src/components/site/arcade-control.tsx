@@ -1208,7 +1208,7 @@ export function ArcadeControlManager() {
 
         {/* Contest Archives / Results History */}
         <div className="mt-8 border-t border-ink/10 pt-6">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <span className="label text-amber-500">Hall of Fame</span>
               <h3 className="text-lg font-display text-ink mt-1">Archived Contest Results & Winners</h3>
@@ -1220,41 +1220,39 @@ export function ArcadeControlManager() {
             <div className="mt-4 grid gap-4">
               {(config.contestArchives ?? []).map((arch) => (
                 <div key={arch.version} className="rounded-2xl border border-ink/12 bg-paper p-4 sm:p-5">
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink/10 pb-3">
-                    <div className="flex items-center justify-between gap-4 w-full">
-                      <div>
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 font-mono text-[0.7rem] font-bold text-amber-400">
-                          🏆 Contest {arch.version}
-                        </span>
-                        <h4 className="mt-1 font-display text-base font-bold text-ink">{arch.title}</h4>
+                  <div className="flex flex-col gap-3 border-b border-ink/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 font-mono text-[0.7rem] font-bold text-amber-400">
+                        🏆 Contest {arch.version}
+                      </span>
+                      <h4 className="mt-1 font-display text-base font-bold text-ink">{arch.title}</h4>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 sm:justify-end">
+                      <div className="font-mono text-xs text-ink-soft">
+                        <p>{arch.totalRegistrations} Participants Registered</p>
+                        <p className="text-[0.68rem] text-ink-soft/70">Ended: {new Date(arch.endedAt).toLocaleDateString()}</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="font-mono text-xs text-ink-soft text-right">
-                          <p>{arch.totalRegistrations} Participants Registered</p>
-                          <p className="text-[0.68rem] text-ink-soft/70">Ended: {new Date(arch.endedAt).toLocaleDateString()}</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => void deleteContestArchive(arch.version)}
-                          disabled={busy}
-                          className="p-2 rounded-xl border border-destructive/20 text-destructive hover:bg-destructive/10 transition-all"
-                          title={`Delete archived results for ${arch.version}`}
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void deleteContestArchive(arch.version)}
+                        disabled={busy}
+                        className="p-2 rounded-xl border border-destructive/20 text-destructive hover:bg-destructive/10 transition-all"
+                        title={`Delete archived results for ${arch.version}`}
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
                     </div>
                   </div>
 
-                  <div className="mt-3 overflow-x-auto">
-                    <table className="w-full text-left font-sans text-xs">
+                  <div className="mt-3 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <table className="w-full min-w-[480px] text-left font-sans text-xs">
                       <thead>
                         <tr className="font-mono uppercase text-[0.65rem] tracking-wider text-ink-soft border-b border-ink/10">
-                          <th className="py-2">Rank</th>
-                          <th className="py-2">Player</th>
-                          <th className="py-2">Score</th>
-                          <th className="py-2">Accuracy</th>
-                          <th className="py-2 text-right">Certificate</th>
+                          <th className="py-2 pr-3 w-8">Rank</th>
+                          <th className="py-2 pr-3">Player</th>
+                          <th className="py-2 pr-3 w-20">Score</th>
+                          <th className="py-2 pr-3 w-20">Accuracy</th>
+                          <th className="py-2 text-right w-24">Certificate</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-ink/10">
@@ -1262,12 +1260,12 @@ export function ArcadeControlManager() {
                           const tier = tierFor(w.rank);
                           return (
                             <tr key={w.rank}>
-                              <td className="py-2 font-mono font-bold">
+                              <td className="py-2 pr-3 font-mono font-bold whitespace-nowrap">
                                 {w.rank === 1 ? "🥇 1st" : w.rank === 2 ? "🥈 2nd" : w.rank === 3 ? "🥉 3rd" : `#${w.rank}`}
                               </td>
-                              <td className="py-2 font-semibold text-ink">{w.name} ({w.handle})</td>
-                              <td className="py-2 font-mono font-bold text-amber-400">{Math.round(w.score).toLocaleString()}</td>
-                              <td className="py-2 font-mono text-ink-soft">{Math.round(w.accuracy)}%</td>
+                              <td className="py-2 pr-3 font-semibold text-ink">{w.name} <span className="text-ink-soft font-normal">({w.handle})</span></td>
+                              <td className="py-2 pr-3 font-mono font-bold text-amber-400 tabular-nums">{Math.round(w.score).toLocaleString()}</td>
+                              <td className="py-2 pr-3 font-mono text-ink-soft tabular-nums">{Math.round(w.accuracy)}%</td>
                               <td className="py-2 text-right">
                                 {tier ? (
                                   <button
@@ -1327,8 +1325,8 @@ export function ArcadeControlManager() {
         </div>
 
         {/* Tab Bar + Search Input */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="inline-flex rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs gap-1">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="grid grid-cols-2 gap-1 rounded-2xl border border-ink/12 bg-paper/80 p-1.5 shadow-xs sm:inline-flex sm:gap-1">
             {(["weekly", "lifetime", "contest", "audit"] as const).map((t) => (
               <button
                 key={t}
@@ -1339,14 +1337,15 @@ export function ArcadeControlManager() {
                   setExpandedPlayerId(null); // Clear expanded view
                 }}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] font-semibold transition-all",
+                  "flex items-center justify-center gap-1.5 rounded-xl px-3 py-2 font-mono text-[0.65rem] uppercase tracking-[0.14em] font-semibold transition-all sm:py-1.5",
                   lbTab === t
                     ? t === "weekly" ? "bg-blue-500 text-white shadow-xs" : t === "contest" ? "bg-amber-500 text-slate-950 shadow-xs" : t === "audit" ? "bg-emerald-500 text-white shadow-xs" : "bg-ink text-paper shadow-xs"
                     : "text-ink-soft hover:text-ink hover:bg-ink/5"
                 )}
               >
                 {t === "weekly" ? <Zap className="size-3" /> : t === "lifetime" ? <Star className="size-3" /> : t === "contest" ? <Swords className="size-3" /> : <History className="size-3" />}
-                {t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Player Search & History"}
+                <span className="hidden sm:inline">{t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Player Search & History"}</span>
+                <span className="sm:hidden">{t === "weekly" ? "Weekly" : t === "lifetime" ? "Lifetime" : t === "contest" ? "Contest" : "Search"}</span>
               </button>
             ))}
           </div>
@@ -1513,7 +1512,7 @@ export function ArcadeControlManager() {
         {/* Leaderboard Table / Player Search Table */}
         {lbTab === "audit" ? (
           <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/12 bg-paper-tint/30">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full min-w-[640px] text-left border-collapse">
               <thead>
                 <tr className="border-b border-ink/10 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft">
                   <th className="p-3">Player</th>

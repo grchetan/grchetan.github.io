@@ -58,6 +58,13 @@
   scrollbar-color: var(--chrome-1) transparent;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 @theme inline {
   --radius-sm: 0.5rem;
   --radius-md: 0.85rem;
@@ -453,6 +460,30 @@
   transform-origin: left;
   animation: ruleIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* ---- CSS-native reveal animation (used on mobile instead of JS motion) ---- */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Elements start invisible; when JS adds [data-visible], they animate in */
+[data-reveal] {
+  opacity: 0;
+}
+[data-reveal][data-visible] {
+  animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+[data-reveal][data-visible][data-delay="1"] { animation-delay: 0.08s; }
+[data-reveal][data-visible][data-delay="2"] { animation-delay: 0.16s; }
+[data-reveal][data-visible][data-delay="3"] { animation-delay: 0.24s; }
+[data-reveal][data-visible][data-delay="4"] { animation-delay: 0.32s; }
 
 @keyframes floatSlow {
   0%,
