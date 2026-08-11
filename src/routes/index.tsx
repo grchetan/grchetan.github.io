@@ -53,8 +53,7 @@ function Home() {
 
   const pick = (list: typeof projects = []) => {
     const arr = list ?? [];
-    const featured = arr.filter((e) => Boolean(e?.featured));
-    return featured.slice(0, 3);
+    return arr.filter((e) => Boolean(e?.featured));
   };
 
   return (
@@ -80,7 +79,7 @@ function Home() {
         <SectionHeading
           eyebrow="Selected work"
           figure="05"
-          title="Three builds worth your time."
+          title="Selected builds worth your time."
           description="Product and personal builds. Each one has a full case page: problem, what I built, tech and screens."
         />
         <EntryShowcase entries={pick(projects)} isLoading={projectsQuery.isLoading} className="mt-12" />
