@@ -31,20 +31,27 @@ function normalise(raw: Record<string, unknown>, id: string): Entry {
   };
 }
 
-/** Firestore entries when configured. Demo data is removed completely. */
+/**
+ * Fetches entries from Firestore when Firebase is configured.
+ * - Firebase NOT configured (local dev): returns local placeholder data so the UI isn't empty.
+ * - Firebase IS configured: returns ONLY real Firestore entries. Never falls back to local demo
+ *   data so that mock projects never appear on the live portfolio.
+ */
 export async function fetchEntries(kind: Entry["kind"]): Promise<Entry[]> {
-  const local = entriesFor(kind);
-  if (!isFirebaseConfigured) return local;
+  // Local / offline dev — show placeholder data so the UI is not blank
+  if (!isFirebaseConfigured) return entriesFor(kind);
+
   try {
     const db = await getDb();
     const { collection, getDocs } = await import("firebase/firestore");
     const snap = await getDocs(collection(db, COLLECTION));
     const allRemote = snap.docs.map((d) => normalise(d.data() as Record<string, unknown>, d.id));
-    const matched = allRemote.filter((e) => (e.kind ? e.kind === kind : kind === "project"));
-    return matched.length ? matched : local;
+    // Return real data (possibly empty — that's intentional; no demo fallback)
+    return allRemote.filter((e) => (e.kind ? e.kind === kind : kind === "project"));
   } catch (err) {
     console.error("[Content] Error fetching entries from Firestore:", err);
-    return local;
+    // On error, return empty so demo data never leaks into production
+    return [];
   }
 }
 
@@ -53,6 +60,8 @@ export function useEntries(kind: Entry["kind"]) {
     queryKey: ["entries", kind],
     queryFn: () => fetchEntries(kind),
     staleTime: 0,
+    retry: 1,
+    retryDelay: 2000,
   });
 }
 
@@ -61,6 +70,8 @@ export function useEntry(kind: Entry["kind"], slug: string) {
     queryKey: ["entry", kind, slug],
     queryFn: async () => (await fetchEntries(kind)).find((e) => e.slug === slug) ?? null,
     staleTime: 0,
+    retry: 1,
+    retryDelay: 2000,
   });
 }
 

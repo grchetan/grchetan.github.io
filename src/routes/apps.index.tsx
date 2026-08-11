@@ -27,7 +27,7 @@ export const Route = createFileRoute("/apps/")({
 });
 
 function AppsPage() {
-  const { data, isLoading } = useEntries("app");
+  const { data, isFetching } = useEntries("app");
   const entries = data ?? [];
   const [tag, setTag] = useState("All");
   const tags = useMemo(() => ["All", ...new Set((entries ?? []).map((e) => e.tag))], [entries]);
@@ -57,7 +57,7 @@ function AppsPage() {
             </button>
           ))}
         </div>
-        <EntryShowcase entries={filtered} isLoading={isLoading} className="mt-10" />
+        <EntryShowcase entries={filtered} isLoading={isFetching} className="mt-10" />
       </Section>
     </SiteShell>
   );
