@@ -340,7 +340,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     <ImageWithSkeleton
                       src={cover}
                       alt={`${entry.title} preview`}
-                      className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                       skeletonHeight="min-h-[300px]"
                     />
                   </AnimatedBorderTrail>
@@ -431,7 +431,7 @@ function MobileShowcaseItem({
             <ImageWithSkeleton
               src={cover}
               alt={`${entry.title} preview`}
-              className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
+              className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover"
               skeletonHeight="min-h-[300px]"
             />
           </AnimatedBorderTrail>
@@ -514,7 +514,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
               <ImageWithSkeleton
                 src={src}
                 alt={`${entry.title} screen ${i + 1}`}
-                className="mx-auto max-h-[520px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
+                className="w-full max-h-[520px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover"
                 skeletonHeight="min-h-[320px]"
               />
             </motion.figure>

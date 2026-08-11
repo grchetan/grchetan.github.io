@@ -1219,7 +1219,7 @@ export function ArcadeControlManager() {
           {(config.contestArchives ?? []).length > 0 ? (
             <div className="mt-4 grid gap-4">
               {(config.contestArchives ?? []).map((arch) => (
-                <div key={arch.version} className="rounded-2xl border border-ink/12 bg-paper p-4 sm:p-5">
+                <div key={arch.version} className="rounded-2xl border border-ink/12 bg-paper p-4 sm:p-5 min-w-0 overflow-hidden">
                   <div className="flex flex-col gap-3 border-b border-ink/10 pb-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 font-mono text-[0.7rem] font-bold text-amber-400">
@@ -1842,7 +1842,7 @@ export function ArcadeControlManager() {
           </div>
         ) : (
           <div className="mt-4 overflow-x-auto rounded-2xl border border-ink/12 bg-paper-tint/30">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[560px]">
               <thead>
                 <tr className="border-b border-ink/10 font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft">
                   <th className="p-3">Rank</th>
