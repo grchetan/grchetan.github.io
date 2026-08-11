@@ -1,5 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
+
+// Keep version state global so it persists across page navigations (remounts of SiteShell)
+let globalVersion: string | null = null;
+let globalIsReloading = false;
 
 /**
  * Background watcher that polls version.json.
@@ -7,9 +11,6 @@ import { toast } from 'sonner';
  * detects the new version and reloads the browser to bust stale caches.
  */
 export function VersionWatcher() {
-  const currentVersion = useRef<string | null>(null);
-  const isReloading = useRef(false);
-
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -26,13 +27,13 @@ export function VersionWatcher() {
         const data = (await res.json()) as { version?: string };
         if (!data.version) return;
 
-        if (!currentVersion.current) {
-          currentVersion.current = data.version;
+        if (!globalVersion) {
+          globalVersion = data.version;
         } else if (
-          currentVersion.current !== data.version &&
-          !isReloading.current
+          globalVersion !== data.version &&
+          !globalIsReloading
         ) {
-          isReloading.current = true;
+          globalIsReloading = true;
           toast.info('New website update available. Applying changes…', {
             duration: 4000,
           });
@@ -67,3 +68,4 @@ export function VersionWatcher() {
 
   return null;
 }
+

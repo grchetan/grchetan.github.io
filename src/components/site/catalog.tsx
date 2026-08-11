@@ -307,13 +307,21 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
             {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : { opacity: 0, y: 40, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={reduced ? false : { opacity: 0, y: 40, rotate: flip ? 4.5 : -4.5, scale: 0.94 }}
+                whileInView={{ opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{
                   duration: reduced ? 0 : 0.75,
                   ease: [0.22, 1, 0.36, 1],
                 }}
+                {...(reduced ? {} : {
+                  whileHover: {
+                    rotate: 0,
+                    scale: 1.02,
+                    y: -8,
+                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+                  }
+                })}
                 className="will-change-transform"
               >
                 <Link
