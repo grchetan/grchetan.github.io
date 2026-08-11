@@ -340,7 +340,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     <ImageWithSkeleton
                       src={cover}
                       alt={`${entry.title} preview`}
-                      className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                       skeletonHeight="min-h-[300px]"
                     />
                   </AnimatedBorderTrail>
@@ -431,7 +431,7 @@ function MobileShowcaseItem({
             <ImageWithSkeleton
               src={cover}
               alt={`${entry.title} preview`}
-              className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover"
+              className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
               skeletonHeight="min-h-[300px]"
             />
           </AnimatedBorderTrail>
@@ -514,7 +514,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
               <ImageWithSkeleton
                 src={src}
                 alt={`${entry.title} screen ${i + 1}`}
-                className="w-full max-h-[520px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-cover"
+                className="w-full max-h-[520px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
                 skeletonHeight="min-h-[320px]"
               />
             </motion.figure>
@@ -524,26 +524,32 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
         {/* narrative */}
         <div className="mt-16 grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <section>
-              <span className="label">About this build</span>
-              <Rule className="mt-3" />
-              <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.about}</p>
-            </section>
+            {entry.about?.trim() ? (
+              <section>
+                <span className="label">About this build</span>
+                <Rule className="mt-3" />
+                <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.about}</p>
+              </section>
+            ) : null}
 
-            <section className="mt-12">
-              <span className="label">The problem</span>
-              <Rule className="mt-3" />
-              <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.problem}</p>
-            </section>
+            {entry.problem?.trim() ? (
+              <section className={cn(entry.about?.trim() ? "mt-12" : "")}>
+                <span className="label">The problem</span>
+                <Rule className="mt-3" />
+                <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.problem}</p>
+              </section>
+            ) : null}
 
-            <section className="mt-12">
-              <span className="label">What I built</span>
-              <Rule className="mt-3" />
-              <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.solution}</p>
-            </section>
+            {entry.solution?.trim() ? (
+              <section className={cn((entry.about?.trim() || entry.problem?.trim()) ? "mt-12" : "")}>
+                <span className="label">What I built</span>
+                <Rule className="mt-3" />
+                <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.solution}</p>
+              </section>
+            ) : null}
 
-            {entry.result ? (
-              <section className="mt-12">
+            {entry.result?.trim() ? (
+              <section className={cn((entry.about?.trim() || entry.problem?.trim() || entry.solution?.trim()) ? "mt-12" : "")}>
                 <span className="label">Result</span>
                 <Rule className="mt-3" />
                 <p className="mt-5 text-[1rem] leading-[1.9] text-ink">{entry.result}</p>
