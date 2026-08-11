@@ -368,18 +368,22 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
               <Rule className="mt-3" />
               <h3 className="mt-5 text-[clamp(1.7rem,3.2vw,2.5rem)] leading-[1.05] text-ink">{entry.title}</h3>
               <p className="mt-4 text-[0.95rem] leading-[1.8] text-ink-soft">{entry.summary}</p>
-              <dl className="mt-6 space-y-3">
-                <div className="flex gap-5 border-t border-ink/10 pt-3">
-                  <dt className="label w-16 shrink-0 pt-1">Tech</dt>
-                  <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
-                </div>
-                {entry.features.length ? (
-                  <div className="flex gap-5 border-t border-ink/10 pt-3">
-                    <dt className="label w-16 shrink-0 pt-1">Built</dt>
-                    <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
-                  </div>
-                ) : null}
-              </dl>
+              {entry.tech.length > 0 || entry.features.length > 0 ? (
+                <dl className="mt-6 space-y-3">
+                  {entry.tech.length > 0 ? (
+                    <div className="flex gap-5 border-t border-ink/10 pt-3">
+                      <dt className="label w-16 shrink-0 pt-1">Tech</dt>
+                      <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
+                    </div>
+                  ) : null}
+                  {entry.features.length > 0 ? (
+                    <div className="flex gap-5 border-t border-ink/10 pt-3">
+                      <dt className="label w-16 shrink-0 pt-1">Built</dt>
+                      <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              ) : null}
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
                   Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
@@ -446,18 +450,22 @@ function MobileShowcaseItem({
         <Rule className="mt-3" />
         <h3 className="mt-5 text-[clamp(1.7rem,3.2vw,2.5rem)] leading-[1.05] text-ink">{entry.title}</h3>
         <p className="mt-4 text-[0.95rem] leading-[1.8] text-ink-soft">{entry.summary}</p>
-        <dl className="mt-6 space-y-3">
-          <div className="flex gap-5 border-t border-ink/10 pt-3">
-            <dt className="label w-16 shrink-0 pt-1">Tech</dt>
-            <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
-          </div>
-          {entry.features.length ? (
-            <div className="flex gap-5 border-t border-ink/10 pt-3">
-              <dt className="label w-16 shrink-0 pt-1">Built</dt>
-              <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
-            </div>
-          ) : null}
-        </dl>
+        {entry.tech.length > 0 || entry.features.length > 0 ? (
+          <dl className="mt-6 space-y-3">
+            {entry.tech.length > 0 ? (
+              <div className="flex gap-5 border-t border-ink/10 pt-3">
+                <dt className="label w-16 shrink-0 pt-1">Tech</dt>
+                <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
+              </div>
+            ) : null}
+            {entry.features.length > 0 ? (
+              <div className="flex gap-5 border-t border-ink/10 pt-3">
+                <dt className="label w-16 shrink-0 pt-1">Built</dt>
+                <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : null}
         <div className="mt-7 flex flex-wrap items-center gap-3">
           <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
             Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
@@ -474,6 +482,11 @@ function MobileShowcaseItem({
 export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo: string; backLabel: string }) {
   const { reduced } = useMotionPreference();
   const images = entry.images.length ? entry.images : [fallbackImages[0]!];
+
+  const hasTech = entry.tech && entry.tech.length > 0;
+  const hasFeatures = entry.features && entry.features.length > 0;
+  const hasLinks = !!(entry.liveUrl || entry.repoUrl || (entry.kind === "app" ? entry.downloadUrl : undefined));
+  const hasSidebarCard = hasTech || hasFeatures || hasLinks;
 
   return (
     <div className="relative z-10 px-5 pb-24 sm:px-8 lg:px-14">
@@ -558,33 +571,44 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
           </div>
 
           <aside className="lg:col-span-5">
-            <div className="plate-tint p-6">
-              <span className="label">Tech used</span>
-              <Rule className="mt-3" />
-              <div className="mt-4 flex flex-wrap gap-2">
-                {entry.tech.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-ink/15 bg-ink/[0.04] px-3 py-1.5 font-mono text-[0.68rem] tracking-[0.06em] text-ink"
-                  >
-                    {t}
-                  </span>
-                ))}
+            {hasSidebarCard ? (
+              <div className="plate-tint p-6">
+                {hasTech ? (
+                  <>
+                    <span className="label">Tech used</span>
+                    <Rule className="mt-3" />
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {entry.tech.map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-full border border-ink/15 bg-ink/[0.04] px-3 py-1.5 font-mono text-[0.68rem] tracking-[0.06em] text-ink"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+
+                {hasFeatures ? (
+                  <>
+                    <span className={cn("label block", hasTech ? "mt-8" : "")}>Features</span>
+                    <Rule className="mt-3" />
+                    <ul className="mt-3">
+                      {entry.features.map((f) => (
+                        <li key={f} className="border-b border-ink/10 py-3 text-[0.92rem] text-ink-soft last:border-b-0">
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : null}
+
+                {hasLinks ? (
+                  <EntryLinks entry={entry} className={cn(hasTech || hasFeatures ? "mt-7" : "")} solidFirst />
+                ) : null}
               </div>
-
-              <span className="label mt-8 block">Features</span>
-              <Rule className="mt-3" />
-              <ul className="mt-3">
-                {entry.features.map((f) => (
-                  <li key={f} className="border-b border-ink/10 py-3 text-[0.92rem] text-ink-soft last:border-b-0">
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <EntryLinks entry={entry} className="mt-7" solidFirst />
-
-            </div>
+            ) : null}
 
             <div className="plate-tint mt-6 p-6">
               <span className="label">Want something like this?</span>
