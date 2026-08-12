@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Loader2, ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LiquidImage } from "@/components/webgl/LiquidImage";
 
 interface ImageWithSkeletonProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   wrapperClassName?: string;
@@ -17,6 +18,8 @@ export function ImageWithSkeleton({
 }: ImageWithSkeletonProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
+
+  if (!src) return null;
 
   return (
     <div className={cn("relative overflow-hidden w-full", wrapperClassName)}>
@@ -46,23 +49,17 @@ export function ImageWithSkeleton({
         </div>
       )}
 
-      {/* Main Image */}
-      <img
+      {/* Main WebGL Liquid Image */}
+      <LiquidImage
         src={src}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
+        alt={alt || ""}
+        className={className}
+        skeletonHeight={skeletonHeight}
         onLoad={() => setLoaded(true)}
         onError={() => {
           setLoaded(true);
           setError(true);
         }}
-        className={cn(
-          "w-full h-auto transition-all duration-700 ease-out",
-          !loaded ? "opacity-0 scale-95" : "opacity-100 scale-100",
-          className
-        )}
-        {...props}
       />
     </div>
   );
