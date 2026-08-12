@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import buildVersionData from '../../../version.json';
 
-// Keep version state global so it persists across page navigations (remounts of SiteShell)
-let globalVersion: string | null = null;
+const BUNDLE_VERSION = buildVersionData.version;
+let globalVersion: string = BUNDLE_VERSION;
 let globalIsReloading = false;
 
 /**
  * Background watcher that polls version.json.
- * When a new deployment build is deployed to production, it automatically
- * detects the new version and reloads the browser to bust stale caches.
+ * Detects if server has a newer version than the current JS bundle / cache.
+ * Displays a toast message and automatically reloads the browser fast.
  */
 export function VersionWatcher() {
   useEffect(() => {
@@ -27,19 +28,17 @@ export function VersionWatcher() {
         const data = (await res.json()) as { version?: string };
         if (!data.version) return;
 
-        if (!globalVersion) {
-          globalVersion = data.version;
-        } else if (
-          globalVersion !== data.version &&
-          !globalIsReloading
-        ) {
+        if (data.version !== globalVersion && !globalIsReloading) {
           globalIsReloading = true;
-          toast.info('New website update available. Applying changes…', {
-            duration: 4000,
+          toast.success(`⚡ New update v${data.version} deployed!`, {
+            description: "Updating website automatically to load the latest changes…",
+            duration: 3000,
+            position: "bottom-right",
           });
+
           setTimeout(() => {
             window.location.reload();
-          }, 1200);
+          }, 800);
         }
       } catch {
         /* silent catch network errors */
@@ -48,9 +47,10 @@ export function VersionWatcher() {
 
     void checkVersion();
 
+    // Poll fast every 15 seconds for rapid update detection
     timer = setInterval(() => {
       void checkVersion();
-    }, 60000);
+    }, 15000);
 
     const onFocus = () => void checkVersion();
     window.addEventListener('focus', onFocus);
