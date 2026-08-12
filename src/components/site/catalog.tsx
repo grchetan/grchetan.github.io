@@ -281,6 +281,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
       {entries.map((entry, i) => {
         const flip = i % 2 === 1;
         const cover = entry.images[0] ?? fallbackImages[i % fallbackImages.length]!;
+        const isApp = entry.kind === "app";
 
         return (
           <motion.article
@@ -292,13 +293,13 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
             className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
           >
             {/* Image plate */}
-            <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
+            <div className={cn(isApp ? "lg:col-span-5 flex justify-center" : "lg:col-span-7", flip ? "lg:order-2 lg:col-start-8" : "")}>
               <motion.div
                 initial={reduced ? { opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 } : { opacity: 0, y: 40, rotate: flip ? 4.5 : -4.5, scale: 0.94 }}
                 whileInView={{ opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 }}
                 viewport={{ once: true, margin: "-70px" }}
                 transition={{ duration: reduced ? 0 : 1, ease: [0.16, 1, 0.3, 1] }}
-                className="will-change-transform"
+                className={cn("will-change-transform", isApp ? "max-w-[340px] w-full" : "w-full")}
                 {...(reduced ? {} : { whileHover: { rotate: 0, scale: 1.015, y: -6 } })}
               >
                 <Link
@@ -312,13 +313,16 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     trailSize="lg"
                     trailColor={flip ? "var(--chrome-3)" : "var(--chrome-2)"}
                     className="overflow-hidden rounded-[var(--radius-lg)]"
-                    contentClassName="plate overflow-hidden p-2"
+                    contentClassName="plate overflow-hidden p-2 flex justify-center items-center"
                   >
                     <ImageWithSkeleton
                       src={cover}
                       alt={`${entry.title} preview`}
-                      className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                      skeletonHeight="min-h-[300px]"
+                      className={cn(
+                        "mx-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]",
+                        isApp ? "max-h-[560px] aspect-[9/18.5] w-auto" : "max-h-[480px] w-auto"
+                      )}
+                      skeletonHeight={isApp ? "min-h-[400px]" : "min-h-[300px]"}
                     />
                   </AnimatedBorderTrail>
                 </Link>
@@ -327,7 +331,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
 
             {/* Text panel */}
             <motion.div
-              className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
+              className={cn("min-w-0", isApp ? "lg:col-span-7" : "lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
               initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-70px" }}
