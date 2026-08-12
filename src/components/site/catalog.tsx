@@ -411,7 +411,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
         <p className="mt-6 max-w-2xl text-[1.05rem] leading-[1.85] text-ink-soft">{entry.summary}</p>
 
         {/* gallery */}
-        <div className={cn("mt-12 grid gap-8", entry.kind === "app" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto" : "grid-cols-1")}>
+        <div className={cn("mt-12 grid gap-8 justify-items-center", entry.kind === "app" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto" : "grid-cols-1")}>
           {images.map((src, i) => (
             <motion.figure
               key={`${src}-${i}`}
@@ -419,16 +419,16 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: reduced ? 0 : 0.8, delay: i * 0.08 }}
-              className="plate overflow-hidden p-2 flex justify-center items-center"
+              className={cn("plate overflow-hidden p-2 flex justify-center items-center", entry.kind === "app" ? "max-w-[320px] w-full" : "w-full")}
             >
               <ImageWithSkeleton
                 src={src}
                 alt={`${entry.title} screen ${i + 1}`}
                 className={cn(
                   "mx-auto h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain",
-                  entry.kind === "app" ? "max-h-[560px] aspect-[9/18.5] w-auto" : "max-h-[640px] w-auto"
+                  entry.kind === "app" ? "max-h-[580px] aspect-[9/18.5] w-full" : "max-h-[640px] w-auto"
                 )}
-                skeletonHeight={entry.kind === "app" ? "min-h-[380px]" : "min-h-[320px]"}
+                skeletonHeight={entry.kind === "app" ? "min-h-[420px]" : "min-h-[320px]"}
               />
             </motion.figure>
           ))}
