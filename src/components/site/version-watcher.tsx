@@ -45,23 +45,35 @@ export function VersionWatcher() {
       }
     };
 
-    void checkVersion();
-
-    // Poll fast every 15 seconds for rapid update detection
-    timer = setInterval(() => {
-      void checkVersion();
-    }, 15000);
-
-    const onFocus = () => void checkVersion();
-    window.addEventListener('focus', onFocus);
-    const onVisibilityChange = () => {
-      if (document.visibilityState === 'visible') void checkVersion();
+    const startTimer = () => {
+      stopTimer();
+      timer = setInterval(() => {
+        if (document.visibilityState === 'visible') {
+          void checkVersion();
+        }
+      }, 30000);
     };
+
+    const stopTimer = () => {
+      if (timer) clearInterval(timer);
+    };
+
+    void checkVersion();
+    startTimer();
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void checkVersion();
+        startTimer();
+      } else {
+        stopTimer();
+      }
+    };
+
     document.addEventListener('visibilitychange', onVisibilityChange);
 
     return () => {
-      clearInterval(timer);
-      window.removeEventListener('focus', onFocus);
+      stopTimer();
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
