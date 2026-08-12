@@ -4,9 +4,9 @@ export const LiquidImageShader = {
   uniforms: {
     uTexture: { value: null },
     uTime: { value: 0 },
-    uStrength: { value: 0.9 },
-    uHoverStrength: { value: 1.8 },
-    uRippleStrength: { value: 1.4 },
+    uStrength: { value: 0.7 },
+    uHoverStrength: { value: 1.5 },
+    uRippleStrength: { value: 1.2 },
     uMouse: { value: new THREE.Vector2(0.5, 0.5) },
     uPreviousMouse: { value: new THREE.Vector2(0.5, 0.5) },
     uMouseVelocity: { value: new THREE.Vector2(0, 0) },
@@ -37,7 +37,7 @@ export const LiquidImageShader = {
 
     varying vec2 vUv;
 
-    // 2D Simplex Noise generator for rich organic water liquid distortion
+    // 2D Simplex Noise generator for organic liquid water surface distortion
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
     float snoise(vec2 v) {
@@ -67,46 +67,42 @@ export const LiquidImageShader = {
     }
 
     void main() {
-      // Cover-fit UV aspect ratio mapping calculations
-      vec2 s = uResolution;
-      vec2 i = uImageBounds;
-      float rs = s.x / s.y;
-      float ri = i.x / i.y;
-      vec2 newUv = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
-      vec2 offset = (rs < ri ? vec2((newUv.x - s.x) / 2.0, 0.0) : vec2(0.0, (newUv.y - s.y) / 2.0)) / newUv;
-      vec2 uv = vUv * s / newUv + offset;
+      // Direct 1:1 UV mapping — Displays FULL image completely without any cropping or zooming
+      vec2 uv = vUv;
 
-      // 1. Edge Pinning Mask (Pins the outer borders to div card corners so water only ripples INSIDE)
-      float edgeX = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
-      float edgeY = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
+      // 1. Edge Pinning Mask (Pins borders to div card corners so water stays inside)
+      float edgeX = smoothstep(0.0, 0.06, vUv.x) * smoothstep(1.0, 0.94, vUv.x);
+      float edgeY = smoothstep(0.0, 0.06, vUv.y) * smoothstep(1.0, 0.94, vUv.y);
       float edgeFactor = edgeX * edgeY;
 
-      // 2. Aspect-corrected mouse distance & localized water ripple radius
-      vec2 aspectUv = uv * vec2(s.x / s.y, 1.0);
-      vec2 aspectMouse = uMouse * vec2(s.x / s.y, 1.0);
+      // 2. Compact Localized Cursor Water Touch Radius
+      vec2 aspectUv = uv * vec2(uResolution.x / uResolution.y, 1.0);
+      vec2 aspectMouse = uMouse * vec2(uResolution.x / uResolution.y, 1.0);
       float distToMouse = distance(aspectUv, aspectMouse);
-      float cursorRadius = smoothstep(0.55, 0.0, distToMouse);
+      
+      // Focused water ripple directly around mouse cursor
+      float cursorRadius = smoothstep(0.25, 0.0, distToMouse);
 
-      // 3. Multi-frequency Organic Water Wave Simulation
-      float wave1 = snoise(uv * 4.5 + vec2(uTime * 0.6, uTime * 0.5));
-      float wave2 = snoise(uv * 9.0 - vec2(uTime * 0.8, uTime * 0.7));
-      float organicWater = (wave1 * 0.6 + wave2 * 0.4);
+      // 3. Fluid Water Wave Surface Displacement
+      float wave1 = snoise(uv * 7.0 + vec2(uTime * 0.7, uTime * 0.6));
+      float wave2 = snoise(uv * 12.0 - vec2(uTime * 0.9, uTime * 0.8));
+      float organicWater = (wave1 * 0.65 + wave2 * 0.35);
 
-      // 4. Mouse Velocity Vector & Directional Water Push
+      // 4. Directional Cursor Water Velocity Push
       float mouseSpeed = length(uMouseVelocity);
       vec2 mouseDirection = mouseSpeed > 0.0001 ? normalize(uMouseVelocity) : vec2(0.0);
-      vec2 mousePush = mouseDirection * mouseSpeed * cursorRadius * uHover * uHoverStrength * uRippleStrength * 3.0;
+      vec2 mousePush = mouseDirection * mouseSpeed * cursorRadius * uHover * uHoverStrength * uRippleStrength * 2.2;
 
-      // 5. Total Organic Liquid Water Displacement
-      vec2 waterRipple = (vec2(organicWater, -organicWater) * (0.12 + mouseSpeed * 0.2) + mousePush) * cursorRadius;
+      // 5. Total Smooth Water Liquid Displacement
+      vec2 waterRipple = (vec2(organicWater, -organicWater) * 0.08 + mousePush) * cursorRadius;
       vec2 totalDisplacement = waterRipple * uHover * uStrength * edgeFactor;
       vec2 distortedUv = uv + totalDisplacement;
 
-      // 6. Refraction & Chromatic Aberration Dispersion on Water Wave Peaks
+      // 6. Clean Liquid Refraction (Subtle dispersion for clean water effect)
       float displacementMag = length(totalDisplacement);
-      float r = texture2D(uTexture, distortedUv + vec2(displacementMag * 0.04, 0.0)).r;
+      float r = texture2D(uTexture, distortedUv + vec2(displacementMag * 0.012, 0.0)).r;
       float g = texture2D(uTexture, distortedUv).g;
-      float b = texture2D(uTexture, distortedUv - vec2(displacementMag * 0.04, 0.0)).b;
+      float b = texture2D(uTexture, distortedUv - vec2(displacementMag * 0.012, 0.0)).b;
       float a = texture2D(uTexture, distortedUv).a;
 
       gl_FragColor = vec4(r, g, b, a);
