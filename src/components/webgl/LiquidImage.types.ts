@@ -6,7 +6,6 @@ export interface LiquidImageProps {
   className?: string;
   intensity?: number;
   hoverStrength?: number;
-  scrollStrength?: number;
   rippleStrength?: number;
   aspectRatio?: number;
   skeletonHeight?: string;
@@ -18,12 +17,9 @@ export interface LiquidImageProps {
 export interface LiquidShaderUniforms {
   uTexture: { value: THREE.Texture | null };
   uTime: { value: number };
-  uProgress: { value: number };
   uStrength: { value: number };
   uHoverStrength: { value: number };
-  uScrollStrength: { value: number };
   uRippleStrength: { value: number };
-  uVelocity: { value: number };
   uMouse: { value: THREE.Vector2 };
   uPreviousMouse: { value: THREE.Vector2 };
   uMouseVelocity: { value: THREE.Vector2 };

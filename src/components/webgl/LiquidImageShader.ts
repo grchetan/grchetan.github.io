@@ -4,12 +4,9 @@ export const LiquidImageShader = {
   uniforms: {
     uTexture: { value: null },
     uTime: { value: 0 },
-    uProgress: { value: 0 },
-    uStrength: { value: 0.65 },
-    uHoverStrength: { value: 1.2 },
-    uScrollStrength: { value: 0.55 },
-    uRippleStrength: { value: 1.0 },
-    uVelocity: { value: 0 },
+    uStrength: { value: 0.9 },
+    uHoverStrength: { value: 1.8 },
+    uRippleStrength: { value: 1.4 },
     uMouse: { value: new THREE.Vector2(0.5, 0.5) },
     uPreviousMouse: { value: new THREE.Vector2(0.5, 0.5) },
     uMouseVelocity: { value: new THREE.Vector2(0, 0) },
@@ -19,19 +16,10 @@ export const LiquidImageShader = {
   },
   vertexShader: /* glsl */ `
     varying vec2 vUv;
-    uniform float uVelocity;
-    uniform float uScrollStrength;
-    uniform float uTime;
 
     void main() {
       vUv = uv;
-      vec3 pos = position;
-
-      // Vertical mesh wave curve based on scroll velocity
-      float wave = sin(pos.y * 3.5 + uTime * 2.5) * uVelocity * uScrollStrength * 0.08;
-      pos.z += wave;
-
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
   `,
   fragmentShader: /* glsl */ `
@@ -39,9 +27,7 @@ export const LiquidImageShader = {
     uniform float uTime;
     uniform float uStrength;
     uniform float uHoverStrength;
-    uniform float uScrollStrength;
     uniform float uRippleStrength;
-    uniform float uVelocity;
     uniform vec2 uMouse;
     uniform vec2 uPreviousMouse;
     uniform vec2 uMouseVelocity;
@@ -51,7 +37,7 @@ export const LiquidImageShader = {
 
     varying vec2 vUv;
 
-    // 2D Simplex Noise generator for organic liquid fluid distortion
+    // 2D Simplex Noise generator for rich organic water liquid distortion
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
     float snoise(vec2 v) {
@@ -90,42 +76,37 @@ export const LiquidImageShader = {
       vec2 offset = (rs < ri ? vec2((newUv.x - s.x) / 2.0, 0.0) : vec2(0.0, (newUv.y - s.y) / 2.0)) / newUv;
       vec2 uv = vUv * s / newUv + offset;
 
-      // 1. Localized Mouse Falloff Field
+      // 1. Edge Pinning Mask (Pins the outer borders to div card corners so water only ripples INSIDE)
+      float edgeX = smoothstep(0.0, 0.08, vUv.x) * smoothstep(1.0, 0.92, vUv.x);
+      float edgeY = smoothstep(0.0, 0.08, vUv.y) * smoothstep(1.0, 0.92, vUv.y);
+      float edgeFactor = edgeX * edgeY;
+
+      // 2. Aspect-corrected mouse distance & localized water ripple radius
       vec2 aspectUv = uv * vec2(s.x / s.y, 1.0);
       vec2 aspectMouse = uMouse * vec2(s.x / s.y, 1.0);
       float distToMouse = distance(aspectUv, aspectMouse);
-      
-      // Radius of liquid interaction around cursor (0.45 aspect units wide)
-      float cursorRadius = smoothstep(0.48, 0.0, distToMouse);
+      float cursorRadius = smoothstep(0.55, 0.0, distToMouse);
 
-      // 2. Mouse Velocity Directional Push
+      // 3. Multi-frequency Organic Water Wave Simulation
+      float wave1 = snoise(uv * 4.5 + vec2(uTime * 0.6, uTime * 0.5));
+      float wave2 = snoise(uv * 9.0 - vec2(uTime * 0.8, uTime * 0.7));
+      float organicWater = (wave1 * 0.6 + wave2 * 0.4);
+
+      // 4. Mouse Velocity Vector & Directional Water Push
       float mouseSpeed = length(uMouseVelocity);
-      vec2 mouseDirection = mouseSpeed > 0.001 ? normalize(uMouseVelocity) : vec2(0.0);
-      vec2 mousePush = mouseDirection * mouseSpeed * cursorRadius * uHover * uHoverStrength * uRippleStrength * 1.8;
+      vec2 mouseDirection = mouseSpeed > 0.0001 ? normalize(uMouseVelocity) : vec2(0.0);
+      vec2 mousePush = mouseDirection * mouseSpeed * cursorRadius * uHover * uHoverStrength * uRippleStrength * 3.0;
 
-      // 3. Multi-frequency Organic Water Wave Noise
-      float wave1 = snoise(uv * 4.0 + vec2(uTime * 0.5, uTime * 0.4));
-      float wave2 = snoise(uv * 8.0 - vec2(uTime * 0.7, uTime * 0.6));
-      float organicNoise = (wave1 * 0.65 + wave2 * 0.35);
+      // 5. Total Organic Liquid Water Displacement
+      vec2 waterRipple = (vec2(organicWater, -organicWater) * (0.12 + mouseSpeed * 0.2) + mousePush) * cursorRadius;
+      vec2 totalDisplacement = waterRipple * uHover * uStrength * edgeFactor;
+      vec2 distortedUv = uv + totalDisplacement;
 
-      // 4. Cursor Fluid Ripple Displacement
-      vec2 mouseDisplacement = (vec2(organicNoise, -organicNoise) * 0.15 + mousePush) * cursorRadius * uHover * uHoverStrength;
-
-      // 5. Scroll Velocity Liquid Stretch
-      vec2 scrollDisplacement = vec2(
-        organicNoise * uVelocity * uScrollStrength * 0.1,
-        snoise(uv * 3.5 + uTime * 0.6) * uVelocity * uScrollStrength * 0.18 + (uVelocity * uScrollStrength * 0.05)
-      );
-
-      // 6. Combined UV Distortion Offset
-      vec2 finalDistortion = (mouseDisplacement + scrollDisplacement) * uStrength;
-      vec2 distortedUv = uv + finalDistortion;
-
-      // 7. Chromatic Aberration Dispersion on Peak Distortion
-      float distortionMag = length(finalDistortion);
-      float r = texture2D(uTexture, distortedUv + vec2(distortionMag * 0.025, 0.0)).r;
+      // 6. Refraction & Chromatic Aberration Dispersion on Water Wave Peaks
+      float displacementMag = length(totalDisplacement);
+      float r = texture2D(uTexture, distortedUv + vec2(displacementMag * 0.04, 0.0)).r;
       float g = texture2D(uTexture, distortedUv).g;
-      float b = texture2D(uTexture, distortedUv - vec2(distortionMag * 0.025, 0.0)).b;
+      float b = texture2D(uTexture, distortedUv - vec2(displacementMag * 0.04, 0.0)).b;
       float a = texture2D(uTexture, distortedUv).a;
 
       gl_FragColor = vec4(r, g, b, a);

@@ -13,7 +13,7 @@ export function ImageWithSkeleton({
   alt,
   className,
   wrapperClassName,
-  skeletonHeight = "min-h-[260px]",
+  skeletonHeight = "min-h-[180px] sm:min-h-[260px]",
   ...props
 }: ImageWithSkeletonProps) {
   const [loaded, setLoaded] = useState(false);
