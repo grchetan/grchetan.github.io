@@ -67,14 +67,10 @@ function Heatmap({ calendar }: { calendar: LeetCodeStats["calendar"] }) {
         {weeks.map((week, wi) => (
           <div key={wi} className="flex flex-col gap-[3px]">
             {week.map((day) => (
-              <motion.span
+              <span
                 key={day.date}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: wi * 0.006 }}
                 title={`${day.date} — ${day.count} submissions`}
-                className="size-[10px] rounded-[2px]"
+                className="size-[10px] rounded-[2px] transition-opacity duration-300"
                 style={toneStyle(level(day.count))}
               />
             ))}

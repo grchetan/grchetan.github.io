@@ -335,7 +335,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                     trailSize="md"
                     trailColor={i % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
                     className="overflow-hidden rounded-[var(--radius-lg)]"
-                    contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
+                    contentClassName="plate overflow-hidden p-2"
                   >
                     <ImageWithSkeleton
                       src={cover}
@@ -430,7 +430,7 @@ function MobileShowcaseItem({
             trailSize="md"
             trailColor={index % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
             className="overflow-hidden rounded-[var(--radius-lg)]"
-            contentClassName="plate overflow-hidden p-2 backdrop-blur-md"
+            contentClassName="plate overflow-hidden p-2"
           >
             <ImageWithSkeleton
               src={cover}

@@ -41,7 +41,7 @@ export default function AnimatedBorderTrail({
       {showAnimation ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-[-120%] motion-safe:animate-[trailSpin_var(--trail-duration)_linear_infinite] [animation-play-state:paused] group-hover:[animation-play-state:running] hover:[animation-play-state:running]"
+          className="pointer-events-none absolute inset-[-120%] will-change-transform translate-z-0 motion-safe:animate-[trailSpin_var(--trail-duration)_linear_infinite]"
           style={
             {
               "--trail-duration": duration,
