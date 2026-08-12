@@ -55,13 +55,10 @@ export function SmoothScroll() {
     import("lenis").then(({ default: Lenis }) => {
       if (cancelled) return;
       lenis = new Lenis({
-        duration: 1.2,
+        duration: 0.85,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        smoothTouch: false,
-        wheelMultiplier: 1.1,
-        touchMultiplier: 1.8,
-        infinite: false,
+        wheelMultiplier: 1,
       });
       const loop = (t: number) => {
         lenis?.raf(t);

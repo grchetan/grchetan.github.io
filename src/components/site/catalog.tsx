@@ -282,47 +282,24 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
         const flip = i % 2 === 1;
         const cover = entry.images[0] ?? fallbackImages[i % fallbackImages.length]!;
 
-        // On mobile: plain elements + CSS animations
-        if (IS_MOBILE) {
-          return (
-            <MobileShowcaseItem
-              key={`${entry.kind}-${entry.slug}`}
-              entry={entry}
-              flip={flip}
-              cover={cover}
-              index={i}
-            />
-          );
-        }
-
         return (
           <motion.article
             key={`${entry.kind}-${entry.slug}`}
-            initial={reduced ? false : { opacity: 0, y: 20 }}
+            initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-30px", amount: 0.05 }}
-            transition={{ duration: reduced ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-70px" }}
+            transition={{ duration: reduced ? 0 : 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
           >
             {/* Image plate */}
             <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
               <motion.div
-                initial={reduced ? false : { opacity: 0, y: 40, rotate: flip ? 4.5 : -4.5, scale: 0.94 }}
+                initial={reduced ? { opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 } : { opacity: 0, y: 40, rotate: flip ? 4.5 : -4.5, scale: 0.94 }}
                 whileInView={{ opacity: 1, y: 0, rotate: flip ? -2.2 : 2.2, scale: 1 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{
-                  duration: reduced ? 0 : 0.75,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                {...(reduced ? {} : {
-                  whileHover: {
-                    rotate: 0,
-                    scale: 1.02,
-                    y: -8,
-                    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-                  }
-                })}
+                viewport={{ once: true, margin: "-70px" }}
+                transition={{ duration: reduced ? 0 : 1, ease: [0.16, 1, 0.3, 1] }}
                 className="will-change-transform"
+                {...(reduced ? {} : { whileHover: { rotate: 0, scale: 1.015, y: -6 } })}
               >
                 <Link
                   to={routeFor[entry.kind]}
@@ -331,16 +308,16 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                   className="group block rounded-[var(--radius-lg)]"
                 >
                   <AnimatedBorderTrail
-                    duration={`${8 + (i % 3)}s`}
-                    trailSize="md"
-                    trailColor={i % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
+                    duration={flip ? "9s" : "7s"}
+                    trailSize="lg"
+                    trailColor={flip ? "var(--chrome-3)" : "var(--chrome-2)"}
                     className="overflow-hidden rounded-[var(--radius-lg)]"
                     contentClassName="plate overflow-hidden p-2"
                   >
                     <ImageWithSkeleton
                       src={cover}
                       alt={`${entry.title} preview`}
-                      className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      className="mx-auto max-h-[480px] w-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                       skeletonHeight="min-h-[300px]"
                     />
                   </AnimatedBorderTrail>
@@ -351,14 +328,10 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
             {/* Text panel */}
             <motion.div
               className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}
-              initial={reduced ? false : { opacity: 0, y: 20 }}
+              initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{
-                duration: reduced ? 0 : 0.7,
-                delay: 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              viewport={{ once: true, margin: "-70px" }}
+              transition={{ duration: reduced ? 0 : 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <span className="label">{entry.tag}</span>
@@ -395,85 +368,6 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
         );
       })}
     </div>
-  );
-}
-
-/** Showcase item for mobile — plain HTML + CSS reveal animation, zero motion/react */
-function MobileShowcaseItem({
-  entry,
-  flip,
-  cover,
-  index,
-}: {
-  entry: Entry;
-  flip: boolean;
-  cover: string;
-  index: number;
-}) {
-  const articleRef = useCssReveal<HTMLElement>();
-  return (
-    <article
-      ref={articleRef}
-      data-reveal=""
-      data-delay={String(Math.min(index + 1, 4)) as "1" | "2" | "3" | "4"}
-      className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
-    >
-      <div className={cn("lg:col-span-7", flip ? "lg:order-2 lg:col-start-6" : "")}>
-        <Link
-          to={routeFor[entry.kind]}
-          params={{ slug: entry.slug }}
-          aria-label={`Open ${entry.title}`}
-          className="group block rounded-[var(--radius-lg)]"
-        >
-          <AnimatedBorderTrail
-            duration={`${8 + (index % 3)}s`}
-            trailSize="md"
-            trailColor={index % 2 ? "var(--chrome-1)" : "var(--chrome-3)"}
-            className="overflow-hidden rounded-[var(--radius-lg)]"
-            contentClassName="plate overflow-hidden p-2"
-          >
-            <ImageWithSkeleton
-              src={cover}
-              alt={`${entry.title} preview`}
-              className="w-full max-h-[480px] h-auto rounded-[calc(var(--radius-lg)-0.35rem)] object-contain"
-              skeletonHeight="min-h-[300px]"
-            />
-          </AnimatedBorderTrail>
-        </Link>
-      </div>
-      <div className={cn("min-w-0 lg:col-span-5", flip ? "lg:order-1 lg:col-start-1" : "")}>
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="label">{entry.tag}</span>
-          <span className="caption">{entry.year}</span>
-          {entry.status ? <span className="caption">{entry.status}</span> : null}
-        </div>
-        <Rule className="mt-3" />
-        <h3 className="mt-5 text-[clamp(1.7rem,3.2vw,2.5rem)] leading-[1.05] text-ink">{entry.title}</h3>
-        <p className="mt-4 text-[0.95rem] leading-[1.8] text-ink-soft">{entry.summary}</p>
-        {entry.tech.length > 0 || entry.features.length > 0 ? (
-          <dl className="mt-6 space-y-3">
-            {entry.tech.length > 0 ? (
-              <div className="flex gap-5 border-t border-ink/10 pt-3">
-                <dt className="label w-16 shrink-0 pt-1">Tech</dt>
-                <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
-              </div>
-            ) : null}
-            {entry.features.length > 0 ? (
-              <div className="flex gap-5 border-t border-ink/10 pt-3">
-                <dt className="label w-16 shrink-0 pt-1">Built</dt>
-                <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
-              </div>
-            ) : null}
-          </dl>
-        ) : null}
-        <div className="mt-7 flex flex-wrap items-center gap-3">
-          <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
-            Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
-          </ShinyButton>
-          <EntryLinks entry={entry} />
-        </div>
-      </div>
-    </article>
   );
 }
 
