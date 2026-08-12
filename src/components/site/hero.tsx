@@ -12,7 +12,7 @@ import { SwapText } from "@/components/ui/swap-text";
 import versionData from "../../../version.json";
 
 const index = [
-  { k: "Discipline", v: "Full stack engineering" },
+  { k: "Discipline", v: "Full stack developer" },
   { k: "Availability", v: "Available 24/7 (Anytime)" },
   { k: "Shipped", v: "40+ projects · 14 clients" },
   { k: "Status", v: "Open for commissions" },

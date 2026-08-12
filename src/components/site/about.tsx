@@ -1,13 +1,27 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import AnimatedBorderTrail from "@/components/ui/animated-border-trail";
 import inkTexture from "@/assets/texture-ink.jpg";
 import { Counter, RegMark, Reveal, Rule, Section, SectionHeading } from "@/components/site/primitives";
 import { aboutParagraphs, aboutStats, education, services, techStack } from "@/data/portfolio";
 import { TechIconCloud } from "@/components/mage-ui/icon/icon-cloud";
+import { getLeetCodeStats } from "@/lib/leetcode.functions";
 
 /* ---------------- About: editorial column set ---------------- */
 
 export function About() {
+  const { data: leetcodeData } = useQuery({
+    queryKey: ["leetcode", "chetanprajapat07"],
+    queryFn: () => getLeetCodeStats("chetanprajapat07"),
+    staleTime: 10 * 60_000,
+  });
+
+  const stats = aboutStats.map((s) =>
+    s.label === "LeetCode Solved" && leetcodeData?.total
+      ? { ...s, value: leetcodeData.total }
+      : s
+  );
+
   return (
     <Section id="about">
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
@@ -47,7 +61,7 @@ export function About() {
             <span className="label">Measurements</span>
             <Rule className="mt-3" />
             <dl>
-              {aboutStats.map((s, i) => (
+              {stats.map((s, i) => (
                 <motion.div
                   key={s.label}
                   initial={{ opacity: 0, y: 10 }}
