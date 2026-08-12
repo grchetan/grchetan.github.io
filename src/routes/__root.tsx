@@ -9,6 +9,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { initGoogleAnalytics, trackPageView } from "../lib/site-analytics";
 import { useNetworkStatus } from "../hooks/use-network-status";
 import { ClickSpark } from "../components/ui/click-spark";
+import { VersionWatcher } from "../components/site/version-watcher";
 
 function NotFoundComponent() {
   return <NotFoundScape />;
@@ -110,6 +111,7 @@ function RootComponent() {
         <ClickSpark sparkColor="#38bdf8" sparkRadius={28} sparkCount={10} sparkSize={12}>
           <Outlet />
         </ClickSpark>
+        <VersionWatcher />
         <Toaster position="bottom-right" richColors />
       </MotionPreferenceProvider>
     </QueryClientProvider>

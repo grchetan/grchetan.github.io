@@ -30,14 +30,22 @@ const rootVersion = path.join(rootDir, "version.json");
 const publicDir = path.join(rootDir, "public");
 const destVersion = path.join(publicDir, "version.json");
 
+// Auto-increment patch version on every build so VersionWatcher detects new deployments
 if (fs.existsSync(rootVersion)) {
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
   }
+  // Bump the patch number
+  const versionData = JSON.parse(fs.readFileSync(rootVersion, 'utf-8'));
+  const parts = String(versionData.version || '1.0.0').split('.');
+  parts[2] = String((parseInt(parts[2] || '0', 10) + 1));
+  versionData.version = parts.join('.');
+  versionData.builtAt = new Date().toISOString();
+  fs.writeFileSync(rootVersion, JSON.stringify(versionData, null, 2));
   fs.copyFileSync(rootVersion, destVersion);
-  console.log("Prebuild: Successfully copied version.json to public/version.json");
+  console.log(`Prebuild: Bumped version to ${versionData.version} and copied version.json to public/version.json`);
 } else {
-  console.error("Prebuild Error: version.json not found!");
+  console.error('Prebuild Error: version.json not found!');
 }
 
 // Generate sitemap dynamically
