@@ -29,10 +29,8 @@ export default function AnimatedBorderTrail({
   ...props
 }: AnimatedTrailProps) {
   const { reduced } = useMotionPreference();
-  // Disable spinning conic on mobile — each instance is a separate GPU composited layer
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const deg = arc[trailSize];
-  const showAnimation = !reduced && !isMobile;
+  const showAnimation = !reduced;
 
   return (
     <div
