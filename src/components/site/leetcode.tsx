@@ -86,7 +86,7 @@ export function LeetCodeCard({ className }: { className?: string }) {
   const { data } = useQuery({
     queryKey: ["leetcode", LEETCODE_USERNAME],
     queryFn: () => getLeetCodeStats(LEETCODE_USERNAME),
-    staleTime: 10 * 60_000,
+    staleTime: 30_000,
   });
 
   const s = data;

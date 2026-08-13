@@ -13,7 +13,7 @@ export function About() {
   const { data: leetcodeData } = useQuery({
     queryKey: ["leetcode", "chetanprajapat07"],
     queryFn: () => getLeetCodeStats("chetanprajapat07"),
-    staleTime: 10 * 60_000,
+    staleTime: 30_000,
   });
 
   const stats = aboutStats.map((s) =>
