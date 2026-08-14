@@ -54,23 +54,6 @@ function AboutPage() {
       <Achievements />
       <WhyHireMe />
 
-      <Section tint>
-        <div className="plate p-8 sm:p-12">
-          <span className="label">Working together</span>
-          <h2 className="mt-5 max-w-2xl text-[clamp(1.9rem,4.6vw,3.2rem)]">
-            Read the full record, or just send the brief.
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/contact" className="press-btn">
-              Start a project <ArrowRight className="size-3.5" strokeWidth={1.5} />
-            </Link>
-            <Link to="/record" className="press-btn-outline">
-              Experience & credentials
-            </Link>
-          </div>
-        </div>
-      </Section>
-
       {/* FINAL VISUAL STATEMENT OF THE ABOUT PAGE */}
       <LiquidVideoReveal />
     </SiteShell>
