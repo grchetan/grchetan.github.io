@@ -34,14 +34,13 @@ export const aboutStats = [
 export const techStack = [
   {
     category: "Languages",
-    items: ["Java", "JavaScript", "TypeScript", "HTML5", "CSS3"],
+    items: ["Java", "JavaScript", "HTML5", "CSS3"],
   },
   {
     category: "Frontend",
     items: [
       "React",
       "JavaScript",
-      "TypeScript",
       "HTML5",
       "CSS3",
       "Tailwind CSS",
@@ -396,11 +395,10 @@ export const codingProfiles = [
 ];
 
 export const githubLanguages = [
-  { name: "TypeScript", pct: 38 },
-  { name: "JavaScript", pct: 28 },
-  { name: "Java", pct: 16 },
-  { name: "HTML", pct: 10 },
-  { name: "CSS", pct: 8 },
+  { name: "JavaScript", pct: 45 },
+  { name: "Java", pct: 25 },
+  { name: "HTML", pct: 18 },
+  { name: "CSS", pct: 12 },
 ];
 
 export const githubActivity = [
