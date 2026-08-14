@@ -33,21 +33,25 @@ export const aboutStats = [
 
 export const techStack = [
   {
+    category: "Languages",
+    items: ["Java", "JavaScript", "TypeScript", "HTML5", "CSS3"],
+  },
+  {
     category: "Frontend",
     items: [
-      "HTML5",
-      "CSS3",
+      "React",
       "JavaScript",
       "TypeScript",
-      "React",
+      "HTML5",
+      "CSS3",
       "Tailwind CSS",
     ],
   },
-  { category: "Backend", items: ["Node.js", "Express.js"] },
+  { category: "Backend", items: ["Node.js", "Express.js", "Java"] },
   { category: "Database", items: ["MongoDB", "MySQL", "Firebase", "Supabase"] },
   {
-    category: "Tools",
-    items: ["Git", "GitHub", "VS Code", "Postman", "Figma", "Vercel", "Netlify"],
+    category: "Tools & OS",
+    items: ["Linux (Kali Linux)", "Git", "GitHub", "VS Code", "Postman", "Figma", "Vercel", "Netlify"],
   },
   {
     category: "Other",
@@ -392,11 +396,11 @@ export const codingProfiles = [
 ];
 
 export const githubLanguages = [
-  { name: "TypeScript", pct: 42 },
-  { name: "JavaScript", pct: 30 },
-  { name: "HTML", pct: 15 },
+  { name: "TypeScript", pct: 38 },
+  { name: "JavaScript", pct: 28 },
+  { name: "Java", pct: 16 },
+  { name: "HTML", pct: 10 },
   { name: "CSS", pct: 8 },
-  { name: "Other", pct: 5 },
 ];
 
 export const githubActivity = [
