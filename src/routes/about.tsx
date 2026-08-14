@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { About, Education, TechStack } from "@/components/site/about";
 import { LeetCodeCard } from "@/components/site/leetcode";
+import { LiquidVideoReveal } from "@/components/site/liquid-reveal";
 import { Section, SectionHeading } from "@/components/site/primitives";
 import { PageHero, SiteShell } from "@/components/site/shell";
 import { Achievements, WhyHireMe } from "@/components/site/showcase";
@@ -69,6 +70,9 @@ function AboutPage() {
           </div>
         </div>
       </Section>
+
+      {/* FINAL VISUAL STATEMENT OF THE ABOUT PAGE */}
+      <LiquidVideoReveal />
     </SiteShell>
   );
 }
