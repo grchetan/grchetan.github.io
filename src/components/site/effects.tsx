@@ -6,39 +6,7 @@ import { cn } from "@/lib/utils";
 /* ---------------- Aurora / blob background ---------------- */
 
 export function AuroraBackground() {
-  const { reduced } = useMotionPreference();
-  const { scrollYProgress } = useScroll();
-  const y1 = useTransform(scrollYProgress, [0, 1], ["0%", reduced ? "0%" : "24%"]);
-  const y2 = useTransform(scrollYProgress, [0, 1], ["0%", reduced ? "0%" : "-18%"]);
-
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-      <motion.div {...(reduced ? {} : { style: { y: y1 } })} className="absolute inset-0">
-        <span
-          className="blob left-[-10%] top-[-8%] size-[38rem] opacity-45"
-          style={{ background: "radial-gradient(circle, var(--chrome-2), transparent 70%)", animationPlayState: reduced ? "paused" : "running" }}
-        />
-        <span
-          className="blob right-[-8%] top-[28%] size-[32rem] opacity-40"
-          style={{
-            background: "radial-gradient(circle, var(--chrome-3), transparent 70%)",
-            animationDelay: "-7s",
-            animationPlayState: reduced ? "paused" : "running",
-          }}
-        />
-      </motion.div>
-      <motion.div {...(reduced ? {} : { style: { y: y2 } })} className="absolute inset-0">
-        <span
-          className="blob left-[22%] bottom-[-12%] size-[36rem] opacity-35"
-          style={{
-            background: "radial-gradient(circle, var(--chrome-1), transparent 70%)",
-            animationDelay: "-14s",
-            animationPlayState: reduced ? "paused" : "running",
-          }}
-        />
-      </motion.div>
-    </div>
-  );
+  return null;
 }
 
 

@@ -129,67 +129,67 @@
   --prism-pink: oklch(0.72 0.21 350);
   --prism-blue: oklch(0.68 0.18 250);
 
-  /* Light mode defaults */
-  --paper: oklch(0.975 0.012 290);
-  --paper-tint: oklch(0.94 0.025 290);
-  --ink: oklch(0.22 0.05 285);
-  --ink-soft: oklch(0.38 0.05 285);
-  --rule: oklch(0.35 0.06 285 / 18%);
+  /* Light mode defaults — Pure clean white background */
+  --paper: oklch(1 0 0);
+  --paper-tint: oklch(0.98 0.005 290);
+  --ink: oklch(0.18 0.04 285);
+  --ink-soft: oklch(0.42 0.04 285);
+  --rule: oklch(0.25 0.04 285 / 12%);
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: oklch(1 0 0 / 62%);
+  --card: oklch(1 0 0 / 92%);
   --card-foreground: var(--ink);
-  --popover: oklch(0.99 0.008 290);
+  --popover: oklch(1 0 0);
   --popover-foreground: var(--ink);
   --primary: oklch(0.55 0.17 280);
   --primary-foreground: oklch(0.98 0.01 290);
-  --secondary: oklch(0.93 0.03 290);
+  --secondary: oklch(0.96 0.01 290);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.93 0.025 290);
+  --muted: oklch(0.96 0.01 290);
   --muted-foreground: oklch(0.46 0.05 285);
-  --accent: oklch(0.9 0.04 290);
+  --accent: oklch(0.95 0.02 290);
   --accent-foreground: var(--ink);
   --destructive: oklch(0.6 0.19 20);
   --destructive-foreground: oklch(0.98 0.01 290);
   --border: var(--rule);
-  --input: oklch(0.35 0.06 285 / 22%);
+  --input: oklch(0.35 0.06 285 / 18%);
   --ring: var(--chrome-2);
-  --sidebar: oklch(0.98 0.01 290);
+  --sidebar: oklch(1 0 0);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--chrome-1);
   --sidebar-primary-foreground: oklch(0.16 0.035 285);
-  --sidebar-accent: oklch(0.26 0.05 285);
+  --sidebar-accent: oklch(0.96 0.01 290);
   --sidebar-accent-foreground: var(--ink);
   --sidebar-border: var(--rule);
   --sidebar-ring: var(--ring);
 }
 
-/* Dark mode override when .dark class is added */
+/* Dark mode override when .dark class is added — Rich crisp dark space */
 .dark {
-  --paper: oklch(0.16 0.035 285);
-  --paper-tint: oklch(0.21 0.045 285);
-  --ink: oklch(0.97 0.012 290);
-  --ink-soft: oklch(0.84 0.03 290);
-  --rule: oklch(0.87 0.09 290 / 18%);
+  --paper: oklch(0.12 0.02 285);
+  --paper-tint: oklch(0.17 0.025 285);
+  --ink: oklch(0.98 0.008 290);
+  --ink-soft: oklch(0.82 0.02 290);
+  --rule: oklch(0.87 0.05 290 / 14%);
   --background: var(--paper);
   --foreground: var(--ink);
-  --card: oklch(0.22 0.045 285 / 65%);
+  --card: oklch(0.17 0.025 285 / 85%);
   --card-foreground: var(--ink);
-  --popover: oklch(0.19 0.04 285);
+  --popover: oklch(0.15 0.02 285);
   --popover-foreground: var(--ink);
   --primary: var(--chrome-1);
-  --primary-foreground: oklch(0.16 0.035 285);
-  --secondary: oklch(0.26 0.05 285);
+  --primary-foreground: oklch(0.12 0.02 285);
+  --secondary: oklch(0.20 0.03 285);
   --secondary-foreground: var(--ink);
-  --muted: oklch(0.24 0.045 285);
-  --muted-foreground: oklch(0.75 0.04 290);
-  --accent: oklch(0.28 0.06 285);
+  --muted: oklch(0.19 0.03 285);
+  --muted-foreground: oklch(0.72 0.03 290);
+  --accent: oklch(0.22 0.04 285);
   --accent-foreground: var(--ink);
   --destructive: oklch(0.6 0.19 20);
-  --destructive-foreground: oklch(0.16 0.035 285);
+  --destructive-foreground: oklch(0.12 0.02 285);
   --border: var(--rule);
-  --input: oklch(0.87 0.09 290 / 26%);
-  --sidebar: oklch(0.19 0.04 285);
+  --input: oklch(0.87 0.05 290 / 18%);
+  --sidebar: oklch(0.15 0.02 285);
 }
 
 @layer base {
@@ -209,25 +209,9 @@
     letter-spacing: -0.005em;
   }
 
-  /* faint chrome bloom fixed over the whole page */
+  /* Disabled background radial bloom gradient */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.5;
-    background:
-      radial-gradient(
-        60rem 40rem at 12% -10%,
-        color-mix(in oklab, var(--chrome-2) 30%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(
-        50rem 36rem at 92% 8%,
-        color-mix(in oklab, var(--chrome-3) 24%, transparent),
-        transparent 70%
-      );
+    display: none;
   }
 
   h1,
