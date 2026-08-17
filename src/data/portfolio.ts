@@ -11,6 +11,7 @@ export const profile = {
     facebook: "https://www.facebook.com/profile.php?id=100030457882324",
     twitter: "https://twitter.com/grchetann",
     leetcode: "https://leetcode.com/u/chetanprajapat07/",
+    codechef: "https://www.codechef.com/users/grchetan",
     hackerrank: "https://www.hackerrank.com/profile/chetanprajapat",
   },
 };
@@ -370,11 +371,11 @@ export const codingProfiles = [
   },
   {
     platform: "CodeChef",
-    username: "@chetanprajapat",
+    username: "@grchetan",
     stat: "Competitive Coder",
     meta: "Contest participant",
     badges: ["Problem Solving"],
-    url: "https://codechef.com/",
+    url: profile.socials.codechef,
   },
   {
     platform: "HackerRank",

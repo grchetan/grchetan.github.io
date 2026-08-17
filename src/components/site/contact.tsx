@@ -48,6 +48,7 @@ const socialEntries = [
   { label: "Facebook", href: profile.socials.facebook, Icon: Facebook },
   { label: "Twitter / X", href: profile.socials.twitter, Icon: Twitter },
   { label: "LeetCode", href: profile.socials.leetcode, Icon: Code2 },
+  { label: "CodeChef", href: profile.socials.codechef, Icon: Code2 },
   { label: "HackerRank", href: profile.socials.hackerrank, Icon: Terminal },
   { label: "Email", href: `mailto:${profile.email}`, Icon: Mail },
 ];
