@@ -28,7 +28,7 @@ export const aboutStats = [
   { label: "Freelance Clients", value: 14, suffix: "+" },
   { label: "Certificates", value: 18, suffix: "" },
   { label: "Years Learning", value: 5, suffix: "" },
-  { label: "LeetCode Solved", value: 214, suffix: "+" },
+  { label: "LeetCode Solved", value: 219, suffix: "+" },
   { label: "GitHub Contributions", value: 1200, suffix: "+" },
 ];
 
@@ -347,7 +347,7 @@ export const achievements = [
   { label: "Certificates", value: 18, suffix: "" },
   { label: "Happy Clients", value: 14, suffix: "+" },
   { label: "GitHub Repositories", value: 62, suffix: "" },
-  { label: "LeetCode Problems", value: 214, suffix: "+" },
+  { label: "LeetCode Problems", value: 219, suffix: "+" },
   { label: "Coding Hours", value: 4800, suffix: "+" },
   { label: "Open Source Contributions", value: 35, suffix: "+" },
 ];
@@ -364,7 +364,7 @@ export const codingProfiles = [
   {
     platform: "LeetCode",
     username: "@chetanprajapat07",
-    stat: "214+ solved",
+    stat: "219+ solved",
     meta: "Active coder",
     badges: ["Problem Solving", "DSA"],
     url: profile.socials.leetcode,
