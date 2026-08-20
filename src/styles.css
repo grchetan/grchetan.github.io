@@ -256,29 +256,49 @@
   color: var(--color-muted-foreground);
 }
 
-/* iridescent glass panel */
+/* elevated glass panel / card with crisp layered black shadows */
 @utility plate {
   position: relative;
   border-radius: var(--radius-lg);
-  background:
-    linear-gradient(
-      140deg,
-      color-mix(in oklab, var(--chrome-1) 12%, transparent),
-      color-mix(in oklab, var(--chrome-3) 8%, transparent)
-    ),
-    var(--color-card);
-  border: 1px solid color-mix(in oklab, var(--chrome-1) 26%, transparent);
-  backdrop-filter: blur(14px) saturate(140%);
+  background: var(--color-card);
+  border: 1px solid color-mix(in oklab, var(--color-ink) 9%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
   box-shadow:
-    inset 0 1px 0 0 color-mix(in oklab, var(--chrome-4) 30%, transparent),
-    0 26px 60px -30px color-mix(in oklab, var(--chrome-2) 60%, transparent);
+    0 1px 3px 0 rgba(0, 0, 0, 0.05),
+    0 6px 16px -4px rgba(0, 0, 0, 0.07),
+    0 20px 48px -12px rgba(0, 0, 0, 0.11),
+    0 36px 72px -20px rgba(0, 0, 0, 0.07);
+  transition:
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease,
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .plate {
+  border-color: color-mix(in oklab, var(--color-ink) 12%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
+    0 4px 18px 0 rgba(0, 0, 0, 0.45),
+    0 24px 64px -12px rgba(0, 0, 0, 0.75);
 }
 
 @utility plate-tint {
+  position: relative;
   border-radius: var(--radius-lg);
-  background: color-mix(in oklab, var(--paper-tint) 80%, transparent);
-  border: 1px solid var(--color-rule);
-  backdrop-filter: blur(10px);
+  background: color-mix(in oklab, var(--paper-tint) 94%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-ink) 8%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 1px 2px 0 rgba(0, 0, 0, 0.04),
+    0 8px 24px -6px rgba(0, 0, 0, 0.07),
+    0 20px 40px -12px rgba(0, 0, 0, 0.06);
+}
+
+.dark .plate-tint {
+  border-color: color-mix(in oklab, var(--color-ink) 10%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+    0 10px 32px -8px rgba(0, 0, 0, 0.65);
 }
 
 @utility board {
