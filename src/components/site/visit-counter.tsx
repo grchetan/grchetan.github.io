@@ -36,7 +36,21 @@ export function VisitCounter({ className = "" }: { className?: string }) {
     frame.current = requestAnimationFrame(step);
   }, [total]);
 
-  if (total === null) return null;
+  // Render a same-size skeleton while loading to prevent Cumulative Layout Shift (CLS).
+  // Returning null causes a 0→~40px height jump when the counter appears, which shifts
+  // all content below it upward — exactly the scroll-glitch the user reported.
+  if (total === null) {
+    return (
+      <span
+        aria-hidden
+        className={`inline-flex items-center gap-2 rounded-full border border-ink/8 bg-paper/50 px-3.5 py-1.5 opacity-0 select-none pointer-events-none ${className}`}
+      >
+        <span className="size-3.5" />
+        <span className="label !tracking-[0.18em]">Portfolio views</span>
+        <span className="font-mono text-[0.8rem] font-bold">0</span>
+      </span>
+    );
+  }
 
   return (
     <motion.span
