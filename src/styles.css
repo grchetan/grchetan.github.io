@@ -923,9 +923,6 @@
   will-change: transform, opacity;
   contain: paint;
 }
-img {
-  content-visibility: auto;
-}
 
 /* ---- Glitch & Twinkle Animation Keyframes ---- */
 @keyframes twinkle {
@@ -1075,11 +1072,6 @@ html.lenis body {
 
 /* ---- Mobile Touch & Inertia Scroll Rules ---- */
 @media (max-width: 768px) {
-  html, body {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-  }
-
   .lenis.lenis-smooth {
     touch-action: pan-y;
   }
