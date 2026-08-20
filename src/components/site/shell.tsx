@@ -69,7 +69,7 @@ export function PageHero({
 }) {
   const { reduced } = useMotionPreference();
   return (
-    <header className="relative z-10 px-5 pb-6 pt-32 sm:px-8 md:pt-40 lg:px-14">
+    <header className="relative z-10 px-5 pb-0 pt-32 sm:px-8 md:pt-40 lg:px-14">
       <div className="mx-auto w-full max-w-[84rem]">
         <span className="label">{eyebrow}</span>
         <motion.h1
