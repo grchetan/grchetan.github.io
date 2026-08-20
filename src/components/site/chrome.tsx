@@ -47,7 +47,18 @@ function scrollTo(href: string) {
 
 export function SmoothScroll() {
   useEffect(() => {
+    // Skip on reduced-motion preference
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // Skip Lenis on touch/mobile — mobile browsers have native momentum scroll.
+    // When Lenis initializes async mid-scroll, it recalculates scroll position
+    // and causes a sudden page jump (the glitch reported on mobile).
+    const isTouch =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.innerWidth < 1024;
+    if (isTouch) return;
+
     let raf = 0;
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
     let cancelled = false;
