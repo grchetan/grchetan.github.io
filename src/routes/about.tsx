@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { About, Education, TechStack } from "@/components/site/about";
+import { GitHubCard } from "@/components/site/github-card";
 import { LeetCodeCard } from "@/components/site/leetcode";
 import { LiquidVideoReveal } from "@/components/site/liquid-reveal";
 import { Section, SectionHeading } from "@/components/site/primitives";
@@ -41,12 +42,13 @@ function AboutPage() {
 
       <Section className="pt-0">
         <SectionHeading
-          eyebrow="Problem solving"
+          eyebrow="Problem solving & Activity"
           figure="02b"
-          title="LeetCode stats, pulled live."
-          description="Solved counts by difficulty, ranking and a 52-week activity heatmap — synced from my LeetCode profile."
+          title="Live Coding & Open Source Records."
+          description="Solved counts, rankings, streaks and 52-week activity heatmaps — synced live from LeetCode and GitHub profiles."
         />
         <LeetCodeCard className="mt-10" />
+        <GitHubCard className="mt-8" />
       </Section>
 
       <Education />
