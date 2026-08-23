@@ -39,12 +39,34 @@ export type Credentials = {
 };
 
 const DOC = { collection: "site", id: "credentials" };
+const CACHE_KEY = "site_credentials_cache_v2";
 
 export const credentialsDefault: Credentials = {
   certificates: certsDefault.map((c) => ({ ...c })),
   achievements: achievementsDefault.map((a) => ({ ...a })),
   profiles: codingProfiles.map((p) => ({ ...p, badges: [...p.badges] })),
 };
+
+function getCachedCredentials(): Credentials | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.certificates) && parsed.certificates.length > 0) {
+        return parsed as Credentials;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function setCachedCredentials(data: Credentials) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {}
+}
 
 /** Firestore credentials when configured, otherwise the built-in copy. */
 export async function fetchCredentials(): Promise<Credentials> {
@@ -57,17 +79,19 @@ export async function fetchCredentials(): Promise<Credentials> {
     const snap = await getDoc(doc(db, DOC.collection, DOC.id));
     if (snap.exists()) {
       const raw = snap.data() as Partial<Credentials>;
-      return {
+      const result: Credentials = {
         certificates: raw.certificates?.length ? raw.certificates : credentialsDefault.certificates,
         achievements: raw.achievements?.length ? raw.achievements : credentialsDefault.achievements,
         profiles: raw.profiles?.length ? raw.profiles : credentialsDefault.profiles,
       };
+      setCachedCredentials(result);
+      return result;
     }
   } catch (sdkErr) {
     console.warn("Firestore SDK fetch failed, falling back to REST API:", sdkErr);
   }
 
-  // 2. Direct Firestore REST API fallback (guaranteed to bypass any SDK initialization latency/issues)
+  // 2. Direct Firestore REST API fallback
   try {
     const res = await fetch(
       `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/site/credentials?key=${firebaseConfig.apiKey}`
@@ -93,31 +117,35 @@ export async function fetchCredentials(): Promise<Credentials> {
       const achs = (json.fields?.achievements?.arrayValue?.values || []).map(parseField);
       const profs = (json.fields?.profiles?.arrayValue?.values || []).map(parseField);
 
-      return {
+      const result: Credentials = {
         certificates: certs.length ? certs : credentialsDefault.certificates,
         achievements: achs.length ? achs : credentialsDefault.achievements,
         profiles: profs.length ? profs : credentialsDefault.profiles,
       };
+      setCachedCredentials(result);
+      return result;
     }
   } catch (restErr) {
     console.warn("Firestore REST fetch failed:", restErr);
   }
 
-  return credentialsDefault;
+  return getCachedCredentials() ?? credentialsDefault;
 }
 
 export async function saveCredentials(data: Credentials) {
+  setCachedCredentials(data);
   const db = await getDb();
   const { doc, setDoc } = await import("firebase/firestore");
   await setDoc(doc(db, DOC.collection, DOC.id), data);
 }
 
 export function useCredentials() {
+  const cached = getCachedCredentials();
   return useQuery({
     queryKey: ["credentials"],
     queryFn: fetchCredentials,
-    placeholderData: credentialsDefault,
-    staleTime: 5000,
+    initialData: cached ?? undefined,
+    staleTime: 10_000,
     refetchOnMount: true,
   });
 }

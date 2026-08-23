@@ -7,10 +7,29 @@ import { cn } from "@/lib/utils";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
+function CertificateSkeleton() {
+  return (
+    <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="plate h-full overflow-hidden p-3 animate-pulse">
+          <div className="aspect-[4/3] w-full rounded-xl bg-ink/[0.06] relative overflow-hidden">
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-ink/[0.04] to-transparent" />
+          </div>
+          <div className="px-2 pb-2 pt-4 space-y-2.5">
+            <div className="h-2.5 w-20 rounded bg-ink/[0.06]" />
+            <div className="h-4 w-3/4 rounded bg-ink/[0.08]" />
+            <div className="h-3 w-1/2 rounded bg-ink/[0.05]" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /** Certificate wall — uploaded certificate images with verify links. */
 export function CertificateWall() {
-  const { data } = useCredentials();
-  const certs = data.certificates;
+  const { data, isLoading } = useCredentials();
+  const certs = data?.certificates ?? [];
 
   return (
     <Section id="certificates">
@@ -21,74 +40,78 @@ export function CertificateWall() {
         description="Courses, hackathons and internships — each card links to the original credential."
       />
 
-      <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {certs.map((c, i) => {
-          const tilt = i % 3 === 1 ? 1.1 : i % 3 === 2 ? -1.4 : 0.6;
-          const Wrapper = c.link ? motion.a : motion.div;
-          return (
-            <Wrapper
-              key={`${c.title}-${i}`}
-              {...(c.link ? { href: c.link, target: "_blank", rel: "noreferrer noopener" } : {})}
-              initial={{ opacity: 0, y: 22, rotate: tilt }}
-              whileInView={{ opacity: 1, y: 0, rotate: tilt }}
-              whileHover={{ rotate: 0, y: -6 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, delay: (i % 3) * 0.07, ease }}
-              className="group block rounded-[var(--radius-lg)] will-change-transform"
-            >
-              <AnimatedBorderTrail
-                duration={`${8 + (i % 3) * 2}s`}
-                trailSize="md"
-                trailColor={i % 2 ? "var(--chrome-3)" : "var(--chrome-2)"}
-                className="h-full rounded-[var(--radius-lg)]"
-                contentClassName="plate h-full overflow-hidden p-3"
+      {isLoading && !certs.length ? (
+        <CertificateSkeleton />
+      ) : (
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {certs.map((c, i) => {
+            const tilt = i % 3 === 1 ? 1.1 : i % 3 === 2 ? -1.4 : 0.6;
+            const Wrapper = c.link ? motion.a : motion.div;
+            return (
+              <Wrapper
+                key={`${c.title}-${i}`}
+                {...(c.link ? { href: c.link, target: "_blank", rel: "noreferrer noopener" } : {})}
+                initial={{ opacity: 0, y: 22, rotate: tilt }}
+                whileInView={{ opacity: 1, y: 0, rotate: tilt }}
+                whileHover={{ rotate: 0, y: -6 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7, delay: (i % 3) * 0.07, ease }}
+                className="group block rounded-[var(--radius-lg)] will-change-transform"
               >
-              <div className="relative overflow-hidden rounded-xl border border-ink/10 bg-paper-tint">
-                {c.image ? (
-                  <img
-                    loading="lazy"
-                    decoding="async"
-                    src={c.image}
-                    alt={`${c.title} certificate issued by ${c.issuer}`}
-                    width={800}
-                    height={560}
-                    className="duotone aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                  />
-                ) : (
-                  <div className="grid aspect-[4/3] w-full place-items-center">
-                    <div className="text-center">
-                      <ImageOff className="mx-auto size-5 text-ink/25" strokeWidth={1.5} />
-                      <p className="caption mt-3">Image coming soon</p>
+                <AnimatedBorderTrail
+                  duration={`${8 + (i % 3) * 2}s`}
+                  trailSize="md"
+                  trailColor={i % 2 ? "var(--chrome-3)" : "var(--chrome-2)"}
+                  className="h-full rounded-[var(--radius-lg)]"
+                  contentClassName="plate h-full overflow-hidden p-3"
+                >
+                  <div className="relative overflow-hidden rounded-xl border border-ink/10 bg-paper-tint">
+                    {c.image ? (
+                      <img
+                        loading="lazy"
+                        decoding="async"
+                        src={c.image}
+                        alt={`${c.title} certificate issued by ${c.issuer}`}
+                        width={800}
+                        height={560}
+                        className="duotone aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="grid aspect-[4/3] w-full place-items-center">
+                        <div className="text-center">
+                          <ImageOff className="mx-auto size-5 text-ink/25" strokeWidth={1.5} />
+                          <p className="caption mt-3">Verified Credential</p>
+                        </div>
+                      </div>
+                    )}
+                    <span className="absolute left-3 top-3 rounded-full bg-paper/85 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink backdrop-blur">
+                      {c.year}
+                    </span>
+                  </div>
+
+                  <div className="px-2 pb-2 pt-4">
+                    <p className="label">{c.category}</p>
+                    <h3 className="mt-2 text-[1.1rem] leading-snug text-ink">{c.title}</h3>
+                    <div className="mt-3 flex items-baseline justify-between gap-3">
+                      <p className="caption">{c.issuer}</p>
+                      {c.link ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink">
+                          Verify
+                          <ArrowUpRight
+                            className="size-3 transition-transform group-hover:translate-x-0.5"
+                            strokeWidth={1.5}
+                          />
+                        </span>
+                      ) : null}
                     </div>
                   </div>
-                )}
-                <span className="absolute left-3 top-3 rounded-full bg-paper/85 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink backdrop-blur">
-                  {c.year}
-                </span>
-              </div>
-
-              <div className="px-2 pb-2 pt-4">
-                <p className="label">{c.category}</p>
-                <h3 className="mt-2 text-[1.1rem] leading-snug text-ink">{c.title}</h3>
-                <div className="mt-3 flex items-baseline justify-between gap-3">
-                  <p className="caption">{c.issuer}</p>
-                  {c.link ? (
-                    <span className="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink">
-                      Verify
-                      <ArrowUpRight
-                        className="size-3 transition-transform group-hover:translate-x-0.5"
-                        strokeWidth={1.5}
-                      />
-                    </span>
-                  ) : null}
-                </div>
-              </div>
-              </AnimatedBorderTrail>
-            </Wrapper>
-          );
-        })}
-      </div>
-      {!certs.length ? <p className="caption mt-10">No certificates uploaded yet.</p> : null}
+                </AnimatedBorderTrail>
+              </Wrapper>
+            );
+          })}
+        </div>
+      )}
+      {!isLoading && !certs.length ? <p className="caption mt-10">No certificates uploaded yet.</p> : null}
     </Section>
   );
 }

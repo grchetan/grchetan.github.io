@@ -3,6 +3,28 @@ import { resumeDefault, type ResumeData } from "@/data/resume";
 import { firebaseConfig, getDb, isFirebaseConfigured } from "@/lib/firebase";
 
 const DOC = { collection: "site", id: "resume" };
+const CACHE_KEY = "site_resume_cache_v2";
+
+function getCachedResume(): ResumeData | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.sections) && parsed.sections.length > 0) {
+        return parsed as ResumeData;
+      }
+    }
+  } catch {}
+  return null;
+}
+
+function setCachedResume(data: ResumeData) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {}
+}
 
 /** Firestore resume when configured, otherwise the built-in copy. */
 export async function fetchResume(): Promise<ResumeData> {
@@ -15,12 +37,14 @@ export async function fetchResume(): Promise<ResumeData> {
     const snap = await getDoc(doc(db, DOC.collection, DOC.id));
     if (snap.exists()) {
       const raw = snap.data() as Partial<ResumeData>;
-      return {
+      const result: ResumeData = {
         ...resumeDefault,
         ...raw,
         links: raw.links?.length ? raw.links : resumeDefault.links,
         sections: raw.sections?.length ? raw.sections : resumeDefault.sections,
       };
+      setCachedResume(result);
+      return result;
     }
   } catch (sdkErr) {
     console.warn("Firestore SDK fetch failed, trying REST API:", sdkErr);
@@ -53,32 +77,37 @@ export async function fetchResume(): Promise<ResumeData> {
         parsed[k] = parseField(v);
       }
 
-      return {
+      const result: ResumeData = {
         ...resumeDefault,
         ...parsed,
         links: parsed.links?.length ? parsed.links : resumeDefault.links,
         sections: parsed.sections?.length ? parsed.sections : resumeDefault.sections,
       } as ResumeData;
+
+      setCachedResume(result);
+      return result;
     }
   } catch (restErr) {
     console.warn("Firestore REST fetch failed:", restErr);
   }
 
-  return resumeDefault;
+  return getCachedResume() ?? resumeDefault;
 }
 
 export async function saveResume(data: ResumeData) {
+  setCachedResume(data);
   const db = await getDb();
   const { doc, setDoc } = await import("firebase/firestore");
   await setDoc(doc(db, DOC.collection, DOC.id), data);
 }
 
 export function useResume() {
+  const cached = getCachedResume();
   return useQuery({
     queryKey: ["resume"],
     queryFn: fetchResume,
-    placeholderData: resumeDefault,
-    staleTime: 5000,
+    initialData: cached ?? undefined,
+    staleTime: 10_000,
     refetchOnMount: true,
   });
 }
