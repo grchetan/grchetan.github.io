@@ -144,8 +144,8 @@ export function useCredentials() {
   return useQuery({
     queryKey: ["credentials"],
     queryFn: fetchCredentials,
-    initialData: cached ?? undefined,
-    staleTime: 10_000,
+    initialData: cached ?? credentialsDefault,
+    staleTime: 5000,
     refetchOnMount: true,
   });
 }

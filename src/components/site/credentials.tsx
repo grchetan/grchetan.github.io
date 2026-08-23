@@ -119,7 +119,7 @@ export function CertificateWall() {
 /** Achievements — counters plus optional proof images. */
 export function AchievementWall() {
   const { data } = useCredentials();
-  const list = data.achievements;
+  const list = data?.achievements ?? credentialsDefault.achievements;
   const proofs = list.filter((a) => a.image);
 
   return (
@@ -195,6 +195,7 @@ export function AchievementWall() {
 /** Coding profile IDs — LeetCode, GitHub, CodeChef and friends. */
 export function ProfileIds({ className }: { className?: string }) {
   const { data } = useCredentials();
+  const profiles = data?.profiles ?? credentialsDefault.profiles;
 
   return (
     <Section id="profiles" className={cn(className)}>
@@ -206,7 +207,7 @@ export function ProfileIds({ className }: { className?: string }) {
       />
 
       <div className="mt-14 grid gap-px border border-ink/15 bg-ink/15 sm:grid-cols-2 lg:grid-cols-3">
-        {data.profiles.map((p, i) => (
+        {profiles.map((p, i) => (
           <motion.a
             key={`${p.platform}-${i}`}
             href={p.url}

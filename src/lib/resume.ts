@@ -106,8 +106,8 @@ export function useResume() {
   return useQuery({
     queryKey: ["resume"],
     queryFn: fetchResume,
-    initialData: cached ?? undefined,
-    staleTime: 10_000,
+    initialData: cached ?? resumeDefault,
+    staleTime: 5000,
     refetchOnMount: true,
   });
 }
