@@ -277,16 +277,66 @@ export const mobileApps = [
 ];
 
 export const certificates = [
-  { title: "Full Stack Web Development", issuer: "Udemy", year: "2024", category: "Full Stack Development" },
-  { title: "Responsive Web Design", issuer: "freeCodeCamp", year: "2022", category: "Web Development" },
-  { title: "JavaScript Algorithms & DS", issuer: "freeCodeCamp", year: "2023", category: "Programming" },
-  { title: "Smart India Hackathon Finalist", issuer: "MoE Innovation Cell", year: "2024", category: "Hackathons" },
-  { title: "Web Development Internship", issuer: "Oasis Infobyte", year: "2023", category: "Internships" },
-  { title: "React Advanced Patterns", issuer: "Scrimba", year: "2024", category: "Web Development" },
-  { title: "AWS Cloud Practitioner Essentials", issuer: "AWS Skill Builder", year: "2025", category: "Cloud" },
-  { title: "Cyber Security Fundamentals", issuer: "Cisco Networking Academy", year: "2024", category: "Cyber Security" },
-  { title: "UI/UX Design Workshop", issuer: "Google Developer Groups", year: "2023", category: "Workshops" },
-  { title: "Top 5% Coder — Annual Contest", issuer: "CodeChef", year: "2025", category: "Achievements" },
+  {
+    title: "C Programming",
+    issuer: "Sunstone School of Technology",
+    year: "2025",
+    category: "C Programming",
+    link: "https://sunstone.in/certificate?id=2ee2a282-2e84-4dd2-8eef-127b4ae15053",
+  },
+  {
+    title: "Cursor AI: VibeCode Mastery",
+    issuer: "Sunstone School of Technology",
+    year: "2025",
+    category: "AI & Development",
+    link: "https://sunstone.in/certificate?id=2ee2a282-2e84-4dd2-8eef-127b4ae15053",
+  },
+  {
+    title: "Introduction to SQL",
+    issuer: "Cognitive Class",
+    year: "2025",
+    category: "Database",
+    link: "https://cognitiveclass.ai/courses/learn-sql-relational-databases",
+  },
+  {
+    title: "Introduction to Cloud",
+    issuer: "Cognitive Class",
+    year: "2025",
+    category: "Cloud Computing",
+    link: "https://cognitiveclass.ai/courses/introduction-to-cloud",
+  },
+  {
+    title: "Introduction to Open Source",
+    issuer: "Sunstone School of Technology",
+    year: "2025",
+    category: "Open Source",
+    link: "https://sunstone.in/certificate?id=2ee2a282-2e84-4dd2-8eef-127b4ae15053",
+  },
+  {
+    title: "Full Stack Web Development",
+    issuer: "Devfolio",
+    year: "2025",
+    category: "Full Stack Development",
+  },
+  {
+    title: "Prompt Engineering for Everyone",
+    issuer: "Cognitive Class",
+    year: "2025",
+    category: "AI & Prompting",
+  },
+  {
+    title: "Web Development Masterclass",
+    issuer: "Udemy",
+    year: "2025",
+    category: "Web Development",
+  },
+  {
+    title: "1 Minute Typing Test",
+    issuer: "Typing.com",
+    year: "2026",
+    category: "Typing",
+    link: "https://www.typing.com/student/verify#40136222-162755906",
+  },
 ];
 
 export const experience = [
