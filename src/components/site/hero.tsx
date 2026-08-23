@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from "motion/react";
-import { ArrowDownRight, ArrowUpRight, Gamepad2 } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useRef, useMemo } from "react";
 import portrait from "@/assets/portrait-main.jpg";
@@ -97,20 +97,10 @@ export function Hero() {
                 the query on the server. Quiet interfaces, careful engineering.
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-8 flex items-center gap-3">
                 <Magnetic strength={10}>
                   <Link to="/contact" className="press-btn">
                     Commission a build <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
-                  </Link>
-                </Magnetic>
-                <Magnetic strength={10}>
-                  <a href="#work" className="press-btn-outline">
-                    Selected work <ArrowDownRight className="size-3.5" strokeWidth={1.5} />
-                  </a>
-                </Magnetic>
-                <Magnetic strength={10}>
-                  <Link to="/arcade" className="press-btn-outline border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 flex items-center gap-2">
-                    Play Arcade <Gamepad2 className="size-3.5 animate-pulse text-rose-500 dark:text-rose-400" strokeWidth={1.5} />
                   </Link>
                 </Magnetic>
               </div>
