@@ -118,42 +118,56 @@ export function CertificateWall() {
 
 /** Achievements — counters plus optional proof images. */
 export function AchievementWall() {
-  const { data } = useCredentials();
+  const { data, isLoading } = useCredentials();
   const list = data?.achievements ?? credentialsDefault.achievements;
-  const proofs = list.filter((a) => a.image);
+  const proofs = list.filter((a) => Boolean(a.image));
 
   return (
     <Section id="achievements" tint>
       <SectionHeading
-        eyebrow="Achievements"
+        eyebrow="Achievements — Live"
         figure="09"
         title="Numbers, badges and proof."
-        description="Counted from real shipped work — with the certificates behind them where they exist."
+        description="Counted from real shipped work — with verified proof certificates synced live from the admin studio."
       />
 
-      <div className="mt-14 grid grid-cols-2 gap-px border border-ink/15 bg-ink/15 md:grid-cols-4">
-        {list.map((a, i) => (
-          <motion.div
-            key={`${a.label}-${i}`}
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.6, delay: i * 0.05 }}
-            className="relative overflow-hidden bg-paper-tint px-5 py-9 sm:px-7 sm:py-12"
-          >
-            <span aria-hidden className="hatch absolute -right-4 -top-6 size-24 rotate-12" />
-            <p className="relative font-display text-[clamp(2.2rem,5vw,3.4rem)] leading-none text-ink">
-              <Counter to={a.value} suffix={a.suffix ?? ""} />
-            </p>
-            <p className="label mt-4">{a.label}</p>
-            {a.note ? <p className="caption mt-2">{a.note}</p> : null}
-          </motion.div>
-        ))}
-      </div>
+      {isLoading && !list.length ? (
+        <div className="mt-14 grid grid-cols-2 gap-px border border-ink/15 bg-ink/15 md:grid-cols-4 animate-pulse">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-paper-tint px-5 py-9 sm:px-7 sm:py-12 space-y-3">
+              <div className="h-8 w-16 rounded bg-ink/[0.08]" />
+              <div className="h-3 w-28 rounded bg-ink/[0.05]" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="mt-14 grid grid-cols-2 gap-px border border-ink/15 bg-ink/15 md:grid-cols-4">
+          {list.map((a, i) => (
+            <motion.div
+              key={`${a.label}-${i}`}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: i * 0.05 }}
+              className="relative overflow-hidden bg-paper-tint px-5 py-9 sm:px-7 sm:py-12"
+            >
+              <span aria-hidden className="hatch absolute -right-4 -top-6 size-24 rotate-12" />
+              <p className="relative font-display text-[clamp(2.2rem,5vw,3.4rem)] leading-none text-ink">
+                <Counter to={a.value} suffix={a.suffix ?? ""} />
+              </p>
+              <p className="label mt-4">{a.label}</p>
+              {a.note ? <p className="caption mt-2 text-ink-soft">{a.note}</p> : null}
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       {proofs.length ? (
         <div className="mt-16">
-          <span className="label">Achievement certificates</span>
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="label">Achievement Proofs & Badges</span>
+            <span className="caption">{proofs.length} verified {proofs.length === 1 ? "proof" : "proofs"}</span>
+          </div>
           <Rule className="mt-3" />
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {proofs.map((a, i) => {
@@ -167,21 +181,39 @@ export function AchievementWall() {
                   whileHover={{ rotate: 0, y: -5 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.7, delay: i * 0.06, ease }}
-                  className="plate group relative block p-3 will-change-transform"
+                  className="group block rounded-[var(--radius-lg)] will-change-transform"
                 >
-                  <RegMark className="absolute right-4 top-4 z-10" />
-                  <img
-                    loading="lazy"
-                    decoding="async"
-                    src={a.image}
-                    alt={`${a.label} achievement certificate`}
-                    width={800}
-                    height={560}
-                    className="duotone aspect-[4/3] w-full rounded-xl object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                  />
-                  <p className="mt-4 px-2 pb-2 inline-flex items-center gap-2 text-[1rem] text-ink">
-                    <Award className="size-4 shrink-0" strokeWidth={1.5} /> {a.label}
-                  </p>
+                  <AnimatedBorderTrail
+                    duration={`${9 + (i % 3) * 2}s`}
+                    trailSize="md"
+                    trailColor={i % 2 ? "var(--chrome-2)" : "var(--chrome-1)"}
+                    className="h-full rounded-[var(--radius-lg)]"
+                    contentClassName="plate h-full overflow-hidden p-3"
+                  >
+                    <RegMark className="absolute right-4 top-4 z-10" />
+                    <div className="relative overflow-hidden rounded-xl border border-ink/10 bg-paper-tint">
+                      <img
+                        loading="lazy"
+                        decoding="async"
+                        src={a.image}
+                        alt={`${a.label} achievement certificate`}
+                        width={800}
+                        height={560}
+                        className="duotone aspect-[4/3] w-full rounded-xl object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                      />
+                    </div>
+                    <div className="px-2 pb-2 pt-4 flex items-center justify-between gap-3">
+                      <p className="inline-flex items-center gap-2 text-[1rem] font-medium text-ink">
+                        <Award className="size-4 shrink-0 text-chrome-2" strokeWidth={1.5} /> {a.label}
+                      </p>
+                      {a.link ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink">
+                          Verify
+                          <ArrowUpRight className="size-3 transition-transform group-hover:translate-x-0.5" strokeWidth={1.5} />
+                        </span>
+                      ) : null}
+                    </div>
+                  </AnimatedBorderTrail>
                 </Wrapper>
               );
             })}
