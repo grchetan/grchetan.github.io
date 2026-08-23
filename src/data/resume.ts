@@ -42,8 +42,9 @@ export const resumeDefault: ResumeData = {
       items: [
         {
           title: "Full Stack Web Developer Intern",
-          subtitle: "Rebenok Infotech",
-          meta: "Apr 2023 – Aug 2023",
+          subtitle: "GROW LOCAL BUSINESS",
+          meta: "june 2026 – present",
+          link: "https://growlocalbusiness.in/",
           bullets: [
             "Worked as a part-time video editor for social media content.",
             "Updated website content to keep pages accurate and current.",
@@ -148,9 +149,10 @@ export const resumeDefault: ResumeData = {
           bullets: [],
         },
         {
-          title: "Computer Institute",
+          title: "Computer Institute / Web development",
           subtitle: "Rebenok Infotech",
-          meta: "",
+          meta: "2021 – 2022",
+          link: "https://www.rebenokinfotech.com/",
           bullets: [],
         },
       ],
