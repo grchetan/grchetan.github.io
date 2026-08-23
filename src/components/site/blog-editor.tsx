@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ImagePlus, Pencil, Plus, RefreshCw, Trash2, Upload } from "lucide-react";
+import { ImagePlus, Pencil, Plus, RefreshCw, Sparkles, Trash2, Upload } from "lucide-react";
 import {
   defaultPosts,
   emptyPost,
@@ -60,9 +60,19 @@ function Step({
   );
 }
 
+/** Helper to convert file to base64 if Firebase Storage upload fails */
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 /** Admin tab: write, edit, publish and delete blog posts. */
 export function BlogManager() {
-  const [posts, setPosts] = useState<Post[]>(defaultPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [form, setForm] = useState<Post>(emptyPost);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -71,7 +81,8 @@ export function BlogManager() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    setPosts(await fetchPosts());
+    const list = await fetchPosts();
+    setPosts(list);
     setLoading(false);
   }, []);
 
@@ -96,12 +107,34 @@ export function BlogManager() {
     if (!file) return;
     setUploading(true);
     try {
-      patch({ cover: await uploadImage(file, "blog") });
-      toast.success("Cover uploaded.");
+      try {
+        const url = await uploadImage(file, "blog");
+        patch({ cover: url });
+        toast.success("Cover uploaded to Storage.");
+      } catch {
+        const base64 = await fileToBase64(file);
+        patch({ cover: base64 });
+        toast.success("Cover image attached.");
+      }
     } catch {
-      toast.error("Upload failed — check Storage rules.");
+      toast.error("Image attachment failed.");
     } finally {
       setUploading(false);
+    }
+  }
+
+  async function seedDefaults() {
+    setBusy(true);
+    try {
+      for (const p of defaultPosts) {
+        await savePost(p);
+      }
+      toast.success("3 Starter posts published live to Firestore!");
+      await load();
+    } catch {
+      toast.error("Failed to seed posts.");
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -181,33 +214,28 @@ export function BlogManager() {
               value={form.excerpt}
               onChange={(e) => patch({ excerpt: e.target.value })}
               rows={3}
-              className="admin-field"
+              placeholder="A few lines describing what the reader will learn…"
+              className="admin-field text-[0.92rem]"
             />
           </Field>
         </Step>
 
-        <Step n={2} title="Details" hint="Category powers the filter pills on the blog page.">
-          <Field label="Category">
-            <div className="flex flex-wrap gap-2">
-              {postCategories.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => patch({ category: c })}
-                  className={cn(
-                    "rounded-full border px-3.5 py-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] transition-colors",
-                    form.category === c
-                      ? "border-chrome-1/60 bg-chrome-1/12 text-ink"
-                      : "border-ink/12 bg-paper text-ink-soft hover:text-ink",
-                  )}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Date" hint="Used for ordering — newest first.">
+        <Step n={2} title="Details" hint="Category, date and reading time for the card.">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Category">
+              <select
+                value={form.category}
+                onChange={(e) => patch({ category: e.target.value })}
+                className="admin-field"
+              >
+                {postCategories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Date" hint="YYYY-MM-DD">
               <input
                 type="date"
                 value={form.date}
@@ -215,21 +243,29 @@ export function BlogManager() {
                 className="admin-field"
               />
             </Field>
-            <Field label="Read time (minutes)">
+            <Field label="Read time" hint="In minutes">
               <input
                 type="number"
                 min={1}
+                max={60}
                 value={form.readMins}
-                onChange={(e) => patch({ readMins: Number(e.target.value) || 1 })}
+                onChange={(e) => patch({ readMins: Math.max(1, Number(e.target.value) || 1) })}
                 className="admin-field"
               />
             </Field>
           </div>
-          <Field label="Tags" hint="Comma separated — shown as small chips on the post.">
+          <Field label="Tags" hint="Comma-separated keywords, e.g. React, Firebase, Motion">
             <input
               value={form.tags.join(", ")}
-              onChange={(e) => patch({ tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })}
-              placeholder="React, Firebase, Design"
+              onChange={(e) =>
+                patch({
+                  tags: e.target.value
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean),
+                })
+              }
+              placeholder="React, Architecture, UI"
               className="admin-field"
             />
           </Field>
@@ -238,28 +274,38 @@ export function BlogManager() {
         <Step
           n={3}
           title="Cover image"
-          hint="Pick a file from your computer — it uploads straight to Firebase Storage, no links needed."
+          hint="Pick a file or paste a direct image URL for the article banner."
         >
-          <label className="grid cursor-pointer place-items-center gap-2 rounded-2xl border border-dashed border-ink/20 bg-paper px-5 py-8 text-center transition-colors hover:border-chrome-1/60">
-            <ImagePlus className="size-5 text-ink-soft" strokeWidth={1.5} />
-            <span className="text-[0.95rem] text-ink">{uploading ? "Uploading…" : "Click to choose a cover"}</span>
-            <span className="caption">JPG or PNG · optional</span>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => void pickCover(e.target.files?.[0] ?? null)}
-            />
-          </label>
+          <div className="space-y-3">
+            <label className="grid cursor-pointer place-items-center gap-2 rounded-2xl border border-dashed border-ink/20 bg-paper px-5 py-8 text-center transition-colors hover:border-chrome-1/60">
+              <ImagePlus className="size-5 text-ink-soft" strokeWidth={1.5} />
+              <span className="text-[0.95rem] text-ink">{uploading ? "Attaching image…" : "Click to choose a cover file"}</span>
+              <span className="caption">JPG, PNG, WebP · optional</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => void pickCover(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            <Field label="Or paste image URL directly">
+              <input
+                value={form.cover ?? ""}
+                onChange={(e) => patch({ cover: e.target.value })}
+                placeholder="https://images.unsplash.com/..."
+                className="admin-field font-mono text-[0.8rem]"
+              />
+            </Field>
+          </div>
           {form.cover ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 pt-2">
               <img src={form.cover} alt="" className="size-20 rounded-xl border border-ink/10 object-cover" />
               <button type="button" onClick={() => patch({ cover: "" })} className="press-btn-outline">
                 <Trash2 className="size-3.5" strokeWidth={1.5} /> Remove cover
               </button>
             </div>
           ) : (
-            <p className="caption">No cover yet — the card will show a tinted panel instead.</p>
+            <p className="caption">No cover yet — the card will show a modern tinted gradient panel.</p>
           )}
         </Step>
 
@@ -305,7 +351,14 @@ export function BlogManager() {
 
       {/* list */}
       <div className="min-w-0 xl:col-span-5">
-        <p className="label">Posts ({posts.length})</p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="label">Posts ({posts.length})</p>
+          {posts.length === 0 && !loading ? (
+            <button onClick={() => void seedDefaults()} disabled={busy} className="press-btn-outline text-[0.75rem] gap-1.5 py-1 px-3">
+              <Sparkles className="size-3" strokeWidth={1.5} /> Seed 3 Starter Posts
+            </button>
+          ) : null}
+        </div>
         {loading ? <p className="caption mt-3">Loading…</p> : null}
         <div className="mt-4 grid gap-3">
           {posts.map((p) => (
@@ -333,7 +386,14 @@ export function BlogManager() {
               </button>
             </div>
           ))}
-          {!posts.length && !loading ? <p className="caption">No posts yet — write your first one.</p> : null}
+          {!posts.length && !loading ? (
+            <div className="plate p-6 text-center space-y-3">
+              <p className="caption">No posts yet — write your first post or click below to populate 3 starter articles.</p>
+              <button onClick={() => void seedDefaults()} disabled={busy} className="press-btn text-[0.8rem] gap-2 mx-auto">
+                <Sparkles className="size-3.5" strokeWidth={1.5} /> Seed Starter Posts
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

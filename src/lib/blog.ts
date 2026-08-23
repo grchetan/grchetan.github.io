@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getDb, isFirebaseConfigured } from "@/lib/firebase";
+import { firebaseConfig, getDb, isFirebaseConfigured } from "@/lib/firebase";
 
 export type Post = {
   slug: string;
@@ -78,28 +78,111 @@ export const defaultPosts: Post[] = [
 ];
 
 const COLLECTION = "posts";
+const CACHE_KEY = "site_posts_cache_v2";
+
+function getCachedPosts(): Post[] | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return null;
+}
+
+function setCachedPosts(posts: Post[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(posts));
+  } catch {}
+}
 
 export async function fetchPosts(): Promise<Post[]> {
-  if (!isFirebaseConfigured) return [];
+  if (!isFirebaseConfigured) return defaultPosts;
+
+  // 1. Try Firebase Web SDK
   try {
     const db = await getDb();
     const { collection, getDocs } = await import("firebase/firestore");
     const snap = await getDocs(collection(db, COLLECTION));
-    return snap.docs
-      .map((d) => ({ ...emptyPost, ...(d.data() as Partial<Post>), slug: d.id }) as Post)
-      .sort((a, b) => (a.date < b.date ? 1 : -1));
-  } catch {
-    return [];
+    if (snap.docs.length > 0) {
+      const posts = snap.docs
+        .map((d) => ({ ...emptyPost, ...(d.data() as Partial<Post>), slug: d.id }) as Post)
+        .sort((a, b) => (a.date < b.date ? 1 : -1));
+      setCachedPosts(posts);
+      return posts;
+    }
+  } catch (sdkErr) {
+    console.warn("Firestore SDK fetchPosts failed, trying REST API:", sdkErr);
   }
+
+  // 2. Direct Firestore REST API fallback
+  try {
+    const res = await fetch(
+      `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${COLLECTION}?key=${firebaseConfig.apiKey}`
+    );
+    if (res.ok) {
+      const json = await res.json();
+      if (json.documents && Array.isArray(json.documents)) {
+        const parseField = (f: any): any => {
+          if (!f) return null;
+          if (f.stringValue !== undefined) return f.stringValue;
+          if (f.integerValue !== undefined) return parseInt(f.integerValue, 10);
+          if (f.booleanValue !== undefined) return f.booleanValue;
+          if (f.arrayValue !== undefined) return (f.arrayValue.values || []).map(parseField);
+          if (f.mapValue !== undefined) {
+            const obj: Record<string, any> = {};
+            for (const [k, v] of Object.entries(f.mapValue.fields || {})) {
+              obj[k] = parseField(v);
+            }
+            return obj;
+          }
+          return null;
+        };
+
+        const posts: Post[] = json.documents.map((doc: any) => {
+          const slug = doc.name.split("/").pop() || "";
+          const fields: Record<string, any> = {};
+          for (const [k, v] of Object.entries(doc.fields || {})) {
+            fields[k] = parseField(v);
+          }
+          return {
+            ...emptyPost,
+            ...fields,
+            slug,
+          } as Post;
+        }).sort((a, b) => (a.date < b.date ? 1 : -1));
+
+        if (posts.length > 0) {
+          setCachedPosts(posts);
+          return posts;
+        }
+      }
+    }
+  } catch (restErr) {
+    console.warn("Firestore REST fetchPosts failed:", restErr);
+  }
+
+  return getCachedPosts() ?? defaultPosts;
 }
 
 export async function savePost(post: Post) {
+  const current = getCachedPosts() ?? defaultPosts;
+  const next = [post, ...current.filter((p) => p.slug !== post.slug)];
+  setCachedPosts(next);
+
   const db = await getDb();
   const { doc, setDoc } = await import("firebase/firestore");
   await setDoc(doc(db, COLLECTION, post.slug), post);
 }
 
 export async function removePost(slug: string) {
+  const current = getCachedPosts() ?? defaultPosts;
+  const next = current.filter((p) => p.slug !== slug);
+  setCachedPosts(next);
+
   const db = await getDb();
   const { doc, deleteDoc } = await import("firebase/firestore");
   await deleteDoc(doc(db, COLLECTION, slug));
@@ -107,12 +190,15 @@ export async function removePost(slug: string) {
 
 /** Published posts, newest first. */
 export function usePosts() {
+  const cached = getCachedPosts();
   const query = useQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
-    staleTime: 30_000,
+    initialData: cached ?? defaultPosts,
+    staleTime: 10_000,
+    refetchOnMount: true,
   });
-  const posts = (query.data ?? [])
+  const posts = (query.data ?? defaultPosts)
     .filter((p) => p.published)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
   return { ...query, posts };
