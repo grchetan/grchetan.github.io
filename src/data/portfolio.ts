@@ -397,7 +397,7 @@ export const achievements = [
   { label: "Certificates", value: 18, suffix: "" },
   { label: "Happy Clients", value: 14, suffix: "+" },
   { label: "GitHub Repositories", value: 62, suffix: "" },
-  { label: "LeetCode Problems", value: 219, suffix: "+" },
+  { label: "LeetCode Problems", value: 226, suffix: "+" },
   { label: "Coding Hours", value: 4800, suffix: "+" },
   { label: "Open Source Contributions", value: 35, suffix: "+" },
 ];
@@ -414,7 +414,7 @@ export const codingProfiles = [
   {
     platform: "LeetCode",
     username: "@chetanprajapat07",
-    stat: "219+ solved",
+    stat: "226+ solved",
     meta: "Active coder",
     badges: ["Problem Solving", "DSA"],
     url: profile.socials.leetcode,

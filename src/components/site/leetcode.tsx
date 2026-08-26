@@ -52,13 +52,40 @@ function Heatmap({ calendar }: { calendar: LeetCodeStats["calendar"] }) {
 
   const level = (c: number) => (c === 0 ? 0 : c < 2 ? 1 : c < 4 ? 2 : c < 8 ? 3 : 4);
 
-  // Inline styles using CSS vars — Tailwind can't scan dynamic class arrays
-  const toneStyle = (lvl: number): React.CSSProperties => {
-    if (lvl === 0) return { background: "color-mix(in oklab, var(--chrome-2) 10%, transparent)" };
-    if (lvl === 1) return { background: "color-mix(in oklab, var(--chrome-3) 40%, transparent)" };
-    if (lvl === 2) return { background: "color-mix(in oklab, var(--chrome-3) 70%, transparent)" };
-    if (lvl === 3) return { background: "color-mix(in oklab, var(--chrome-2) 80%, transparent)" };
-    return { background: "var(--chrome-1)" };
+  const toneStyle = (lvl: number, isFuture?: boolean): React.CSSProperties => {
+    if (isFuture) {
+      return {
+        background: "color-mix(in oklab, var(--ink) 4%, transparent)",
+        opacity: 0.25,
+      };
+    }
+    if (lvl === 0) {
+      return {
+        background: "color-mix(in oklab, var(--ink) 8%, transparent)",
+      };
+    }
+    if (lvl === 1) {
+      return {
+        background: "var(--chrome-3, #06b6d4)",
+        boxShadow: "0 0 5px color-mix(in oklab, var(--chrome-3) 40%, transparent)",
+      };
+    }
+    if (lvl === 2) {
+      return {
+        background: "var(--chrome-2, #3b82f6)",
+        boxShadow: "0 0 7px color-mix(in oklab, var(--chrome-2) 45%, transparent)",
+      };
+    }
+    if (lvl === 3) {
+      return {
+        background: "var(--chrome-1, #8b5cf6)",
+        boxShadow: "0 0 9px color-mix(in oklab, var(--chrome-1) 50%, transparent)",
+      };
+    }
+    return {
+      background: "#ec4899",
+      boxShadow: "0 0 10px rgba(236,72,153,0.6)",
+    };
   };
 
   return (
@@ -69,9 +96,13 @@ function Heatmap({ calendar }: { calendar: LeetCodeStats["calendar"] }) {
             {week.map((day) => (
               <span
                 key={day.date}
-                title={`${day.date} — ${day.count} submissions`}
-                className="size-[10px] rounded-[2px] transition-opacity duration-300"
-                style={toneStyle(level(day.count))}
+                title={
+                  day.isFuture
+                    ? `${day.date} (Upcoming)`
+                    : `${day.date} — ${day.count} ${day.count === 1 ? "submission" : "submissions"}`
+                }
+                className="size-[10px] rounded-[2px] transition-all duration-300 hover:scale-125 hover:z-10 cursor-pointer"
+                style={toneStyle(level(day.count), day.isFuture)}
               />
             ))}
           </div>
