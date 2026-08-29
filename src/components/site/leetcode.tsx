@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { ArrowUpRight, Flame } from "lucide-react";
 import { RegMark, Rule } from "@/components/site/primitives";
-import { getLeetCodeStats, type LeetCodeStats } from "@/lib/leetcode.functions";
+import { getCachedLeetCode, getLeetCodeStats, leetcodeDefaultStats, type LeetCodeStats } from "@/lib/leetcode.functions";
 import { profile } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 
@@ -114,13 +114,16 @@ function Heatmap({ calendar }: { calendar: LeetCodeStats["calendar"] }) {
 
 
 export function LeetCodeCard({ className }: { className?: string }) {
+  const cached = getCachedLeetCode();
   const { data } = useQuery({
     queryKey: ["leetcode", LEETCODE_USERNAME],
     queryFn: () => getLeetCodeStats(LEETCODE_USERNAME),
+    initialData: cached ?? leetcodeDefaultStats,
     staleTime: 30_000,
+    refetchOnMount: true,
   });
 
-  const s = data;
+  const s = data ?? leetcodeDefaultStats;
   const solvedTotal = (s?.easyTotal ?? 0) + (s?.mediumTotal ?? 0) + (s?.hardTotal ?? 0);
   const pct = s && solvedTotal ? (s.total / solvedTotal) * 100 : 0;
   const circumference = 2 * Math.PI * 54;
