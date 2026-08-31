@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { About, Education, TechStack } from "@/components/site/about";
+import { About, Education, TechStack, WorkExperienceSection } from "@/components/site/about";
 import { GitHubCard } from "@/components/site/github-card";
 import { LeetCodeCard } from "@/components/site/leetcode";
 import { LiquidVideoReveal } from "@/components/site/liquid-reveal";
@@ -39,6 +39,8 @@ function AboutPage() {
       />
 
       <About />
+
+      <WorkExperienceSection />
 
       <Section className="pt-0">
         <SectionHeading

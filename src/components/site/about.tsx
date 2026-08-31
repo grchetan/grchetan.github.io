@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import AnimatedBorderTrail from "@/components/ui/animated-border-trail";
 import inkTexture from "@/assets/texture-ink.jpg";
 import { Counter, RegMark, Reveal, Rule, Section, SectionHeading } from "@/components/site/primitives";
-import { aboutParagraphs, aboutStats, education, services, techStack } from "@/data/portfolio";
+import { aboutParagraphs, aboutStats, education, services, techStack, workExperiences } from "@/data/portfolio";
 import { TechIconCloud } from "@/components/mage-ui/icon/icon-cloud";
 import { getLeetCodeStats } from "@/lib/leetcode.functions";
 
@@ -239,6 +239,150 @@ export function Education() {
             <p className="mt-4 text-[0.9rem] leading-[1.75] text-ink-soft">{e.note}</p>
           </motion.article>
         ))}
+      </div>
+    </Section>
+  );
+}
+
+/* ---------------- Work Experience: structured production timeline ---------------- */
+
+export function WorkExperienceSection() {
+  return (
+    <Section id="experience" className="pt-0">
+      <SectionHeading
+        eyebrow="Work Experience"
+        figure="02c"
+        title="Production experience & real-world shipping."
+        description="Internships, freelance client shipping and early web design workflows."
+      />
+
+      <div className="mt-12 space-y-6">
+        {workExperiences.map((exp, i) => {
+          const isCurrent = Boolean(exp.current);
+          return (
+            <motion.article
+              key={exp.company}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="group relative"
+            >
+              {isCurrent ? (
+                <AnimatedBorderTrail
+                  duration="8s"
+                  trailSize="md"
+                  trailColor="var(--chrome-2)"
+                  className="rounded-[var(--radius-lg)]"
+                  contentClassName="plate-tint relative p-6 sm:p-8"
+                >
+                  <RegMark className="absolute right-4 top-4" />
+
+                  {/* Header Row */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <span className="label font-mono text-chrome-2 uppercase tracking-[0.16em]">
+                          {exp.badge ?? "Experience"}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[0.62rem] uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                          <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" /> Current
+                        </span>
+                      </div>
+                      <h3 className="mt-2.5 text-[clamp(1.25rem,2.5vw,1.65rem)] font-bold leading-tight text-ink">
+                        {exp.company}
+                      </h3>
+                      <p className="mt-1 font-mono text-[0.82rem] font-medium tracking-[0.06em] text-ink-soft">
+                        {exp.role}
+                      </p>
+                    </div>
+
+                    <div className="shrink-0">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 bg-paper/80 px-3.5 py-1.5 font-mono text-[0.72rem] font-medium uppercase tracking-[0.12em] text-ink backdrop-blur shadow-sm">
+                        {exp.duration}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Rule className="my-5" />
+
+                  {/* Description */}
+                  <p className="max-w-[72ch] text-[0.96rem] leading-[1.8] text-ink-soft">
+                    {exp.description}
+                  </p>
+
+                  {/* Technologies */}
+                  <div className="mt-6">
+                    <span className="caption block font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-soft/80">
+                      Technologies & Focus
+                    </span>
+                    <ul className="mt-3 flex flex-wrap items-center gap-2">
+                      {exp.technologies.map((tech) => (
+                        <li
+                          key={tech}
+                          className="rounded-lg border border-ink/10 bg-ink/[0.04] px-3 py-1 font-mono text-[0.72rem] font-semibold tracking-wider text-ink/85 transition-all duration-300 group-hover:border-chrome-2/30"
+                        >
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </AnimatedBorderTrail>
+              ) : (
+                <div className="plate relative p-6 sm:p-8">
+                  <RegMark className="absolute right-4 top-4" />
+
+                  {/* Header Row */}
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+                    <div>
+                      {exp.badge ? (
+                        <span className="label font-mono uppercase tracking-[0.16em]">
+                          {exp.badge}
+                        </span>
+                      ) : null}
+                      <h3 className="mt-2 text-[clamp(1.2rem,2.3vw,1.55rem)] font-bold leading-tight text-ink">
+                        {exp.company}
+                      </h3>
+                      <p className="mt-1 font-mono text-[0.82rem] font-medium tracking-[0.06em] text-ink-soft">
+                        {exp.role}
+                      </p>
+                    </div>
+
+                    <div className="shrink-0">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper/60 px-3.5 py-1.5 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink-soft backdrop-blur">
+                        {exp.duration}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Rule className="my-5" />
+
+                  {/* Description */}
+                  <p className="max-w-[72ch] text-[0.96rem] leading-[1.8] text-ink-soft">
+                    {exp.description}
+                  </p>
+
+                  {/* Technologies */}
+                  <div className="mt-6">
+                    <span className="caption block font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-soft/80">
+                      Technologies & Focus
+                    </span>
+                    <ul className="mt-3 flex flex-wrap items-center gap-2">
+                      {exp.technologies.map((tech) => (
+                        <li
+                          key={tech}
+                          className="rounded-lg border border-ink/10 bg-ink/[0.03] px-3 py-1 font-mono text-[0.72rem] font-medium tracking-wider text-ink/80 transition-colors hover:border-ink/20 hover:text-ink"
+                        >
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </motion.article>
+          );
+        })}
       </div>
     </Section>
   );

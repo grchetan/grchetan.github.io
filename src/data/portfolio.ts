@@ -339,6 +339,47 @@ export const certificates = [
   },
 ];
 
+export type WorkExperience = {
+  company: string;
+  role: string;
+  duration: string;
+  technologies: string[];
+  description: string;
+  badge?: string;
+  current?: boolean;
+};
+
+export const workExperiences: WorkExperience[] = [
+  {
+    company: "Grow Local Business",
+    role: "Full Stack Web Development Intern",
+    duration: "June 2026 – Present",
+    current: true,
+    badge: "Current Internship",
+    technologies: ["HTML/CSS", "Node.js", "JavaScript", "SEO", "Supabase"],
+    description:
+      "Gained practical experience in full-stack development, UI design, and teamwork during internship.",
+  },
+  {
+    company: "Freelance Web Developer",
+    role: "Freelance Web Developer",
+    duration: "Nov 2024 – May 2026",
+    badge: "Client Projects",
+    technologies: ["HTML", "CSS", "JavaScript", "React", "Node.js", "Supabase"],
+    description:
+      "Managed project deployment and delivered user-focused web solutions based on project requirements.",
+  },
+  {
+    company: "Rebenok Infotech",
+    role: "Web Design / UI & Graphic Design",
+    duration: "May 2022 – Aug 2023",
+    badge: "Design & Fundamentals",
+    technologies: ["Web Design", "CSS", "UI Design", "Graphic Design"],
+    description:
+      "Worked on website design and learned practical web design principles and development workflows.",
+  },
+];
+
 export const experience = [
   {
     period: "2025 — Present",
