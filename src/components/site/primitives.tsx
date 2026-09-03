@@ -18,7 +18,7 @@ const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 768;
 export function Reveal({
   children,
   delay = 0,
-  y = 18,
+  y = 16,
   className,
 }: {
   children: ReactNode;
@@ -27,41 +27,37 @@ export function Reveal({
   className?: string;
 }) {
   const { reduced } = useMotionPreference();
-  const cssRef = useCssReveal<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' });
+  const [revealed, setRevealed] = useState(false);
 
-  // On mobile: pure CSS animation — zero JS overhead, runs on compositor thread
-  if (IS_MOBILE) {
-    const delayIdx = delay <= 0 ? undefined : delay <= 0.08 ? "1" : delay <= 0.16 ? "2" : delay <= 0.24 ? "3" : "4";
-    return (
-      <div
-        ref={cssRef}
-        data-reveal=""
-        {...(delayIdx ? { "data-delay": delayIdx } : {})}
-        className={className}
-      >
-        {children}
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (isInView) setRevealed(true);
+    // Guaranteed fallback: content NEVER stays invisible
+    const timer = setTimeout(() => setRevealed(true), 700);
+    return () => clearTimeout(timer);
+  }, [isInView]);
+
+  if (reduced) return <div className={className}>{children}</div>;
 
   return (
     <motion.div
-      initial={reduced ? { opacity: 1, y: 0 } : { opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
+      ref={ref}
+      initial={{ opacity: 0, y }}
+      animate={revealed ? { opacity: 1, y: 0 } : undefined}
       transition={{
-        duration: reduced ? 0 : 0.8,
+        duration: 0.65,
         delay,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className={cn('will-change-transform', className)}
+      className={className}
     >
       {children}
     </motion.div>
   );
 }
 
-/** cursor-magnetic wrapper — element leans toward the pointer, springs back on exit */
+/** cursor-magnetic wrapper — element leans toward the pointer, springs back on exit with cached rect */
 export function Magnetic({
   children,
   strength = 14,
@@ -73,17 +69,19 @@ export function Magnetic({
 }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLSpanElement>(null);
+  const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+
   // Skip spring physics on touch devices — pointer tracking is useless on mobile
   const isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
   const x = useSpring(useMotionValue(0), {
-    stiffness: 220,
-    damping: 18,
-    mass: 0.5,
+    stiffness: 240,
+    damping: 20,
+    mass: 0.4,
   });
   const y = useSpring(useMotionValue(0), {
-    stiffness: 220,
-    damping: 18,
-    mass: 0.5,
+    stiffness: 240,
+    damping: 20,
+    mass: 0.4,
   });
 
   if (reduced || isTouch) return <span className={className}>{children}</span>;
@@ -92,19 +90,26 @@ export function Magnetic({
     <motion.span
       ref={ref}
       style={{ x, y }}
-      className={cn('inline-block will-change-transform', className)}
+      className={cn('inline-block', className)}
+      onPointerEnter={() => {
+        if (ref.current) {
+          const r = ref.current.getBoundingClientRect();
+          rectRef.current = { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+      }}
       onPointerMove={(e) => {
-        const el = ref.current;
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        x.set(
-          ((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * strength,
-        );
-        y.set(
-          ((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * strength,
-        );
+        let r = rectRef.current;
+        if (!r && ref.current) {
+          const rect = ref.current.getBoundingClientRect();
+          r = { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+          rectRef.current = r;
+        }
+        if (!r || r.width === 0 || r.height === 0) return;
+        x.set(((e.clientX - (r.left + r.width / 2)) / (r.width / 2)) * strength);
+        y.set(((e.clientY - (r.top + r.height / 2)) / (r.height / 2)) * strength);
       }}
       onPointerLeave={() => {
+        rectRef.current = null;
         x.set(0);
         y.set(0);
       }}
@@ -123,7 +128,6 @@ export function Rule({
   delay?: number;
 }) {
   const { reduced } = useMotionPreference();
-  // On mobile: use CSS animation directly — no motion overhead
   if (IS_MOBILE) {
     return (
       <div
@@ -138,13 +142,14 @@ export function Rule({
       initial={reduced ? { scaleX: 1 } : { scaleX: 0 }}
       whileInView={{ scaleX: 1 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: reduced ? 0 : 1, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: reduced ? 0 : 0.9, delay, ease: [0.16, 1, 0.3, 1] }}
       style={{ transformOrigin: 'left' }}
-      className={cn('h-px w-full bg-ink/20 will-change-transform', className)}
+      className={cn('h-px w-full bg-ink/20', className)}
     />
   );
 }
 
+/** TextReveal component with safe inline rendering */
 export function TextReveal({
   text,
   className,
@@ -152,35 +157,7 @@ export function TextReveal({
   text: string;
   className?: string;
 }) {
-  const { reduced } = useMotionPreference();
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
-  if (reduced || isMobile) {
-    return <span className={className}>{text}</span>;
-  }
-
-  const words = text.split(' ');
-  return (
-    <span className={cn('inline', className)}>
-      {words.map((word, i) => (
-        <motion.span
-          key={`${word}-${i}`}
-          className="inline-block will-change-transform"
-          initial={{ opacity: 0, y: '0.3em', rotate: 2 }}
-          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.7,
-            delay: i * 0.04,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-          {word}
-          {i < words.length - 1 ? '\u00A0' : ''}
-        </motion.span>
-      ))}
-    </span>
-  );
+  return <span className={className}>{text}</span>;
 }
 
 /** registration crosshair — printer's alignment mark */
@@ -200,7 +177,7 @@ export function RegMark({ className }: { className?: string }) {
   );
 }
 
-/* ---------------- section furniture ---------------- */
+/* ---------------- section furniture: guaranteed visible & butter smooth ---------------- */
 
 export function SectionHeading({
   eyebrow,
@@ -217,8 +194,21 @@ export function SectionHeading({
   align?: 'left' | 'center';
   className?: string;
 }) {
+  const { reduced } = useMotionPreference();
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '0px 0px -50px 0px' });
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (isInView) setRevealed(true);
+    // Deterministic fallback: Guaranteed to reveal after 500ms so text is NEVER hidden
+    const timer = setTimeout(() => setRevealed(true), 500);
+    return () => clearTimeout(timer);
+  }, [isInView]);
+
   return (
     <div
+      ref={ref}
       className={cn(
         'relative z-10',
         align === 'center' ? 'text-center' : 'text-left',
@@ -237,22 +227,26 @@ export function SectionHeading({
         ) : null}
       </div>
       <Rule className="mt-3" />
-      <Reveal delay={0.05}>
-        <h2 className="mt-6 text-[clamp(2.4rem,6vw,4.5rem)]">
-          {typeof title === 'string' ? <TextReveal text={title} /> : title}
-        </h2>
-      </Reveal>
+      <motion.h2
+        initial={reduced ? false : { opacity: 0, y: 16 }}
+        animate={revealed ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+        className="mt-6 text-[clamp(2.4rem,6vw,4.5rem)] leading-[0.98] text-ink font-display"
+      >
+        {title}
+      </motion.h2>
       {description ? (
-        <Reveal delay={0.12}>
-          <p
-            className={cn(
-              'mt-5 max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground',
-              align === 'center' ? 'mx-auto' : '',
-            )}
-          >
-            {description}
-          </p>
-        </Reveal>
+        <motion.p
+          initial={reduced ? false : { opacity: 0, y: 12 }}
+          animate={revealed ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.65, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className={cn(
+            'mt-5 max-w-xl text-[0.98rem] leading-relaxed text-muted-foreground',
+            align === 'center' ? 'mx-auto' : '',
+          )}
+        >
+          {description}
+        </motion.p>
       ) : null}
     </div>
   );
@@ -316,7 +310,7 @@ export function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
   );
 }
 
-/** photograph mounted as a trimmed plate, set slightly askew */
+/** photograph mounted as a trimmed plate, set slightly askew with smooth card depth */
 export function Plate({
   src,
   alt,
@@ -342,15 +336,14 @@ export function Plate({
 }) {
   const { reduced } = useMotionPreference();
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-  const parallax = useTransform(
-    scrollYProgress,
-    [0, 1],
-    reduced ? [0, 0] : [22, -22],
-  );
+  const isInView = useInView(ref, { once: true, margin: '0px 0px -40px 0px' });
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (isInView) setRevealed(true);
+    const timer = setTimeout(() => setRevealed(true), 800);
+    return () => clearTimeout(timer);
+  }, [isInView]);
 
   return (
     <motion.figure
@@ -358,18 +351,13 @@ export function Plate({
       initial={
         reduced
           ? { opacity: 1, y: 0, rotate: tilt }
-          : { opacity: 0, y: 26, rotate: tilt * 1.8 }
+          : { opacity: 0, y: 22, rotate: tilt * 1.4 }
       }
-      whileInView={{ opacity: 1, y: 0, rotate: tilt }}
-      {...(reduced ? {} : { whileHover: { rotate: 0, scale: 1.015 } })}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
-      className={cn('plate group/plate p-2', className)}
+      animate={revealed ? { opacity: 1, y: 0, rotate: tilt } : undefined}
+      transition={{ duration: reduced ? 0 : 0.85, ease: [0.16, 1, 0.3, 1] }}
+      className={cn('plate card-depth group/plate p-2.5 overflow-hidden', className)}
     >
-      <motion.div
-        {...(reduced ? {} : { style: { y: parallax } })}
-        className="overflow-hidden"
-      >
+      <div className="overflow-hidden rounded-[calc(var(--radius-lg)-6px)]">
         <img
           loading="lazy"
           decoding="async"
@@ -378,13 +366,13 @@ export function Plate({
           width={width}
           height={height}
           className={cn(
-            'w-full h-auto object-contain transition-[transform,filter] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/plate:scale-[1.03] group-hover/plate:saturate-125',
+            'w-full h-auto object-contain transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/plate:scale-[1.03]',
             imgClassName,
           )}
         />
-      </motion.div>
+      </div>
       {caption || figure ? (
-        <figcaption className="mt-2 flex items-baseline justify-between gap-4 px-1 pb-1">
+        <figcaption className="mt-2.5 flex items-baseline justify-between gap-4 px-1 pb-1">
           <span className="caption">{caption}</span>
           {figure ? (
             <span className="caption tracking-[0.2em]">{figure}</span>

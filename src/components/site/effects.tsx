@@ -88,10 +88,21 @@ export function DotGrid() {
 
     let last = 0;
     const frameMs = 1000 / 40;
+    let isScrolling = false;
+    let scrollTimer: ReturnType<typeof setTimeout>;
+
+    const onScroll = () => {
+      isScrolling = true;
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        isScrolling = false;
+        dirty = true;
+      }, 120);
+    };
 
     const draw = (now: number) => {
       raf = requestAnimationFrame(draw);
-      if (!visible || !dirty || now - last < frameMs) return;
+      if (!visible || !dirty || isScrolling || now - last < frameMs) return;
       last = now;
       dirty = false;
 
@@ -135,13 +146,16 @@ export function DotGrid() {
     resize();
     raf = requestAnimationFrame(draw);
     window.addEventListener('resize', resize);
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('pointermove', onMove, { passive: true });
     window.addEventListener('pointerleave', onLeave);
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(scrollTimer);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerleave', onLeave);
       document.removeEventListener('visibilitychange', onVisibility);
@@ -163,10 +177,7 @@ export function DotGrid() {
 
 export function CustomCursor() {
   const { reduced } = useMotionPreference();
-  const [visible, setVisible] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [clicked, setClicked] = useState(false);
-
+  const rootRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
@@ -174,6 +185,7 @@ export function CustomCursor() {
   const ringPos = useRef({ x: -9999, y: -9999 });
   const initialized = useRef(false);
   const rafRef = useRef<number>(0);
+  const isHoveredRef = useRef(false);
 
   useEffect(() => {
     if (reduced) return;
@@ -196,7 +208,9 @@ export function CustomCursor() {
         ringPos.current.y = e.clientY;
         initialized.current = true;
       }
-      setVisible(true);
+      if (rootRef.current && rootRef.current.style.opacity !== "1") {
+        rootRef.current.style.opacity = "1";
+      }
       startAnimation();
     };
 
@@ -204,37 +218,46 @@ export function CustomCursor() {
       updatePos(e);
 
       const target = e.target as HTMLElement | null;
-      if (
+      const isInteractive = Boolean(
         target &&
-        (target.tagName === 'BUTTON' ||
-          target.tagName === 'A' ||
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
-          target.closest('button') ||
-          target.closest('a') ||
-          target.getAttribute('role') === 'button' ||
-          target.classList.contains('cursor-pointer'))
-      ) {
-        setHovered(true);
-      } else {
-        setHovered(false);
+          (target.tagName === 'BUTTON' ||
+            target.tagName === 'A' ||
+            target.tagName === 'INPUT' ||
+            target.tagName === 'TEXTAREA' ||
+            target.closest('button') ||
+            target.closest('a') ||
+            target.getAttribute('role') === 'button' ||
+            target.classList.contains('cursor-pointer'))
+      );
+
+      if (isInteractive !== isHoveredRef.current) {
+        isHoveredRef.current = isInteractive;
+        // Direct DOM update — ZERO React component re-renders!
+        if (ringRef.current) ringRef.current.dataset.hover = isInteractive ? "true" : "false";
+        if (dotRef.current) dotRef.current.dataset.hover = isInteractive ? "true" : "false";
       }
     };
 
     const onPointerDown = (e: PointerEvent) => {
       updatePos(e);
-      setClicked(true);
+      if (ringRef.current) ringRef.current.dataset.click = "true";
+      if (dotRef.current) dotRef.current.dataset.click = "true";
     };
     const onPointerUp = (e: PointerEvent) => {
       updatePos(e);
-      setClicked(false);
+      if (ringRef.current) ringRef.current.dataset.click = "false";
+      if (dotRef.current) dotRef.current.dataset.click = "false";
     };
-    const onPointerLeave = () => setVisible(false);
-    const onPointerEnter = () => setVisible(true);
+    const onPointerLeave = () => {
+      if (rootRef.current) rootRef.current.style.opacity = "0";
+    };
+    const onPointerEnter = () => {
+      if (rootRef.current) rootRef.current.style.opacity = "1";
+    };
 
     const loop = () => {
       if (initialized.current) {
-        const lerp = 0.25;
+        const lerp = 0.22;
         const dx = mouse.current.x - ringPos.current.x;
         const dy = mouse.current.y - ringPos.current.y;
 
@@ -248,8 +271,8 @@ export function CustomCursor() {
           ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
         }
 
-        // If we are extremely close, stop the loop to save CPU/GPU cycles
-        if (Math.abs(dx) < 0.08 && Math.abs(dy) < 0.08) {
+        // If cursor has caught up and stopped moving, pause loop to save CPU
+        if (Math.abs(dx) < 0.05 && Math.abs(dy) < 0.05) {
           animating = false;
           return;
         }
@@ -264,7 +287,6 @@ export function CustomCursor() {
     document.documentElement.addEventListener('pointerleave', onPointerLeave);
     document.documentElement.addEventListener('pointerenter', onPointerEnter);
 
-    // Initial trigger to position the cursor
     startAnimation();
 
     return () => {
@@ -272,14 +294,8 @@ export function CustomCursor() {
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointerup', onPointerUp);
-      document.documentElement.removeEventListener(
-        'pointerleave',
-        onPointerLeave,
-      );
-      document.documentElement.removeEventListener(
-        'pointerenter',
-        onPointerEnter,
-      );
+      document.documentElement.removeEventListener('pointerleave', onPointerLeave);
+      document.documentElement.removeEventListener('pointerenter', onPointerEnter);
     };
   }, [reduced]);
 
@@ -287,50 +303,41 @@ export function CustomCursor() {
 
   return (
     <div
+      ref={rootRef}
       aria-hidden
-      className={cn(
-        'pointer-events-none fixed inset-0 z-[200] hidden overflow-hidden md:block transition-opacity duration-300',
-        visible ? 'opacity-100' : 'opacity-0',
-      )}
+      style={{ opacity: 0 }}
+      className="pointer-events-none fixed inset-0 z-[200] hidden overflow-hidden md:block transition-opacity duration-300"
     >
       {/* Outer fluid aura ring */}
       <div
         ref={ringRef}
-        className="absolute top-0 left-0 will-change-transform"
+        data-hover="false"
+        data-click="false"
+        className="group/ring absolute top-0 left-0"
         style={{ transition: 'none' }}
       >
         <div
-          className={cn(
-            '-translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-200 ease-out',
-            hovered
-              ? 'size-14 border-chrome-1/80 bg-chrome-1/15 backdrop-blur-[1px] shadow-[0_0_20px_rgba(167,139,250,0.4)] scale-110'
-              : 'size-9 border-chrome-2/50 bg-chrome-2/5 shadow-[0_0_10px_rgba(129,140,248,0.2)]',
-            clicked ? 'scale-75 opacity-90' : '',
-          )}
+          className="size-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-chrome-2/50 bg-chrome-2/5 shadow-[0_0_10px_rgba(129,140,248,0.2)] transition-all duration-200 ease-out group-data-[hover=true]/ring:size-14 group-data-[hover=true]/ring:border-chrome-1/80 group-data-[hover=true]/ring:bg-chrome-1/15 group-data-[hover=true]/ring:shadow-[0_0_20px_rgba(167,139,250,0.4)] group-data-[hover=true]/ring:scale-110 group-data-[click=true]/ring:scale-75 group-data-[click=true]/ring:opacity-90"
         />
       </div>
 
       {/* Inner glowing pointer dot */}
       <div
         ref={dotRef}
-        className="absolute top-0 left-0 will-change-transform"
+        data-hover="false"
+        data-click="false"
+        className="group/dot absolute top-0 left-0"
         style={{ transition: 'none' }}
       >
         <div
-          className={cn(
-            '-translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-chrome-1 to-chrome-3 transition-all duration-150 ease-out',
-            hovered
-              ? 'size-2.5 shadow-[0_0_10px_#fff]'
-              : 'size-2 shadow-[0_0_6px_rgba(255,255,255,0.8)]',
-            clicked ? 'scale-150' : '',
-          )}
+          className="size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-chrome-1 to-chrome-3 shadow-[0_0_6px_rgba(255,255,255,0.8)] transition-all duration-150 ease-out group-data-[hover=true]/dot:size-2.5 group-data-[hover=true]/dot:shadow-[0_0_10px_#fff] group-data-[click=true]/dot:scale-150"
         />
       </div>
     </div>
   );
 }
 
-/* ---------------- Magnetic wrapper ---------------- */
+/* ---------------- Magnetic wrapper with cached rect ---------------- */
 
 export function Magnetic({
   children,
@@ -342,23 +349,36 @@ export function Magnetic({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 260, damping: 20 });
-  const sy = useSpring(y, { stiffness: 260, damping: 20 });
+  const sx = useSpring(x, { stiffness: 240, damping: 20 });
+  const sy = useSpring(y, { stiffness: 240, damping: 20 });
 
   return (
     <motion.div
       ref={ref}
       style={{ x: sx, y: sy }}
       className={className}
+      onPointerEnter={() => {
+        if (ref.current) {
+          const r = ref.current.getBoundingClientRect();
+          rectRef.current = { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+      }}
       onPointerMove={(e) => {
-        const r = ref.current?.getBoundingClientRect();
-        if (!r) return;
+        let r = rectRef.current;
+        if (!r && ref.current) {
+          const rect = ref.current.getBoundingClientRect();
+          r = { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+          rectRef.current = r;
+        }
+        if (!r || r.width === 0 || r.height === 0) return;
         x.set(((e.clientX - (r.left + r.width / 2)) / r.width) * strength * 2);
         y.set(((e.clientY - (r.top + r.height / 2)) / r.height) * strength * 2);
       }}
       onPointerLeave={() => {
+        rectRef.current = null;
         x.set(0);
         y.set(0);
       }}

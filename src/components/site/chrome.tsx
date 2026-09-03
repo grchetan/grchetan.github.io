@@ -328,7 +328,14 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
   const { reduced, toggle: toggleMotion } = useMotionPreference();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    let lastScrolled = window.scrollY > 40;
+    const onScroll = () => {
+      const isScrolled = window.scrollY > 40;
+      if (isScrolled !== lastScrolled) {
+        lastScrolled = isScrolled;
+        setScrolled(isScrolled);
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -345,8 +352,8 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-[65] transition-colors duration-500",
-          scrolled ? "border-b border-ink/10 bg-paper/60 backdrop-blur-xl"  : "bg-transparent",
+          "fixed inset-x-0 top-0 z-[65] transition-colors duration-300",
+          scrolled ? "border-b border-ink/10 bg-paper/75 backdrop-blur-md" : "bg-transparent",
         )}
       >
         <nav className="mx-auto flex w-full max-w-[84rem] items-center justify-between gap-6 px-5 py-4 sm:px-8 lg:px-14">

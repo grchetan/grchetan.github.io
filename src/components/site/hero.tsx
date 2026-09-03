@@ -63,33 +63,36 @@ export function Hero() {
             <h1 className="mt-5 text-[clamp(3.4rem,13vw,10.5rem)] leading-[0.86]">
               <HeroSectionTextHover
                 first={
-                  <motion.span
-                    initial={{ opacity: 0, y: "0.2em" }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                    className="block"
-                  >
-                    Chetan
-                  </motion.span>
+                  <span className="editorial-mask block">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
+                      className="block"
+                    >
+                      Chetan
+                    </motion.span>
+                  </span>
                 }
                 second={
-                  <motion.span
-                    initial={{ opacity: 0, y: "0.2em" }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-                    className="chrome-text -ml-[0.02em] block italic"
-                  >
-                    Prajapat
-                  </motion.span>
+                  <span className="editorial-mask block">
+                    <motion.span
+                      initial={{ y: "110%" }}
+                      animate={{ y: 0 }}
+                      transition={{ duration: 1.05, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                      className="chrome-text -ml-[0.02em] block italic"
+                    >
+                      Prajapat
+                    </motion.span>
+                  </span>
                 }
               />
             </h1>
 
-
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.35 }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.85, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
               className="mt-9 max-w-md lg:mt-12"
             >
               <p className="text-[1.02rem] leading-[1.75] text-ink-soft">
@@ -110,18 +113,20 @@ export function Hero() {
           {/* portrait plate, mounted askew and breaking the column */}
           <motion.div style={{ y: portraitY }} className="relative lg:col-span-4">
             <motion.figure
-              initial={{ opacity: 0, y: 30, rotate: 3.4 }}
+              initial={{ opacity: 0, y: 28, rotate: 3.4 }}
               animate={{ opacity: 1, y: 0, rotate: 1.6 }}
               transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="plate relative mx-auto max-w-[19rem] p-2.5 lg:absolute lg:top-4 lg:right-0 lg:mx-0 lg:max-w-none lg:w-[21rem]"
+              className="plate card-depth relative mx-auto max-w-[19rem] p-2.5 lg:absolute lg:top-4 lg:right-0 lg:mx-0 lg:max-w-none lg:w-[21rem]"
             >
-              <img
-                src={portrait}
-                alt="Portrait of Chetan Prajapat, full stack developer"
-                width={1024}
-                height={1280}
-                className="duotone w-full object-cover"
-              />
+              <div className="overflow-hidden rounded-[calc(var(--radius-lg)-6px)]">
+                <img
+                  src={portrait}
+                  alt="Portrait of Chetan Prajapat, full stack developer"
+                  width={1024}
+                  height={1280}
+                  className="duotone w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.025]"
+                />
+              </div>
               <figcaption className="mt-2.5 flex items-baseline justify-between gap-3 px-0.5 pb-0.5">
                 <span className="caption">Chetan, at the desk</span>
                 <span className="caption tracking-[0.2em]">Fig. 01</span>
@@ -141,7 +146,7 @@ export function Hero() {
                 key={row.k}
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5 + i * 0.08 }}
+                transition={{ duration: 0.65, delay: 0.45 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
                 className="border-b border-ink/10 py-4 sm:border-b-0 sm:py-5"
               >
                 <dt className="label">{row.k}</dt>

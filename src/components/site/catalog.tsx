@@ -108,14 +108,14 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
           trailSize="md"
           trailColor={index % 2 ? "var(--chrome-3)" : "var(--chrome-2)"}
           className="h-full rounded-[var(--radius-lg)]"
-          contentClassName="plate flex h-full flex-col overflow-hidden"
+          contentClassName="plate card-depth flex h-full flex-col overflow-hidden"
         >
-          {/* Image — plain div, card article handles the entrance animation */}
+          {/* Image — smooth scale on hover */}
           <div className="overflow-hidden rounded-t-[inherit] bg-paper-tint/30">
             <ImageWithSkeleton
               src={cover}
               alt={`${entry.title} preview`}
-              className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              className="w-full h-auto object-contain transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.035]"
               skeletonHeight="min-h-[220px]"
             />
           </div>
@@ -128,23 +128,15 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
             <h3 className="mt-3 text-[1.4rem] leading-tight text-ink">{entry.title}</h3>
             <p className="mt-3 flex-1 text-[0.92rem] leading-[1.75] text-ink-soft">{entry.summary}</p>
 
-            {/* Tech tags — staggered reveal only on desktop */}
+            {/* Tech tags — clean CSS stagger with zero IntersectionObserver overhead */}
             <div className="mt-5 flex flex-wrap gap-1.5">
-              {entry.tech.slice(0, 4).map((t, ti) => (
-                <motion.span
+              {entry.tech.slice(0, 4).map((t) => (
+                <span
                   key={t}
-                  initial={reduced ? false : { opacity: 0, y: 8 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: reduced ? 0 : 0.4,
-                    delay: reduced ? 0 : staggerDelay + 0.3 + ti * 0.05,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft"
+                  className="rounded-full border border-ink/15 px-2.5 py-1 font-mono text-[0.65rem] tracking-[0.08em] text-ink-soft transition-colors hover:border-ink/30"
                 >
                   {t}
-                </motion.span>
+                </span>
               ))}
             </div>
 

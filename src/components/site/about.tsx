@@ -35,13 +35,8 @@ export function About() {
           <div className="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2">
             {aboutParagraphs.map((p, i) => (
               <Reveal key={i} delay={i * 0.06}>
-                <p className="text-[0.95rem] leading-[1.8] text-ink-soft">
-                  {i === 0 ? (
-                    <span className="float-left mr-2 font-display text-[3.4rem] leading-[0.7] text-ink">
-                      {p.slice(0, 1)}
-                    </span>
-                  ) : null}
-                  {i === 0 ? p.slice(1) : p}
+                <p className="text-[0.98rem] leading-[1.8] text-ink-soft">
+                  {p}
                 </p>
               </Reveal>
             ))}
@@ -274,7 +269,7 @@ export function WorkExperienceSection() {
                   trailSize="md"
                   trailColor="var(--chrome-2)"
                   className="rounded-[var(--radius-lg)]"
-                  contentClassName="plate-tint relative p-6 sm:p-8"
+                  contentClassName="plate-tint card-depth relative p-6 sm:p-8"
                 >
                   <RegMark className="absolute right-4 top-4" />
 
@@ -329,7 +324,7 @@ export function WorkExperienceSection() {
                   </div>
                 </AnimatedBorderTrail>
               ) : (
-                <div className="plate relative p-6 sm:p-8">
+                <div className="plate card-depth relative p-6 sm:p-8">
                   <RegMark className="absolute right-4 top-4" />
 
                   {/* Header Row */}

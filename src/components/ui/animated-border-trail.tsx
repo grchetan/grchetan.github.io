@@ -29,11 +29,28 @@ export default function AnimatedBorderTrail({
   ...props
 }: AnimatedTrailProps) {
   const { reduced } = useMotionPreference();
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [inView, setInView] = React.useState(true);
   const deg = arc[trailSize];
   const showAnimation = !reduced;
 
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        setInView(entry.isIntersecting);
+      },
+      { rootMargin: "160px 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div
+      ref={containerRef}
       className={cn("relative overflow-hidden rounded-2xl", className)}
       style={{ padding: borderWidth, ...style }}
       {...props}
@@ -45,6 +62,7 @@ export default function AnimatedBorderTrail({
           style={
             {
               "--trail-duration": duration,
+              animationPlayState: inView ? "running" : "paused",
               background: `conic-gradient(from 0deg, transparent 0 ${360 - deg}deg, ${trailColor} 360deg)`,
             } as React.CSSProperties
           }

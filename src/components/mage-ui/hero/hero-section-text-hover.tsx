@@ -50,10 +50,10 @@ function FloatingGlyphs({ items }: { items: ItemProps[] }) {
         <span
           key={i}
           className={cn(
-            "absolute text-[clamp(1.1rem,2.4vw,2rem)] opacity-0 blur-[2px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:blur-0",
+            "absolute text-[clamp(1.1rem,2.4vw,2rem)] opacity-0 scale-75 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:scale-100",
             item.position,
           )}
-          style={{ transitionDelay: `${i * 60}ms` }}
+          style={{ transitionDelay: `${i * 45}ms` }}
         >
           {item.emoji}
         </span>

@@ -19,11 +19,13 @@ export function LiquidVideoReveal() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Physics & Animation Loop (Direct DOM mutations for zero React re-renders)
+  // Physics & Animation Loop (Direct DOM mutations for zero React re-renders, pauses when off-screen)
   useEffect(() => {
     if (reduced || isMobile) return;
 
     let animFrameId: number;
+    let isRunning = false;
+    let isIntersecting = false;
     let time = 0;
 
     // Physics State
@@ -31,27 +33,38 @@ export function LiquidVideoReveal() {
     const velocity = { x: 0, y: 0 };
     let currentRadius = 0;
     let targetRadius = 0;
+    let containerRect: DOMRect | null = null;
 
     const numPoints = 8;
     const baseRadius = 160; // Desired blob radius on desktop
 
+    const updateRect = () => {
+      if (containerRef.current) {
+        containerRect = containerRef.current.getBoundingClientRect();
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      mouse.targetX = e.clientX - rect.left;
-      mouse.targetY = e.clientY - rect.top;
+      if (!containerRect) updateRect();
+      if (!containerRect) return;
+      mouse.targetX = e.clientX - containerRect.left;
+      mouse.targetY = e.clientY - containerRect.top;
       targetRadius = baseRadius;
     };
 
     const handleMouseEnter = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      mouse.targetX = e.clientX - rect.left;
-      mouse.targetY = e.clientY - rect.top;
+      updateRect();
+      if (!containerRect) return;
+      mouse.targetX = e.clientX - containerRect.left;
+      mouse.targetY = e.clientY - containerRect.top;
       mouse.x = mouse.targetX;
       mouse.y = mouse.targetY;
       targetRadius = baseRadius;
       setIsHovered(true);
+      if (!isRunning && isIntersecting) {
+        isRunning = true;
+        animFrameId = requestAnimationFrame(render);
+      }
     };
 
     const handleMouseLeave = () => {
@@ -61,12 +74,17 @@ export function LiquidVideoReveal() {
 
     const containerEl = containerRef.current;
     if (containerEl) {
-      containerEl.addEventListener("mousemove", handleMouseMove);
+      containerEl.addEventListener("mousemove", handleMouseMove, { passive: true });
       containerEl.addEventListener("mouseenter", handleMouseEnter);
       containerEl.addEventListener("mouseleave", handleMouseLeave);
     }
 
     const render = () => {
+      if (!isIntersecting) {
+        isRunning = false;
+        return;
+      }
+
       time += 0.03;
 
       // Smooth Lerp for Cursor Position
@@ -125,17 +143,38 @@ export function LiquidVideoReveal() {
         d += " Z";
 
         pathRef.current.setAttribute("d", d);
-      } else if (pathRef.current) {
+      } else if (pathRef.current && pathRef.current.getAttribute("d") !== "") {
         pathRef.current.setAttribute("d", "");
       }
 
       animFrameId = requestAnimationFrame(render);
     };
 
-    animFrameId = requestAnimationFrame(render);
+    // IntersectionObserver to sleep RAF when section is off-screen
+    let obs: IntersectionObserver | null = null;
+    if (containerEl && typeof IntersectionObserver !== "undefined") {
+      obs = new IntersectionObserver(([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting && !isRunning) {
+          isRunning = true;
+          animFrameId = requestAnimationFrame(render);
+        }
+      }, { rootMargin: "100px 0px" });
+      obs.observe(containerEl);
+    } else {
+      isIntersecting = true;
+      isRunning = true;
+      animFrameId = requestAnimationFrame(render);
+    }
+
+    window.addEventListener("scroll", updateRect, { passive: true });
+    window.addEventListener("resize", updateRect, { passive: true });
 
     return () => {
       cancelAnimationFrame(animFrameId);
+      obs?.disconnect();
+      window.removeEventListener("scroll", updateRect);
+      window.removeEventListener("resize", updateRect);
       if (containerEl) {
         containerEl.removeEventListener("mousemove", handleMouseMove);
         containerEl.removeEventListener("mouseenter", handleMouseEnter);
