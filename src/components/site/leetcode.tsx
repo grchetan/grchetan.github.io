@@ -119,8 +119,9 @@ export function LeetCodeCard({ className }: { className?: string }) {
     queryKey: ["leetcode", LEETCODE_USERNAME],
     queryFn: () => getLeetCodeStats(LEETCODE_USERNAME),
     initialData: cached ?? leetcodeDefaultStats,
-    staleTime: 30_000,
-    refetchOnMount: true,
+    staleTime: 60_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const s = data ?? leetcodeDefaultStats;

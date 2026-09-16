@@ -28,7 +28,7 @@ export const aboutStats = [
   { label: "Freelance Clients", value: 14, suffix: "+" },
   { label: "Certificates", value: 18, suffix: "" },
   { label: "Years Learning", value: 5, suffix: "" },
-  { label: "LeetCode Solved", value: 219, suffix: "+" },
+  { label: "LeetCode Solved", value: 242, suffix: "+" },
   { label: "GitHub Contributions", value: 1200, suffix: "+" },
 ];
 
