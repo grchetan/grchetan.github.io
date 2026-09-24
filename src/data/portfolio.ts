@@ -2,7 +2,7 @@ export const profile = {
   name: "Chetan Prajapat",
   roles: ["Full Stack Web Developer", "UI Engineer", "Freelancer"],
   tagline:
-    "I build modern, scalable and high-performance websites and web applications that help businesses grow.",
+    "I build modern, scalable, and high-performance websites and web applications that help businesses grow.",
   email: "contact.chetanprajapat@gmail.com",
   socials: {
     github: "https://github.com/grchetan",
@@ -17,9 +17,9 @@ export const profile = {
 };
 
 export const aboutParagraphs = [
-  "I'm a passionate Full Stack Developer who loves building modern web applications with beautiful user experiences.",
-  "I specialize in creating fast, responsive and scalable websites using modern technologies — from pixel-precise interfaces to production APIs.",
-  "I enjoy solving real-world problems, building SaaS products, business websites, admin dashboards, and custom web applications.",
+  "I am a Full Stack Developer specializing in building modern, responsive, and high-performance web applications.",
+  "I work across the entire stack using React, JavaScript, Node.js, Express.js, MongoDB, and SQL to build intuitive user interfaces and reliable backend APIs.",
+  "I have built over 40 projects and worked with 14 freelance clients, delivering custom websites, SaaS platforms, and admin dashboards with clean code and great performance.",
 ];
 
 export const aboutStats = [
@@ -34,7 +34,7 @@ export const aboutStats = [
 
 export const techStack = [
   {
-    category: "Languages",
+    category: "Programming Languages",
     items: ["Java", "JavaScript", "HTML5", "CSS3"],
   },
   {
@@ -48,15 +48,15 @@ export const techStack = [
     ],
   },
   { category: "Backend", items: ["Node.js", "Express.js", "Java"] },
-  { category: "Database", items: ["MongoDB", "MySQL", "Firebase", "Supabase"] },
+  { category: "Databases", items: ["MongoDB", "MySQL", "Firebase", "Supabase"] },
   {
-    category: "Tools & OS",
+    category: "Tools & Platforms",
     items: ["Linux (Kali Linux)", "Git", "GitHub", "VS Code", "Postman", "Figma", "Vercel", "Netlify"],
   },
   {
-    category: "Other",
+    category: "Other Skills",
     items: [
-      "REST API",
+      "REST APIs",
       "JWT",
       "Authentication",
       "Responsive Design",
@@ -67,22 +67,22 @@ export const techStack = [
 ];
 
 export const services = [
-  { title: "Website Development", desc: "Custom, hand-built websites engineered for speed and scale." },
-  { title: "Landing Pages", desc: "High-converting pages with sharp copy layout and motion." },
-  { title: "Business Websites", desc: "Credible, SEO-ready presence for growing companies." },
-  { title: "Portfolio Websites", desc: "Personal brands that recruiters actually remember." },
-  { title: "Dashboard Development", desc: "Data-dense admin panels with clean information design." },
-  { title: "Frontend Development", desc: "Accessible component systems in React and TypeScript." },
-  { title: "Backend Development", desc: "Node APIs, auth, jobs and clean database modelling." },
-  { title: "Full Stack Applications", desc: "End-to-end product builds from schema to ship." },
-  { title: "Website Redesign", desc: "Modernise dated UI without losing your SEO equity." },
-  { title: "API Integration", desc: "Payments, mail, maps, AI and third-party services." },
-  { title: "Performance Optimization", desc: "Core Web Vitals work that moves real numbers." },
-  { title: "Bug Fixing", desc: "Rapid diagnosis and durable fixes, not band-aids." },
-  { title: "Firebase Integration", desc: "Auth, Firestore, storage and hosting wired properly." },
-  { title: "Supabase Integration", desc: "Postgres, RLS policies, storage and edge logic." },
-  { title: "Deployment", desc: "CI, domains, SSL and zero-downtime releases." },
-  { title: "Website Maintenance", desc: "Ongoing care plans, monitoring and improvements." },
+  { title: "Website Development", desc: "Custom, high-performance websites built for responsiveness and scale." },
+  { title: "Landing Pages", desc: "High-converting landing pages with modern design and clear calls to action." },
+  { title: "Business Websites", desc: "Professional, SEO-friendly websites that establish credibility for businesses." },
+  { title: "Portfolio Websites", desc: "Modern portfolio websites that showcase skills and projects effectively." },
+  { title: "Dashboard Development", desc: "Custom admin dashboards with interactive charts and clean data management." },
+  { title: "Frontend Development", desc: "Responsive, accessible frontend development using React and modern CSS." },
+  { title: "Backend Development", desc: "Secure REST APIs, user authentication, and optimized database architecture using Node.js." },
+  { title: "Full Stack Applications", desc: "End-to-end full stack web applications from database design to production deployment." },
+  { title: "Website Redesign", desc: "Modernizing outdated websites with improved UI, mobile responsiveness, and SEO." },
+  { title: "API Integration", desc: "Seamless integration of third-party APIs, payment gateways, and cloud services." },
+  { title: "Performance Optimization", desc: "Improving page load speed, responsiveness, and Core Web Vitals scores." },
+  { title: "Bug Fixing & Support", desc: "Troubleshooting and resolving front-end, backend, and database issues." },
+  { title: "Firebase Integration", desc: "Setting up authentication, Firestore database, cloud storage, and hosting." },
+  { title: "Supabase Integration", desc: "Configuring PostgreSQL databases, authentication, and secure row-level security policies." },
+  { title: "Deployment & DevOps", desc: "Domain configuration, SSL setup, and continuous deployment on Vercel and Netlify." },
+  { title: "Website Maintenance", desc: "Regular updates, bug fixes, performance monitoring, and ongoing technical support." },
 ];
 
 export type Project = {
@@ -99,33 +99,33 @@ export const projects: Project[] = [
     title: "Portfolio Website",
     category: "Frontend",
     description:
-      "This very portfolio — a motion-led personal site with glass UI, command menu and a hand-rolled design system.",
+      "A modern developer portfolio featuring dark mode, interactive animations, and live GitHub and LeetCode API integrations.",
     tech: ["React", "TypeScript", "Tailwind CSS", "Motion"],
-    features: ["Custom design system", "Command palette", "Scroll-linked motion", "Perfect Lighthouse targets"],
+    features: ["Responsive design", "Theme toggle", "Live API stats", "Interactive showcase"],
     featured: true,
   },
   {
     title: "Virar Special",
     category: "Freelance",
     description:
-      "Local food & delivery brand experience with menu browsing, cart flow and an owner-facing order console.",
+      "A food ordering web app and admin management console built for a local food brand, enabling direct customer orders.",
     tech: ["Next.js", "Node.js", "MongoDB", "Tailwind CSS"],
-    features: ["Live menu management", "Order tracking", "Admin console", "WhatsApp order handoff"],
+    features: ["Live menu management", "Order tracking", "Admin console", "WhatsApp order sharing"],
     featured: true,
   },
   {
     title: "SiteReadyPro",
     category: "Full Stack",
     description:
-      "A productised web-agency platform where clients pick a package, brief the project and track build progress.",
+      "A web agency service platform where clients select website packages, submit project requirements, and track development milestones.",
     tech: ["React", "Express.js", "Supabase", "Stripe"],
-    features: ["Package builder", "Client portal", "Milestone tracking", "Invoice generation"],
+    features: ["Package selection", "Client dashboard", "Project tracking", "Invoicing system"],
     featured: true,
   },
   {
     title: "Learning Management Website",
     category: "Full Stack",
-    description: "Course platform with lessons, progress tracking, quizzes and instructor dashboards.",
+    description: "An online learning platform with video lessons, quiz assessments, student progress tracking, and instructor dashboards.",
     tech: ["Next.js", "MongoDB", "JWT", "Tailwind CSS"],
     features: ["Role-based access", "Video lessons", "Quiz engine", "Progress analytics"],
     featured: true,
@@ -133,94 +133,94 @@ export const projects: Project[] = [
   {
     title: "Password Manager App",
     category: "Full Stack",
-    description: "Encrypted vault for credentials with generator, tagging and one-click copy.",
+    description: "A secure credential storage application with encrypted vaults, password generator, category tagging, and one-click copy.",
     tech: ["React", "Node.js", "MongoDB", "Crypto"],
-    features: ["AES encryption", "Password generator", "Search & tags", "Session lock"],
+    features: ["AES encryption", "Password generator", "Search & tags", "Session security"],
   },
   {
     title: "E-Commerce Website",
     category: "Full Stack",
-    description: "Storefront with catalogue, cart, checkout, order history and an inventory back office.",
+    description: "A full-featured e-commerce platform with product catalogue, search filters, shopping cart, checkout, and admin inventory controls.",
     tech: ["Next.js", "Express.js", "MySQL", "REST API"],
-    features: ["Faceted search", "Cart & checkout", "Coupon engine", "Inventory admin"],
+    features: ["Product search & filters", "Cart & checkout", "Discount coupons", "Inventory management"],
     featured: true,
   },
   {
     title: "Admin Dashboard",
     category: "Frontend",
-    description: "Analytics-first dashboard template with charts, tables, filters and dark mode.",
+    description: "An analytics dashboard featuring data visualization charts, customizable tables, filter options, and dark mode support.",
     tech: ["React", "TypeScript", "Recharts", "Tailwind CSS"],
-    features: ["Composable widgets", "Data tables", "Theme tokens", "Keyboard nav"],
+    features: ["Interactive charts", "Data tables", "Theme customization", "Responsive layout"],
   },
   {
     title: "Restaurant Website",
     category: "Freelance",
-    description: "Reservation-ready restaurant site with menu, gallery and table booking.",
+    description: "A modern restaurant website featuring digital food menus, image gallery, customer reviews, and table reservation booking.",
     tech: ["React", "Firebase", "Tailwind CSS"],
-    features: ["Table booking", "Menu CMS", "Gallery", "Google Maps"],
+    features: ["Table reservations", "Digital menu", "Photo gallery", "Location maps"],
   },
   {
     title: "Business Landing Page",
     category: "Frontend",
-    description: "Conversion-focused single page with lead capture and analytics events.",
+    description: "A conversion-focused business landing page optimized for lead generation, SEO ranking, and fast loading speeds.",
     tech: ["Next.js", "Tailwind CSS", "SEO"],
-    features: ["Lead form", "A/B ready sections", "Schema markup", "98+ PageSpeed"],
+    features: ["Lead capture form", "SEO optimization", "Fast loading times", "Mobile responsiveness"],
   },
   {
     title: "Task Management App",
     category: "Full Stack",
-    description: "Kanban workspace with drag-ordered lists, labels, due dates and team members.",
+    description: "A collaborative task management application featuring Kanban boards, drag-and-drop task organization, and due date alerts.",
     tech: ["React", "Node.js", "MongoDB", "Socket.IO"],
-    features: ["Kanban board", "Realtime sync", "Labels & filters", "Activity log"],
+    features: ["Kanban boards", "Realtime sync", "Category labels", "Activity log"],
   },
   {
     title: "Authentication System",
     category: "Full Stack",
-    description: "Reusable auth service: email, OTP, refresh tokens, roles and password reset.",
+    description: "A secure backend authentication system featuring JWT tokens, password hashing, email verification, and role-based access control.",
     tech: ["Express.js", "JWT", "MongoDB", "Nodemailer"],
-    features: ["Refresh rotation", "Email OTP", "Role guards", "Rate limiting"],
+    features: ["Token refresh", "Email verification", "Role guards", "Rate limiting"],
   },
   {
     title: "Expense Tracker",
     category: "Full Stack",
-    description: "Personal finance tracker with categories, budgets and monthly insight charts.",
+    description: "A personal finance tracking tool to monitor daily expenses, set budget limits, and visualize spending patterns through charts.",
     tech: ["React", "Supabase", "Recharts"],
-    features: ["Budget alerts", "Category insights", "CSV export", "Offline cache"],
+    features: ["Budget alerts", "Category insights", "CSV export", "Offline caching"],
   },
   {
     title: "Movie App",
     category: "Frontend",
-    description: "Discovery app over a public movie API with search, genres and watchlist.",
+    description: "A movie discovery application consuming public movie APIs to browse trending titles, search by genre, and create personal watchlists.",
     tech: ["React", "REST API", "Tailwind CSS"],
-    features: ["Infinite scroll", "Watchlist", "Trailer modal", "Debounced search"],
+    features: ["Movie search", "Genre filters", "Watchlist management", "Detailed movie info"],
   },
   {
     title: "Weather App",
     category: "Mini App",
-    description: "Location-aware forecast with hourly strip and animated conditions.",
+    description: "A weather application providing real-time forecasts, 7-day outlooks, and location search using external weather APIs.",
     tech: ["JavaScript", "REST API", "CSS3"],
-    features: ["Geolocation", "7-day forecast", "Unit toggle", "Animated states"],
+    features: ["Geolocation support", "7-day forecast", "Weather animations", "Temperature unit toggle"],
   },
   {
     title: "Todo App",
     category: "Mini App",
-    description: "Minimal task list with persistence, filters and keyboard-first flow.",
+    description: "A clean productivity app to create, edit, filter, and organize tasks with local storage persistence.",
     tech: ["React", "LocalStorage"],
-    features: ["Keyboard shortcuts", "Filters", "Persistence", "Drag reorder"],
+    features: ["Task filtering", "Local storage sync", "Clean interface", "Keyboard support"],
   },
   {
     title: "Calculator",
     category: "Mini App",
-    description: "Keyboard-driven calculator with expression history.",
+    description: "An interactive web calculator supporting standard arithmetic calculations and calculation history tracking.",
     tech: ["JavaScript", "CSS3"],
-    features: ["Expression parser", "History", "Keyboard input", "Responsive keypad"],
+    features: ["Arithmetic operations", "Calculation history", "Responsive keypad", "Keyboard inputs"],
   },
   {
     title: "Digital Clock",
     category: "Mini App",
-    description: "Themeable clock with timezones, stopwatch and ambient background.",
+    description: "A digital clock application featuring world timezones, stopwatch, and multiple visual display themes.",
     tech: ["JavaScript", "CSS3"],
-    features: ["Multiple timezones", "Stopwatch", "Themes", "Fullscreen mode"],
+    features: ["Multiple timezones", "Stopwatch tool", "Theme options", "Full-screen mode"],
   },
 ];
 
@@ -230,10 +230,10 @@ export const freelanceWork = [
   {
     client: "Virar Special",
     project: "Food ordering website & order console",
-    problem: "Orders arrived as messy WhatsApp texts, with no menu control and frequent mistakes.",
+    problem: "Orders were received manually via WhatsApp, leading to menu confusion and order errors.",
     solution:
-      "Built a fast menu-first site with structured cart, an owner console for live availability and formatted order handoff.",
-    result: "Order errors dropped sharply and average order value rose ~22% in the first two months.",
+      "Built an online ordering website with digital menu, shopping cart, and an admin console to manage orders.",
+    result: "Reduced order mistakes significantly and increased average order value by 22%.",
     tech: ["Next.js", "Node.js", "MongoDB", "Tailwind CSS"],
     testimonial:
       "Chetan understood our shop better than we explained it. The site is quick, and staff learned the console in a day.",
@@ -241,18 +241,18 @@ export const freelanceWork = [
   {
     client: "Shree Interiors",
     project: "Business website & lead funnel",
-    problem: "A dated one-pager that ranked nowhere and produced almost no enquiries.",
-    solution: "Rebuilt with a project gallery, service pages, schema markup and a tracked enquiry form.",
-    result: "Organic enquiries went from ~2 to 18 a month within a quarter.",
+    problem: "Outdated single-page website with poor search visibility and few customer inquiries.",
+    solution: "Developed a modern multi-page portfolio with project showcase, SEO optimization, and an inquiry contact form.",
+    result: "Increased organic monthly inquiries from 2 to 18 within three months.",
     tech: ["React", "Firebase", "SEO", "Tailwind CSS"],
     testimonial: "We finally look like the quality of work we deliver. Enquiries speak for themselves.",
   },
   {
     client: "EduPrime Classes",
     project: "Learning portal & admin dashboard",
-    problem: "Course material was spread across drive links with no visibility into student progress.",
-    solution: "Delivered a lesson portal with progress tracking, quizzes and an instructor dashboard.",
-    result: "Course completion improved 34% and admin time per batch halved.",
+    problem: "Course materials were scattered across external links with no way to track student progress.",
+    solution: "Created a structured learning portal with student progress tracking, quizzes, and an instructor dashboard.",
+    result: "Improved course completion rate by 34% and reduced administrative overhead by 50%.",
     tech: ["Next.js", "Supabase", "JWT", "Recharts"],
     testimonial: "Clear communication, weekly demos, zero surprises. Exactly how a build should go.",
   },
@@ -387,8 +387,8 @@ export const experience = [
     org: "Self-employed",
     kind: "Freelancing",
     points: [
-      "Shipping production websites and dashboards for Indian SMBs and founders.",
-      "Own the full cycle: scoping, design, build, deployment and maintenance.",
+      "Building and deploying production web applications and dashboards for clients.",
+      "Managing complete project lifecycles from design to deployment and maintenance.",
     ],
   },
   {
@@ -397,8 +397,8 @@ export const experience = [
     org: "Product startup",
     kind: "Internship",
     points: [
-      "Built reusable React component libraries and cut bundle size 28%.",
-      "Integrated REST APIs, auth flows and analytics instrumentation.",
+      "Built reusable React components and optimized application bundle size.",
+      "Integrated REST APIs, user authentication, and performance analytics.",
     ],
   },
   {
@@ -407,8 +407,8 @@ export const experience = [
     org: "Smart India Hackathon",
     kind: "Hackathons",
     points: [
-      "Led frontend for a civic-reporting platform built in 36 hours.",
-      "Finished in the top bracket among 200+ competing teams.",
+      "Led frontend development for a civic-reporting platform within 36 hours.",
+      "Ranked in top finalist teams among 200+ competing colleges.",
     ],
   },
   {
@@ -417,8 +417,8 @@ export const experience = [
     org: "GitHub community",
     kind: "Open Source",
     points: [
-      "Merged fixes and docs into React and Tailwind ecosystem repos.",
-      "Maintain small utility packages used by other student developers.",
+      "Contributed bug fixes and documentation to open source React libraries.",
+      "Created utility repositories and starter templates for student developers.",
     ],
   },
   {
@@ -427,8 +427,8 @@ export const experience = [
     org: "Personal journey",
     kind: "Personal Journey",
     points: [
-      "Went from static HTML pages to full stack apps through daily practice.",
-      "Built 25+ practice projects while solving DSA problems consistently.",
+      "Learned full-stack web development through structured daily coding practice.",
+      "Built 25+ practice projects while actively solving data structures and algorithms.",
     ],
   },
 ];
@@ -533,24 +533,24 @@ export const testimonials = [
 ];
 
 export const processSteps = [
-  { step: "01", title: "Discovery", desc: "Understand the business, users and the actual metric we need to move." },
-  { step: "02", title: "Planning", desc: "Scope, sitemap, data model and a milestone timeline you can hold me to." },
-  { step: "03", title: "Design", desc: "Wireframes to a polished, token-driven UI system in Figma." },
-  { step: "04", title: "Development", desc: "Clean, typed, reusable code with weekly demo builds." },
-  { step: "05", title: "Testing", desc: "Cross-device QA, accessibility passes and performance budgets." },
-  { step: "06", title: "Deployment", desc: "Domains, SSL, analytics, SEO and a zero-downtime release." },
-  { step: "07", title: "Support", desc: "Post-launch care, monitoring and iteration as you grow." },
+  { step: "01", title: "Discovery", desc: "Understand project goals, user requirements, and key deliverables." },
+  { step: "02", title: "Planning", desc: "Define project scope, architecture, milestones, and delivery timeline." },
+  { step: "03", title: "Design", desc: "Create clean wireframes and modern UI mockups in Figma." },
+  { step: "04", title: "Development", desc: "Build full-stack features using clean, maintainable, and modern code." },
+  { step: "05", title: "Testing", desc: "Test across devices and browsers for performance, responsiveness, and stability." },
+  { step: "06", title: "Deployment", desc: "Deploy to production with domain setup, SSL, and SEO optimization." },
+  { step: "07", title: "Support", desc: "Provide maintenance, bug fixes, and feature updates after launch." },
 ];
 
 export const whyHireMe = [
-  { title: "Clean Code", desc: "Typed, reviewed and readable — easy for the next developer." },
-  { title: "Responsive", desc: "Mobile-first layouts tested from 320px to ultrawide." },
-  { title: "Fast Delivery", desc: "Milestone-based shipping with weekly visible progress." },
-  { title: "SEO Friendly", desc: "Semantic markup, metadata, schema and clean URLs." },
-  { title: "Scalable Architecture", desc: "Modular structure that survives feature growth." },
-  { title: "Modern UI", desc: "Design-system driven interfaces with real craft." },
-  { title: "Bug Free", desc: "Edge cases handled and validated on both ends." },
-  { title: "Long Term Support", desc: "I stay reachable long after handover." },
+  { title: "Clean Code", desc: "Clean, well-structured, and easy to maintain." },
+  { title: "Responsive Design", desc: "Mobile-first layouts tested across all screen sizes." },
+  { title: "Fast Delivery", desc: "Milestone-based progress with transparent, regular updates." },
+  { title: "SEO Friendly", desc: "Semantic markup, clean metadata, and search-friendly URLs." },
+  { title: "Scalable Architecture", desc: "Modular structure ready for future features and traffic growth." },
+  { title: "Modern UI/UX", desc: "Intuitive, clean, and engaging user experiences." },
+  { title: "Reliable & Bug-Free", desc: "Thoroughly tested with robust error handling." },
+  { title: "Dedicated Support", desc: "Ongoing technical assistance and support after launch." },
 ];
 
 export const education = [
@@ -558,24 +558,24 @@ export const education = [
     degree: "Bachelor of Computer Application (BCA)",
     school: "Sage University Indore — powered by Sunstone",
     years: "2024 – 2027",
-    note: "Core CS, web engineering and data structures, alongside industry training tracks.",
+    note: "Studying computer science fundamentals, web technologies, and data structures.",
   },
   {
     degree: "Class XII — Commerce",
     school: "Keshav International School",
     years: "2023 – 2024",
-    note: "Finished school while shipping my first freelance websites on the side.",
+    note: "Completed high school while working on initial freelance web projects.",
   },
   {
     degree: "Class X",
     school: "Keshav International School",
     years: "2020 – 2021",
-    note: "Where the first HTML page happened — and never stopped.",
+    note: "Discovered web development and built first HTML and CSS projects.",
   },
   {
     degree: "Computer Institute — Diploma track",
     school: "Rebenok Infotech",
     years: "Foundation",
-    note: "Computer fundamentals, office tooling and typing speed groundwork.",
+    note: "Learned computer fundamentals, design basics, and typing skills.",
   },
 ];

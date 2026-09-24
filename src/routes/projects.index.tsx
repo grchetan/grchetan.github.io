@@ -37,10 +37,10 @@ function ProjectsPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Catalogue 01"
-        title="Projects, opened up."
-        lead="Every card links to a full case: the problem, what I actually built, the tech used, the features and the screens."
-        meta={[`${entries.length} builds published`, "Product & personal work", "Case pages with screens"]}
+        eyebrow="Portfolio"
+        title="Web Projects"
+        lead="Explore full-stack web applications, frontend projects, and SaaS platforms with detailed overviews, features, and source links."
+        meta={[`${entries.length} Projects Published`, "Full Stack & Frontend", "Live Previews Available"]}
       />
 
       <Section>

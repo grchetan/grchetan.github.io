@@ -200,7 +200,7 @@ export function GitHubCard({ className }: { className?: string }) {
       </div>
 
       <p className="caption mt-5">
-        Pulled straight from GitHub for {profile.name.split(" ")[0]} — updates on its own, nothing typed by hand.
+        Live stats synced directly from GitHub for {profile.name.split(" ")[0]}.
       </p>
     </section>
   );

@@ -31,10 +31,10 @@ export function Freelance() {
   return (
     <Section id="freelance" tint>
       <SectionHeading
-        eyebrow="Freelance"
+        eyebrow="Case Studies"
         figure="06"
-        title="Client problems, solved end to end."
-        description="Three commissions, documented the way a printer documents a job: brief, method, result."
+        title="Freelance Projects & Case Studies"
+        description="Real-world client projects delivered from initial problem to production launch."
       />
 
       <div className="mt-16 space-y-16">
@@ -45,7 +45,7 @@ export function Freelance() {
           >
             <div className="lg:col-span-4">
               <span className="caption tracking-[0.2em]">
-                Case {String(i + 1).padStart(2, '0')}
+                Project {String(i + 1).padStart(2, '0')}
               </span>
               <Reveal>
                 <h3 className="mt-3 text-[clamp(1.8rem,3vw,2.5rem)] leading-[1.05]">
@@ -59,9 +59,9 @@ export function Freelance() {
             <div className="lg:col-span-8">
               <Rule />
               {[
-                { k: 'Brief', v: w.problem },
-                { k: 'Method', v: w.solution },
-                { k: 'Result', v: w.result },
+                { k: 'Problem', v: w.problem },
+                { k: 'Solution', v: w.solution },
+                { k: 'Outcome', v: w.result },
               ].map((row, ri) => (
                 <motion.div
                   key={row.k}
@@ -97,10 +97,10 @@ export function MobileAppsSection() {
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
           <SectionHeading
-            eyebrow="Mobile"
+            eyebrow="Mobile Apps"
             figure="07"
-            title="Apps that fit in a hand."
-            description="Cross-platform builds in React Native — offline-first, small bundles, honest interfaces."
+            title="Cross-Platform Mobile Apps"
+            description="Mobile applications built with React Native for smooth performance and great user experience."
           />
 
           <div className="mt-10">
@@ -135,7 +135,7 @@ export function MobileAppsSection() {
           <Plate
             src={inkTexture}
             alt="Mobile application screens"
-            caption="Screens, trimmed and laid out"
+            caption="Mobile App Previews"
             figure="Pl. 05"
             tilt={-1.4}
             width={1280}
@@ -154,9 +154,9 @@ export function Certificates() {
   return (
     <Section id="certificates" tint>
       <SectionHeading
-        eyebrow="Credentials"
+        eyebrow="Certifications"
         figure="08"
-        title="Learning, verified."
+        title="Certifications & Credentials"
       />
 
       <div className="mt-14">
@@ -201,7 +201,7 @@ export function Experience() {
         className="pointer-events-none absolute -left-52 bottom-0 hidden w-[36rem] rotate-[186deg] opacity-[0.12] mix-blend-screen [filter:invert(1)_hue-rotate(240deg)_saturate(1.6)_blur(1px)] lg:block"
       />
       <div className="relative">
-        <SectionHeading eyebrow="Record" figure="09" title="The road so far." />
+        <SectionHeading eyebrow="Experience" figure="09" title="Development Background" />
 
         <div className="mt-14 space-y-0">
           {experience.map((e, i) => (
@@ -256,7 +256,7 @@ export function Achievements() {
       <SectionHeading
         eyebrow="Achievements"
         figure="10"
-        title="Numbers that keep climbing."
+        title="Key Milestones & Metrics"
       />
 
       <div className="mt-14 grid grid-cols-2 gap-px border border-ink/15 bg-ink/15 md:grid-cols-4">
@@ -291,10 +291,10 @@ export function CodingProfiles() {
   return (
     <Section id="profiles">
       <SectionHeading
-        eyebrow="Practice"
+        eyebrow="Profiles"
         figure="11"
-        title="Where I practise in public."
-        description="Consistent problem solving and open contribution, not just portfolio pieces."
+        title="Coding Profiles & Practice"
+        description="Consistent problem-solving practice and open-source contributions across platforms."
       />
 
       <div className="mt-14 grid gap-px border border-ink/15 bg-ink/15 sm:grid-cols-2 lg:grid-cols-3">
@@ -342,11 +342,11 @@ export function GitHubSection() {
           <SectionHeading
             eyebrow="GitHub"
             figure="12"
-            title="Committed, most days."
+            title="Open Source & GitHub Activity"
           />
 
           <div className="mt-10">
-            <span className="label">Language distribution</span>
+            <span className="label">Languages Used</span>
             <Rule className="mt-3" />
             {githubLanguages.map((l, i) => (
               <div key={l.name} className="border-b border-ink/10 py-4">
@@ -376,7 +376,7 @@ export function GitHubSection() {
         <div className="lg:col-span-7 lg:pt-6">
           <div className="plate relative p-6 sm:p-8">
             <RegMark className="absolute right-4 top-4" />
-            <span className="label">Pinned repositories</span>
+            <span className="label">Pinned Repositories</span>
             <Rule className="mt-3" />
             {pinnedRepos.map((r) => (
               <a
@@ -398,7 +398,7 @@ export function GitHubSection() {
           </div>
 
           <div className="mt-8">
-            <span className="label">Recent activity</span>
+            <span className="label">Recent GitHub Activity</span>
             <Rule className="mt-3" />
             <ul className="mt-1">
               {githubActivity.map((a) => (
@@ -425,7 +425,7 @@ export function Testimonials() {
 
   return (
     <Section id="testimonials">
-      <SectionHeading eyebrow="Testimony" figure="13" title="In their words." />
+      <SectionHeading eyebrow="Testimonials" figure="13" title="Client Feedback" />
 
       <div className="mt-14 grid gap-10 lg:grid-cols-12">
         <figure className="lg:col-span-7">
@@ -469,10 +469,10 @@ export function Process() {
   return (
     <Section id="process" tint>
       <SectionHeading
-        eyebrow="Method"
+        eyebrow="Process"
         figure="14"
-        title="Seven steps, every time."
-        description="No mystery, no drift. You always know which plate is on the press."
+        title="Development Process"
+        description="A structured, step-by-step approach ensuring transparent progress and reliable delivery."
       />
 
       <div className="mt-14 grid gap-x-10 md:grid-cols-2">
@@ -510,7 +510,7 @@ export function WhyHireMe() {
     <Section id="why">
       <div className="grid gap-10 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <SectionHeading eyebrow="Standards" figure="15" title="How I work." />
+          <SectionHeading eyebrow="Why Choose Me" figure="15" title="Why Work With Me" />
         </div>
         <ul className="lg:col-span-8 lg:pt-6">
           <Rule />

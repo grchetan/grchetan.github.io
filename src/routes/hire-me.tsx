@@ -113,7 +113,7 @@ function HireMePage() {
 
       {/* what I offer */}
       <Section>
-        <SectionHeading eyebrow="What I offer" figure="01" title="Four things I do properly." />
+        <SectionHeading eyebrow="Services" figure="01" title="Core Capabilities" />
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {offers.map((o, i) => (
@@ -137,7 +137,7 @@ function HireMePage() {
 
       {/* why choose me */}
       <Section tint>
-        <SectionHeading eyebrow="Why choose me" figure="02" title="How the work actually feels." />
+        <SectionHeading eyebrow="Why Choose Me" figure="02" title="Why Work With Me" />
 
         <div className="mt-12 grid gap-x-10 gap-y-0 md:grid-cols-2">
           {reasons.map((r, i) => (
@@ -163,11 +163,11 @@ function HireMePage() {
             Freelance project, internship or full-time role — <span className="chrome-text">I&rsquo;m ready.</span>
           </h2>
           <p className="mt-6 max-w-xl text-[1rem] leading-[1.8] text-ink-soft">
-            Let&rsquo;s create something that slaps.
+            Let&rsquo;s work together to build reliable, high-impact web solutions.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link to="/contact" className="press-btn">
-              Contact me <ArrowRight className="size-3.5" strokeWidth={1.5} />
+              Get in Touch <ArrowRight className="size-3.5" strokeWidth={1.5} />
             </Link>
             <a href={`mailto:${profile.email}`} className="caption underline decoration-ink/25 underline-offset-4">
               Or email directly: {profile.email}

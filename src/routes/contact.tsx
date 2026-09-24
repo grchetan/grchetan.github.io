@@ -28,9 +28,9 @@ function ContactPage() {
     <SiteShell>
       <PageHero
         eyebrow="Contact"
-        title="Let's scope your build."
-        lead="Send the scope, timeline and budget range. Every message lands in my inbox and I reply within a day."
-        meta={[profile.email, "Available 24/7 (Anytime)"]}
+        title="Get in Touch"
+        lead="Have a project in mind, a question, or a role to discuss? Fill out the form or reach out directly via email."
+        meta={[profile.email, "Available for new projects"]}
       />
       <Contact />
     </SiteShell>

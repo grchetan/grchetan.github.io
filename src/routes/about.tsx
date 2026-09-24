@@ -33,9 +33,9 @@ function AboutPage() {
     <SiteShell>
       <PageHero
         eyebrow="About"
-        title="Full stack developer, startup founder."
-        lead="I build fast, readable, durable web products — and in 2025 I turned that into my own startup, SiteReadyPro."
-        meta={["Available 24/7 (Anytime)", "Startup founder since 2025", "Freelance & product work"]}
+        title="Full Stack Web Developer"
+        lead="I build fast, scalable, and responsive web applications with clean code and modern architectures."
+        meta={["Available for Projects", "Full Stack Engineering", "Freelance & Full-time"]}
       />
 
       <About />
@@ -44,10 +44,10 @@ function AboutPage() {
 
       <Section className="pt-0">
         <SectionHeading
-          eyebrow="Problem solving & Activity"
+          eyebrow="Activity"
           figure="02b"
-          title="Live Coding & Open Source Records."
-          description="Solved counts, rankings, streaks and 52-week activity heatmaps — synced live from LeetCode and GitHub profiles."
+          title="Live Coding & Open Source Activity"
+          description="Live statistics, problem-solving counts, streaks, and repository activity synced from LeetCode and GitHub."
         />
         <LeetCodeCard className="mt-10" />
         <GitHubCard className="mt-8" />

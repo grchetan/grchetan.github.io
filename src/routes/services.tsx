@@ -11,20 +11,20 @@ const description =
 
 const focus = [
   {
-    heading: "Where I spend most of my time",
-    body: "Business websites and full stack web apps — React and Next.js on the front, Node or Firebase behind it. If a business needs a site that sells and an admin panel to run it, that's my core work.",
+    heading: "Core Development",
+    body: "Full-stack web applications and modern websites using React, Node.js, Express, and cloud databases. Built for speed, responsiveness, and scale.",
   },
   {
-    heading: "What I enjoy most",
-    body: "Dashboards and data-heavy interfaces. Turning a messy spreadsheet workflow into a clean, fast console is the part of the job I'd do for free.",
+    heading: "Dashboards & Data Tools",
+    body: "Interactive dashboards, administrative consoles, and data management systems designed for clear visualization and daily workflow efficiency.",
   },
   {
-    heading: "What I also ship",
-    body: "React Native mobile apps, Firebase auth/storage integrations, redesigns of dated sites without losing SEO, and rescue work on half-finished builds.",
+    heading: "Mobile Apps & Integrations",
+    body: "Cross-platform mobile apps in React Native, REST API integrations, user authentication, and website redesigns with SEO preservation.",
   },
   {
-    heading: "How I price it",
-    body: "Fixed scope, fixed price, milestone payments. You approve the scope before a line of code is written, and you get weekly demo builds.",
+    heading: "Pricing & Milestones",
+    body: "Transparent pricing with defined deliverables and milestone-based timelines. Clear requirements and regular progress updates throughout.",
   },
 ];
 
@@ -49,9 +49,9 @@ function ServicesPage() {
     <SiteShell>
       <PageHero
         eyebrow="Services"
-        title="What I do, and where I'm strongest."
-        lead="I'm a full stack developer, so the same person designs the interface, writes the API and ships it. Here's exactly what that covers."
-        meta={["Fixed scope & price", "Weekly demo builds", "Support after launch"]}
+        title="Development Services"
+        lead="Comprehensive full-stack web development services, from initial UI/UX design to robust backend engineering and production deployment."
+        meta={["Fixed Scope & Timeline", "Regular Progress Demos", "Post-Launch Support"]}
       />
 
       <Section className="pt-4">
@@ -69,9 +69,9 @@ function ServicesPage() {
       <Process />
 
       <Section tint>
-        <SectionHeading eyebrow="Next step" figure="09" title="Tell me the scope." />
+        <SectionHeading eyebrow="Next Steps" figure="09" title="Start Your Project" />
         <Link to="/contact" className="press-btn mt-8">
-          Send a brief <ArrowRight className="size-3.5" strokeWidth={1.5} />
+          Get in Touch <ArrowRight className="size-3.5" strokeWidth={1.5} />
         </Link>
       </Section>
     </SiteShell>

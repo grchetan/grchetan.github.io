@@ -74,7 +74,7 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
                 ))}
               </div>
               <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
-                Read case
+                View Details
                 <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" strokeWidth={1.5} />
               </span>
             </div>
@@ -141,7 +141,7 @@ export function EntryCard({ entry, index = 0 }: { entry: Entry; index?: number }
             </div>
 
             <span className="mt-6 inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-ink">
-              Read case
+              View Details
               <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1.5" strokeWidth={1.5} />
             </span>
           </div>
@@ -224,8 +224,8 @@ export function EntryGrid({ entries, isLoading, className }: { entries: Entry[];
     return (
       <div className={cn("flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-ink/15 bg-paper-tint/20 px-6 py-20 text-center", className)}>
         <span className="text-3xl">📂</span>
-        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">Nothing published yet</p>
-        <p className="max-w-xs text-[0.88rem] leading-relaxed text-ink-soft/70">Check back soon — new work is added regularly.</p>
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">No projects found</p>
+        <p className="max-w-xs text-[0.88rem] leading-relaxed text-ink-soft/70">Check back soon for new projects and updates.</p>
       </div>
     );
   }
@@ -262,8 +262,8 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
     return (
       <div className={cn("flex flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-ink/15 bg-paper-tint/20 px-6 py-24 text-center", className)}>
         <span className="text-4xl">📂</span>
-        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">Nothing published yet</p>
-        <p className="max-w-sm text-[0.9rem] leading-relaxed text-ink-soft/70">No entries in this section yet — check back soon, new work is added regularly.</p>
+        <p className="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-ink-soft">No projects found</p>
+        <p className="max-w-sm text-[0.9rem] leading-relaxed text-ink-soft/70">No entries in this section yet. Check back soon for updates.</p>
       </div>
     );
   }
@@ -341,13 +341,13 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
                 <dl className="mt-6 space-y-3">
                   {entry.tech.length > 0 ? (
                     <div className="flex gap-5 border-t border-ink/10 pt-3">
-                      <dt className="label w-16 shrink-0 pt-1">Tech</dt>
+                      <dt className="label w-16 shrink-0 pt-1">Stack</dt>
                       <dd className="caption min-w-0 text-ink">{entry.tech.join(" · ")}</dd>
                     </div>
                   ) : null}
                   {entry.features.length > 0 ? (
                     <div className="flex gap-5 border-t border-ink/10 pt-3">
-                      <dt className="label w-16 shrink-0 pt-1">Built</dt>
+                      <dt className="label w-16 shrink-0 pt-1">Features</dt>
                       <dd className="caption min-w-0 text-ink">{entry.features.slice(0, 4).join(" · ")}</dd>
                     </div>
                   ) : null}
@@ -355,7 +355,7 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
               ) : null}
               <div className="mt-7 flex flex-wrap items-center gap-3">
                 <ShinyButton as={Link} to={routeFor[entry.kind]} params={{ slug: entry.slug }} variant="purple">
-                  Read case <ArrowRight className="size-3.5" strokeWidth={1.5} />
+                  View Details <ArrowRight className="size-3.5" strokeWidth={1.5} />
                 </ShinyButton>
                 <EntryLinks entry={entry} />
               </div>
@@ -431,7 +431,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
           <div className="lg:col-span-7">
             {entry.about?.trim() ? (
               <section>
-                <span className="label">About this build</span>
+                <span className="label">About this project</span>
                 <Rule className="mt-3" />
                 <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.about}</p>
               </section>
@@ -439,7 +439,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
 
             {entry.problem?.trim() ? (
               <section className={cn(entry.about?.trim() ? "mt-12" : "")}>
-                <span className="label">The problem</span>
+                <span className="label">The Challenge</span>
                 <Rule className="mt-3" />
                 <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.problem}</p>
               </section>
@@ -447,7 +447,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
 
             {entry.solution?.trim() ? (
               <section className={cn((entry.about?.trim() || entry.problem?.trim()) ? "mt-12" : "")}>
-                <span className="label">What I built</span>
+                <span className="label">The Solution</span>
                 <Rule className="mt-3" />
                 <p className="mt-5 text-[1rem] leading-[1.9] text-ink-soft">{entry.solution}</p>
               </section>
@@ -455,7 +455,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
 
             {entry.result?.trim() ? (
               <section className={cn((entry.about?.trim() || entry.problem?.trim() || entry.solution?.trim()) ? "mt-12" : "")}>
-                <span className="label">Result</span>
+                <span className="label">The Outcome</span>
                 <Rule className="mt-3" />
                 <p className="mt-5 text-[1rem] leading-[1.9] text-ink">{entry.result}</p>
               </section>
@@ -467,7 +467,7 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
               <div className="plate-tint p-6">
                 {hasTech ? (
                   <>
-                    <span className="label">Tech used</span>
+                    <span className="label">Technologies Used</span>
                     <Rule className="mt-3" />
                     <div className="mt-4 flex flex-wrap gap-2">
                       {entry.tech.map((t) => (
@@ -503,12 +503,12 @@ export function EntryDetail({ entry, backTo, backLabel }: { entry: Entry; backTo
             ) : null}
 
             <div className="plate-tint mt-6 p-6">
-              <span className="label">Want something like this?</span>
+              <span className="label">Interested in working together?</span>
               <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
-                Tell me the scope and timeline — you'll get a plan, not a sales call.
+                Let's discuss your requirements, timeline, and how I can help build your project.
               </p>
               <Link to="/contact" className="press-btn mt-5">
-                Start a project <ArrowRight className="size-3.5" strokeWidth={1.5} />
+                Get in Touch <ArrowRight className="size-3.5" strokeWidth={1.5} />
               </Link>
             </div>
           </aside>

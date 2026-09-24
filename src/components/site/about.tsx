@@ -29,7 +29,7 @@ export function About() {
           <SectionHeading
             eyebrow="About"
             figure="02"
-            title="Engineering calm interfaces over complex problems."
+            title="Building Modern Web Applications"
           />
 
           <div className="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-2">
@@ -53,7 +53,7 @@ export function About() {
             contentClassName="plate-tint relative p-6 sm:p-8"
           >
             <RegMark className="absolute right-4 top-4" />
-            <span className="label">Measurements</span>
+            <span className="label">Key Statistics</span>
             <Rule className="mt-3" />
             <dl>
               {stats.map((s, i) => (
@@ -73,7 +73,7 @@ export function About() {
               ))}
             </dl>
           </AnimatedBorderTrail>
-          <p className="caption mt-3 pl-1">Tbl. 01 — self-reported, verifiable on request.</p>
+          <p className="caption mt-3 pl-1">Key metrics and verified project milestones.</p>
         </div>
       </div>
     </Section>
@@ -87,7 +87,7 @@ export function TechStack() {
 
   return (
     <Section id="stack" tint className="py-20 md:py-28">
-      <SectionHeading eyebrow="Instruments" figure="03" title="The tools, set as a specimen." />
+      <SectionHeading eyebrow="Skills" figure="03" title="Technologies & Tools" />
 
       <div className="mt-14 grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="space-y-10 lg:col-span-8">
@@ -126,7 +126,7 @@ export function TechStack() {
           className="lg:col-span-4"
         >
           <div className="sticky top-28">
-            <span className="label">Orbit / drag to spin</span>
+            <span className="label">Interactive Stack Cloud</span>
             <Rule className="mt-3" />
             <TechIconCloud className="mt-6 flex w-full items-center justify-center" />
           </div>
@@ -173,8 +173,8 @@ export function Services() {
           <SectionHeading
             eyebrow="Services"
             figure="04"
-            title="What I can build for you."
-            description="Sixteen ways to hire the same discipline. Scope is agreed before a line of code is written."
+            title="Services Offered"
+            description="Custom web development services tailored to your project requirements and business goals."
           />
         </div>
 
@@ -212,8 +212,8 @@ export function Education() {
       <SectionHeading
         eyebrow="Education"
         figure="04"
-        title="Where the training came from."
-        description="Formal study running in parallel with real client work since school."
+        title="Education & Background"
+        description="Academic education and practical technical training in software engineering."
       />
 
       <div className="mt-12 grid gap-4 lg:grid-cols-2">
@@ -247,8 +247,8 @@ export function WorkExperienceSection() {
       <SectionHeading
         eyebrow="Work Experience"
         figure="02c"
-        title="Production experience & real-world shipping."
-        description="Internships, freelance client shipping and early web design workflows."
+        title="Work Experience"
+        description="Professional experience across software internships, client projects, and full-stack development."
       />
 
       <div className="mt-12 space-y-6">
@@ -309,7 +309,7 @@ export function WorkExperienceSection() {
                   {/* Technologies */}
                   <div className="mt-6">
                     <span className="caption block font-mono text-[0.66rem] uppercase tracking-[0.18em] text-ink-soft/80">
-                      Technologies & Focus
+                      Technologies & Tools
                     </span>
                     <ul className="mt-3 flex flex-wrap items-center gap-2">
                       {exp.technologies.map((tech) => (

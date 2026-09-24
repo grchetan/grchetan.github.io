@@ -214,7 +214,7 @@ export function LeetCodeCard({ className }: { className?: string }) {
       </div>
 
       <p className="caption mt-5">
-        Pulled straight from LeetCode for {profile.name.split(" ")[0]} — updates on its own, nothing typed by hand.
+        Live stats synced directly from LeetCode for {profile.name.split(" ")[0]}.
       </p>
     </section>
   );

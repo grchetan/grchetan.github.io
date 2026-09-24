@@ -212,10 +212,10 @@ function ResumePage() {
 
       <Section className="pt-0">
         <SectionHeading
-          eyebrow="The document"
+          eyebrow="Resume"
           figure="01"
-          title="Everything, on one page."
-          description="Experience, builds, skills, certifications and education — kept in sync from the admin panel."
+          title="Curriculum Vitae"
+          description="A complete summary of work experience, technical skills, projects, certifications, and education."
         />
         <div className="mt-14 space-y-16 md:space-y-20">
           {data.sections.map((section, i) => (

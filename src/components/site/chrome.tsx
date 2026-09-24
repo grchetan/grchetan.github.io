@@ -18,24 +18,24 @@ import loaderChrome from "@/assets/window-loader.jpg";
 
 export const navLinks = [
   { label: "About", href: "#about" },
-  { label: "Stack", href: "#stack" },
+  { label: "Skills", href: "#stack" },
   { label: "Services", href: "#services" },
-  { label: "Work", href: "#projects" },
+  { label: "Projects", href: "#projects" },
   { label: "Freelance", href: "#freelance" },
-  { label: "Record", href: "#experience" },
+  { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ];
 
 const commandTargets = [
   ...navLinks,
   { label: "Mobile Apps", href: "#apps" },
-  { label: "Credentials", href: "#certificates" },
+  { label: "Certifications", href: "#certificates" },
   { label: "Achievements", href: "#achievements" },
   { label: "Coding Profiles", href: "#profiles" },
-  { label: "GitHub", href: "#github" },
-  { label: "Testimony", href: "#testimonials" },
-  { label: "Method", href: "#process" },
-  { label: "Standards", href: "#why" },
+  { label: "GitHub Activity", href: "#github" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "Process", href: "#process" },
+  { label: "Why Choose Me", href: "#why" },
 ];
 
 function scrollTo(href: string) {
@@ -429,7 +429,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
             className="fixed inset-0 z-[75] flex flex-col bg-paper/95 backdrop-blur-2xl px-5 py-4 sm:px-8"
           >
             <div className="flex items-center justify-between">
-              <span className="label">Index</span>
+              <span className="label">Menu</span>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
@@ -488,9 +488,9 @@ export function CommandMenu({ open, setOpen }: { open: boolean; setOpen: (v: boo
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Jump to a section…" />
+      <CommandInput placeholder="Search sections..." />
       <CommandList>
-        <CommandEmpty>Nothing filed under that name.</CommandEmpty>
+        <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Sections">
           {commandTargets.map((t) => (
             <CommandItem

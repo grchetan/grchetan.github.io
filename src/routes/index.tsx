@@ -64,10 +64,10 @@ function Home() {
 
       <Section id="leetcode-stats" className="pt-0">
         <SectionHeading
-          eyebrow="Problem solving"
+          eyebrow="Problem Solving"
           figure="02b"
-          title="LeetCode, live from my profile."
-          description="Solved counts, ranking and the last 52 weeks of activity — fetched straight from LeetCode, never typed by hand."
+          title="LeetCode Live Statistics"
+          description="Solved problems, ranking, and activity heatmap synced directly from LeetCode."
         />
         <LeetCodeCard className="mt-10" />
       </Section>
@@ -77,10 +77,10 @@ function Home() {
 
       <Section id="work">
         <SectionHeading
-          eyebrow="Selected work"
+          eyebrow="Featured Work"
           figure="05"
-          title="Selected builds worth your time."
-          description="Product and personal builds. Each one has a full case page: problem, what I built, tech and screens."
+          title="Featured Projects"
+          description="Full-stack web applications and client projects with complete case studies and live demos."
         />
         <EntryShowcase entries={pick(projects)} isLoading={projectsQuery.isFetching} className="mt-12" />
         <Link to="/projects" className="press-btn mt-10">
@@ -90,10 +90,10 @@ function Home() {
 
       <Section id="apps" tint>
         <SectionHeading
-          eyebrow="Apps"
+          eyebrow="Applications"
           figure="06"
-          title="Apps I designed and shipped."
-          description="Mobile and mini apps — offline-first data, native reminders and charts that actually inform a decision."
+          title="Mobile & Web Applications"
+          description="Cross-platform mobile apps and utilities built for seamless usability and performance."
         />
         <EntryShowcase entries={pick(apps)} isLoading={appsQuery.isFetching} className="mt-12" />
         <Link to="/apps" className="press-btn mt-10">
@@ -103,10 +103,10 @@ function Home() {
 
       <Section id="freelance">
         <SectionHeading
-          eyebrow="Freelance"
+          eyebrow="Client Work"
           figure="07"
-          title="Client work, paid for and measured."
-          description="Separate from my own projects: real businesses, real constraints, results I can point at."
+          title="Freelance Client Projects"
+          description="Production web applications and business solutions delivered for freelance clients."
         />
         <EntryShowcase entries={pick(freelance)} isLoading={freelanceQuery.isFetching} className="mt-12" />
         <Link to="/freelance" className="press-btn mt-10">
@@ -119,20 +119,19 @@ function Home() {
 
       <Section id="cta" tint>
         <div className="plate p-8 sm:p-12">
-          <span className="label">Next step</span>
+          <span className="label">Get in Touch</span>
           <h2 className="mt-5 max-w-2xl text-[clamp(2rem,5vw,3.4rem)]">
-            Got a build in mind? <span className="chrome-text">Let's scope it.</span>
+            Have a project in mind? <span className="chrome-text">Let's build it.</span>
           </h2>
           <p className="mt-5 max-w-xl text-[1rem] leading-[1.8] text-ink-soft">
-            Websites, dashboards, apps or a rescue job on something half-finished — send the brief and I'll reply
-            within a day.
+            Whether you need a full-stack web application, a modern website, or technical consulting, I am available to help.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link to="/contact" className="press-btn">
-              Start a project <ArrowRight className="size-3.5" strokeWidth={1.5} />
+              Get in Touch <ArrowRight className="size-3.5" strokeWidth={1.5} />
             </Link>
-            <Link to="/record" className="press-btn-outline">
-              See the record
+            <Link to="/about" className="press-btn-outline">
+              About Me
             </Link>
           </div>
         </div>

@@ -139,13 +139,13 @@ export function Contact() {
     formEl.reset();
 
     if (stored) {
-      toast.success("Brief received — it's in my inbox and I reply within a day.");
+      toast.success("Message received! I will get back to you shortly.");
     } else {
       const body = `Name: ${parsed.data.name}\nEmail: ${parsed.data.email}\nPhone: ${parsed.data.phone ?? "—"}\nPurpose: ${parsed.data.purpose}\nBudget: ${parsed.data.budget ?? "—"}\n\n${parsed.data.message}`;
       window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
         `Project enquiry — ${parsed.data.name}`,
       )}&body=${encodeURIComponent(body)}`;
-      toast.success("Opening your mail client — I reply within a day.");
+      toast.success("Opening your email client...");
     }
 
     setSending(false);
@@ -161,10 +161,10 @@ export function Contact() {
       <div className="grid gap-14 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-5">
           <SectionHeading
-            eyebrow="Commissions"
+            eyebrow="Contact"
             figure="16"
-            title="Let's set the next plate."
-            description="Tell me the scope, the timeline and the budget range. You'll get a plan, not a sales call."
+            title="Get in Touch"
+            description="Have a project in mind, a question, or a role to discuss? Send a message and let's connect."
           />
 
           <dl className="mt-12">
@@ -219,7 +219,7 @@ export function Contact() {
           className="plate-tint relative p-6 sm:p-9 lg:col-span-7 lg:-mr-6"
         >
           <RegMark className="absolute right-5 top-5" />
-          <span className="label">Enquiry form</span>
+          <span className="label">Contact Form</span>
           <Rule className="mt-3" />
 
           <div className="mt-7 grid gap-7 sm:grid-cols-2">
@@ -292,14 +292,14 @@ export function Contact() {
 
           <div className="mt-7">
             <label htmlFor="message" className="label">
-              Brief
+              Message
             </label>
             <textarea
               id="message"
               name="message"
               rows={5}
               maxLength={1000}
-              placeholder="What are you building, and by when?"
+              placeholder="Tell me about your project, timeline, or requirements..."
               className={`${field} resize-none`}
             />
             {errors["message"] ? (
@@ -308,10 +308,10 @@ export function Contact() {
           </div>
 
           <button type="submit" disabled={sending} className="press-btn mt-9 disabled:opacity-50">
-            Send brief <Send className="size-3.5" strokeWidth={1.5} />
+            Send Message <Send className="size-3.5" strokeWidth={1.5} />
           </button>
           <p className="caption mt-4">
-            Prefer a call? Write “call” in the brief and I'll send a slot.
+            Prefer a call? Mention it in your message and I'll share a meeting link.
           </p>
         </motion.form>
       </div>
@@ -329,7 +329,7 @@ export function Footer() {
               Chetan <span className="italic">Prajapat</span>
             </p>
             <p className="caption mt-3 max-w-sm">
-              Full stack developer and UI engineer. Building quiet, fast, durable products.
+              Full Stack Developer and UI Engineer building modern, fast, and scalable web applications.
             </p>
             <RippleButton
               type="button"
@@ -360,7 +360,7 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-2 lg:col-span-4">
-            <span className="label">Elsewhere</span>
+            <span className="label">Connect & Socials</span>
             <Rule className="mt-2.5" />
             <ul className="mt-2 grid grid-cols-2 gap-x-6">
               {socialEntries.map((s) => (
@@ -389,7 +389,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-wrap items-baseline justify-between gap-3 border-t border-ink/15 pt-4">
           <span className="caption">© {new Date().getFullYear()} Chetan Prajapat</span>
-          <span className="caption tracking-[0.14em]">No. 001 — Paste-up Press</span>
+          <span className="caption tracking-[0.14em]">Full Stack Web Developer</span>
         </div>
       </div>
     </footer>

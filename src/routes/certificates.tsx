@@ -26,10 +26,10 @@ function CertificatesPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Certificates"
-        title="Credentials and achievements."
-        lead="Every certificate I've earned with its original image and verify link, plus the achievements and profile handles behind the work."
-        meta={["Verifiable on request", "Uploaded from the admin panel", "Updated continuously"]}
+        eyebrow="Certifications"
+        title="Certificates & Achievements"
+        lead="Verified certificates, specialized courses, and technical achievements earned across computer science and web development."
+        meta={["Verified Credentials", "Official Certifications", "Continuously Updated"]}
       />
 
       <CertificateWall />

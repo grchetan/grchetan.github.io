@@ -211,7 +211,7 @@ export function ErrorScape({
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
             <p className="caption mt-4">
-              Whatever broke — start fresh from home, or drop me a mail directly.
+              Navigate back home or reach out via email.
             </p>
           </div>
         </Reveal>
@@ -227,9 +227,9 @@ export function NotFoundScape({ bare = false }: { bare?: boolean }) {
     <ErrorScape
       bare={bare}
       code="404"
-      status="signal lost / route not found"
-      title="This page has gone missing."
-      message="The URL you opened doesn't exist, or it may have moved. Get back on track below — projects, apps and the blog are all live."
+      status="route not found"
+      title="Page Not Found"
+      message="The page you are looking for does not exist or has been moved. Use the links below to navigate back."
       readout={[
         { key: "status", value: "404 NOT_FOUND" },
         { key: "path", value: typeof window === "undefined" ? "/" : window.location.pathname },
@@ -251,8 +251,8 @@ export function ForbiddenScape({ bare = false }: { bare?: boolean }) {
       bare={bare}
       code="403"
       status="access denied / forbidden"
-      title="You don't have the key to this door."
-      message="This area is protected — only an authorised session can unlock it. If you need access, send a mail, otherwise the public pages are wide open."
+      title="Access Denied"
+      message="This area is restricted. If you believe you should have access, please get in touch."
       readout={[
         { key: "status", value: "403 FORBIDDEN" },
         { key: "guard", value: "auth required" },
@@ -292,9 +292,9 @@ export function ServerErrorScape({
     <ErrorScape
       bare={bare}
       code="500"
-      status="system fault / internal error"
-      title="Something broke on this end."
-      message="An error occurred while loading the page. Give it a retry — if it still doesn't work, send me a report directly."
+      status="system error"
+      title="Something Went Wrong"
+      message="An unexpected error occurred while loading the page. Please try again or reach out if the issue persists."
       readout={[
         { key: "status", value: "500 INTERNAL_ERROR" },
         { key: "detail", value: (detail ?? "unexpected exception").slice(0, 42) },

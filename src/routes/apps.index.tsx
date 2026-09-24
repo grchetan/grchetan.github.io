@@ -36,10 +36,10 @@ function AppsPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Catalogue 02"
-        title="Apps I built, screen by screen."
-        lead="Mobile apps and small tools. Open any one to read what it's about, the problem it solved, the tech behind it and the features shipped."
-        meta={[`${entries.length} apps published`, "React Native & web", "Offline-first where it matters"]}
+        eyebrow="Mobile & Mini Apps"
+        title="Applications"
+        lead="Cross-platform mobile applications and web utilities built with React Native and modern frontend frameworks."
+        meta={[`${entries.length} Apps Published`, "React Native & Web", "Responsive & Fast"]}
       />
 
       <Section>

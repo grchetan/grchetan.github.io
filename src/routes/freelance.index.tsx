@@ -32,10 +32,10 @@ function FreelancePage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Catalogue 03"
-        title="Freelance work, kept separate."
-        lead="These are paid client builds — different constraints from my own projects. Each case names the client, the problem and the measured result."
-        meta={[`${entries.length} client builds`, "Fixed scope, fixed timeline", "Post-launch support included"]}
+        eyebrow="Client Work"
+        title="Freelance Projects"
+        lead="Real-world projects developed for businesses and founders, featuring clear problem definitions, custom solutions, and measurable outcomes."
+        meta={[`${entries.length} Client Projects`, "Full Lifecycle Delivery", "Ongoing Support"]}
       />
 
       <Section>
@@ -43,7 +43,7 @@ function FreelancePage() {
       </Section>
 
       <Section tint>
-        <SectionHeading eyebrow="In their words" figure="08" title="What clients said afterwards." />
+        <SectionHeading eyebrow="Feedback" figure="08" title="Client Testimonials" />
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
           {testimonials.map((t) => (
             <figure key={t.name} className="plate p-6">

@@ -35,10 +35,10 @@ export function Projects() {
   return (
     <Section id="projects">
       <SectionHeading
-        eyebrow="Selected work"
+        eyebrow="Projects"
         figure="05"
-        title="Plates from the working board."
-        description="Four builds pulled out and mounted. The rest are indexed below, catalogue style."
+        title="Featured Projects"
+        description="A selection of full-stack web applications, frontend projects, and client work."
       />
 
       {/* featured plates — staggered, never a uniform grid */}
@@ -60,7 +60,7 @@ export function Projects() {
               >
                 <Plate
                   src={plates[i % plates.length] ?? plate01}
-                  alt={`${p.title} interface plate`}
+                  alt={`${p.title} preview`}
                   caption={p.title}
                   figure={`Pl. ${String(i + 1).padStart(2, '0')}`}
                   tilt={flip ? 1.1 : -1.2}
@@ -91,11 +91,11 @@ export function Projects() {
 
                 <dl className="mt-7 space-y-3">
                   <div className="flex gap-6 border-t border-ink/10 pt-3">
-                    <dt className="label w-20 shrink-0 pt-1">Stack</dt>
+                    <dt className="label w-20 shrink-0 pt-1">Tech Stack</dt>
                     <dd className="caption text-ink">{p.tech.join(' · ')}</dd>
                   </div>
                   <div className="flex gap-6 border-t border-ink/10 pt-3">
-                    <dt className="label w-20 shrink-0 pt-1">Built</dt>
+                    <dt className="label w-20 shrink-0 pt-1">Features</dt>
                     <dd className="caption text-ink">
                       {p.features.join(' · ')}
                     </dd>
@@ -110,7 +110,7 @@ export function Projects() {
       {/* catalogue index */}
       <div className="mt-28">
         <div className="flex flex-wrap items-baseline justify-between gap-4">
-          <span className="label">Full catalogue</span>
+          <span className="label">All Projects</span>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {projectCategories.map((c) => (
               <button
@@ -158,7 +158,7 @@ export function Projects() {
           ))}
         </ul>
         {rest.length === 0 ? (
-          <p className="caption py-8">No entries filed under this heading.</p>
+          <p className="caption py-8">No projects found in this category.</p>
         ) : null}
       </div>
     </Section>

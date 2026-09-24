@@ -28,20 +28,20 @@ function RecordPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="The record"
-        title="Experience, proof and numbers."
-        lead="Everything checkable in one place: where I've worked, what I've earned, what I've solved and where the code lives."
-        meta={["Verifiable on request", "Live LeetCode sync", "Updated continuously"]}
+        eyebrow="Background"
+        title="Experience & Track Record"
+        lead="A comprehensive summary of work experience, technical milestones, problem-solving profiles, and open-source contributions."
+        meta={["Verified Experience", "Live LeetCode Stats", "Active Open Source"]}
       />
 
       <Experience />
 
       <Section className="pt-0">
         <SectionHeading
-          eyebrow="Problem solving"
+          eyebrow="Problem Solving"
           figure="11"
-          title="LeetCode, live."
-          description="Difficulty split, ranking and 52 weeks of submission activity, straight from my profile."
+          title="LeetCode Problem Solving"
+          description="Difficulty breakdown, global ranking, and 52-week activity heatmap synced live."
         />
         <LeetCodeCard className="mt-10" />
       </Section>

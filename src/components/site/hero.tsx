@@ -12,10 +12,10 @@ import { SwapText } from "@/components/ui/swap-text";
 import versionData from "../../../version.json";
 
 const index = [
-  { k: "Discipline", v: "Full stack developer" },
-  { k: "Availability", v: "Available 24/7 (Anytime)" },
-  { k: "Shipped", v: "40+ projects · 14 clients" },
-  { k: "Status", v: "Open for commissions" },
+  { k: "Role", v: "Full Stack Developer" },
+  { k: "Availability", v: "Available for new projects" },
+  { k: "Experience", v: "40+ projects · 14 clients" },
+  { k: "Status", v: "Open to opportunities" },
 ];
 
 export function Hero() {
@@ -43,8 +43,8 @@ export function Hero() {
       <div className="relative mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-14">
         {/* masthead line */}
         <div className="flex items-baseline justify-between gap-6">
-          <span className="label">Portfolio · Edition MMXXVI · v{versionData.version}</span>
-          <span className="caption hidden tracking-[0.2em] sm:block">No. 001 — Paste-up</span>
+          <span className="label">Portfolio · 2026 Edition · v{versionData.version}</span>
+          <span className="caption hidden tracking-[0.2em] sm:block">Full Stack Developer</span>
         </div>
         <Rule className="mt-3" />
 
@@ -57,7 +57,7 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="label"
             >
-              Full stack developer · UI engineer
+              Full Stack Developer · UI Engineer
             </motion.p>
 
             <h1 className="mt-5 text-[clamp(3.4rem,13vw,10.5rem)] leading-[0.86]">
@@ -96,14 +96,13 @@ export function Hero() {
               className="mt-9 max-w-md lg:mt-12"
             >
               <p className="text-[1.02rem] leading-[1.75] text-ink-soft">
-                I build fast, scalable websites and web applications — from the type on the page to
-                the query on the server. Quiet interfaces, careful engineering.
+                I build modern, responsive, and high-performance websites and web applications. Clean code, intuitive design, and reliable backend engineering.
               </p>
 
               <div className="mt-8 flex items-center gap-3">
                 <Magnetic strength={10}>
                   <Link to="/contact" className="press-btn">
-                    Commission a build <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
+                    Get in Touch <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
                   </Link>
                 </Magnetic>
               </div>
@@ -128,7 +127,7 @@ export function Hero() {
                 />
               </div>
               <figcaption className="mt-2.5 flex items-baseline justify-between gap-3 px-0.5 pb-0.5">
-                <span className="caption">Chetan, at the desk</span>
+                <span className="caption">Chetan Prajapat</span>
                 <span className="caption tracking-[0.2em]">Fig. 01</span>
               </figcaption>
             </motion.figure>
@@ -162,7 +161,7 @@ export function Hero() {
         </div>
 
         <p className="caption mt-4">
-          Available for freelance and contract work · {profile.email}
+          Available for freelance projects and full-time opportunities · {profile.email}
         </p>
       </div>
     </header>
