@@ -195,7 +195,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
             <img
               src={logoLight}
               alt="Chetan Prajapat"
-              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              className="h-[4.5rem] w-auto object-contain transition-all duration-500 ease-in-out"
               style={{
                 opacity: dark ? 0 : 1,
                 transform: dark ? 'scale(0.92)' : 'scale(1)',
@@ -207,7 +207,7 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
             <img
               src={logoDark}
               alt="Chetan Prajapat"
-              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              className="h-[4.5rem] w-auto object-contain transition-all duration-500 ease-in-out"
               style={{
                 opacity: dark ? 1 : 0,
                 transform: dark ? 'scale(1)' : 'scale(0.92)',

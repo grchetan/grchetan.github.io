@@ -21,6 +21,9 @@ import { RegMark, Rule, Section, SectionHeading } from "@/components/site/primit
 import { profile } from "@/data/portfolio";
 import { submitMessage } from "@/lib/content";
 import RippleButton from "@/components/mage-ui/button/ripple-button";
+import { useTheme } from "@/components/site/chrome";
+import logoLight from "@/assets/logos/Chetan Prajapat Orbital Gradient Logo.png";
+import logoDark from "@/assets/logos/Chetan Prajapat Cosmic Neon Logo.png";
 
 
 const purposes = [
@@ -320,14 +323,37 @@ export function Contact() {
 }
 
 export function Footer() {
+  const { dark } = useTheme();
   return (
     <footer className="relative z-10 border-t border-ink/15 px-5 py-10 sm:px-8 lg:px-14">
       <div className="mx-auto w-full max-w-[84rem]">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           <div className="lg:col-span-4">
-            <p className="font-display text-[2rem] leading-none text-ink">
-              Chetan <span className="italic">Prajapat</span>
-            </p>
+            {/* Logo with light/dark crossfade */}
+            <div className="relative flex items-center" style={{ height: "4.5rem" }}>
+              <img
+                src={logoLight}
+                alt="Chetan Prajapat"
+                className="h-16 w-auto object-contain transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: dark ? 0 : 1,
+                  transform: dark ? "scale(0.92)" : "scale(1)",
+                  position: dark ? "absolute" : "relative",
+                  pointerEvents: dark ? "none" : "auto",
+                }}
+              />
+              <img
+                src={logoDark}
+                alt="Chetan Prajapat"
+                className="h-16 w-auto object-contain transition-all duration-500 ease-in-out"
+                style={{
+                  opacity: dark ? 1 : 0,
+                  transform: dark ? "scale(1)" : "scale(0.92)",
+                  position: dark ? "relative" : "absolute",
+                  pointerEvents: dark ? "auto" : "none",
+                }}
+              />
+            </div>
             <p className="caption mt-3 max-w-sm">
               Full Stack Developer and UI Engineer building modern, fast, and scalable web applications.
             </p>
