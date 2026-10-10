@@ -13,6 +13,8 @@ import {
 import { useMotionPreference } from '@/hooks/use-motion-preference';
 import { profile } from '@/data/portfolio';
 import { cn } from '@/lib/utils';
+import logoLight from '@/assets/logos/Chetan Prajapat Orbital Gradient Logo.png';
+import logoDark from '@/assets/logos/Chetan Prajapat Cosmic Neon Logo.png';
 
 /** Links shown directly in the desktop bar — kept short on purpose. */
 const primary = [
@@ -186,9 +188,33 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
           {/* ── Logo ─────────────────────────────────── */}
           <Link
             to="/"
-            className="shrink-0 font-display text-[1.2rem] leading-none text-ink sm:text-[1.35rem]"
+            className="relative flex shrink-0 items-center"
+            aria-label="Chetan Prajapat — Home"
           >
-            Chetan <span className="chrome-text">Prajapat</span>
+            {/* Light mode logo */}
+            <img
+              src={logoLight}
+              alt="Chetan Prajapat"
+              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              style={{
+                opacity: dark ? 0 : 1,
+                transform: dark ? 'scale(0.92)' : 'scale(1)',
+                position: dark ? 'absolute' : 'relative',
+                pointerEvents: dark ? 'none' : 'auto',
+              }}
+            />
+            {/* Dark mode logo */}
+            <img
+              src={logoDark}
+              alt="Chetan Prajapat"
+              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              style={{
+                opacity: dark ? 1 : 0,
+                transform: dark ? 'scale(1)' : 'scale(0.92)',
+                position: dark ? 'relative' : 'absolute',
+                pointerEvents: dark ? 'auto' : 'none',
+              }}
+            />
           </Link>
 
           {/* ── Desktop Nav Links ─────────────────────── */}
