@@ -13,6 +13,8 @@ import { profile } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import loaderChrome from "@/assets/window-loader.jpg";
+import logoLight from "@/assets/logos/Chetan Prajapat Orbital Gradient Logo.png";
+import logoDark from "@/assets/logos/Chetan Prajapat Cosmic Neon Logo.png";
 
 
 
@@ -363,9 +365,33 @@ export function Navbar({ onOpenCommand }: { onOpenCommand: () => void }) {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="min-w-0 shrink font-display text-[1.35rem] leading-none text-ink"
+            className="relative flex shrink-0 items-center"
+            aria-label="Chetan Prajapat — Home"
           >
-            Chetan <span className="chrome-text">Prajapat</span>
+            {/* Light mode logo */}
+            <img
+              src={logoLight}
+              alt="Chetan Prajapat"
+              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              style={{
+                opacity: dark ? 0 : 1,
+                transform: dark ? "scale(0.92)" : "scale(1)",
+                position: dark ? "absolute" : "relative",
+                pointerEvents: dark ? "none" : "auto",
+              }}
+            />
+            {/* Dark mode logo */}
+            <img
+              src={logoDark}
+              alt="Chetan Prajapat"
+              className="h-9 w-auto object-contain transition-all duration-500 ease-in-out"
+              style={{
+                opacity: dark ? 1 : 0,
+                transform: dark ? "scale(1)" : "scale(0.92)",
+                position: dark ? "relative" : "absolute",
+                pointerEvents: dark ? "auto" : "none",
+              }}
+            />
           </a>
 
           <div className="hidden items-center gap-7 lg:flex">
