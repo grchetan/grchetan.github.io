@@ -27,17 +27,24 @@ export function ImageWithSkeleton({
       {!loaded && !error && (
         <div
           className={cn(
-            "absolute inset-0 z-10 flex flex-col items-center justify-center rounded-[inherit] bg-paper-tint/60 backdrop-blur-md animate-pulse border border-ink/10",
+            "absolute inset-0 z-10 flex flex-col items-center justify-center rounded-[inherit] overflow-hidden",
+            "bg-zinc-200 dark:bg-zinc-700/80",
             skeletonHeight
           )}
         >
-          <div className="relative flex items-center justify-center">
-            <span className="absolute size-10 rounded-full bg-indigo-500/20 animate-ping" />
-            <Loader2 className="size-6 text-indigo-400 animate-spin" />
+          {/* Shimmer sweep */}
+          <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_infinite]" />
+          {/* Spinner */}
+          <div className="relative z-10 flex flex-col items-center gap-3">
+            <div className="relative flex items-center justify-center">
+              <span className="absolute size-12 rounded-full bg-indigo-400/30 dark:bg-indigo-500/20 animate-ping" />
+              <span className="absolute size-8 rounded-full border-2 border-indigo-400/50 dark:border-indigo-500/40 animate-[spin_2s_linear_infinite]" />
+              <Loader2 className="size-5 text-indigo-500 dark:text-indigo-400 animate-spin" />
+            </div>
+            <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+              Loading…
+            </span>
           </div>
-          <span className="mt-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ink-soft">
-            Loading preview asset...
-          </span>
         </div>
       )}
 

@@ -209,11 +209,18 @@ export function EntryGrid({ entries, isLoading, className }: { entries: Entry[];
     return (
       <div className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3", className)}>
         {[1, 2, 3].map((n) => (
-          <div key={n} className="plate flex h-72 flex-col justify-between p-6 animate-pulse border border-ink/10">
-            <div className="h-40 w-full rounded-xl bg-paper-tint/60" />
+          <div key={n} className="plate flex h-72 flex-col justify-between p-6 border border-ink/10 overflow-hidden">
+            {/* image placeholder */}
+            <div className="relative h-40 w-full rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-700">
+              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_infinite]" />
+            </div>
             <div className="space-y-2 pt-4">
-              <div className="h-4 w-1/3 rounded bg-paper-tint/60" />
-              <div className="h-3 w-2/3 rounded bg-paper-tint/40" />
+              <div className="relative h-4 w-1/3 rounded overflow-hidden bg-zinc-200 dark:bg-zinc-700">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.15s_infinite]" />
+              </div>
+              <div className="relative h-3 w-2/3 rounded overflow-hidden bg-zinc-200/70 dark:bg-zinc-700/70">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.3s_infinite]" />
+              </div>
             </div>
           </div>
         ))}
@@ -246,12 +253,29 @@ export function EntryShowcase({ entries, isLoading, className }: { entries: Entr
     return (
       <div className={cn("space-y-12", className)}>
         {[1, 2].map((n) => (
-          <div key={n} className="grid gap-8 lg:grid-cols-12 animate-pulse plate p-8 border border-ink/10">
-            <div className="lg:col-span-7 h-64 rounded-2xl bg-paper-tint/60" />
+          <div key={n} className="grid gap-8 lg:grid-cols-12 plate p-8 border border-ink/10 overflow-hidden">
+            {/* image block */}
+            <div className="lg:col-span-7 relative h-64 rounded-2xl overflow-hidden bg-zinc-200 dark:bg-zinc-700">
+              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_infinite]" />
+            </div>
+            {/* text block */}
             <div className="lg:col-span-5 space-y-4 pt-4">
-              <div className="h-4 w-1/4 rounded bg-paper-tint/60" />
-              <div className="h-8 w-3/4 rounded bg-paper-tint/80" />
-              <div className="h-16 w-full rounded bg-paper-tint/40" />
+              <div className="relative h-3 w-1/4 rounded overflow-hidden bg-zinc-200 dark:bg-zinc-700">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.1s_infinite]" />
+              </div>
+              <div className="relative h-7 w-3/4 rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-700">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.2s_infinite]" />
+              </div>
+              <div className="relative h-16 w-full rounded-xl overflow-hidden bg-zinc-200/70 dark:bg-zinc-700/70">
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.35s_infinite]" />
+              </div>
+              <div className="flex gap-2 pt-2">
+                {[1,2,3].map((t) => (
+                  <div key={t} className="relative h-5 w-14 rounded-full overflow-hidden bg-zinc-200/60 dark:bg-zinc-700/60">
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent animate-[skeletonShimmer_1.6s_ease-in-out_0.45s_infinite]" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ))}

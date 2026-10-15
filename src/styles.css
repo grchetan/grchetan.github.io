@@ -963,6 +963,13 @@
   }
 }
 
+/* alias used by Tailwind arbitrary animate-[shimmer_...] */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .admin-shell .skeleton-circle {
   border-radius: 9999px;
 }
