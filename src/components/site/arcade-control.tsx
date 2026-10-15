@@ -2052,8 +2052,9 @@ export function ArcadeControlManager() {
                 <span
                   key={word}
                   className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 font-mono text-xs text-rose-600 dark:text-rose-400"
+                  title={`Hidden: "${word}"`}
                 >
-                  {word}
+                  {"•".repeat(Math.min(word.length, 6))}
                   <button
                     type="button"
                     onClick={async () => {
@@ -2062,7 +2063,7 @@ export function ArcadeControlManager() {
                       setBusy(true);
                       try {
                         await updateArcadeConfig({ ...config, forbiddenWords: nextList });
-                        toast.success(`Removed "${word}" from forbidden list.`);
+                        toast.success(`Removed a word from forbidden list.`);
                       } catch {
                         toast.error("Could not update list.");
                       } finally {
@@ -2070,7 +2071,7 @@ export function ArcadeControlManager() {
                       }
                     }}
                     className="hover:opacity-75 transition-opacity"
-                    title={`Remove "${word}"`}
+                    title={`Remove this word`}
                   >
                     ×
                   </button>
