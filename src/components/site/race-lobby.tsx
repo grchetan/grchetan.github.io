@@ -14,6 +14,7 @@ export function RaceLobby({
   view,
   onCreate,
   onJoin,
+  onQuickRace,
   onStart,
   onLeave,
   onCopyCode,
@@ -24,6 +25,7 @@ export function RaceLobby({
   view: LobbyView;
   onCreate: () => void | Promise<void>;
   onJoin: (code: string) => void | Promise<void>;
+  onQuickRace?: () => void | Promise<void>;
   onView: (view: LobbyView) => void;
   onStart: () => void;
   onLeave: () => void;
@@ -44,6 +46,15 @@ export function RaceLobby({
           Multiplayer mini race. Create a private room and invite friends with a 4-letter code.
         </p>
         <div className="mt-6 grid gap-3">
+          {onQuickRace && (
+            <button
+              type="button"
+              onClick={onQuickRace}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 px-5 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-cyan-500/25 transition-all hover:scale-[1.02] hover:shadow-cyan-500/40 active:scale-95"
+            >
+              ⚡ Quick Race (vs AI Rivals)
+            </button>
+          )}
           <button
             type="button"
             disabled={isCreating}

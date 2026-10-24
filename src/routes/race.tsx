@@ -104,6 +104,40 @@ function RacePage() {
     toast.success(`Room created: ${r.code}`);
   };
 
+  const handleQuickRace = async () => {
+    const p = await ensurePlayer();
+    const r: RaceRoom = {
+      code: "SOLO",
+      hostId: p.id,
+      phase: "racing",
+      settings: { laps: 3, maxPlayers: 6 },
+      players: {
+        [p.id]: {
+          id: p.id,
+          name: p.name,
+          handle: p.handle,
+          car: { color: "#38bdf8" },
+          x: 0,
+          z: -22,
+          rotation: Math.PI / 2,
+          speed: 0,
+          lap: 1,
+          checkpoint: 0,
+          finishedAt: null,
+          bestLap: null,
+          connectedAt: Date.now(),
+        },
+      },
+      raceStartedAt: Date.now(),
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    setRoom(r);
+    setRoomCode(null);
+    setView("room");
+    toast.success("Quick Race started! Race against AI rivals.");
+  };
+
   const handleJoin = async (code: string) => {
     const p = await ensurePlayer();
     const r = await joinRaceRoom(p, code);
@@ -134,6 +168,22 @@ function RacePage() {
 
   const handleUpdate = (state: Partial<RaceRoom["players"][string]>) => {
     if (!player || !room) return;
+    if (room.code === "SOLO") {
+      setRoom((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          players: {
+            ...prev.players,
+            [player.id]: {
+              ...prev.players[player.id]!,
+              ...state,
+            },
+          },
+        };
+      });
+      return;
+    }
     void updatePlayerState(room.code, player.id, state);
   };
 
@@ -162,6 +212,10 @@ function RacePage() {
     const nextResults = existing
       ? results.map((r) => (r.playerId === player.id ? nextResult : r))
       : [...results, nextResult];
+    if (room.code === "SOLO") {
+      setRoom((prev) => (prev ? { ...prev, phase: "finished", results: [nextResult] } : null));
+      return;
+    }
     await finishRace(room.code, nextResults);
   };
 
@@ -262,6 +316,7 @@ function RacePage() {
               view={view}
               onCreate={handleCreate}
               onJoin={handleJoin}
+              onQuickRace={handleQuickRace}
               onStart={handleStart}
               onLeave={handleLeave}
               onCopyCode={handleCopyCode}
