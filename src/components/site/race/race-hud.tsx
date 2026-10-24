@@ -273,28 +273,34 @@ export function RaceHUD({
             </p>
             <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
-          <svg className="w-32 h-20 overflow-visible" viewBox="-38 -30 76 60">
-            {/* Outer track loop */}
-            <rect
-              x="-23"
-              y="-19"
-              width="46"
-              height="38"
-              rx="19"
+          <svg className="w-36 h-22 overflow-visible" viewBox="-36 -22 72 44">
+            {/* Outer track loop tarmac base */}
+            <path
+              d="M -14.95 -14.3 L 14.95 -14.3 A 14.3 14.3 0 0 1 14.95 14.3 L -14.95 14.3 A 14.3 14.3 0 0 1 -14.95 -14.3 Z"
               fill="none"
-              stroke="#334155"
-              strokeWidth="6"
+              stroke="#1e293b"
+              strokeWidth="7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Neon centerline path */}
+            <path
+              d="M -14.95 -14.3 L 14.95 -14.3 A 14.3 14.3 0 0 1 14.95 14.3 L -14.95 14.3 A 14.3 14.3 0 0 1 -14.95 -14.3 Z"
+              fill="none"
+              stroke="#06b6d4"
+              strokeWidth="1.6"
+              strokeOpacity="0.85"
             />
             {/* Checkered Start Line */}
-            <line x1="0" y1="-22" x2="0" y2="-16" stroke="#ffffff" strokeWidth="2.5" />
+            <line x1="0" y1="-17.8" x2="0" y2="-10.8" stroke="#ffffff" strokeWidth="2.2" />
 
             {/* Remote Players */}
             {remoteRacers.map((rp) => (
               <circle
                 key={rp.id}
-                cx={rp.x * 0.72}
-                cy={rp.z * 0.72}
-                r="2.8"
+                cx={rp.x * 0.65}
+                cy={rp.z * 0.65}
+                r="2.5"
                 fill={rp.color}
                 stroke="#ffffff"
                 strokeWidth="0.8"
@@ -305,9 +311,9 @@ export function RaceHUD({
             {aiBots.map((bot) => (
               <circle
                 key={bot.id}
-                cx={bot.x * 0.72}
-                cy={bot.z * 0.72}
-                r="2.8"
+                cx={bot.x * 0.65}
+                cy={bot.z * 0.65}
+                r="2.4"
                 fill={bot.color}
                 stroke="#090d16"
                 strokeWidth="0.8"
@@ -316,9 +322,9 @@ export function RaceHUD({
 
             {/* Local Player Blip */}
             <circle
-              cx={playerPos.x * 0.72}
-              cy={playerPos.z * 0.72}
-              r="3.5"
+              cx={playerPos.x * 0.65}
+              cy={playerPos.z * 0.65}
+              r="3.2"
               fill="#38bdf8"
               stroke="#ffffff"
               strokeWidth="1.4"

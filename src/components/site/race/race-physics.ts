@@ -45,21 +45,21 @@ export function buildTrackGates(): TrackGate[] {
   const W = TRACK_CONFIG.halfWidth;
 
   const rawPoints = [
-    // 0: Start / Finish line
+    // 0: Start / Finish line (facing +X)
     { x: 0, z: -R, angle: Math.PI / 2, label: "Start / Finish" },
-    // 1: Turn 1 Entry
+    // 1: Turn 1 Entry (facing +X)
     { x: L, z: -R, angle: Math.PI / 2, label: "Turn 1 Entry" },
-    // 2: Turn 1 Apex
-    { x: L + R, z: 0, angle: Math.PI, label: "Turn 1 Apex" },
-    // 3: Turn 1 Exit
+    // 2: Turn 1 Apex (facing +Z, angle = 0, vx=sin(0)=0, vz=cos(0)=1)
+    { x: L + R, z: 0, angle: 0, label: "Turn 1 Apex" },
+    // 3: Turn 1 Exit (facing -X, angle = 3π/2, vx=sin(3π/2)=-1, vz=0)
     { x: L, z: R, angle: (3 * Math.PI) / 2, label: "Turn 1 Exit" },
-    // 4: Back Straight Midpoint
+    // 4: Back Straight Midpoint (facing -X)
     { x: 0, z: R, angle: (3 * Math.PI) / 2, label: "Back Straight" },
-    // 5: Turn 2 Entry
+    // 5: Turn 2 Entry (facing -X)
     { x: -L, z: R, angle: (3 * Math.PI) / 2, label: "Turn 2 Entry" },
-    // 6: Turn 2 Apex
-    { x: -L - R, z: 0, angle: 0, label: "Turn 2 Apex" },
-    // 7: Final Turn Exit
+    // 6: Turn 2 Apex (facing -Z, angle = π, vx=sin(π)=0, vz=cos(π)=-1)
+    { x: -L - R, z: 0, angle: Math.PI, label: "Turn 2 Apex" },
+    // 7: Final Turn Exit (facing +X, angle = Math.PI / 2)
     { x: -L, z: -R, angle: Math.PI / 2, label: "Final Turn" },
   ];
 
@@ -246,7 +246,7 @@ export function stepCarPhysics(
 
   // --- NITRO MANAGEMENT ---
   let isBoosting = false;
-  if (inputs.nitro && nitro > 0 && speed > 6) {
+  if (inputs.nitro && nitro > 0) {
     isBoosting = true;
     nitro = Math.max(0, nitro - d * 28);
   } else {
@@ -267,6 +267,9 @@ export function stepCarPhysics(
   if (inputs.gas) {
     const boostMult = isBoosting ? TRACK_CONFIG.nitroBoostMultiplier : 1.0;
     speed += TRACK_CONFIG.accelForward * boostMult * d;
+  } else if (isBoosting) {
+    // Immediate thrust kick if holding nitro without gas
+    speed += TRACK_CONFIG.accelForward * TRACK_CONFIG.nitroBoostMultiplier * 0.85 * d;
   }
 
   if (inputs.brake) {
@@ -290,10 +293,12 @@ export function stepCarPhysics(
     : TRACK_CONFIG.maxSpeedForward;
   speed = Math.max(TRACK_CONFIG.maxSpeedReverse, Math.min(speed, maxFwd));
 
-  // --- STEERING (CORRECT NON-INVERTED WHEEL ROTATION) ---
-  // Right input (+1) MUST increase rotation in Three.js (towards +X)
-  // Left input (-1) MUST decrease rotation in Three.js (towards -X)
-  const steerInput = (inputs.right ? 1 : 0) - (inputs.left ? 1 : 0);
+  // --- STEERING (CORRECT NON-INVERTED VEHICLE HANDLING) ---
+  // In Three.js with right-handed coordinate system (forward = sin, cos):
+  // When facing forward (+X):
+  // - Turning LEFT means heading angle rotation.y INCREASES (counter-clockwise)
+  // - Turning RIGHT means heading angle rotation.y DECREASES (clockwise)
+  const steerInput = (inputs.left ? 1 : 0) - (inputs.right ? 1 : 0);
 
   // Speed-adaptive steering response: agile at low/mid speeds, stable at high speeds
   const speedRatio = Math.min(1, Math.abs(speed) / 12);
@@ -306,7 +311,8 @@ export function stepCarPhysics(
   const driftBonus = isDrifting ? 1.75 : 1.0;
   const turnRate = steerAngle * 2.85 * speedRatio * driftBonus * Math.sign(speed || 1);
 
-  // ADD turnRate so Right turns Right (+X) and Left turns Left (-X)
+  // Left (+steerInput) increases rotation.y (Left turn)
+  // Right (-steerInput) decreases rotation.y (Right turn)
   rotation += turnRate * d;
 
   // Slip angle for drift body tilt

@@ -1,10 +1,80 @@
 /**
  * Cyber Circuit — Ultra-Detailed 3D Track & Environment
+ * Features:
+ * - Continuous cyberpunk neon rails and boundary barriers (no gaps)
+ * - Grounded holographic Cyber Gate Arches for all checkpoints
+ * - Start / Finish overhead digital gantry with starting tree lights
+ * - Alternating red/white curbs with inner and outer loop curves
+ * - High-intensity stadium floodlights with real-time lighting
  */
 
 import { useMemo } from "react";
 import * as THREE from "three";
-import { TRACK_CONFIG, TRACK_GATES } from "./race-physics";
+import { TRACK_CONFIG, TRACK_GATES, type TrackGate } from "./race-physics";
+
+/** Holographic Cyber Gate Arch placed at each track checkpoint */
+function CyberGateArch({
+  gate,
+  isTarget,
+  width,
+}: {
+  gate: TrackGate;
+  isTarget: boolean;
+  width: number;
+}) {
+  const gateW = width * 2;
+  const gateH = 4.8;
+  const pillarColor = isTarget ? "#22c55e" : "#0284c7";
+  const glowColor = isTarget ? "#4ade80" : "#38bdf8";
+
+  return (
+    <group position={[gate.x, 0, gate.z]} rotation={[0, gate.forwardAngle, 0]}>
+      {/* Left Base Pillar */}
+      <mesh position={[-width - 0.35, gateH / 2, 0]}>
+        <boxGeometry args={[0.55, gateH, 0.55]} />
+        <meshStandardMaterial color="#0f172a" metalness={0.9} roughness={0.2} />
+      </mesh>
+      {/* Left Neon Strip */}
+      <mesh position={[-width - 0.35, gateH / 2, 0]}>
+        <boxGeometry args={[0.62, gateH * 0.9, 0.12]} />
+        <meshBasicMaterial color={pillarColor} />
+      </mesh>
+
+      {/* Right Base Pillar */}
+      <mesh position={[width + 0.35, gateH / 2, 0]}>
+        <boxGeometry args={[0.55, gateH, 0.55]} />
+        <meshStandardMaterial color="#0f172a" metalness={0.9} roughness={0.2} />
+      </mesh>
+      {/* Right Neon Strip */}
+      <mesh position={[width + 0.35, gateH / 2, 0]}>
+        <boxGeometry args={[0.62, gateH * 0.9, 0.12]} />
+        <meshBasicMaterial color={pillarColor} />
+      </mesh>
+
+      {/* Overhead Lintel Crossbeam */}
+      <mesh position={[0, gateH + 0.2, 0]}>
+        <boxGeometry args={[gateW + 1.2, 0.45, 0.65]} />
+        <meshStandardMaterial color="#090d16" metalness={0.9} roughness={0.2} />
+      </mesh>
+      {/* Overhead Glowing Strip */}
+      <mesh position={[0, gateH + 0.2, 0]}>
+        <boxGeometry args={[gateW + 0.8, 0.18, 0.72]} />
+        <meshBasicMaterial color={glowColor} />
+      </mesh>
+
+      {/* Holographic Drive-Through Portal Curtain */}
+      <mesh position={[0, gateH / 2, 0]}>
+        <planeGeometry args={[gateW, gateH - 0.2]} />
+        <meshBasicMaterial
+          color={glowColor}
+          transparent
+          opacity={isTarget ? 0.25 : 0.06}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+    </group>
+  );
+}
 
 export function Track3D({ activeGate }: { activeGate: number }) {
   const L = TRACK_CONFIG.straightLength / 2;
@@ -50,9 +120,9 @@ export function Track3D({ activeGate }: { activeGate: number }) {
 
   return (
     <group>
-      {/* Dark Ambient Ground Plane */}
+      {/* Dark Ambient Ground Plane with Cyber Grid */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.06, 0]}>
-        <planeGeometry args={[480, 480]} />
+        <planeGeometry args={[520, 520]} />
         <meshStandardMaterial color="#020617" roughness={0.98} metalness={0.02} />
       </mesh>
 
@@ -92,7 +162,7 @@ export function Track3D({ activeGate }: { activeGate: number }) {
         </group>
       ))}
 
-      {/* Dashed White Centerlines */}
+      {/* Dashed White Centerlines along Straights */}
       {[-L + 4, 0, L - 4].map((dashX, i) => (
         <group key={`dash-${i}`}>
           <mesh rotation={[-Math.PI / 2, 0, 0]} position={[dashX, 0.04, -R]}>
@@ -129,20 +199,85 @@ export function Track3D({ activeGate }: { activeGate: number }) {
         </group>
       ))}
 
-      {/* Glowing Neon Cyber Rail Barriers */}
-      {[
-        { x: L, r: R + W + 1.1, color: "#06b6d4", sign: 1 },
-        { x: -L, r: R + W + 1.1, color: "#ec4899", sign: -1 },
-      ].map((rail, rIdx) => (
-        <group key={`neon-rail-${rIdx}`} position={[rail.x, 0.5, 0]}>
-          <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[rail.r - 0.12, rail.r + 0.12, 64, 1, -Math.PI / 2, Math.PI]} />
-            <meshBasicMaterial color={rail.color} side={THREE.DoubleSide} />
+      {/* Straight Kerbs on Both Straights */}
+      {[-16, 0, 16].map((kx, idx) => (
+        <group key={`straight-kerb-${idx}`}>
+          {/* Top straight outer & inner */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[kx, 0.042, -R - W - 0.2]}>
+            <planeGeometry args={[14, 0.5]} />
+            <meshBasicMaterial color={idx % 2 === 0 ? "#ef4444" : "#ffffff"} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[kx, 0.042, -R + W + 0.2]}>
+            <planeGeometry args={[14, 0.5]} />
+            <meshBasicMaterial color={idx % 2 === 0 ? "#ef4444" : "#ffffff"} />
+          </mesh>
+          {/* Bottom straight outer & inner */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[kx, 0.042, R + W + 0.2]}>
+            <planeGeometry args={[14, 0.5]} />
+            <meshBasicMaterial color={idx % 2 === 0 ? "#ef4444" : "#ffffff"} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[kx, 0.042, R - W - 0.2]}>
+            <planeGeometry args={[14, 0.5]} />
+            <meshBasicMaterial color={idx % 2 === 0 ? "#ef4444" : "#ffffff"} />
           </mesh>
         </group>
       ))}
 
-      {/* Start / Finish Overhead Gantry Archway */}
+      {/* ================= CONTINUOUS CYBER NEON BARRIERS ================= */}
+      {/* 1. Straight Outer & Inner Neon Barrier Rails */}
+      {/* Top Straight Outer */}
+      <mesh position={[0, 0.5, -R - W - 0.95]}>
+        <boxGeometry args={[L * 2, 0.65, 0.2]} />
+        <meshBasicMaterial color="#06b6d4" />
+      </mesh>
+      {/* Top Straight Inner */}
+      <mesh position={[0, 0.5, -R + W + 0.95]}>
+        <boxGeometry args={[L * 2, 0.65, 0.2]} />
+        <meshBasicMaterial color="#06b6d4" />
+      </mesh>
+      {/* Bottom Straight Outer */}
+      <mesh position={[0, 0.5, R + W + 0.95]}>
+        <boxGeometry args={[L * 2, 0.65, 0.2]} />
+        <meshBasicMaterial color="#ec4899" />
+      </mesh>
+      {/* Bottom Straight Inner */}
+      <mesh position={[0, 0.5, R - W - 0.95]}>
+        <boxGeometry args={[L * 2, 0.65, 0.2]} />
+        <meshBasicMaterial color="#ec4899" />
+      </mesh>
+
+      {/* 2. Curved Outer & Inner Neon Barrier Rails */}
+      {/* Turn 1 (Right Loop) Outer Rail */}
+      <group position={[L, 0.5, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[R + W + 0.85, R + W + 1.05, 48, 1, -Math.PI / 2, Math.PI]} />
+          <meshBasicMaterial color="#06b6d4" side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+      {/* Turn 1 (Right Loop) Inner Rail */}
+      <group position={[L, 0.5, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[R - W - 1.05, R - W - 0.85, 48, 1, -Math.PI / 2, Math.PI]} />
+          <meshBasicMaterial color="#06b6d4" side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+
+      {/* Turn 2 (Left Loop) Outer Rail */}
+      <group position={[-L, 0.5, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[R + W + 0.85, R + W + 1.05, 48, 1, Math.PI / 2, Math.PI]} />
+          <meshBasicMaterial color="#ec4899" side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+      {/* Turn 2 (Left Loop) Inner Rail */}
+      <group position={[-L, 0.5, 0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[R - W - 1.05, R - W - 0.85, 48, 1, Math.PI / 2, Math.PI]} />
+          <meshBasicMaterial color="#ec4899" side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+
+      {/* Start / Finish Overhead Gantry Archway (Gate 0) */}
       <group position={[0, 0, -R]}>
         {/* Support Trusses */}
         <mesh position={[-W - 1.2, 3.8, 0]}>
@@ -172,23 +307,15 @@ export function Track3D({ activeGate }: { activeGate: number }) {
         ))}
       </group>
 
-      {/* Dynamic Floating Checkpoint Rings */}
-      {TRACK_GATES.map((gate, gIdx) => {
-        const isTarget = gIdx === activeGate;
-        return (
-          <group key={`gate-${gIdx}`} position={[gate.x, 0, gate.z]} rotation={[0, gate.forwardAngle, 0]}>
-            <mesh position={[0, 5.2, 0]}>
-              <ringGeometry args={[W - 0.4, W, 36]} />
-              <meshBasicMaterial
-                color={isTarget ? "#22c55e" : "#0284c7"}
-                transparent
-                opacity={isTarget ? 0.9 : 0.22}
-                side={THREE.DoubleSide}
-              />
-            </mesh>
-          </group>
-        );
-      })}
+      {/* Futuristic Grounded Cyber Gates (Checkpoints 1 to 7) */}
+      {TRACK_GATES.filter((g) => g.index !== 0).map((gate) => (
+        <CyberGateArch
+          key={`gate-${gate.index}`}
+          gate={gate}
+          isTarget={gate.index === activeGate}
+          width={W}
+        />
+      ))}
 
       {/* Stadium Floodlight Towers */}
       {[
