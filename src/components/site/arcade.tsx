@@ -24,6 +24,7 @@ import {
   useArcadeConfig,
   useLeaderboard,
   useInfiniteLeaderboard,
+  subscribeLeaderboard,
   validateName,
   writeSessionPlayer,
   type Player,
@@ -619,6 +620,12 @@ export function ArcadeStage() {
     refetch,
   } = useInfiniteLeaderboard(100);
 
+  useEffect(() => {
+    return subscribeLeaderboard(() => {
+      void refetch();
+    });
+  }, [refetch]);
+
   const rows = useMemo(() => {
     return infiniteData?.pages.flatMap((page) => page.rows) ?? [];
   }, [infiniteData]);
@@ -706,7 +713,8 @@ export function ArcadeStage() {
       if (!player) return;
       try {
         await submitScore({ player, ...result });
-        await qc.invalidateQueries({ queryKey: ["arcade", "leaderboard"] });
+        await qc.invalidateQueries({ queryKey: ["arcade"] });
+        await refetch();
         if (isContestLive) {
           setBoardTab("contest");
           toast.success(`🏆 Contest Run Logged! ${Math.round(result.score).toLocaleString()} pts added to Contest Standings!`);
@@ -718,7 +726,7 @@ export function ArcadeStage() {
         toast.success(`Score saved — ${Math.round(result.score).toLocaleString()} points`);
       }
     },
-    [player, qc, isClosed, isBanned, isContestLive],
+    [player, qc, isClosed, isBanned, isContestLive, refetch],
   );
 
   const isRegistered = useMemo(() => {
@@ -1193,7 +1201,7 @@ export function ArcadeStage() {
                   <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
                 </span>
                 <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400 font-semibold">
-                  Live · {filteredRows.length} players
+                  Live · {filteredRows.length} {filteredRows.length === 1 ? "player" : "players"}
                 </span>
               </div>
               <div className="w-full sm:w-52 relative">

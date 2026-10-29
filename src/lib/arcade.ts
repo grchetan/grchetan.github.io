@@ -7,7 +7,7 @@
  */
 
 import { useEffect } from "react";
-import { useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
 import { isProfane, sanitizeName } from "@/lib/profanity";
 
@@ -419,6 +419,23 @@ export function reRankFiltered(rows: RankedRow[]): RankedRow[] {
     .map((r, i) => ({ ...r, rank: i + 1 }));
 }
 
+export function parseTimestamp(rawTs: unknown): number {
+  if (!rawTs) return Date.now();
+  if (typeof rawTs === "number") return rawTs;
+  if (typeof (rawTs as { toMillis?: () => number }).toMillis === "function") {
+    return (rawTs as { toMillis: () => number }).toMillis();
+  }
+  if (typeof (rawTs as { toDate?: () => Date }).toDate === "function") {
+    return (rawTs as { toDate: () => Date }).toDate().getTime();
+  }
+  if (rawTs instanceof Date) return rawTs.getTime();
+  if (typeof rawTs === "string") {
+    const parsed = Date.parse(rawTs);
+    if (!isNaN(parsed)) return parsed;
+  }
+  return Date.now();
+}
+
 function mergeRawScores(remoteRows: ScoreRow[], localRows: ScoreRow[]): ScoreRow[] {
   // Start with local rows as a base
   const map = new Map<string, ScoreRow>();
@@ -450,7 +467,7 @@ export async function fetchLeaderboard(): Promise<ScoreRow[]> {
           score: Number(raw["score"] ?? 0),
           accuracy: Number(raw["accuracy"] ?? 0),
           combo: Number(raw["combo"] ?? 0),
-          createdAt: ts?.toMillis?.() ?? Date.now(),
+          createdAt: parseTimestamp(raw["createdAt"]),
         };
       });
 
@@ -522,7 +539,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
                 score: Number(raw["score"] ?? 0),
                 accuracy: Number(raw["accuracy"] ?? 0),
                 combo: Number(raw["combo"] ?? 0),
-                createdAt: ts?.toMillis?.() ?? Date.now(),
+                createdAt: parseTimestamp(raw["createdAt"]),
               };
             });
             onRows(mergeRawScores(latestRemote, readLocal().scores));
@@ -553,7 +570,8 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
     window.addEventListener("arcade:scores", onEvt);
     window.addEventListener("storage", onEvt);
   }
-  const timer = isFirebaseConfigured ? null : setInterval(pushLocal, 6_000);
+  pushLocal();
+  const timer = setInterval(pushLocal, 3000);
 
   return () => {
     cancelled = true;
@@ -620,7 +638,7 @@ export async function fetchLeaderboardPage(
           score: Number(raw["score"] ?? 0),
           accuracy: Number(raw["accuracy"] ?? 0),
           combo: Number(raw["combo"] ?? 0),
-          createdAt: ts?.toMillis?.() ?? Date.now(),
+          createdAt: parseTimestamp(raw["createdAt"]),
         };
       });
 
@@ -628,7 +646,7 @@ export async function fetchLeaderboardPage(
       
       return {
         rows: merged,
-        nextCursor: lastVisible,
+        nextCursor: snap.docs.length >= pageSize ? lastVisible : null,
       };
     } catch (err) {
       console.error("[Firebase fetchLeaderboardPage Error]:", err);
@@ -651,13 +669,54 @@ export async function fetchLeaderboardPage(
 }
 
 export function useInfiniteLeaderboard(pageSize: number = 100) {
-  return useInfiniteQuery({
+  const queryClient = useQueryClient();
+  const query =
+  useInfiniteQuery({
     queryKey: ["arcade", "leaderboard", "paginated", pageSize],
     queryFn: ({ pageParam }) => fetchLeaderboardPage(pageSize, pageParam),
     initialPageParam: null as any,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     retry: 2,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchInterval: 3000,
   });
+
+  useEffect(() => {
+    return subscribeLeaderboard((liveRows) => {
+      queryClient.setQueryData<InfiniteData<ScorePage>>(
+        ["arcade", "leaderboard", "paginated", pageSize],
+        (oldData) => {
+          if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+            return {
+              pages: [
+                {
+                  rows: liveRows.slice(0, pageSize),
+                  nextCursor: liveRows.length >= pageSize ? liveRows[pageSize - 1] : null,
+                },
+              ],
+              pageParams: [null],
+            };
+          }
+
+          const updatedPages = [...oldData.pages];
+          updatedPages[0] = {
+            ...updatedPages[0],
+            rows: liveRows.slice(0, pageSize),
+          };
+
+          return {
+            ...oldData,
+            pages: updatedPages,
+          };
+        }
+      );
+
+      queryClient.setQueryData<ScoreRow[]>(["arcade", "leaderboard"], liveRows);
+    });
+  }, [queryClient, pageSize]);
+
+  return query;
 }
 
 export function usePlayersCodes() {
