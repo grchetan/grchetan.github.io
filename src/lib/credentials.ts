@@ -118,7 +118,7 @@ export async function fetchCredentials(): Promise<Credentials> {
     if (snap.exists()) {
       const raw = snap.data() as Partial<Credentials>;
       const result: Credentials = {
-        certificates: enrichCertificates(raw.certificates?.length ? raw.certificates : credentialsDefault.certificates),
+        certificates: Array.isArray(raw.certificates) ? enrichCertificates(raw.certificates) : credentialsDefault.certificates,
         achievements: raw.achievements?.length ? raw.achievements : credentialsDefault.achievements,
         profiles: raw.profiles?.length ? raw.profiles : credentialsDefault.profiles,
       };
@@ -156,7 +156,7 @@ export async function fetchCredentials(): Promise<Credentials> {
       const profs = (json.fields?.profiles?.arrayValue?.values || []).map(parseField);
 
       const result: Credentials = {
-        certificates: enrichCertificates(certs.length ? certs : credentialsDefault.certificates),
+        certificates: certs ? enrichCertificates(certs) : credentialsDefault.certificates,
         achievements: achs.length ? achs : credentialsDefault.achievements,
         profiles: profs.length ? profs : credentialsDefault.profiles,
       };
