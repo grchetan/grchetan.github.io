@@ -1481,24 +1481,31 @@ export function ArcadeStage() {
               config={config}
             />
 
-            {hasNextPage && filteredRows.length >= 100 && (
-              <div className="mt-6 flex justify-center">
+            <div className="mt-8 flex justify-center">
                 <button
                   type="button"
-                  onClick={() => void fetchNextPage()}
+                  onClick={async () => {
+                    if (hasNextPage) {
+                      await fetchNextPage();
+                    } else {
+                      await refetch();
+                    }
+                  }}
                   disabled={isFetchingNextPage}
-                  className="press-btn text-[0.68rem] uppercase font-mono tracking-wider font-semibold disabled:opacity-50 inline-flex items-center gap-1.5"
+                  className="press-btn text-[0.68rem] uppercase font-mono tracking-wider font-semibold disabled:opacity-50 inline-flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all"
                 >
                   {isFetchingNextPage ? (
                     <>
                       <RefreshCw className="size-3 animate-spin" /> Loading more...
                     </>
                   ) : (
-                    "Load More Standings"
+                    <>
+                      <RefreshCw className="size-3" />
+                      Load More Standings
+                    </>
                   )}
                 </button>
               </div>
-            )}
 
             {bannedPlayersNames.length > 0 ? (
               <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 animate-fade-in">

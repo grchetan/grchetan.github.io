@@ -311,11 +311,11 @@ export function CertificateWall() {
               <motion.button
                 key={`${c.title}-${i}`}
                 onClick={() => setLightboxIndex(i)}
-                initial={{ opacity: 0, y: 22, rotate: tilt }}
-                whileInView={{ opacity: 1, y: 0, rotate: tilt }}
-                whileHover={{ rotate: 0, y: -6 }}
-                viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.7, delay: (i % 3) * 0.07, ease }}
+                initial={{ opacity: 0.01, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -6 }}
+                viewport={{ once: true, margin: "120px" }}
+                transition={{ duration: 0.45, delay: (i % 3) * 0.05, ease }}
                 className="group block rounded-[var(--radius-lg)] will-change-transform text-left w-full cursor-pointer"
               >
                 <AnimatedBorderTrail

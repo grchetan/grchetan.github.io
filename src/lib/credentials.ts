@@ -1,7 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { achievements as achievementsDefault, certificates as certsDefault, codingProfiles } from "@/data/portfolio";
 import { firebaseConfig, getDb, isFirebaseConfigured } from "@/lib/firebase";
+import cProgrammingImg from "@/assets/certificates/c-programming.webp";
+import cursorAiImg from "@/assets/certificates/cursor-ai-vibecode-mastery.webp";
+import gitGithubImg from "@/assets/certificates/git-and-github.webp";
+import gitFundamentalsImg from "@/assets/certificates/fundamentals-of-git-and-github.webp";
+import aiQueryingImg from "@/assets/certificates/ai-powered-querying.webp";
+import uiUxImg from "@/assets/certificates/ui-ux-professional-certification.webp";
+import htmlCssImg from "@/assets/certificates/learn-html-and-css-from-beginning-to-advanced.webp";
 import ciscoCyberCertImg from "@/assets/certificates/cisco-cybersecurity.webp";
+import typingTestImg from "@/assets/certificates/1-minute-typing-test.webp";
 
 export type Certificate = {
   title: string;
@@ -43,8 +51,16 @@ const DOC = { collection: "site", id: "credentials" };
 const CACHE_KEY = "site_credentials_cache_v3";
 
 const BUILTIN_CERT_IMAGES: Record<string, string> = {
+  "c programming": cProgrammingImg,
+  "cursor ai: vibecode mastery": cursorAiImg,
+  "git and github": gitGithubImg,
+  "fundamentals of git and github": gitFundamentalsImg,
+  "ai-powered querying": aiQueryingImg,
+  "ui/ux professional certification": uiUxImg,
+  "learn html and css from beginning to advanced": htmlCssImg,
   "cyber security fundamentals": ciscoCyberCertImg,
   "cybersecurity fundamentals": ciscoCyberCertImg,
+  "1 minute typing test": typingTestImg,
 };
 
 export function enrichCertificates(certs: Certificate[]): Certificate[] {
@@ -57,7 +73,7 @@ export function enrichCertificates(certs: Certificate[]): Certificate[] {
     }
     return c;
   });
-};
+}
 
 export const credentialsDefault: Credentials = {
   certificates: enrichCertificates(certsDefault.map((c) => ({ ...c }))),
@@ -68,7 +84,11 @@ export const credentialsDefault: Credentials = {
 function getCachedCredentials(): Credentials | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw =
+      localStorage.getItem(CACHE_KEY) ||
+      localStorage.getItem("site_credentials_cache_v3") ||
+      localStorage.getItem("site_credentials_cache_v2") ||
+      localStorage.getItem("site_credentials_cache");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.certificates) && parsed.certificates.length > 0) {
@@ -162,7 +182,8 @@ export function useCredentials() {
   return useQuery({
     queryKey: ["credentials"],
     queryFn: fetchCredentials,
-    initialData: cached ?? credentialsDefault,
+    initialData: cached ?? undefined,
+    placeholderData: credentialsDefault,
     staleTime: 5000,
     refetchOnMount: true,
   });
