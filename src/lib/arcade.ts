@@ -383,13 +383,16 @@ export async function submitScore(input: {
 export function rank(rows: ScoreRow[]): RankedRow[] {
   const best = new Map<string, { row: ScoreRow; plays: number }>();
   for (const row of rows) {
-    const found = best.get(row.playerId);
-    if (!found) best.set(row.playerId, { row, plays: 1 });
+    // Normalize player key so local and remote runs for the same player group together seamlessly
+    const key = (row.playerId || row.handle || row.name).toLowerCase().trim().replace(/^local-/, "");
+    const found = best.get(key);
+    if (!found) best.set(key, { row, plays: 1 });
     else {
       found.plays += 1;
       const better =
         row.score > found.row.score ||
-        (row.score === found.row.score && row.createdAt < found.row.createdAt);
+        (row.score === found.row.score && row.accuracy > found.row.accuracy) ||
+        (row.score === found.row.score && row.accuracy === found.row.accuracy && row.createdAt < found.row.createdAt);
       if (better) found.row = row;
     }
   }
@@ -397,6 +400,7 @@ export function rank(rows: ScoreRow[]): RankedRow[] {
     .sort((a, b) =>
       b.row.score - a.row.score ||
       b.row.accuracy - a.row.accuracy ||
+      b.row.combo - a.row.combo ||
       a.row.createdAt - b.row.createdAt,
     )
     .slice(0, 100)
@@ -690,7 +694,7 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
     retry: 2,
     staleTime: 0,
     refetchOnWindowFocus: true,
-    refetchInterval: 3000,
+    refetchInterval: false,
   });
 
   useEffect(() => {

@@ -571,8 +571,7 @@ function LeaderboardRow({
 
   return (
     <motion.li
-      layout={!reduced}
-      {...(reduced ? {} : { layoutId: `lb-${row.playerId}` })}
+      layout={false}
       initial={reduced ? false : { opacity: 0, y: 10 }}
       animate={{
         opacity: 1,
@@ -815,11 +814,7 @@ export function ArcadeStage() {
     refetch,
   } = useInfiniteLeaderboard(100);
 
-  useEffect(() => {
-    return subscribeLeaderboard(() => {
-      void refetch();
-    });
-  }, [refetch]);
+  // Real-time subscription handled by useInfiniteLeaderboard
 
   const rows = useMemo(() => {
     return infiniteData?.pages.flatMap((page) => page.rows) ?? [];
@@ -867,7 +862,20 @@ export function ArcadeStage() {
   const isTimerExpired = config.mode === "timer" && remainingSec <= 0;
   const isClosed = config.mode === "disabled" || isTimerExpired;
 
-  const [boardTab, setBoardTab] = useState<"weekly" | "lifetime" | "contest">("weekly");
+  const [boardTab, setBoardTabState] = useState<"weekly" | "lifetime" | "contest">(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("arcade_board_tab");
+      if (saved === "weekly" || saved === "lifetime" || saved === "contest") return saved;
+    }
+    return "weekly";
+  });
+
+  const setBoardTab = (tab: "weekly" | "lifetime" | "contest") => {
+    setBoardTabState(tab);
+    try {
+      localStorage.setItem("arcade_board_tab", tab);
+    } catch {}
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [registering, setRegistering] = useState(false);
   const [currentTime, setCurrentTime] = useState<number>(Date.now());
