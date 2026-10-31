@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert, Users, RefreshCw } from "lucide-react";
+import { AlertTriangle, Award, Check, Copy, Crown, Download, Gamepad2, KeyRound, LogOut, Medal, Trophy, Lock, Clock, Ban, Megaphone, Sparkles, Zap, ShieldAlert, Users, RefreshCw, X } from "lucide-react";
 import { Section, SectionHeading, Reveal, RegMark } from "@/components/site/primitives";
 import { SignalRush, type RunResult } from "@/components/site/arcade-game";
 import { downloadArcadeCertificate } from "@/lib/arcade-certificate";
@@ -339,6 +339,194 @@ function AnimatedScore({ value, reduced }: { value: number; reduced: boolean }) 
   return <>{(reduced ? value : shown).toLocaleString()}</>;
 }
 
+
+/* ------------------------ Arcade Certificate Modal ------------------------ */
+
+function ArcadeCertificateModal({
+  row,
+  title,
+  isMine,
+  onClose,
+}: {
+  row: RankedRow | null;
+  title: string;
+  isMine: boolean;
+  onClose: () => void;
+}) {
+  const [downloading, setDownloading] = useState(false);
+  const tier = row ? tierFor(row.rank) : null;
+
+  if (!row) return null;
+
+  const handleDownload = async () => {
+    setDownloading(true);
+    try {
+      await downloadArcadeCertificate(row, title);
+      toast.success(`Certificate downloaded for ${row.name}! 🏆`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not generate certificate PDF.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const isChampion = row.rank === 1;
+  const isRunnerUp = row.rank === 2;
+  const isThird = row.rank === 3;
+
+  const dateFormatted = new Date(row.createdAt).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+      >
+        <motion.div
+          initial={{ scale: 0.92, opacity: 0, y: 16 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.92, opacity: 0, y: 16 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] border border-amber-500/35 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 p-6 sm:p-8 text-white shadow-[0_0_60px_rgba(245,158,11,0.25)]"
+        >
+          {/* Top Prism Border Bar */}
+          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-rose-500 via-amber-400 via-emerald-400 to-cyan-500" />
+
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-5 right-5 flex size-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 hover:bg-white/15 hover:text-white transition"
+            aria-label="Close"
+          >
+            <X className="size-4" />
+          </button>
+
+          {/* Certificate Inner Card */}
+          <div className="relative rounded-[1.5rem] border border-amber-500/25 bg-slate-950/80 p-5 sm:p-7 text-center">
+            {/* Header */}
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Sparkles className="size-4 text-amber-400 animate-pulse" />
+              <span className="font-mono text-[0.62rem] font-bold uppercase tracking-[0.25em] text-amber-400">
+                Official Competition Credential
+              </span>
+              <Sparkles className="size-4 text-amber-400 animate-pulse" />
+            </div>
+
+            <h3 className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-white">
+              Certificate of Achievement
+            </h3>
+            <p className="font-mono text-[0.65rem] uppercase tracking-widest text-slate-400 mt-1">
+              {title}
+            </p>
+
+            {/* Awarded To */}
+            <p className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.2em] text-slate-400 mt-6">
+              This is officially awarded to
+            </p>
+            <h2 className="mt-1 font-display text-2xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400">
+              {row.name}
+            </h2>
+            <p className="font-mono text-xs uppercase tracking-wider text-slate-400 mt-0.5">
+              @{row.handle} · {isMine ? "Verified Owner ✓" : "Ranked Competitor"}
+            </p>
+
+            {/* Placement Badge */}
+            <div className="my-5 flex justify-center">
+              <div
+                className={cn(
+                  "inline-flex items-center gap-2.5 rounded-full px-5 py-2 font-display text-sm sm:text-base font-black uppercase tracking-wider shadow-lg",
+                  isChampion
+                    ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-amber-400/30"
+                    : isRunnerUp
+                    ? "bg-gradient-to-r from-slate-200 to-slate-400 text-slate-950 shadow-slate-300/30"
+                    : isThird
+                    ? "bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-amber-700/30"
+                    : "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40"
+                )}
+              >
+                {isChampion ? (
+                  <Crown className="size-5 text-slate-950 fill-current" />
+                ) : isRunnerUp ? (
+                  <Medal className="size-5 text-slate-950" />
+                ) : (
+                  <Trophy className="size-5" />
+                )}
+                <span>
+                  Rank #{row.rank} · {tier?.label ?? "Top 100"}
+                </span>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-4 my-5 max-w-md mx-auto">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <span className="block font-mono text-[0.55rem] font-bold uppercase tracking-wider text-slate-400">
+                  Score
+                </span>
+                <span className="font-mono text-base sm:text-lg font-black text-amber-300">
+                  {row.score.toLocaleString()}
+                </span>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <span className="block font-mono text-[0.55rem] font-bold uppercase tracking-wider text-slate-400">
+                  Accuracy
+                </span>
+                <span className="font-mono text-base sm:text-lg font-black text-emerald-400">
+                  {row.accuracy}%
+                </span>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
+                <span className="block font-mono text-[0.55rem] font-bold uppercase tracking-wider text-slate-400">
+                  Best Combo
+                </span>
+                <span className="font-mono text-base sm:text-lg font-black text-cyan-400">
+                  x{row.combo}
+                </span>
+              </div>
+            </div>
+
+            {/* Verification Footer */}
+            <div className="mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[0.6rem] font-mono text-slate-400 gap-2">
+              <span>Date: {dateFormatted}</span>
+              <span>Issued by Chetan Prajapat Portfolio Arcade</span>
+              <span className="text-emerald-400 font-semibold">Verified Credential ✓</span>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-full border border-white/15 bg-white/5 font-mono text-xs font-semibold text-slate-300 hover:bg-white/10 hover:text-white transition"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider shadow-lg shadow-amber-400/25 hover:brightness-110 active:scale-95 transition disabled:opacity-50"
+            >
+              <Download className="size-3.5" />
+              {downloading ? "Generating PDF..." : "Download Official PDF"}
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function LeaderboardRow({
   row,
   index,
@@ -444,20 +632,26 @@ function LeaderboardRow({
       </span>
 
       <span className="col-span-4 text-right md:col-span-1">
-        {mine && tier ? (
+        {tier ? (
           <button
             type="button"
-            onClick={() => onGrab(row)}
-            disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-full bg-ink px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-paper transition hover:opacity-90 disabled:opacity-50 shadow-xs"
+            onClick={() => {
+              if (onOpenCert) onOpenCert(row);
+              else onGrab(row);
+            }}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-wider transition-all shadow-xs active:scale-95",
+              mine
+                ? "bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-amber-500/25 font-black hover:brightness-110"
+                : "border border-ink/15 bg-paper hover:bg-ink/5 text-ink hover:border-ink/30"
+            )}
+            title={`View ${row.name}'s Certificate`}
           >
-            <Download className="size-2.5" />
-            {busy ? "…" : "PDF"}
+            <Trophy className={cn("size-3", mine ? "text-slate-950" : "text-amber-500")} />
+            <span>{mine ? "My Cert" : "Cert"}</span>
           </button>
         ) : (
-          <span className="caption text-ink-soft opacity-50 text-[0.65rem]">
-            {tier ? tier.label : "—"}
-          </span>
+          <span className="caption text-ink-soft opacity-50 text-[0.65rem]">—</span>
         )}
       </span>
     </motion.li>
@@ -610,6 +804,7 @@ export function ArcadeStage() {
   }, []);
 
   const [last, setLast] = useState<RunResult | null>(null);
+  const [selectedCertRow, setSelectedCertRow] = useState<RankedRow | null>(null);
   const {
     data: infiniteData,
     isLoading,
@@ -1286,7 +1481,7 @@ export function ArcadeStage() {
               config={config}
             />
 
-            {hasNextPage && (
+            {hasNextPage && filteredRows.length >= 100 && (
               <div className="mt-6 flex justify-center">
                 <button
                   type="button"

@@ -518,6 +518,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
   let stop: (() => void) | null = null;
   let cancelled = false;
   let latestRemote: ScoreRow[] = [];
+  let remoteLoaded = false;
 
   if (isFirebaseConfigured) {
     void (async () => {
@@ -528,9 +529,9 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
         stop = onSnapshot(
           query(collection(db, SCORES), orderBy("score", "desc"), limit(600)),
           (snap) => {
+            remoteLoaded = true;
             latestRemote = snap.docs.map((d) => {
               const raw = d.data() as Record<string, unknown>;
-              const ts = raw["createdAt"] as { toMillis?: () => number } | undefined;
               return {
                 id: d.id,
                 playerId: (raw["playerId"] as string) || d.id,
@@ -553,24 +554,35 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
       } catch (err) {
         console.error("[Firebase subscribeLeaderboard Init Error]:", err);
         setLastFirebaseError(err instanceof Error ? err.message : String(err));
-        /* fall through to local mode below */
+        onRows(readLocal().scores);
       }
     })();
   }
 
   const pushLocal = () => {
-    if (isFirebaseConfigured && latestRemote.length > 0) {
-      onRows(mergeRawScores(latestRemote, readLocal().scores));
+    const local = readLocal().scores;
+    if (isFirebaseConfigured) {
+      if (remoteLoaded && latestRemote.length > 0) {
+        onRows(mergeRawScores(latestRemote, local));
+      } else if (!remoteLoaded && local.length > 0) {
+        onRows(local);
+      }
     } else {
-      onRows(readLocal().scores);
+      onRows(local);
     }
   };
+
   const onEvt = () => pushLocal();
   if (typeof window !== "undefined") {
     window.addEventListener("arcade:scores", onEvt);
     window.addEventListener("storage", onEvt);
   }
-  pushLocal();
+
+  const initialLocal = readLocal().scores;
+  if (!isFirebaseConfigured && initialLocal.length > 0) {
+    pushLocal();
+  }
+
   const timer = setInterval(pushLocal, 3000);
 
   return () => {
@@ -670,8 +682,7 @@ export async function fetchLeaderboardPage(
 
 export function useInfiniteLeaderboard(pageSize: number = 100) {
   const queryClient = useQueryClient();
-  const query =
-  useInfiniteQuery({
+  const query = useInfiniteQuery({
     queryKey: ["arcade", "leaderboard", "paginated", pageSize],
     queryFn: ({ pageParam }) => fetchLeaderboardPage(pageSize, pageParam),
     initialPageParam: null as any,
@@ -684,10 +695,12 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
 
   useEffect(() => {
     return subscribeLeaderboard((liveRows) => {
+      if (!liveRows) return;
       queryClient.setQueryData<InfiniteData<ScorePage>>(
         ["arcade", "leaderboard", "paginated", pageSize],
         (oldData) => {
           if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+            if (liveRows.length === 0) return oldData;
             return {
               pages: [
                 {
@@ -703,6 +716,7 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
           updatedPages[0] = {
             ...updatedPages[0],
             rows: liveRows.slice(0, pageSize),
+            nextCursor: liveRows.length >= pageSize ? updatedPages[0].nextCursor : null,
           };
 
           return {

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { achievements as achievementsDefault, certificates as certsDefault, codingProfiles } from "@/data/portfolio";
 import { firebaseConfig, getDb, isFirebaseConfigured } from "@/lib/firebase";
+import ciscoCyberCertImg from "@/assets/certificates/cisco-cybersecurity.webp";
 
 export type Certificate = {
   title: string;
@@ -39,10 +40,27 @@ export type Credentials = {
 };
 
 const DOC = { collection: "site", id: "credentials" };
-const CACHE_KEY = "site_credentials_cache_v2";
+const CACHE_KEY = "site_credentials_cache_v3";
+
+const BUILTIN_CERT_IMAGES: Record<string, string> = {
+  "cyber security fundamentals": ciscoCyberCertImg,
+  "cybersecurity fundamentals": ciscoCyberCertImg,
+};
+
+export function enrichCertificates(certs: Certificate[]): Certificate[] {
+  return certs.map((c) => {
+    if (!c.image) {
+      const key = (c.title || "").trim().toLowerCase();
+      if (BUILTIN_CERT_IMAGES[key]) {
+        return { ...c, image: BUILTIN_CERT_IMAGES[key] };
+      }
+    }
+    return c;
+  });
+};
 
 export const credentialsDefault: Credentials = {
-  certificates: certsDefault.map((c) => ({ ...c })),
+  certificates: enrichCertificates(certsDefault.map((c) => ({ ...c }))),
   achievements: achievementsDefault.map((a) => ({ ...a })),
   profiles: codingProfiles.map((p) => ({ ...p, badges: [...p.badges] })),
 };
@@ -54,7 +72,7 @@ function getCachedCredentials(): Credentials | null {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.certificates) && parsed.certificates.length > 0) {
-        return parsed as Credentials;
+        return { ...parsed, certificates: enrichCertificates(parsed.certificates || []) } as Credentials;
       }
     }
   } catch {}
@@ -80,7 +98,7 @@ export async function fetchCredentials(): Promise<Credentials> {
     if (snap.exists()) {
       const raw = snap.data() as Partial<Credentials>;
       const result: Credentials = {
-        certificates: raw.certificates?.length ? raw.certificates : credentialsDefault.certificates,
+        certificates: enrichCertificates(raw.certificates?.length ? raw.certificates : credentialsDefault.certificates),
         achievements: raw.achievements?.length ? raw.achievements : credentialsDefault.achievements,
         profiles: raw.profiles?.length ? raw.profiles : credentialsDefault.profiles,
       };
@@ -118,7 +136,7 @@ export async function fetchCredentials(): Promise<Credentials> {
       const profs = (json.fields?.profiles?.arrayValue?.values || []).map(parseField);
 
       const result: Credentials = {
-        certificates: certs.length ? certs : credentialsDefault.certificates,
+        certificates: enrichCertificates(certs.length ? certs : credentialsDefault.certificates),
         achievements: achs.length ? achs : credentialsDefault.achievements,
         profiles: profs.length ? profs : credentialsDefault.profiles,
       };

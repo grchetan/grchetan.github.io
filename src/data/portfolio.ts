@@ -331,6 +331,13 @@ export const certificates = [
     category: "Web Development",
   },
   {
+    title: "Cyber Security Fundamentals",
+    issuer: "Cisco Networking Academy",
+    year: "2024",
+    category: "Cyber Security",
+    link: "https://www.netacad.com/",
+  },
+  {
     title: "1 Minute Typing Test",
     issuer: "Typing.com",
     year: "2026",

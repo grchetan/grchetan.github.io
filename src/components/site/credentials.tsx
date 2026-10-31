@@ -19,6 +19,73 @@ interface Cert {
 }
 
 /* ── Lightbox Modal ─────────────────────── */
+
+function CertificateImageDisplay({
+  cert,
+  inLightbox = false,
+}: {
+  cert: Certificate;
+  inLightbox?: boolean;
+}) {
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [cert.image, cert.title]);
+
+  const showImage = Boolean(cert.image && !imgError);
+
+  if (showImage) {
+    return (
+      <img
+        loading="lazy"
+        decoding="async"
+        src={cert.image}
+        alt={`${cert.title} certificate issued by ${cert.issuer}`}
+        width={800}
+        height={560}
+        onError={() => setImgError(true)}
+        className={cn(
+          inLightbox
+            ? "w-full object-contain max-h-[55vh]"
+            : "aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+        )}
+        style={{ display: "block" }}
+      />
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "relative flex w-full flex-col items-center justify-center p-6 text-center select-none overflow-hidden",
+        inLightbox
+          ? "aspect-video min-h-[280px] max-h-[55vh] bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 text-white"
+          : "aspect-[4/3] bg-gradient-to-br from-paper via-paper-tint to-paper text-ink"
+      )}
+    >
+      <div className="absolute inset-2 rounded-xl border border-dashed border-ink/15 dark:border-white/10 pointer-events-none" />
+      <div className="absolute inset-3 rounded-lg border border-ink/5 dark:border-white/5 pointer-events-none" />
+
+      <div className="relative mb-2.5 flex size-11 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-md">
+        <Award className="size-5" strokeWidth={2} />
+      </div>
+
+      <span className="font-mono text-[0.6rem] font-bold uppercase tracking-[0.18em] text-ink-soft dark:text-white/60">
+        {cert.issuer || "Official Academy"}
+      </span>
+      <h4 className="mt-1 max-w-[90%] font-display text-sm font-bold leading-snug text-ink dark:text-white sm:text-base">
+        {cert.title}
+      </h4>
+
+      <div className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[0.55rem] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        Verified Credential · {cert.year}
+      </div>
+    </div>
+  );
+}
+
 function CertificateLightbox({
   certs,
   index,
@@ -107,23 +174,7 @@ function CertificateLightbox({
                 exit={{ opacity: 0, x: -30 }}
                 transition={{ duration: 0.28, ease: "easeInOut" }}
               >
-                {cert.image ? (
-                  <img
-                    src={cert.image}
-                    alt={`${cert.title} certificate`}
-                    className="w-full object-contain max-h-[55vh]"
-                    style={{ display: "block" }}
-                  />
-                ) : (
-                  <div className="flex aspect-video w-full items-center justify-center">
-                    <div className="text-center">
-                      <ImageOff className="mx-auto size-8 text-white/20" strokeWidth={1.4} />
-                      <p className="mt-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-white/30">
-                        No image available
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <CertificateImageDisplay cert={cert} inLightbox />
               </motion.div>
             </AnimatePresence>
 
@@ -263,7 +314,7 @@ export function CertificateWall() {
                 initial={{ opacity: 0, y: 22, rotate: tilt }}
                 whileInView={{ opacity: 1, y: 0, rotate: tilt }}
                 whileHover={{ rotate: 0, y: -6 }}
-                viewport={{ once: true, margin: "-60px" }}
+                viewport={{ once: true, amount: 0.05 }}
                 transition={{ duration: 0.7, delay: (i % 3) * 0.07, ease }}
                 className="group block rounded-[var(--radius-lg)] will-change-transform text-left w-full cursor-pointer"
               >
@@ -275,24 +326,7 @@ export function CertificateWall() {
                   contentClassName="plate h-full overflow-hidden p-3"
                 >
                   <div className="relative overflow-hidden rounded-xl border border-ink/10 bg-paper-tint">
-                    {c.image ? (
-                      <img
-                        loading="lazy"
-                        decoding="async"
-                        src={c.image}
-                        alt={`${c.title} certificate issued by ${c.issuer}`}
-                        width={800}
-                        height={560}
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      />
-                    ) : (
-                      <div className="grid aspect-[4/3] w-full place-items-center">
-                        <div className="text-center">
-                          <ImageOff className="mx-auto size-5 text-ink/25" strokeWidth={1.5} />
-                          <p className="caption mt-3">Verified Credential</p>
-                        </div>
-                      </div>
-                    )}
+                    <CertificateImageDisplay cert={c} />
                     <span className="absolute left-3 top-3 rounded-full bg-paper/85 px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-ink backdrop-blur">
                       {c.year}
                     </span>
