@@ -119,7 +119,7 @@ function RacePage() {
           handle: p.handle,
           car: { color: "#38bdf8" },
           x: 0,
-          z: -24,
+          z: -38,
           rotation: Math.PI / 2,
           speed: 0,
           lap: 1,

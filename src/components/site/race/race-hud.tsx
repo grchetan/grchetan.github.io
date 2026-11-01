@@ -273,33 +273,33 @@ export function RaceHUD({
             </p>
             <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
-          <svg className="w-36 h-22 overflow-visible" viewBox="-36 -22 72 44">
-            {/* Outer track loop tarmac base */}
+          <svg className="w-40 h-24 overflow-visible" viewBox="-42 -26 84 52">
+            {/* Grand Prix track tarmac base */}
             <path
-              d="M -14.95 -14.3 L 14.95 -14.3 A 14.3 14.3 0 0 1 14.95 14.3 L -14.95 14.3 A 14.3 14.3 0 0 1 -14.95 -14.3 Z"
+              d="M -16.5 -14.8 L 16.5 -14.8 A 14.8 14.8 0 0 1 16.5 14.8 L -16.5 14.8 A 14.8 14.8 0 0 1 -16.5 -14.8 Z"
               fill="none"
               stroke="#1e293b"
-              strokeWidth="7"
+              strokeWidth="8"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             {/* Neon centerline path */}
             <path
-              d="M -14.95 -14.3 L 14.95 -14.3 A 14.3 14.3 0 0 1 14.95 14.3 L -14.95 14.3 A 14.3 14.3 0 0 1 -14.95 -14.3 Z"
+              d="M -16.5 -14.8 L 16.5 -14.8 A 14.8 14.8 0 0 1 16.5 14.8 L -16.5 14.8 A 14.8 14.8 0 0 1 -16.5 -14.8 Z"
               fill="none"
               stroke="#06b6d4"
-              strokeWidth="1.6"
-              strokeOpacity="0.85"
+              strokeWidth="2"
+              strokeOpacity="0.9"
             />
             {/* Checkered Start Line */}
-            <line x1="0" y1="-17.8" x2="0" y2="-10.8" stroke="#ffffff" strokeWidth="2.2" />
+            <line x1="0" y1="-18.8" x2="0" y2="-10.8" stroke="#ffffff" strokeWidth="2.5" />
 
             {/* Remote Players */}
             {remoteRacers.map((rp) => (
               <circle
                 key={rp.id}
-                cx={rp.x * 0.65}
-                cy={rp.z * 0.65}
+                cx={rp.x * 0.38}
+                cy={rp.z * 0.38}
                 r="2.5"
                 fill={rp.color}
                 stroke="#ffffff"
@@ -311,8 +311,8 @@ export function RaceHUD({
             {aiBots.map((bot) => (
               <circle
                 key={bot.id}
-                cx={bot.x * 0.65}
-                cy={bot.z * 0.65}
+                cx={bot.x * 0.38}
+                cy={bot.z * 0.38}
                 r="2.4"
                 fill={bot.color}
                 stroke="#090d16"
@@ -322,109 +322,106 @@ export function RaceHUD({
 
             {/* Local Player Blip */}
             <circle
-              cx={playerPos.x * 0.65}
-              cy={playerPos.z * 0.65}
-              r="3.2"
+              cx={playerPos.x * 0.38}
+              cy={playerPos.z * 0.38}
+              r="3.5"
               fill="#38bdf8"
               stroke="#ffffff"
-              strokeWidth="1.4"
+              strokeWidth="1.6"
             />
           </svg>
         </div>
       </div>
 
-      {/* ---------------- TOUCH SCREEN DRIVE CONTROLS (MOBILE) ---------------- */}
+      {/* ---------------- TOUCH SCREEN DRIVE CONTROLS (MOBILE & TABLET) ---------------- */}
       {controlsMode === "touch" && (
-        <div className="pointer-events-none absolute inset-x-3 bottom-3 z-20 flex items-end justify-between sm:hidden">
-          {/* Steering Controls Pad */}
-          <div className="pointer-events-auto flex items-center gap-2">
+        <div className="pointer-events-none absolute inset-x-2.5 bottom-2.5 z-20 flex items-end justify-between select-none">
+          {/* Left Thumb: Ergonomic Curved Steering D-Pad */}
+          <div className="pointer-events-auto flex items-center gap-2 rounded-3xl border border-white/10 bg-slate-950/80 p-1.5 shadow-2xl backdrop-blur-xl">
             <button
               type="button"
-              className="flex size-16 items-center justify-center rounded-2xl border border-white/20 bg-slate-900/85 text-white shadow-2xl backdrop-blur-2xl active:scale-90 active:bg-cyan-500 transition-all select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchLeftStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchLeftEnd();
-              }}
+              aria-label="Steer Left"
+              className="flex size-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchLeftStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchLeftEnd(); }}
+              onTouchCancel={() => onTouchLeftEnd()}
+              onMouseDown={() => onTouchLeftStart()}
+              onMouseUp={() => onTouchLeftEnd()}
+              onMouseLeave={() => onTouchLeftEnd()}
             >
-              <ArrowLeft className="size-7" />
+              <ArrowLeft className="size-8" strokeWidth={2.5} />
             </button>
             <button
               type="button"
-              className="flex size-16 items-center justify-center rounded-2xl border border-white/20 bg-slate-900/85 text-white shadow-2xl backdrop-blur-2xl active:scale-90 active:bg-cyan-500 transition-all select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchRightStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchRightEnd();
-              }}
+              aria-label="Steer Right"
+              className="flex size-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchRightStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchRightEnd(); }}
+              onTouchCancel={() => onTouchRightEnd()}
+              onMouseDown={() => onTouchRightStart()}
+              onMouseUp={() => onTouchRightEnd()}
+              onMouseLeave={() => onTouchRightEnd()}
             >
-              <ArrowRight className="size-7" />
+              <ArrowRight className="size-8" strokeWidth={2.5} />
             </button>
           </div>
 
-          {/* Action Pedals: Drift, Nitro, Brake, Gas */}
-          <div className="pointer-events-auto flex items-end gap-2">
+          {/* Right Thumb: Ergonomic Pedals & Powerslide Cluster */}
+          <div className="pointer-events-auto flex items-end gap-2 rounded-3xl border border-white/10 bg-slate-950/80 p-1.5 shadow-2xl backdrop-blur-xl">
             <button
               type="button"
-              className="flex size-13 items-center justify-center rounded-2xl border border-amber-500/40 bg-amber-500/25 font-mono text-[0.65rem] font-bold text-amber-300 shadow-xl backdrop-blur-xl active:scale-90 active:bg-amber-500 active:text-black transition select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchDriftStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchDriftEnd();
-              }}
+              aria-label="Drift"
+              className="flex size-13 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.62rem] font-black uppercase text-amber-300 shadow-lg active:scale-90 active:bg-amber-400 active:text-black transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchDriftStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchDriftEnd(); }}
+              onTouchCancel={() => onTouchDriftEnd()}
+              onMouseDown={() => onTouchDriftStart()}
+              onMouseUp={() => onTouchDriftEnd()}
+              onMouseLeave={() => onTouchDriftEnd()}
             >
               DRIFT
             </button>
+
             <button
               type="button"
-              className="flex size-13 items-center justify-center rounded-2xl border border-cyan-500/40 bg-cyan-500/25 font-mono text-[0.65rem] font-bold text-cyan-300 shadow-xl backdrop-blur-xl active:scale-90 active:bg-cyan-400 active:text-black transition select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchNitroStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchNitroEnd();
-              }}
+              aria-label="Nitro Boost"
+              className="flex size-13 items-center justify-center rounded-2xl border border-cyan-400/50 bg-cyan-500/25 font-mono text-[0.62rem] font-black uppercase text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)] active:scale-90 active:bg-cyan-400 active:text-black transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchNitroStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchNitroEnd(); }}
+              onTouchCancel={() => onTouchNitroEnd()}
+              onMouseDown={() => onTouchNitroStart()}
+              onMouseUp={() => onTouchNitroEnd()}
+              onMouseLeave={() => onTouchNitroEnd()}
             >
               NITRO
             </button>
+
             <button
               type="button"
-              className="flex size-16 items-center justify-center rounded-2xl border border-rose-500/35 bg-rose-500/25 text-rose-400 shadow-2xl backdrop-blur-2xl active:scale-90 active:bg-rose-500 active:text-white transition select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchBrakeStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchBrakeEnd();
-              }}
+              aria-label="Brake and Reverse"
+              className="flex size-15 items-center justify-center rounded-2xl border border-rose-500/40 bg-rose-500/25 text-rose-400 shadow-xl active:scale-90 active:bg-rose-500 active:text-white transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchBrakeStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchBrakeEnd(); }}
+              onTouchCancel={() => onTouchBrakeEnd()}
+              onMouseDown={() => onTouchBrakeStart()}
+              onMouseUp={() => onTouchBrakeEnd()}
+              onMouseLeave={() => onTouchBrakeEnd()}
             >
-              <ArrowDown className="size-7" />
+              <ArrowDown className="size-7" strokeWidth={2.5} />
             </button>
+
             <button
               type="button"
-              className="flex size-18 items-center justify-center rounded-2xl border border-emerald-500/40 bg-emerald-500/30 text-emerald-300 shadow-2xl backdrop-blur-2xl active:scale-90 active:bg-emerald-500 active:text-white transition select-none"
-              onTouchStart={(e) => {
-                e.preventDefault();
-                onTouchGasStart();
-              }}
-              onTouchEnd={(e) => {
-                e.preventDefault();
-                onTouchGasEnd();
-              }}
+              aria-label="Gas Accelerator"
+              className="flex size-18 items-center justify-center rounded-2xl border border-emerald-400/50 bg-gradient-to-t from-emerald-600/40 to-emerald-500/40 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-90 active:bg-emerald-400 active:text-black transition-all"
+              onTouchStart={(e) => { e.preventDefault(); onTouchGasStart(); }}
+              onTouchEnd={(e) => { e.preventDefault(); onTouchGasEnd(); }}
+              onTouchCancel={() => onTouchGasEnd()}
+              onMouseDown={() => onTouchGasStart()}
+              onMouseUp={() => onTouchGasEnd()}
+              onMouseLeave={() => onTouchGasEnd()}
             >
-              <ArrowUp className="size-8" />
+              <ArrowUp className="size-9" strokeWidth={3} />
             </button>
           </div>
         </div>

@@ -331,16 +331,16 @@ function CyberCameraRig({
 
     if (mode === "chase") {
       // Dynamic chase camera: pulls back and widens when boosting
-      const dist = 10.2 + speedRatio * 3.8 + (target.isBoosting ? 2.8 : 0);
-      const height = 5.0 - speedRatio * 0.6;
+      const dist = 11.2 + speedRatio * 4.2 + (target.isBoosting ? 3.5 : 0);
+      const height = 5.4 - speedRatio * 0.5;
       const offsetX = Math.sin(target.rotation) * dist;
       const offsetZ = Math.cos(target.rotation) * dist;
 
       desiredPos.set(target.x - offsetX, height, target.z - offsetZ);
       desiredLook.set(
-        target.x + Math.sin(target.rotation) * 7,
+        target.x + Math.sin(target.rotation) * 8,
         1.1,
-        target.z + Math.cos(target.rotation) * 7
+        target.z + Math.cos(target.rotation) * 8
       );
     } else if (mode === "bumper") {
       // Bumper / Hood Cam
@@ -354,7 +354,7 @@ function CyberCameraRig({
       );
     } else {
       // Top-Down Bird's Eye Cam
-      desiredPos.set(target.x, 38, target.z - 0.1);
+      desiredPos.set(target.x, 52, target.z - 0.1);
       desiredLook.set(target.x, 0, target.z);
     }
 
@@ -676,15 +676,16 @@ export function RaceGame({
       onClick={() => raceAudio.resume()}
     >
       {/* 3D WebGL Canvas */}
-      <div className="h-[65vh] min-h-[460px] w-full">
+      <div className="h-[72vh] min-h-[500px] w-full">
         <Canvas
-          camera={{ position: [0, 8, -R - 12], fov: 58 }}
+          camera={{ position: [0, 9, -R - 14], fov: 60 }}
           gl={{ powerPreference: "high-performance", antialias: true }}
           dpr={[1, 1.5]}
         >
-          <ambientLight intensity={0.58} />
-          <directionalLight position={[45, 55, 25]} intensity={1.45} castShadow />
-          <pointLight position={[0, 22, 0]} intensity={0.9} color="#38bdf8" />
+          <fog attach="fog" args={["#020617", 50, 380]} />
+          <ambientLight intensity={0.65} />
+          <directionalLight position={[65, 85, 45]} intensity={1.6} castShadow />
+          <pointLight position={[0, 30, 0]} intensity={1.2} color="#38bdf8" />
 
           {/* Physics Engine Hook */}
           <PhysicsTick onStep={onPhysicsStep} />
