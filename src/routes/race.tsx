@@ -4,7 +4,8 @@ import { toast } from "sonner";
 import { PageHero, SiteShell } from "@/components/site/shell";
 import { RaceGame } from "@/components/site/race-game";
 import { RaceLobby, RaceResults, type LobbyView } from "@/components/site/race-lobby";
-import { createPlayer, type Player } from "@/lib/arcade";
+import { RaceLeaderboard } from "@/components/site/race/race-leaderboard";
+import { createPlayer, cleanInputName, cleanName, type Player } from "@/lib/arcade";
 import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Sparkles } from "lucide-react";
 import {
   createRaceRoom,
@@ -118,7 +119,7 @@ function RacePage() {
           handle: p.handle,
           car: { color: "#38bdf8" },
           x: 0,
-          z: -22,
+          z: -24,
           rotation: Math.PI / 2,
           speed: 0,
           lap: 1,
@@ -282,10 +283,11 @@ function RacePage() {
               <input
                 type="text"
                 value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Your name"
+                onChange={(e) => setNameInput(cleanInputName(e.target.value))}
+                onBlur={() => setNameInput(cleanName(nameInput))}
+                placeholder="Your name (e.g. Chetan Prajapat)"
                 maxLength={22}
-                className="mt-4 w-full rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-ink placeholder:text-ink/30 focus:border-[var(--prism-blue)] focus:outline-none"
+                className="mt-4 w-full rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-ink placeholder:text-ink/30 focus:border-[var(--prism-blue)] focus:outline-none font-mono text-sm"
               />
               <button
                 type="button"
@@ -323,6 +325,9 @@ function RacePage() {
               onView={setView}
             />
           )}
+
+          {/* Circuit Hall of Fame Leaderboard */}
+          <RaceLeaderboard currentRacerId={player?.id} />
 
           {/* How to Play Section */}
           {!isRacing && (

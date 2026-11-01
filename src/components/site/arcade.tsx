@@ -9,6 +9,7 @@ import { downloadArcadeCertificate } from "@/lib/arcade-certificate";
 import { useMotionPreference } from "@/hooks/use-motion-preference";
 import {
   cleanCode,
+  cleanInputName,
   cleanName,
   containsProfanity,
   createPlayer,
@@ -243,8 +244,9 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
             <input
               id="player-name-input"
               value={name}
-              onChange={(e) => setName(cleanName(e.target.value))}
-              placeholder="Your name"
+              onChange={(e) => setName(cleanInputName(e.target.value))}
+              onBlur={() => setName(cleanName(name))}
+              placeholder="Your name (e.g. Chetan Prajapat)"
               maxLength={22}
               aria-label="Your name"
               className={cn(

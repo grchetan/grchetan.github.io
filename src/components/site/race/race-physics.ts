@@ -1,37 +1,35 @@
 /**
  * Cyber Circuit — Advanced Vehicle Dynamics & Track Collision Math
+ * Tuned for high-speed thrills, realistic inertia, and responsive handling.
  */
 
 import * as THREE from "three";
 
 export const TRACK_CONFIG = {
-  width: 16,
-  halfWidth: 8,
-  straightLength: 46,
-  curveRadius: 22,
-  maxSpeedForward: 38, // ~137 km/h
-  maxSpeedReverse: -14, // ~50 km/h reverse
-  accelForward: 28,
-  brakeRate: 36,
-  reverseAccel: 16,
-  nitroBoostMultiplier: 1.55,
-  nitroDurationSec: 3.5,
-  nitroRechargeRate: 8, // % per second
-  driftGainNitroRate: 25, // % per second while drifting
-  normalFriction: 0.94,
-  driftFriction: 0.985,
-  barrierRestitution: -0.25,
+  width: 18,
+  halfWidth: 9,
+  straightLength: 52,
+  curveRadius: 24,
+  maxSpeedForward: 50, // ~180 km/h top cruising speed
+  maxSpeedReverse: -16, // ~58 km/h reverse
+  accelForward: 42, // Fast, punchy response
+  brakeRate: 50, // Responsive braking
+  reverseAccel: 22,
+  nitroBoostMultiplier: 1.5, // Takes speed to ~270 km/h!
+  nitroDurationSec: 4.0,
+  nitroRechargeRate: 14, // % per second
+  driftGainNitroRate: 35, // Rewards drifting with nitro recharge
+  normalFriction: 0.988, // Smooth high-speed glide, no sludge stop
+  driftFriction: 0.982,
+  barrierRestitution: -0.2,
 };
 
 export interface TrackGate {
   index: number;
   label: string;
-  // Center point
   x: number;
   z: number;
-  // Tangent angle along forward driving direction (radians)
   forwardAngle: number;
-  // Gate segment end points (from left rail to right rail)
   leftX: number;
   leftZ: number;
   rightX: number;
@@ -49,22 +47,21 @@ export function buildTrackGates(): TrackGate[] {
     { x: 0, z: -R, angle: Math.PI / 2, label: "Start / Finish" },
     // 1: Turn 1 Entry (facing +X)
     { x: L, z: -R, angle: Math.PI / 2, label: "Turn 1 Entry" },
-    // 2: Turn 1 Apex (facing +Z, angle = 0, vx=sin(0)=0, vz=cos(0)=1)
+    // 2: Turn 1 Apex (facing +Z)
     { x: L + R, z: 0, angle: 0, label: "Turn 1 Apex" },
-    // 3: Turn 1 Exit (facing -X, angle = 3π/2, vx=sin(3π/2)=-1, vz=0)
+    // 3: Turn 1 Exit (facing -X)
     { x: L, z: R, angle: (3 * Math.PI) / 2, label: "Turn 1 Exit" },
     // 4: Back Straight Midpoint (facing -X)
     { x: 0, z: R, angle: (3 * Math.PI) / 2, label: "Back Straight" },
     // 5: Turn 2 Entry (facing -X)
     { x: -L, z: R, angle: (3 * Math.PI) / 2, label: "Turn 2 Entry" },
-    // 6: Turn 2 Apex (facing -Z, angle = π, vx=sin(π)=0, vz=cos(π)=-1)
+    // 6: Turn 2 Apex (facing -Z)
     { x: -L - R, z: 0, angle: Math.PI, label: "Turn 2 Apex" },
-    // 7: Final Turn Exit (facing +X, angle = Math.PI / 2)
+    // 7: Final Turn Exit (facing +X)
     { x: -L, z: -R, angle: Math.PI / 2, label: "Final Turn" },
   ];
 
   return rawPoints.map((pt, index) => {
-    // Normal perpendicular to track forward direction (points across track)
     const normAngle = pt.angle + Math.PI / 2;
     const nx = Math.sin(normAngle);
     const nz = Math.cos(normAngle);
@@ -123,26 +120,20 @@ export function checkGateCrossing(
   currZ: number,
   gate: TrackGate
 ): boolean {
-  // Proximity pre-filter (fast rejection if far from gate center)
   const distSq = (currX - gate.x) ** 2 + (currZ - gate.z) ** 2;
-  if (distSq > (TRACK_CONFIG.halfWidth + 8) ** 2) return false;
+  if (distSq > (TRACK_CONFIG.halfWidth + 10) ** 2) return false;
 
-  // Vector from prev to curr car position
   const dirX = currX - prevX;
   const dirZ = currZ - prevZ;
 
-  // Forward unit vector of the track at this gate
   const fwdX = Math.sin(gate.forwardAngle);
   const fwdZ = Math.cos(gate.forwardAngle);
 
-  // Car must be moving generally in the forward direction of this gate
   const dot = dirX * fwdX + dirZ * fwdZ;
   if (dot < -0.05 && Math.hypot(dirX, dirZ) > 0.05) {
-    // Moving backwards across gate - reject
     return false;
   }
 
-  // Cross product sign test against the gate line segment
   const gx1 = gate.leftX;
   const gz1 = gate.leftZ;
   const gx2 = gate.rightX;
@@ -151,16 +142,14 @@ export function checkGateCrossing(
   const sidePrev = (gx2 - gx1) * (prevZ - gz1) - (gz2 - gz1) * (prevX - gx1);
   const sideCurr = (gx2 - gx1) * (currZ - gz1) - (gz2 - gz1) * (currX - gx1);
 
-  // Crossed the gate line if sides have opposite signs
   if ((sidePrev < 0 && sideCurr >= 0) || (sidePrev >= 0 && sideCurr < 0)) {
     return true;
   }
 
-  // Fallback: If very close to gate center, trigger as well
-  return Math.hypot(currX - gate.x, currZ - gate.z) < 5.0;
+  return Math.hypot(currX - gate.x, currZ - gate.z) < 5.5;
 }
 
-/** Resolve car position against track outer & inner neon barriers */
+/** Robust, glitch-free track border barrier collision */
 export function resolveTrackBorders(
   x: number,
   z: number,
@@ -169,62 +158,66 @@ export function resolveTrackBorders(
 ): { x: number; z: number; speed: number; collided: boolean; normalAngle: number } {
   const L = TRACK_CONFIG.straightLength / 2;
   const R = TRACK_CONFIG.curveRadius;
-  const safeMargin = TRACK_CONFIG.halfWidth - 1.25;
+  const safeMargin = TRACK_CONFIG.halfWidth - 1.4;
 
-  let centerlineX = 0;
-  let centerlineZ = 0;
-  let distToCenterline = 0;
-  let outwardNormalX = 0;
-  let outwardNormalZ = 0;
-
-  if (x >= -L && x <= L) {
-    // Straights
-    centerlineX = x;
-    centerlineZ = z >= 0 ? R : -R;
-    distToCenterline = z - centerlineZ;
-    outwardNormalX = 0;
-    outwardNormalZ = Math.sign(distToCenterline) || 1;
-  } else if (x > L) {
-    // Right Loop Curve
-    const dx = x - L;
-    const dz = z;
-    const angle = Math.atan2(dz, dx);
-    centerlineX = L + Math.cos(angle) * R;
-    centerlineZ = Math.sin(angle) * R;
-    distToCenterline = Math.hypot(dx, dz) - R;
-    outwardNormalX = Math.cos(angle);
-    outwardNormalZ = Math.sin(angle);
-  } else {
-    // Left Loop Curve
-    const dx = x + L;
-    const dz = z;
-    const angle = Math.atan2(dz, dx);
-    centerlineX = -L + Math.cos(angle) * R;
-    centerlineZ = Math.sin(angle) * R;
-    distToCenterline = Math.hypot(dx, dz) - R;
-    outwardNormalX = Math.cos(angle);
-    outwardNormalZ = Math.sin(angle);
-  }
-
-  const absDist = Math.abs(distToCenterline);
   let collided = false;
   let resX = x;
   let resZ = z;
   let resSpeed = speed;
+  let normalAngle = 0;
 
-  if (absDist > safeMargin) {
-    collided = true;
-    const sign = Math.sign(distToCenterline);
-    // Push car back inside with gentle safety buffer
-    resX = centerlineX + outwardNormalX * (safeMargin - 0.25) * sign;
-    resZ = centerlineZ + outwardNormalZ * (safeMargin - 0.25) * sign;
+  if (x >= -L && x <= L) {
+    // Straights: centerline is at z = -R (top) or z = R (bottom)
+    const centerlineZ = z >= 0 ? R : -R;
+    const distToCenterline = z - centerlineZ;
 
-    // Dampen speed without locking the car
-    resSpeed = speed * 0.72;
-    if (Math.abs(resSpeed) < 1.0) resSpeed = 0;
+    if (Math.abs(distToCenterline) > safeMargin) {
+      collided = true;
+      const pushSign = Math.sign(distToCenterline) || 1;
+      resZ = centerlineZ + pushSign * (safeMargin - 0.2);
+      resSpeed = speed * 0.8;
+      normalAngle = pushSign > 0 ? -Math.PI / 2 : Math.PI / 2;
+    }
+  } else if (x > L) {
+    // Turn 1 (Right loop curve centered at (L, 0))
+    const dx = x - L;
+    const dz = z;
+    const currentRadius = Math.hypot(dx, dz);
+    const distFromTrackCenter = currentRadius - R;
+
+    if (Math.abs(distFromTrackCenter) > safeMargin) {
+      collided = true;
+      const angle = Math.atan2(dz, dx);
+      const pushSign = Math.sign(distFromTrackCenter) || 1;
+      const clampedRadius = R + pushSign * (safeMargin - 0.2);
+      resX = L + Math.cos(angle) * clampedRadius;
+      resZ = Math.sin(angle) * clampedRadius;
+      resSpeed = speed * 0.8;
+      normalAngle = angle;
+    }
+  } else {
+    // Turn 2 (Left loop curve centered at (-L, 0))
+    const dx = x + L;
+    const dz = z;
+    const currentRadius = Math.hypot(dx, dz);
+    const distFromTrackCenter = currentRadius - R;
+
+    if (Math.abs(distFromTrackCenter) > safeMargin) {
+      collided = true;
+      const angle = Math.atan2(dz, dx);
+      const pushSign = Math.sign(distFromTrackCenter) || 1;
+      const clampedRadius = R + pushSign * (safeMargin - 0.2);
+      resX = -L + Math.cos(angle) * clampedRadius;
+      resZ = Math.sin(angle) * clampedRadius;
+      resSpeed = speed * 0.8;
+      normalAngle = angle;
+    }
   }
 
-  const normalAngle = Math.atan2(outwardNormalX, outwardNormalZ);
+  if (collided && Math.abs(resSpeed) < 1.0) {
+    resSpeed = 0;
+  }
+
   return { x: resX, z: resZ, speed: resSpeed, collided, normalAngle };
 }
 
@@ -234,7 +227,7 @@ export function stepCarPhysics(
   inputs: DriveInputs,
   delta: number
 ): { next: CarPhysicsState; gateCrossed: boolean; lapIncremented: boolean; barrierHit: boolean } {
-  const d = Math.min(0.08, Math.max(0.005, delta));
+  const d = Math.min(0.06, Math.max(0.005, delta));
   const prevX = current.x;
   const prevZ = current.z;
 
@@ -248,13 +241,13 @@ export function stepCarPhysics(
   let isBoosting = false;
   if (inputs.nitro && nitro > 0) {
     isBoosting = true;
-    nitro = Math.max(0, nitro - d * 28);
+    nitro = Math.max(0, nitro - d * 22);
   } else {
     nitro = Math.min(100, nitro + d * TRACK_CONFIG.nitroRechargeRate);
   }
 
   // --- DRIFTING & HANDBRAKE ---
-  const isDrifting = Boolean(inputs.drift && Math.abs(speed) > 10);
+  const isDrifting = Boolean(inputs.drift && Math.abs(speed) > 12);
   if (isDrifting) {
     nitro = Math.min(100, nitro + d * TRACK_CONFIG.driftGainNitroRate);
     driftScore += Math.round(Math.abs(speed) * 4 * d);
@@ -268,8 +261,8 @@ export function stepCarPhysics(
     const boostMult = isBoosting ? TRACK_CONFIG.nitroBoostMultiplier : 1.0;
     speed += TRACK_CONFIG.accelForward * boostMult * d;
   } else if (isBoosting) {
-    // Immediate thrust kick if holding nitro without gas
-    speed += TRACK_CONFIG.accelForward * TRACK_CONFIG.nitroBoostMultiplier * 0.85 * d;
+    // Instant rocket thrust kick when pressing nitro
+    speed += TRACK_CONFIG.accelForward * TRACK_CONFIG.nitroBoostMultiplier * 1.1 * d;
   }
 
   if (inputs.brake) {
@@ -277,7 +270,6 @@ export function stepCarPhysics(
       isBraking = true;
       speed -= TRACK_CONFIG.brakeRate * d;
     } else {
-      // True reverse gear acceleration
       isReversing = true;
       speed -= TRACK_CONFIG.reverseAccel * d;
     }
@@ -293,30 +285,25 @@ export function stepCarPhysics(
     : TRACK_CONFIG.maxSpeedForward;
   speed = Math.max(TRACK_CONFIG.maxSpeedReverse, Math.min(speed, maxFwd));
 
-  // --- STEERING (CORRECT NON-INVERTED VEHICLE HANDLING) ---
-  // In Three.js with right-handed coordinate system (forward = sin, cos):
-  // When facing forward (+X):
-  // - Turning LEFT means heading angle rotation.y INCREASES (counter-clockwise)
-  // - Turning RIGHT means heading angle rotation.y DECREASES (clockwise)
-  const steerInput = (inputs.left ? 1 : 0) - (inputs.right ? 1 : 0);
+  // --- STEERING (CORRECT NON-INVERTED INTUITIVE VEHICLE HANDLING) ---
+  // Pressing LEFT: steerInput = -1 -> wheel points left -> car turns LEFT
+  // Pressing RIGHT: steerInput = +1 -> wheel points right -> car turns RIGHT
+  const steerInput = (inputs.right ? 1 : 0) - (inputs.left ? 1 : 0);
 
-  // Speed-adaptive steering response: agile at low/mid speeds, stable at high speeds
-  const speedRatio = Math.min(1, Math.abs(speed) / 12);
-  const highSpeedStability = 1 - Math.min(0.35, (Math.abs(speed) / maxFwd) * 0.4);
-  const targetSteerAngle = steerInput * 0.45 * highSpeedStability;
+  const speedRatio = Math.min(1, Math.abs(speed) / 7.5);
+  const highSpeedStability = 1 - Math.min(0.25, (Math.abs(speed) / maxFwd) * 0.3);
+  const targetSteerAngle = steerInput * 0.48 * highSpeedStability;
 
-  steerAngle = THREE.MathUtils.lerp(steerAngle, targetSteerAngle, d * 16);
+  steerAngle = THREE.MathUtils.lerp(steerAngle, targetSteerAngle, d * 18);
 
-  // Turn rate: steer angle * speed responsiveness * drift bonus
-  const driftBonus = isDrifting ? 1.75 : 1.0;
-  const turnRate = steerAngle * 2.85 * speedRatio * driftBonus * Math.sign(speed || 1);
+  // Negative steerAngle turns Left (+rotation), Positive steerAngle turns Right (-rotation)
+  const driftBonus = isDrifting ? 1.65 : 1.0;
+  const turnRate = -steerAngle * 2.85 * speedRatio * driftBonus * Math.sign(speed || 1);
 
-  // Left (+steerInput) increases rotation.y (Left turn)
-  // Right (-steerInput) decreases rotation.y (Right turn)
   rotation += turnRate * d;
 
-  // Slip angle for drift body tilt
-  const driftSlipAngle = isDrifting ? steerAngle * 0.65 : 0;
+  // Drift body tilt angle
+  const driftSlipAngle = isDrifting ? -steerAngle * 0.6 : 0;
 
   // --- POSITION TRANSLATION ---
   const forwardAngle = rotation + driftSlipAngle;
@@ -326,7 +313,7 @@ export function stepCarPhysics(
   let x = current.x + vx * d;
   let z = current.z + vz * d;
 
-  // --- TRACK BORDER COLLISION ---
+  // --- TRACK BORDER BARRIER COLLISION ---
   const borderRes = resolveTrackBorders(x, z, speed, rotation);
   x = borderRes.x;
   z = borderRes.z;
@@ -345,7 +332,6 @@ export function stepCarPhysics(
     checkpoint = nextGateIdx;
     gateCrossed = true;
 
-    // Completed full circuit (passed start/finish line)
     if (checkpoint === 0) {
       lap += 1;
       lapIncremented = true;
@@ -356,17 +342,17 @@ export function stepCarPhysics(
   const activeGate = TRACK_GATES[checkpoint]!;
   let angleDiff = Math.abs(rotation - activeGate.forwardAngle);
   while (angleDiff > Math.PI) angleDiff = Math.abs(angleDiff - Math.PI * 2);
-  const isWrongWay = angleDiff > Math.PI * 0.68 && Math.abs(speed) > 7;
+  const isWrongWay = angleDiff > Math.PI * 0.72 && Math.abs(speed) > 10;
 
-  // Gear Calculation
+  // Dynamic Gear Calculation
   const kmh = Math.round(Math.abs(speed) * 3.6);
   let currentGear = "N";
   if (speed < -0.8) currentGear = "R";
   else if (kmh < 2) currentGear = "1";
-  else if (kmh < 32) currentGear = "1";
-  else if (kmh < 64) currentGear = "2";
-  else if (kmh < 96) currentGear = "3";
-  else if (kmh < 128) currentGear = "4";
+  else if (kmh < 40) currentGear = "1";
+  else if (kmh < 80) currentGear = "2";
+  else if (kmh < 120) currentGear = "3";
+  else if (kmh < 170) currentGear = "4";
   else currentGear = "5";
 
   const nextState: CarPhysicsState = {

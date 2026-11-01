@@ -45,6 +45,14 @@ export type RankedRow = ScoreRow & { rank: number; plays: number };
 export const MAX_NAME = 22;
 export const MIN_NAME = 2;
 
+/** Sanitize live user input while typing — preserves trailing space so surname can be entered freely */
+export function cleanInputName(raw: string): string {
+  return raw
+    .replace(/[^\p{L}\p{N} .'-]/gu, "")
+    .replace(/\s{2,}/g, " ")
+    .slice(0, MAX_NAME);
+}
+
 /** Trim + collapse whitespace, strip anything that isn't a sane name char. */
 export function cleanName(raw: string) {
   return raw

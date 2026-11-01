@@ -26,21 +26,21 @@ export const AI_BOT_PROFILES = [
     name: "Apex Phantom",
     color: "#f59e0b", // Amber gold
     skillFactor: 1.05,
-    topSpeed: 34,
+    topSpeed: 46,
     offset: -1.8,
   },
   {
     name: "Neon Drift",
     color: "#ec4899", // Cyber Magenta
     skillFactor: 0.98,
-    topSpeed: 32,
+    topSpeed: 43,
     offset: 2.2,
   },
   {
     name: "Viper Shadow",
     color: "#10b981", // Emerald Neon
     skillFactor: 0.92,
-    topSpeed: 30,
+    topSpeed: 40,
     offset: 0.5,
   },
 ];
@@ -129,9 +129,9 @@ export function updateAIRivals(
     // Accelerate or decelerate toward target speed
     let speed = bot.speed;
     if (speed < targetSpeed) {
-      speed += 22 * d;
+      speed += 32 * d;
     } else {
-      speed -= 26 * d;
+      speed -= 30 * d;
     }
 
     // Translate AI position

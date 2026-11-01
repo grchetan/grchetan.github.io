@@ -420,6 +420,27 @@ export function subscribeRaceRoom(
   return () => window.clearInterval(interval);
 }
 
+const LS_LEADERBOARD = "race-leaderboard-local";
+
+function readLocalRaceResults(): any[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(LS_LEADERBOARD);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalRaceResult(result: any) {
+  if (typeof window === "undefined") return;
+  try {
+    const list = readLocalRaceResults();
+    list.unshift({ ...result, createdAt: Date.now() });
+    localStorage.setItem(LS_LEADERBOARD, JSON.stringify(list.slice(0, 50)));
+  } catch {}
+}
+
 export async function submitRaceResult(result: {
   playerId: string;
   name: string;
@@ -428,14 +449,19 @@ export async function submitRaceResult(result: {
   bestLap: number;
   laps: number;
 }) {
+  saveLocalRaceResult(result);
   if (isFirebaseConfigured) {
-    const { doc, setDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    const id = `${result.playerId}-${Date.now()}`;
-    await setDoc(doc(db, LEADERBOARD, id), {
-      ...clean(result),
-      createdAt: Date.now(),
-    });
+    try {
+      const { doc, setDoc } = await import("firebase/firestore");
+      const db = await getDb();
+      const id = `${result.playerId}-${Date.now()}`;
+      await setDoc(doc(db, LEADERBOARD, id), {
+        ...clean(result),
+        createdAt: Date.now(),
+      });
+    } catch (e) {
+      console.warn("[Firebase submitRaceResult]:", e);
+    }
   }
 }
 
@@ -464,14 +490,27 @@ export function useGlobalRaceLeaderboard() {
   return useQuery({
     queryKey: ["race", "leaderboard"],
     queryFn: async () => {
-      if (!isFirebaseConfigured) return [];
-      const { collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
-      const db = await getDb();
-      const snap = await getDocs(query(collection(db, LEADERBOARD), orderBy("bestLap", "asc"), limit(100)));
-      const rows = snap.docs.map((d) => d.data() as any);
-      return rows;
+      const local = readLocalRaceResults();
+      if (!isFirebaseConfigured) return local;
+      try {
+        const { collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
+        const db = await getDb();
+        const snap = await getDocs(query(collection(db, LEADERBOARD), orderBy("bestLap", "asc"), limit(100)));
+        const remote = snap.docs.map((d) => d.data() as any);
+        const remoteIds = new Set(remote.map((r) => r.playerId));
+        const merged = [...remote];
+        for (const l of local) {
+          if (!remoteIds.has(l.playerId)) {
+            merged.push(l);
+          }
+        }
+        return merged.sort((a, b) => (a.bestLap ?? Infinity) - (b.bestLap ?? Infinity));
+      } catch (e) {
+        console.warn("[Firebase useGlobalRaceLeaderboard]:", e);
+        return local;
+      }
     },
-    enabled: isFirebaseConfigured,
+    staleTime: 5000,
   });
 }
 
