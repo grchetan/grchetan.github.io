@@ -812,6 +812,7 @@ export function ArcadeStage() {
     hasNextPage,
     isFetchingNextPage,
     refetch,
+    liveCount,
   } = useInfiniteLeaderboard(100);
 
   // Real-time subscription handled by useInfiniteLeaderboard
@@ -1404,7 +1405,7 @@ export function ArcadeStage() {
                   <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
                 </span>
                 <span className="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-400 font-semibold">
-                  Live · {filteredRows.length} {filteredRows.length === 1 ? "player" : "players"}
+                  Live · {liveCount ?? filteredRows.length} {(liveCount ?? filteredRows.length) === 1 ? "player" : "players"}
                 </span>
               </div>
               <div className="w-full sm:w-52 relative">
@@ -1487,6 +1488,7 @@ export function ArcadeStage() {
               meHandle={player?.handle}
               boardTab={boardTab}
               config={config}
+              onOpenCert={setSelectedCertRow}
             />
 
             <div className="mt-8 flex justify-center">

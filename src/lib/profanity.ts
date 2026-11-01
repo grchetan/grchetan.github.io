@@ -154,8 +154,13 @@ export function isProfane(text: string): boolean {
  */
 export function sanitizeName(name: string): string {
   if (!name) return "Anonymous";
-  if (isProfane(name)) {
+  // Insert space between camelCase words: "KyaBoltiPublic" → "Kya Bolti Public"
+  const spaced = name
+    .replace(/([a-z\u00C0-\u024F])([A-Z\u00C0-\u024F])/g, "$1 $2")
+    .replace(/([A-Z\u00C0-\u024F]+)([A-Z\u00C0-\u024F][a-z\u00C0-\u024F])/g, "$1 $2")
+    .trim();
+  if (isProfane(spaced)) {
     return "Blocked User";
   }
-  return name;
+  return spaced;
 }

@@ -6,7 +6,7 @@
  * game is fully playable in preview / demo mode.
  */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient, useInfiniteQuery, type InfiniteData } from "@tanstack/react-query";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
 import { isProfane, sanitizeName } from "@/lib/profanity";
@@ -686,6 +686,9 @@ export async function fetchLeaderboardPage(
 
 export function useInfiniteLeaderboard(pageSize: number = 100) {
   const queryClient = useQueryClient();
+  // Track live raw row count for immediate "Live · N players" display
+  const [liveCount, setLiveCount] = useState<number | null>(null);
+
   const query = useInfiniteQuery({
     queryKey: ["arcade", "leaderboard", "paginated", pageSize],
     queryFn: ({ pageParam }) => fetchLeaderboardPage(pageSize, pageParam),
@@ -700,6 +703,12 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
   useEffect(() => {
     return subscribeLeaderboard((liveRows) => {
       if (!liveRows) return;
+      // Track unique player count for the live badge
+      const uniquePlayers = new Set(
+        liveRows.map((r) => (r.playerId || r.handle || r.name).replace(/^local-/i, "").toLowerCase())
+      ).size;
+      setLiveCount(uniquePlayers);
+
       queryClient.setQueryData<InfiniteData<ScorePage>>(
         ["arcade", "leaderboard", "paginated", pageSize],
         (oldData) => {
@@ -734,7 +743,7 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
     });
   }, [queryClient, pageSize]);
 
-  return query;
+  return { ...query, liveCount };
 }
 
 export function usePlayersCodes() {
