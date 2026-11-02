@@ -344,6 +344,43 @@ export class RaceAudioSystem {
     } catch {}
   }
 
+  public playSpeedPadWhoosh() {
+    if (!this.isInitialized || !this.ctx || this.isMuted) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.16);
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.28);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.3);
+    } catch {}
+  }
+
+  public playOvertakeChime() {
+    if (!this.isInitialized || !this.ctx || this.isMuted) return;
+    try {
+      const notes = [659.25, 880, 1046.5]; // E5, A5, C6
+      notes.forEach((freq, i) => {
+        const time = this.ctx!.currentTime + i * 0.07;
+        const osc = this.ctx!.createOscillator();
+        const gain = this.ctx!.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, time);
+        gain.gain.setValueAtTime(0.22, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx!.destination);
+        osc.start(time);
+        osc.stop(time + 0.28);
+      });
+    } catch {}
+  }
+
   public playVictoryHorn() {
     if (!this.isInitialized || !this.ctx || this.isMuted) return;
     try {

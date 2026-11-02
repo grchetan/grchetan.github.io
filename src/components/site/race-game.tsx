@@ -227,6 +227,22 @@ function CyberRaceCar({
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
 
+      {/* Dual Projector Headlight Beam Cones on Asphalt */}
+      <mesh position={[-0.55, -0.32, 6.2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.8, 9.5]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
+      </mesh>
+      <mesh position={[0.55, -0.32, 6.2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.8, 9.5]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
+      </mesh>
+
+      {/* Cyber Neon Underglow on Tarmac */}
+      <mesh position={[0, -0.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.0, 3.4]} />
+        <meshBasicMaterial color={color} transparent opacity={0.3} />
+      </mesh>
+
       {/* Rear LED Brake Lights */}
       <mesh position={[-0.55, 0.05, -1.38]}>
         <boxGeometry args={[0.22, 0.08, 0.05]} />
@@ -365,6 +381,21 @@ function CyberCameraRig({
 
     camera.position.copy(currentPos.current);
     camera.lookAt(currentLookAt.current);
+
+    // Dynamic FOV Warp during Nitro & High Speeds for intense sensation of velocity
+    const targetFov = target.isBoosting ? 74 : 60 + speedRatio * 8;
+    const persCam = camera as THREE.PerspectiveCamera;
+    if (persCam.fov !== undefined) {
+      persCam.fov = THREE.MathUtils.lerp(persCam.fov, targetFov, delta * 8);
+      persCam.updateProjectionMatrix();
+    }
+
+    // High-speed camera rumble
+    if (target.isBoosting || (speedRatio > 0.85 && mode === "chase")) {
+      const shakeAmt = target.isBoosting ? 0.07 : 0.025;
+      camera.position.x += (Math.random() - 0.5) * shakeAmt;
+      camera.position.y += (Math.random() - 0.5) * shakeAmt;
+    }
   });
 
   return null;
@@ -434,12 +465,14 @@ export function RaceGame({
   const [hasAI, setHasAI] = useState(true);
   const [autoDrive, setAutoDrive] = useState(true); // Default to Auto-Gas on mobile for effortless driving!
   const [isLandscape, setIsLandscape] = useState(false);
+  const [isTiltEnabled, setIsTiltEnabled] = useState(false);
 
   // HUD Render State (Throttled for silky 60fps)
   const [hudState, setHudState] = useState({
     speedKmh: 0,
     gear: "N",
     nitroPercent: 100,
+    driftScore: 0,
     lap: 1,
     totalTimeMs: 0,
     bestLapMs: null as number | null,
@@ -495,6 +528,33 @@ export function RaceGame({
       setIsLandscape((prev) => !prev);
     }
   }, [isLandscape]);
+
+  // Mobile Gyroscope / Tilt Steering Listener
+  useEffect(() => {
+    if (!isTiltEnabled || controlsMode !== "touch") return;
+
+    const onOrientation = (e: DeviceOrientationEvent) => {
+      // In landscape mode, phone tilt left-to-right corresponds to beta or gamma
+      const tiltVal = Math.abs(window.orientation as number || 0) === 90 ? (e.beta ?? 0) : (e.gamma ?? 0);
+      if (tiltVal < -8) {
+        inputsRef.current.left = true;
+        inputsRef.current.right = false;
+      } else if (tiltVal > 8) {
+        inputsRef.current.right = true;
+        inputsRef.current.left = false;
+      } else {
+        inputsRef.current.left = false;
+        inputsRef.current.right = false;
+      }
+    };
+
+    window.addEventListener("deviceorientation", onOrientation);
+    return () => {
+      window.removeEventListener("deviceorientation", onOrientation);
+      inputsRef.current.left = false;
+      inputsRef.current.right = false;
+    };
+  }, [isTiltEnabled, controlsMode]);
 
   // Keyboard Event Listeners with window.blur cleanup
   useEffect(() => {
@@ -584,6 +644,19 @@ export function RaceGame({
 
       // 1. Step Player Car Physics
       const { next, gateCrossed, lapIncremented, barrierHit } = stepCarPhysics(current, inputs, delta);
+
+      // Speed Boost Pad Interaction on Straightaways
+      const isOverBoost1 = Math.hypot(next.x - 40, next.z - (-85)) < 6.5;
+      const isOverBoost2 = Math.hypot(next.x - (-70), next.z - 55) < 6.5;
+      if (isOverBoost1 || isOverBoost2) {
+        next.speed = Math.min(
+          next.speed + delta * 38,
+          TRACK_CONFIG.maxSpeedForward * TRACK_CONFIG.nitroBoostMultiplier
+        );
+        next.nitroPercent = Math.min(100, next.nitroPercent + delta * 50);
+        if (Math.random() < 0.2) raceAudio.playSpeedPadWhoosh();
+      }
+
       physicsRef.current = next;
 
       // Sound triggers
@@ -659,6 +732,7 @@ export function RaceGame({
           speedKmh: next.kmh,
           gear: next.currentGear,
           nitroPercent: next.nitroPercent,
+          driftScore: next.driftScore,
           lap: next.lap,
           totalTimeMs: totalTime,
           rank: Math.max(1, rank),
@@ -784,6 +858,8 @@ export function RaceGame({
         hasAI={hasAI}
         autoDrive={autoDrive}
         isLandscape={isLandscape}
+        isTiltEnabled={isTiltEnabled}
+        driftScore={hudState.driftScore}
         playerPos={{ x: physicsRef.current.x, z: physicsRef.current.z }}
         remoteRacers={remotePlayersList.map((rp) => ({
           id: rp.id,
@@ -799,6 +875,7 @@ export function RaceGame({
         onResetCar={handleResetCar}
         onToggleAI={() => setHasAI((prev) => !prev)}
         onToggleAutoDrive={() => setAutoDrive((prev) => !prev)}
+        onToggleTilt={() => setIsTiltEnabled((prev) => !prev)}
         onToggleRotateScreen={handleToggleRotateScreen}
         onTouchGasStart={() => (inputsRef.current.gas = true)}
         onTouchGasEnd={() => (inputsRef.current.gas = false)}

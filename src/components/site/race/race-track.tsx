@@ -221,6 +221,27 @@ function SpeedBoostPad({ x, z, angle }: { x: number; z: number; angle: number })
   );
 }
 
+function FloodlightTower({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 9, 0]}>
+        <cylinderGeometry args={[0.3, 0.55, 18, 8]} />
+        <meshStandardMaterial color="#1e293b" metalness={0.9} />
+      </mesh>
+      <mesh position={[0, 18, 0]}>
+        <boxGeometry args={[4.8, 0.45, 1.0]} />
+        <meshStandardMaterial color="#090d16" metalness={0.9} />
+      </mesh>
+      {[-1.6, -0.5, 0.5, 1.6].map((fx, i) => (
+        <mesh key={i} position={[fx, 18, 0.55]}>
+          <cylinderGeometry args={[0.28, 0.38, 0.45, 8]} />
+          <meshBasicMaterial color="#38bdf8" />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 export function Track3D({ activeGate }: { activeGate: number }) {
   const W = TRACK_CONFIG.halfWidth; // 11
 
@@ -477,6 +498,13 @@ export function Track3D({ activeGate }: { activeGate: number }) {
       <TurnChevronSign x={142} z={-72} angle={-Math.PI / 4} />
       <TurnChevronSign x={62} z={28} angle={Math.PI / 6} />
       <TurnChevronSign x={-165} z={28} angle={Math.PI / 2} />
+
+      {/* Stadium Cyber Floodlight Mast Towers */}
+      <FloodlightTower position={[-30, 0, -112]} />
+      <FloodlightTower position={[80, 0, -112]} />
+      <FloodlightTower position={[155, 0, -10]} />
+      <FloodlightTower position={[-175, 0, 15]} />
+      <FloodlightTower position={[-80, 0, 85]} />
 
       {/* ================= CHECKPOINT GATES ================= */}
       {TRACK_GATES.map((gate) => (
