@@ -6,7 +6,8 @@ import { RaceGame } from "@/components/site/race-game";
 import { RaceLobby, RaceResults, type LobbyView } from "@/components/site/race-lobby";
 import { RaceLeaderboard } from "@/components/site/race/race-leaderboard";
 import { createPlayer, cleanInputName, cleanName, type Player } from "@/lib/arcade";
-import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Sparkles } from "lucide-react";
+import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Sparkles, Zap } from "lucide-react";
+import { raceAudio } from "@/components/site/race/race-audio";
 import {
   createRaceRoom,
   finishRace,
@@ -73,19 +74,18 @@ function RacePage() {
     return () => unsub();
   }, [roomCode]);
 
-  const ensurePlayer = async () => {
+  const ensurePlayer = async (customName?: string) => {
     if (player) return player;
-    const name = nameInput.trim();
+    let name = (customName ?? nameInput).trim();
     if (!name) {
-      toast.error("Enter your name to continue.");
-      throw new Error("Name required");
+      name = `Racer-${Math.floor(100 + Math.random() * 900)}`;
     }
     setIsCreatingPlayer(true);
     try {
       const p = await createPlayer(name);
       setRacePlayer(p);
       setPlayer(p);
-      toast.success(`Player ID created: ${p.handle}`);
+      toast.success(`Welcome, ${p.name}!`);
       return p;
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Could not create player ID";
@@ -97,6 +97,7 @@ function RacePage() {
   };
 
   const handleCreate = async () => {
+    raceAudio.resume();
     const p = await ensurePlayer();
     const r = await createRaceRoom(p);
     setRoom(r);
@@ -105,8 +106,9 @@ function RacePage() {
     toast.success(`Room created: ${r.code}`);
   };
 
-  const handleQuickRace = async () => {
-    const p = await ensurePlayer();
+  const handleQuickRace = async (directName?: string) => {
+    raceAudio.resume();
+    const p = await ensurePlayer(directName);
     const r: RaceRoom = {
       code: "SOLO",
       hostId: p.id,
@@ -154,6 +156,7 @@ function RacePage() {
   };
 
   const handleLeave = async () => {
+    raceAudio.stopAll();
     if (player && room) {
       await leaveRaceRoom(player.id, room.code);
     }
@@ -189,6 +192,7 @@ function RacePage() {
   };
 
   const handleFinish = async (totalTime: number, bestLap: number) => {
+    raceAudio.stopAll();
     if (!player || !room) return;
     await submitRaceResult({
       playerId: player.id,
@@ -221,6 +225,7 @@ function RacePage() {
   };
 
   const handlePlayAgain = () => {
+    raceAudio.stopAll();
     setRoomCode(null);
     setRoom(null);
     setView("menu");
@@ -276,27 +281,60 @@ function RacePage() {
         <div className="mx-auto w-full max-w-[84rem]">
           {!player ? (
             <div className="mx-auto max-w-md rounded-[1.75rem] border border-ink/10 bg-paper-tint/60 p-6 backdrop-blur-xl sm:p-8">
-              <h2 className="font-display text-2xl text-ink">Enter the pits</h2>
-              <p className="mt-2 text-sm text-ink-soft">
-                Pick a display name. Your player ID will be created automatically.
+              <div className="flex items-center gap-2">
+                <span className="inline-flex size-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-cyan-500">
+                  Ready to Race
+                </span>
+              </div>
+              <h2 className="mt-2 font-display text-2xl text-ink">Enter the pits</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                Pick a display name or jump straight onto the track with 1 tap.
               </p>
-              <input
-                type="text"
-                value={nameInput}
-                onChange={(e) => setNameInput(cleanInputName(e.target.value))}
-                onBlur={() => setNameInput(cleanName(nameInput))}
-                placeholder="Your name (e.g. Chetan Prajapat)"
-                maxLength={22}
-                className="mt-4 w-full rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-ink placeholder:text-ink/30 focus:border-[var(--prism-blue)] focus:outline-none font-mono text-sm"
-              />
+
+              {/* 1-Tap Instant Quick Race Button for Mobile */}
               <button
                 type="button"
-                disabled={isCreatingPlayer || nameInput.trim().length < 2}
-                onClick={() => ensurePlayer().catch(() => {})}
-                className="mt-4 w-full rounded-2xl bg-ink px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-paper transition hover:opacity-90 disabled:opacity-50"
+                onClick={() => handleQuickRace()}
+                disabled={isCreatingPlayer}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 px-5 py-3.5 font-mono text-xs font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-cyan-500/25 transition-all hover:scale-[1.02] hover:shadow-cyan-500/40 active:scale-95 disabled:opacity-50"
               >
-                {isCreatingPlayer ? "Creating..." : "Create Player ID"}
+                <Zap className="size-4 animate-bounce" />
+                ⚡ Instant Quick Race (vs AI)
               </button>
+
+              <div className="my-5 flex items-center gap-3">
+                <div className="h-px flex-1 bg-ink/10" />
+                <span className="font-mono text-[0.62rem] uppercase tracking-wider text-ink-soft/60">
+                  or choose your name
+                </span>
+                <div className="h-px flex-1 bg-ink/10" />
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleQuickRace();
+                }}
+                className="space-y-3"
+              >
+                <input
+                  type="text"
+                  value={nameInput}
+                  onChange={(e) => setNameInput(cleanInputName(e.target.value))}
+                  onBlur={() => setNameInput(cleanName(nameInput))}
+                  placeholder="Your name (e.g. Chetan Prajapat)"
+                  maxLength={22}
+                  className="w-full rounded-2xl border border-ink/10 bg-paper/70 px-4 py-3 text-ink placeholder:text-ink/30 focus:border-[var(--prism-blue)] focus:outline-none font-mono text-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={isCreatingPlayer}
+                  className="w-full rounded-2xl bg-ink px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-paper transition hover:opacity-90 disabled:opacity-50"
+                >
+                  {isCreatingPlayer ? "Creating..." : "Save Name & Enter Lobby"}
+                </button>
+              </form>
             </div>
           ) : view === "room" && room && room.phase === "racing" ? (
             <RaceGame

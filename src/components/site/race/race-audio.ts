@@ -401,6 +401,25 @@ export class RaceAudioSystem {
     } catch {}
   }
 
+  public stopAll() {
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      this.engineMasterGain?.gain.cancelScheduledValues(now);
+      this.engineMasterGain?.gain.setValueAtTime(0, now);
+      this.turboGain?.gain.cancelScheduledValues(now);
+      this.turboGain?.gain.setValueAtTime(0, now);
+      this.skidGain?.gain.cancelScheduledValues(now);
+      this.skidGain?.gain.setValueAtTime(0, now);
+      this.nitroGain?.gain.cancelScheduledValues(now);
+      this.nitroGain?.gain.setValueAtTime(0, now);
+      this.nitroSubGain?.gain.cancelScheduledValues(now);
+      this.nitroSubGain?.gain.setValueAtTime(0, now);
+      this.windGain?.gain.cancelScheduledValues(now);
+      this.windGain?.gain.setValueAtTime(0, now);
+    } catch {}
+  }
+
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
     if (typeof window !== "undefined") {

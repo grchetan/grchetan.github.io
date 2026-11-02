@@ -557,6 +557,13 @@ export function RaceGame({
     };
   }, [isTiltEnabled, controlsMode]);
 
+  // Stop audio immediately when game finishes or unmounts
+  useEffect(() => {
+    return () => {
+      raceAudio.stopAll();
+    };
+  }, []);
+
   // Keyboard Event Listeners with window.blur cleanup
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -693,8 +700,10 @@ export function RaceGame({
       const totalTime = now - startTimeRef.current;
       if (next.lap > room.settings.laps && !finishedRef.current) {
         finishedRef.current = true;
+        raceAudio.stopAll();
         raceAudio.playVictoryHorn();
         onFinish(totalTime, bestLapRef.current === Infinity ? totalTime : bestLapRef.current);
+        return;
       }
 
       // 2. Step AI Rivals

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Copy, Users, Plus, LogIn, Crown, ArrowRight, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Player } from "@/lib/arcade";
 import type { RaceRoom, RacePhase, RaceResult } from "@/lib/race";
 import { useCountdown } from "@/lib/race";
+import { raceAudio } from "./race/race-audio";
 
 export type LobbyView = "menu" | "create" | "join" | "room";
 
@@ -256,6 +257,10 @@ export function RaceResults({
   player: Player;
   onPlayAgain: () => void;
 }) {
+  useEffect(() => {
+    raceAudio.stopAll();
+  }, []);
+
   const sorted = [...results].sort((a, b) => {
     if (a.totalTime == null && b.totalTime == null) return 0;
     if (a.totalTime == null) return 1;

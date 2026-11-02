@@ -444,13 +444,13 @@ export function RaceHUD({
 
       {/* ---------------- TOUCH SCREEN DRIVE CONTROLS (EASY & ERGONOMIC) ---------------- */}
       {controlsMode === "touch" && (
-        <div className="pointer-events-none absolute inset-x-2 bottom-3 z-30 flex items-end justify-between select-none">
-          {/* Left Thumb: Extra Large Steering D-Pad */}
-          <div className="pointer-events-auto flex items-center gap-2 rounded-3xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl backdrop-blur-xl">
+        <div className="pointer-events-none absolute inset-x-1.5 bottom-2 sm:bottom-3 z-30 flex items-end justify-between select-none">
+          {/* Left Thumb: Steering D-Pad (Optimized for all phone screen sizes) */}
+          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 rounded-2xl sm:rounded-3xl border border-white/10 bg-slate-950/85 p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl">
             <button
               type="button"
               aria-label="Steer Left"
-              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              className="flex size-14 sm:size-18 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
               onTouchStart={(e) => {
                 e.preventDefault();
                 triggerHaptic();
@@ -468,12 +468,12 @@ export function RaceHUD({
               onMouseUp={() => onTouchLeftEnd()}
               onMouseLeave={() => onTouchLeftEnd()}
             >
-              <ArrowLeft className="size-9" strokeWidth={3} />
+              <ArrowLeft className="size-7 sm:size-8" strokeWidth={3} />
             </button>
             <button
               type="button"
               aria-label="Steer Right"
-              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              className="flex size-14 sm:size-18 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
               onTouchStart={(e) => {
                 e.preventDefault();
                 triggerHaptic();
@@ -491,17 +491,17 @@ export function RaceHUD({
               onMouseUp={() => onTouchRightEnd()}
               onMouseLeave={() => onTouchRightEnd()}
             >
-              <ArrowRight className="size-9" strokeWidth={3} />
+              <ArrowRight className="size-7 sm:size-8" strokeWidth={3} />
             </button>
           </div>
 
-          {/* Right Thumb: Easy Action Buttons (Big Nitro, Brake & Drift) */}
-          <div className="pointer-events-auto flex items-end gap-2.5 rounded-3xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl backdrop-blur-xl">
+          {/* Right Thumb: Action Buttons (Big Nitro, Brake & Drift) */}
+          <div className="pointer-events-auto flex items-end gap-1.5 sm:gap-2 rounded-2xl sm:rounded-3xl border border-white/10 bg-slate-950/85 p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl">
             {/* Powerslide Drift Button */}
             <button
               type="button"
               aria-label="Powerslide Drift"
-              className="flex size-14 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.68rem] font-black uppercase text-amber-300 shadow-lg active:scale-90 active:bg-amber-400 active:text-black transition-all"
+              className="flex size-12 sm:size-14 items-center justify-center rounded-xl sm:rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.62rem] sm:text-[0.68rem] font-black uppercase text-amber-300 shadow-lg active:scale-90 active:bg-amber-400 active:text-black transition-all"
               onTouchStart={(e) => {
                 e.preventDefault();
                 triggerHaptic();
@@ -526,7 +526,7 @@ export function RaceHUD({
             <button
               type="button"
               aria-label="Nitro Turbo Boost"
-              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-t from-cyan-600/40 to-cyan-500/40 font-mono text-xs font-black uppercase text-cyan-200 shadow-[0_0_25px_rgba(6,182,212,0.4)] active:scale-90 active:bg-cyan-400 active:text-black transition-all"
+              className="flex size-15 sm:size-18 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-t from-cyan-600/40 to-cyan-500/40 font-mono text-xs font-black uppercase text-cyan-200 shadow-[0_0_20px_rgba(6,182,212,0.4)] active:scale-90 active:bg-cyan-400 active:text-black transition-all"
               onTouchStart={(e) => {
                 e.preventDefault();
                 triggerHaptic();
@@ -545,8 +545,8 @@ export function RaceHUD({
               onMouseLeave={() => onTouchNitroEnd()}
             >
               <div className="flex flex-col items-center">
-                <Flame className="size-6 text-cyan-300 animate-pulse" />
-                <span className="mt-0.5 text-[0.62rem]">NITRO</span>
+                <Flame className="size-5 sm:size-6 text-cyan-300 animate-pulse" />
+                <span className="mt-0.5 text-[0.55rem] sm:text-[0.62rem]">NITRO</span>
               </div>
             </button>
 
@@ -554,7 +554,7 @@ export function RaceHUD({
             <button
               type="button"
               aria-label="Brake and Reverse"
-              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-rose-500/50 bg-gradient-to-t from-rose-600/35 to-rose-500/35 text-rose-300 shadow-xl active:scale-90 active:bg-rose-500 active:text-white transition-all"
+              className="flex size-14 sm:size-18 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-rose-500/50 bg-gradient-to-t from-rose-600/35 to-rose-500/35 text-rose-300 shadow-xl active:scale-90 active:bg-rose-500 active:text-white transition-all"
               onTouchStart={(e) => {
                 e.preventDefault();
                 triggerHaptic();
@@ -572,7 +572,7 @@ export function RaceHUD({
               onMouseUp={() => onTouchBrakeEnd()}
               onMouseLeave={() => onTouchBrakeEnd()}
             >
-              <ArrowDown className="size-8" strokeWidth={3} />
+              <ArrowDown className="size-7 sm:size-8" strokeWidth={3} />
             </button>
 
             {/* MANUAL GAS PEDAL (Only displayed if Auto-Drive is turned OFF) */}
@@ -580,7 +580,7 @@ export function RaceHUD({
               <button
                 type="button"
                 aria-label="Gas Accelerator"
-                className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-t from-emerald-600/45 to-emerald-500/45 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-90 active:bg-emerald-400 active:text-black transition-all"
+                className="flex size-14 sm:size-18 items-center justify-center rounded-xl sm:rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-t from-emerald-600/45 to-emerald-500/45 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-90 active:bg-emerald-400 active:text-black transition-all"
                 onTouchStart={(e) => {
                   e.preventDefault();
                   triggerHaptic();
@@ -598,7 +598,7 @@ export function RaceHUD({
                 onMouseUp={() => onTouchGasEnd()}
                 onMouseLeave={() => onTouchGasEnd()}
               >
-                <ArrowUp className="size-9" strokeWidth={3} />
+                <ArrowUp className="size-7 sm:size-8" strokeWidth={3} />
               </button>
             )}
           </div>
