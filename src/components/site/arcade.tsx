@@ -234,10 +234,9 @@ function JoinCard({ onJoined }: { onJoined: (p: Player) => void }) {
       {mode === "create" ? (
         <>
           <span className="label mt-6 block">Step 01 · Create Account</span>
-          <h3 className="mt-3 font-display text-3xl text-ink">Claim your name</h3>
+          <h3 className="mt-3 font-display text-3xl text-ink">Enter your gamer name</h3>
           <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-soft">
-            One name, one player. You get a secret player ID once — save it, and use it to come back
-            and beat your own record anytime.
+            Choose your display name. You will receive a unique secret Player ID to save your high scores, track your rank, and resume playing anytime.
           </p>
 
           <form onSubmit={create} className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -806,6 +805,7 @@ export function ArcadeStage() {
 
   const [last, setLast] = useState<RunResult | null>(null);
   const [selectedCertRow, setSelectedCertRow] = useState<RankedRow | null>(null);
+  const [visibleCount, setVisibleCount] = useState<number>(50);
   const {
     data: infiniteData,
     isLoading,
@@ -815,7 +815,7 @@ export function ArcadeStage() {
     isFetchingNextPage,
     refetch,
     liveCount,
-  } = useInfiniteLeaderboard(100);
+  } = useInfiniteLeaderboard(2000);
 
   // Real-time subscription handled by useInfiniteLeaderboard
 
@@ -1009,6 +1009,17 @@ export function ArcadeStage() {
       ) ?? null
     );
   }, [filteredRows, player]);
+
+  const displayedRows = useMemo(() => {
+    return filteredRows.slice(0, visibleCount);
+  }, [filteredRows, visibleCount]);
+
+  const hasMoreLocalRows = visibleCount < filteredRows.length;
+
+  const isMeVisibleInTable = useMemo(() => {
+    if (!me) return false;
+    return displayedRows.some((r) => r.playerId === me.playerId || r.handle === me.handle);
+  }, [displayedRows, me]);
 
   const lifetimeRankedRows = useMemo(() => {
     const bannedIds = config.bannedPlayers ?? [];
@@ -1485,7 +1496,7 @@ export function ArcadeStage() {
         ) : (
           <>
             <LeaderboardTable
-              rows={filteredRows}
+              rows={displayedRows}
               meId={player?.id}
               meHandle={player?.handle}
               boardTab={boardTab}
@@ -1493,15 +1504,61 @@ export function ArcadeStage() {
               onOpenCert={setSelectedCertRow}
             />
 
+            {/* BGMI-Style Pinned Floating Player Standing (shows user's accurate rank even if outside visible rows) */}
+            {me && !isMeVisibleInTable ? (
+              <div className="sticky bottom-4 z-30 mx-auto mt-6 max-w-4xl rounded-2xl border border-cyan-500/50 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/30 border border-cyan-500/40 font-mono text-base font-extrabold text-cyan-400">
+                      #{me.rank}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-display text-base font-bold text-white">{me.name}</span>
+                        <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 font-mono text-[0.62rem] font-bold uppercase tracking-wider text-cyan-300 border border-cyan-500/40">
+                          Your Rank
+                        </span>
+                      </div>
+                      <p className="font-mono text-xs text-slate-400">
+                        @{me.handle} · {tierFor(me.rank)?.label ?? "Ranked Contender"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 self-end sm:self-auto">
+                    <div className="text-right">
+                      <div className="font-mono text-[0.62rem] uppercase text-slate-400">Your Score</div>
+                      <div className="font-display text-lg font-extrabold text-cyan-300">{me.score.toLocaleString()}</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCertRow(me)}
+                      className="press-btn flex items-center gap-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/20 px-3.5 py-2 font-mono text-xs font-semibold text-cyan-200 hover:bg-cyan-500/30 transition shadow-sm"
+                    >
+                      <Award className="size-3.5" /> My Cert
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
             <div className="mt-8 flex justify-center">
+              {hasMoreLocalRows ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisibleCount((prev) => prev + 50);
+                  }}
+                  className="press-btn text-[0.68rem] uppercase font-mono tracking-wider font-semibold disabled:opacity-50 inline-flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all"
+                >
+                  <RefreshCw className="size-3" />
+                  Load More Standings ({filteredRows.length - visibleCount} more)
+                </button>
+              ) : hasNextPage ? (
                 <button
                   type="button"
                   onClick={async () => {
-                    if (hasNextPage) {
-                      await fetchNextPage();
-                    } else {
-                      await refetch();
-                    }
+                    await fetchNextPage();
                   }}
                   disabled={isFetchingNextPage}
                   className="press-btn text-[0.68rem] uppercase font-mono tracking-wider font-semibold disabled:opacity-50 inline-flex items-center gap-2 cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all"
@@ -1517,7 +1574,12 @@ export function ArcadeStage() {
                     </>
                   )}
                 </button>
-              </div>
+              ) : (
+                <div className="font-mono text-[0.68rem] uppercase tracking-wider text-ink-soft/70 px-4 py-2 rounded-full border border-ink/10 bg-paper/40">
+                  All {filteredRows.length} Standings Loaded
+                </div>
+              )}
+            </div>
 
             {bannedPlayersNames.length > 0 ? (
               <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-4 animate-fade-in">

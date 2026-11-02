@@ -221,23 +221,15 @@ export function writeSessionPlayer(player: Player | null) {
 
 /* --------------------------------- writes --------------------------------- */
 
-export class NameTakenError extends Error {
-  constructor(name: string) {
-    super(`"${name}" is already claimed. Pick another name, or enter that player's ID to continue.`);
-    this.name = "NameTakenError";
-  }
-}
-
 /**
- * Claims a name — one name = one player, forever. The returned `code` is the
- * player's secret ID and is shown exactly once; nobody can claim the same name
- * again, so no one else can play on this player's board entry.
+ * Creates a new player profile. Display names do NOT need to be globally unique
+ * (multiple players can share the same name like in real life);
+ * the returned secret `code` (CP-XXXX-XXXX) and unique player ID are what identify the account.
  */
 export async function createPlayer(rawName: string): Promise<Player> {
   const problem = validateName(rawName);
   if (problem) throw new Error(problem);
   const name = cleanName(rawName);
-  const key = nameKey(name);
   const handle = makeHandle(name);
   const createdAt = Date.now();
   const code = makeCode();
@@ -245,24 +237,22 @@ export async function createPlayer(rawName: string): Promise<Player> {
   if (isFirebaseConfigured) {
     try {
       const db = await getDb();
-      const { doc, getDoc, setDoc, serverTimestamp } = await import("firebase/firestore");
-      const ref = doc(db, PLAYERS, key);
-      const existing = await getDoc(ref);
-      if (existing.exists()) throw new NameTakenError(name);
-      await setDoc(ref, {
+      const { collection, doc, setDoc, serverTimestamp } = await import("firebase/firestore");
+      // Generate a new unique player doc ID so multiple players can share the same display name
+      const newDocRef = doc(collection(db, PLAYERS));
+      await setDoc(newDocRef, {
         name,
-        nameKey: key,
+        nameKey: nameKey(name),
         handle,
         code,
         best: 0,
         plays: 0,
         createdAt: serverTimestamp(),
       });
-      const player: Player = { id: ref.id, name, handle, createdAt, code };
+      const player: Player = { id: newDocRef.id, name, handle, createdAt, code };
       writeSessionPlayer(player);
       return player;
     } catch (err) {
-      if (err instanceof NameTakenError) throw err;
       console.error("[Firebase createPlayer Error]:", err);
       setLastFirebaseError(err instanceof Error ? err.message : String(err));
       /* network/permission issue — fall through to local */
@@ -270,8 +260,7 @@ export async function createPlayer(rawName: string): Promise<Player> {
   }
 
   const store = readLocal();
-  if (store.players.some((p) => nameKey(p.name) === key)) throw new NameTakenError(name);
-  const player: Player = { id: `local-${key}`, name, handle, createdAt, code };
+  const player: Player = { id: `local-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`, name, handle, createdAt, code };
   store.players.push(player);
   writeLocal(store);
   writeSessionPlayer(player);
@@ -387,8 +376,8 @@ export async function submitScore(input: {
 
 /* --------------------------------- reads ---------------------------------- */
 
-/** One row per player (their best run), ranked A→Z by rank, top 100. */
-export function rank(rows: ScoreRow[]): RankedRow[] {
+/** One row per player (their best run), ranked by score, accuracy, combo. Ranks ALL unique players accurately. */
+export function rank(rows: ScoreRow[], limitCount?: number): RankedRow[] {
   const best = new Map<string, { row: ScoreRow; plays: number }>();
   for (const row of rows) {
     // Normalize player key so local and remote runs for the same player group together seamlessly
@@ -404,20 +393,24 @@ export function rank(rows: ScoreRow[]): RankedRow[] {
       if (better) found.row = row;
     }
   }
-  return [...best.values()]
+  const rankedAll = [...best.values()]
     .sort((a, b) =>
       b.row.score - a.row.score ||
       b.row.accuracy - a.row.accuracy ||
       b.row.combo - a.row.combo ||
       a.row.createdAt - b.row.createdAt,
     )
-    .slice(0, 100)
     .map((entry, i) => ({
       ...entry.row,
       name: sanitizeName(entry.row.name),
       plays: entry.plays,
       rank: i + 1,
     }));
+
+  if (typeof limitCount === "number" && limitCount > 0) {
+    return rankedAll.slice(0, limitCount);
+  }
+  return rankedAll;
 }
 
 /**
@@ -467,7 +460,7 @@ export async function fetchLeaderboard(): Promise<ScoreRow[]> {
     try {
       const db = await getDb();
       const { collection, getDocs, query, orderBy, limit, doc, setDoc } = await import("firebase/firestore");
-      const snap = await getDocs(query(collection(db, SCORES), orderBy("score", "desc"), limit(600)));
+      const snap = await getDocs(query(collection(db, SCORES), orderBy("score", "desc"), limit(2000)));
       const remoteRows: ScoreRow[] = snap.docs.map((d) => {
         const raw = d.data() as Record<string, unknown>;
         const ts = raw["createdAt"] as { toMillis?: () => number } | undefined;
@@ -539,7 +532,7 @@ export function subscribeLeaderboard(onRows: (rows: ScoreRow[]) => void): () => 
         const { collection, onSnapshot, query, orderBy, limit } = await import("firebase/firestore");
         if (cancelled) return;
         stop = onSnapshot(
-          query(collection(db, SCORES), orderBy("score", "desc"), limit(600)),
+          query(collection(db, SCORES), orderBy("score", "desc"), limit(2000)),
           (snap) => {
             remoteLoaded = true;
             latestRemote = snap.docs.map((d) => {
@@ -632,7 +625,7 @@ export type ScorePage = {
 };
 
 export async function fetchLeaderboardPage(
-  pageSize: number = 100,
+  pageSize: number = 2000,
   pageParam: any = null
 ): Promise<ScorePage> {
   const localStore = readLocal();
@@ -643,9 +636,10 @@ export async function fetchLeaderboardPage(
       const db = await getDb();
       const { collection, getDocs, query, orderBy, limit, startAfter } = await import("firebase/firestore");
       
-      let q = query(collection(db, SCORES), orderBy("score", "desc"), limit(pageSize));
+      const fetchCap = Math.max(pageSize, 2000);
+      let q = query(collection(db, SCORES), orderBy("score", "desc"), limit(fetchCap));
       if (pageParam) {
-        q = query(collection(db, SCORES), orderBy("score", "desc"), startAfter(pageParam), limit(pageSize));
+        q = query(collection(db, SCORES), orderBy("score", "desc"), startAfter(pageParam), limit(fetchCap));
       }
       
       const snap = await getDocs(q);
@@ -670,7 +664,7 @@ export async function fetchLeaderboardPage(
       
       return {
         rows: merged,
-        nextCursor: snap.docs.length >= pageSize ? lastVisible : null,
+        nextCursor: snap.docs.length >= fetchCap ? lastVisible : null,
       };
     } catch (err) {
       console.error("[Firebase fetchLeaderboardPage Error]:", err);
@@ -692,7 +686,7 @@ export async function fetchLeaderboardPage(
   };
 }
 
-export function useInfiniteLeaderboard(pageSize: number = 100) {
+export function useInfiniteLeaderboard(pageSize: number = 2000) {
   const queryClient = useQueryClient();
   // Track live raw row count for immediate "Live · N players" display
   const [liveCount, setLiveCount] = useState<number | null>(null);
@@ -725,8 +719,8 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
             return {
               pages: [
                 {
-                  rows: liveRows.slice(0, pageSize),
-                  nextCursor: liveRows.length >= pageSize ? liveRows[pageSize - 1] : null,
+                  rows: liveRows,
+                  nextCursor: null,
                 },
               ],
               pageParams: [null],
@@ -736,8 +730,8 @@ export function useInfiniteLeaderboard(pageSize: number = 100) {
           const updatedPages = [...oldData.pages];
           updatedPages[0] = {
             ...updatedPages[0],
-            rows: liveRows.slice(0, pageSize),
-            nextCursor: liveRows.length >= pageSize ? updatedPages[0].nextCursor : null,
+            rows: liveRows,
+            nextCursor: updatedPages[0].nextCursor,
           };
 
           return {
@@ -795,7 +789,7 @@ export function tierFor(rank: number) {
   if (rank <= 10) return { label: "Top 10", note: `Rank #${rank}` } as const;
   if (rank <= 50) return { label: "Top 50", note: `Rank #${rank}` } as const;
   if (rank <= 100) return { label: "Top 100", note: `Rank #${rank}` } as const;
-  return null;
+  return { label: "Ranked Contender", note: `Rank #${rank}` } as const;
 }
 
 /* ------------------------------- Arcade Config & Anti-Cheat ------------------------------- */

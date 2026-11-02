@@ -5,7 +5,7 @@ import { BANNED_WORDS, SHORT_BANNED_WORDS, BANNED_REGEXES, PROFANITY_WHITELIST }
  * 1. Normalize Unicode characters (decompose and remove accents/diacritics).
  * 2. Convert to lowercase.
  * 3. Convert leetspeak characters (e.g. 0 -> o, @ -> a).
- * 4. Remove spaces, punctuation, underscores, dots, hyphens, and all special characters.
+ * 4. Remove punctuation, underscores, dots, hyphens, and special characters.
  * 5. Compress consecutive repeated characters to a single letter.
  */
 export function normalizeText(text: string): string {
@@ -26,7 +26,7 @@ export function normalizeText(text: string): string {
     "5": "s",
     "7": "t",
     "@": "a",
-    "$": "s"
+    "$": "s",
   };
 
   let leetClean = "";
@@ -58,9 +58,10 @@ export function getLevenshteinDistance(a: string, b: string): number {
   }
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
-      tmp[i][j] = a[i - 1] === b[j - 1] 
-        ? tmp[i - 1][j - 1] 
-        : Math.min(tmp[i - 1][j - 1] + 1, tmp[i][j - 1] + 1, tmp[i - 1][j] + 1);
+      tmp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? tmp[i - 1][j - 1]
+          : Math.min(tmp[i - 1][j - 1] + 1, tmp[i][j - 1] + 1, tmp[i - 1][j] + 1);
     }
   }
   return tmp[a.length][b.length];
@@ -78,13 +79,15 @@ export function getSimilarity(a: string, b: string): number {
 
 /**
  * Checks if a given text contains profane or abusive words (English & Hindi).
+ * Uses word boundaries to avoid false positives on legitimate multi-word names
+ * (e.g. "Samiran Das" doesn't falsely trigger on "rand").
  */
 export function isProfane(text: string): boolean {
   if (!text) return false;
 
   const trimmedLower = text.toLowerCase().trim();
 
-  // Whitelist check
+  // Full string whitelist check
   if (PROFANITY_WHITELIST.includes(trimmedLower)) {
     return false;
   }
@@ -96,52 +99,59 @@ export function isProfane(text: string): boolean {
     }
   }
 
-  // 2. Normalize input text
+  // 2. Token-level check: test each word individually to respect word boundaries
+  const tokens = trimmedLower.split(/[\s._\-]+/);
+  for (const token of tokens) {
+    if (!token) continue;
+    if (PROFANITY_WHITELIST.includes(token)) continue;
+
+    const normToken = normalizeText(token);
+
+    // Exact match on short banned words
+    for (const word of SHORT_BANNED_WORDS) {
+      if (normToken === normalizeText(word)) {
+        return true;
+      }
+    }
+
+    // Exact and substring match on longer abusive words within this specific token
+    for (const word of BANNED_WORDS) {
+      const normWord = normalizeText(word);
+      if (normToken === normWord) {
+        return true;
+      }
+      // Substring match within the token only (word length >= 4)
+      if (normWord.length >= 4 && normToken.includes(normWord)) {
+        return true;
+      }
+    }
+  }
+
+  // 3. Full text check for spaced-out single insults (e.g. "m a d a r c h o d" or "f u c k")
   const normalizedInput = normalizeText(text);
 
-  // 3. Exact matching and Substring matching
+  // Exact match against full normalized text
   for (const word of BANNED_WORDS) {
-    const normalizedWord = normalizeText(word);
-
-    // Exact Match
-    if (normalizedInput === normalizedWord) {
-      return true;
-    }
-
-    // Partial/Substring Match: only for words > 3 chars to prevent false positives
-    if (normalizedWord.length > 3 && normalizedInput.includes(normalizedWord)) {
+    const normWord = normalizeText(word);
+    if (normalizedInput === normWord) {
       return true;
     }
   }
-
-  // 4. Short words token check (e.g. mc, bc, chut)
-  const cleanTokens = trimmedLower.split(/[\s._\-]+/);
   for (const word of SHORT_BANNED_WORDS) {
-    const normalizedWord = normalizeText(word);
-
-    // Exact Match on normalized version
-    if (normalizedInput === normalizedWord) {
-      return true;
-    }
-
-    // Standalone token match on clean tokens
-    if (cleanTokens.includes(normalizedWord)) {
+    const normWord = normalizeText(word);
+    if (normalizedInput === normWord) {
       return true;
     }
   }
 
-  // 5. Fuzzy Matching (similarity >= 90%)
+  // 4. Fuzzy Matching on single words (similarity >= 90%)
   for (const word of BANNED_WORDS) {
-    const normalizedWord = normalizeText(word);
-
-    // Optimize: skip fuzzy check if length difference is too large
-    if (Math.abs(normalizedInput.length - normalizedWord.length) > 2) {
-      continue;
-    }
-
-    const similarity = getSimilarity(normalizedInput, normalizedWord);
-    if (similarity >= 0.90) {
-      return true;
+    const normWord = normalizeText(word);
+    if (Math.abs(normalizedInput.length - normWord.length) <= 1) {
+      const similarity = getSimilarity(normalizedInput, normWord);
+      if (similarity >= 0.90) {
+        return true;
+      }
     }
   }
 
@@ -154,7 +164,6 @@ export function isProfane(text: string): boolean {
  */
 export function sanitizeName(name: string): string {
   if (!name) return "Anonymous";
-  // Insert space between camelCase words: "KyaBoltiPublic" → "Kya Bolti Public"
   const spaced = name
     .replace(/([a-z\u00C0-\u024F])([A-Z\u00C0-\u024F])/g, "$1 $2")
     .replace(/([A-Z\u00C0-\u024F]+)([A-Z\u00C0-\u024F][a-z\u00C0-\u024F])/g, "$1 $2")

@@ -2,8 +2,8 @@
  * Maintainable dataset of blocked terms and abbreviations for both English and Hindi.
  */
 
-// Short abbreviations (length <= 3) that MUST match exactly as standalone tokens
-// to avoid false positives in longer common words (e.g., "document" contains "cum", "because" contains "bc").
+// Short abbreviations and words that MUST match exactly as standalone tokens
+// to avoid false positives in longer common words (e.g., "document" contains "cum", "because" contains "bc", "Samiran Das" contains "rand").
 export const SHORT_BANNED_WORDS = [
   "mc",
   "bc",
@@ -11,10 +11,12 @@ export const SHORT_BANNED_WORDS = [
   "chut",
   "gand",
   "lund",
-  "wtf"
+  "wtf",
+  "raand",
+  "rand"
 ];
 
-// Longer abusive words that support substring/partial matching
+// Longer abusive words that support substring/partial matching within individual tokens
 export const BANNED_WORDS = [
   // Hindi Profanity
   "madarchod",
@@ -32,7 +34,6 @@ export const BANNED_WORDS = [
   "lawda",
   "lavda",
   "randi",
-  "raand",
   "harami",
   "haramkhor",
   "kamina",
@@ -78,5 +79,18 @@ export const PROFANITY_WHITELIST = [
   "document",
   "association",
   "because",
-  "mcdonald"
+  "mcdonald",
+  "samiran",
+  "das",
+  "samiran das",
+  "samirandas",
+  "roshan",
+  "raaj",
+  "roshan raj",
+  "roshan raaj",
+  "chetan",
+  "prajapat",
+  "chetan prajapat",
+  "miranda",
+  "randhir"
 ];
