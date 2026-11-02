@@ -1,7 +1,14 @@
 /**
  * Cyber Circuit — High-Performance Futuristic Heads-Up Display (HUD)
+ * Features:
+ * - Screen Rotate / Fullscreen Landscape mode toggle for mobile & tablet
+ * - Auto-Drive (Auto Gas: ON/OFF) toggle for effortless 1-handed driving
+ * - Ergonomic, high-comfort touch controls (Large Left/Right steering + Big Nitro & Brake)
+ * - 2D Grand Prix Radar Minimap rendering the full 732m winding circuit with real-time blips
+ * - Haptic feedback support on touch
  */
 
+import { useMemo } from "react";
 import {
   Flag,
   Trophy,
@@ -15,7 +22,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Bot,
+  Zap,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
+import { CIRCUIT_SAMPLES, SAMPLE_COUNT } from "./race-physics";
 import type { AIRival } from "./race-ai";
 
 export interface HUDProps {
@@ -34,6 +45,8 @@ export interface HUDProps {
   isMuted: boolean;
   controlsMode: "keyboard" | "touch";
   hasAI: boolean;
+  autoDrive: boolean;
+  isLandscape: boolean;
   playerPos: { x: number; z: number };
   remoteRacers: { id: string; color: string; x: number; z: number }[];
   aiBots: AIRival[];
@@ -41,6 +54,8 @@ export interface HUDProps {
   onToggleMute: () => void;
   onResetCar: () => void;
   onToggleAI: () => void;
+  onToggleAutoDrive: () => void;
+  onToggleRotateScreen: () => void;
   onTouchGasStart: () => void;
   onTouchGasEnd: () => void;
   onTouchBrakeStart: () => void;
@@ -71,6 +86,8 @@ export function RaceHUD({
   isMuted,
   controlsMode,
   hasAI,
+  autoDrive,
+  isLandscape,
   playerPos,
   remoteRacers,
   aiBots,
@@ -78,6 +95,8 @@ export function RaceHUD({
   onToggleMute,
   onResetCar,
   onToggleAI,
+  onToggleAutoDrive,
+  onToggleRotateScreen,
   onTouchGasStart,
   onTouchGasEnd,
   onTouchBrakeStart,
@@ -98,154 +117,192 @@ export function RaceHUD({
     return `${m}:${sec}`;
   };
 
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate(15);
+      } catch {}
+    }
+  };
+
+  // Generate SVG path for the 732m winding Grand Prix circuit radar
+  const radarPath = useMemo(() => {
+    const N = SAMPLE_COUNT;
+    let d = `M ${CIRCUIT_SAMPLES[0]!.x} ${CIRCUIT_SAMPLES[0]!.z}`;
+    for (let i = 1; i < N; i += 2) {
+      const sp = CIRCUIT_SAMPLES[i]!;
+      d += ` L ${sp.x.toFixed(1)} ${sp.z.toFixed(1)}`;
+    }
+    d += " Z";
+    return d;
+  }, []);
+
   return (
     <>
       {/* ---------------- TOP HUD STATUS BAR ---------------- */}
-      <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex items-start justify-between">
+      <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-start justify-between">
         {/* Left: Total Elapsed Time & Sector Split */}
-        <div className="flex flex-col gap-2">
-          <div className="pointer-events-auto rounded-2xl border border-white/10 bg-slate-900/85 px-4 py-2.5 backdrop-blur-xl shadow-xl">
-            <div className="flex items-center gap-2">
-              <Flag className="size-3.5 text-cyan-400" />
-              <p className="font-mono text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
-                Total Time
+        <div className="flex flex-col gap-1.5">
+          <div className="pointer-events-auto rounded-2xl border border-white/10 bg-slate-900/85 px-3.5 py-2 backdrop-blur-xl shadow-xl">
+            <div className="flex items-center gap-1.5">
+              <Flag className="size-3 text-cyan-400" />
+              <p className="font-mono text-[0.58rem] font-bold uppercase tracking-widest text-slate-400">
+                Time
               </p>
             </div>
-            <p className="font-mono text-2xl font-black tracking-tight text-white">
+            <p className="font-mono text-xl sm:text-2xl font-black tracking-tight text-white">
               {formatTimer(totalTimeMs)}
             </p>
             {bestLapMs && (
-              <p className="mt-0.5 font-mono text-[0.62rem] text-cyan-400 font-semibold">
-                Best Lap: {(bestLapMs / 1000).toFixed(2)}s
+              <p className="mt-0.5 font-mono text-[0.58rem] text-cyan-400 font-semibold">
+                Best: {(bestLapMs / 1000).toFixed(2)}s
               </p>
             )}
           </div>
 
-          {/* Lap Split Popup */}
           {lapSplitText && (
-            <div className="rounded-xl border border-emerald-500/50 bg-emerald-950/90 px-3.5 py-1.5 font-mono text-xs font-bold text-emerald-300 backdrop-blur-md shadow-lg animate-bounce">
+            <div className="animate-bounce rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-3 py-1 font-mono text-xs font-bold text-emerald-300 backdrop-blur-md">
               {lapSplitText}
             </div>
           )}
         </div>
 
-        {/* Center: Live Rank & Wrong Way Warning */}
-        <div className="flex flex-col items-center gap-2">
+        {/* Center: Live Standings / Lap Counter */}
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="pointer-events-auto flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-900/85 px-4 py-2 backdrop-blur-xl shadow-xl">
+            {/* Live Rank */}
+            <div className="flex items-center gap-1">
+              <Trophy className="size-3.5 text-amber-400" />
+              <span className="font-mono text-lg font-black text-white">
+                P{rank}
+              </span>
+              <span className="font-mono text-[0.62rem] text-slate-400">
+                /{totalRacers}
+              </span>
+            </div>
+
+            <div className="h-4 w-px bg-white/15" />
+
+            {/* Lap Counter */}
+            <div className="font-mono text-xs font-bold text-slate-200">
+              LAP <span className="text-cyan-400 font-extrabold">{Math.min(lap, maxLaps)}</span>/{maxLaps}
+            </div>
+          </div>
+
+          {/* Wrong Way Warning Banner */}
           {isWrongWay && (
-            <div className="rounded-2xl border-2 border-rose-500 bg-rose-950/95 px-6 py-2 font-mono text-sm font-black uppercase tracking-widest text-white shadow-[0_0_30px_rgba(244,63,94,0.7)] backdrop-blur-md animate-pulse">
-              ⚠ WRONG WAY! TURN AROUND
+            <div className="animate-pulse rounded-full border border-rose-500/60 bg-rose-600/35 px-4 py-1 text-center font-mono text-[0.68rem] font-black uppercase tracking-widest text-white shadow-[0_0_20px_rgba(244,63,94,0.6)] backdrop-blur-xl">
+              ⚠️ WRONG WAY! TURN AROUND
             </div>
           )}
-
-          {/* Position Badge */}
-          <div className="pointer-events-auto flex items-center gap-2.5 rounded-2xl border border-cyan-500/35 bg-slate-900/85 px-4 py-2 backdrop-blur-xl shadow-xl">
-            <Trophy className="size-4 text-amber-400" />
-            <span className="font-display text-xl font-black text-white">
-              {rank === 1 ? "1st" : rank === 2 ? "2nd" : rank === 3 ? "3rd" : `${rank}th`}
-            </span>
-            <span className="font-mono text-[0.65rem] text-slate-400 font-medium">
-              / {totalRacers}
-            </span>
-          </div>
         </div>
 
-        {/* Right: Lap Counter & Quick Toggles */}
-        <div className="flex flex-col items-end gap-2">
-          <div className="pointer-events-auto rounded-2xl border border-white/10 bg-slate-900/85 px-4 py-2.5 backdrop-blur-xl shadow-xl text-right">
-            <p className="font-mono text-[0.6rem] font-bold uppercase tracking-widest text-slate-400">
-              Lap Progress
-            </p>
-            <p className="font-display text-2xl font-black text-cyan-400">
-              {Math.min(lap, maxLaps)}{" "}
-              <span className="text-sm font-normal text-slate-400">/ {maxLaps}</span>
-            </p>
-          </div>
+        {/* Right: Quick Action Buttons (Rotate Screen, Auto-Drive, Audio, Cam, Reset) */}
+        <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-1.5 max-w-[200px] sm:max-w-none">
+          {/* Rotate Screen / Landscape Mode Button */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              onToggleRotateScreen();
+            }}
+            aria-label="Rotate Screen to Landscape"
+            className="flex items-center gap-1.5 rounded-2xl border border-cyan-400/50 bg-cyan-950/80 px-2.5 py-1.5 text-cyan-300 shadow-xl backdrop-blur-xl active:scale-90 transition-all hover:bg-cyan-900"
+          >
+            {isLandscape ? (
+              <Minimize2 className="size-3.5 text-cyan-300" />
+            ) : (
+              <RotateCcw className="size-3.5 text-cyan-300" />
+            )}
+            <span className="font-mono text-[0.6rem] font-bold uppercase tracking-wider">
+              {isLandscape ? "Exit Full" : "Rotate"}
+            </span>
+          </button>
 
-          {/* Action Quick Buttons */}
-          <div className="pointer-events-auto flex items-center gap-1.5 rounded-2xl border border-white/10 bg-slate-900/85 p-1.5 backdrop-blur-xl shadow-xl">
-            {/* AI Toggle */}
+          {/* Auto Gas Toggle (Mobile & Tablet) */}
+          {controlsMode === "touch" && (
             <button
               type="button"
-              onClick={onToggleAI}
-              className={`flex size-8 items-center justify-center rounded-xl transition ${
-                hasAI
-                  ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/40"
-                  : "bg-white/5 text-slate-400 hover:bg-white/15"
+              onClick={() => {
+                triggerHaptic();
+                onToggleAutoDrive();
+              }}
+              aria-label="Toggle Auto Drive"
+              className={`flex items-center gap-1 rounded-2xl border px-2.5 py-1.5 font-mono text-[0.58rem] font-bold uppercase tracking-wider shadow-xl backdrop-blur-xl active:scale-90 transition-all ${
+                autoDrive
+                  ? "border-emerald-400/50 bg-emerald-950/80 text-emerald-300"
+                  : "border-slate-700 bg-slate-900/80 text-slate-400"
               }`}
-              title={hasAI ? "AI Rivals Active (Click to toggle)" : "Add AI Rivals"}
             >
-              <Bot className="size-4" />
+              <Zap className="size-3 text-emerald-400" />
+              <span>Auto Gas: {autoDrive ? "ON" : "OFF"}</span>
             </button>
+          )}
 
-            {/* Camera View Toggle */}
-            <button
-              type="button"
-              onClick={onToggleCamera}
-              className="flex size-8 items-center justify-center rounded-xl bg-white/5 text-slate-300 hover:bg-white/15 hover:text-white transition"
-              title={`Camera: ${cameraMode} (C)`}
-            >
-              <Camera className="size-4" />
-            </button>
+          {/* Reset Car Facing Forward */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              onResetCar();
+            }}
+            aria-label="Reset Car on Track"
+            className="flex size-9 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/85 text-slate-300 shadow-xl backdrop-blur-xl active:scale-90 transition-all hover:text-white"
+          >
+            <RotateCcw className="size-3.5" />
+          </button>
 
-            {/* Mute Toggle */}
-            <button
-              type="button"
-              onClick={onToggleMute}
-              className="flex size-8 items-center justify-center rounded-xl bg-white/5 text-slate-300 hover:bg-white/15 hover:text-white transition"
-              title="Toggle Audio (M)"
-            >
-              {isMuted ? (
-                <VolumeX className="size-4 text-rose-400" />
-              ) : (
-                <Volume2 className="size-4 text-cyan-400" />
-              )}
-            </button>
+          {/* Toggle Camera Perspective */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              onToggleCamera();
+            }}
+            aria-label="Toggle Camera View"
+            className="flex size-9 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/85 text-slate-300 shadow-xl backdrop-blur-xl active:scale-90 transition-all hover:text-white"
+          >
+            <Camera className="size-3.5" />
+          </button>
 
-            {/* Reset Car */}
-            <button
-              type="button"
-              onClick={onResetCar}
-              className="flex size-8 items-center justify-center rounded-xl bg-white/5 text-slate-300 hover:bg-white/15 hover:text-white transition"
-              title="Reset Car on Track (R)"
-            >
-              <RotateCcw className="size-4 text-amber-400" />
-            </button>
-          </div>
+          {/* Toggle Sound Mute */}
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic();
+              onToggleMute();
+            }}
+            aria-label="Toggle Audio Mute"
+            className="flex size-9 items-center justify-center rounded-2xl border border-white/10 bg-slate-900/85 text-slate-300 shadow-xl backdrop-blur-xl active:scale-90 transition-all hover:text-white"
+          >
+            {isMuted ? (
+              <VolumeX className="size-3.5 text-rose-400" />
+            ) : (
+              <Volume2 className="size-3.5 text-cyan-400" />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* ---------------- SPEEDOMETER & NITRO GAUGE (BOTTOM RIGHT) ---------------- */}
-      <div className="pointer-events-none absolute bottom-4 right-4 z-20 flex flex-col items-end gap-2">
-        <div className="pointer-events-auto flex items-center gap-4 rounded-3xl border border-cyan-500/30 bg-slate-950/90 p-4 backdrop-blur-2xl shadow-2xl">
-          {/* Gear Indicator */}
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-slate-900/85 size-14 shadow-inner">
-            <span className="font-mono text-[0.52rem] font-bold uppercase tracking-wider text-slate-400">
-              Gear
-            </span>
-            <span className="font-mono text-2xl font-black text-cyan-400">{gear}</span>
-          </div>
-
-          {/* Speed Readout */}
-          <div className="flex flex-col">
-            <div className="flex items-baseline gap-1.5">
+      {/* ---------------- DIGITAL SPEEDOMETER & NITRO GAUGE (BOTTOM RIGHT) ---------------- */}
+      <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:flex items-end gap-3">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/85 p-3.5 backdrop-blur-xl shadow-2xl flex items-center gap-3.5">
+          <div>
+            <div className="flex items-baseline gap-1">
               <span className="font-mono text-4xl font-black tracking-tight text-white">
                 {speedKmh}
               </span>
-              <span className="font-mono text-[0.65rem] font-bold text-slate-400 uppercase">
+              <span className="font-mono text-[0.65rem] font-bold text-slate-400">
                 KM/H
               </span>
             </div>
-            {/* Speed Arc Bar */}
-            <div className="mt-1.5 h-2 w-32 overflow-hidden rounded-full bg-slate-800">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 transition-all duration-75"
-                style={{ width: `${Math.min(100, (speedKmh / 145) * 100)}%` }}
-              />
+            <div className="mt-0.5 flex items-center gap-2 font-mono text-[0.62rem] text-slate-400">
+              <span>GEAR: <b className="text-cyan-400 font-extrabold">{gear}</b></span>
             </div>
           </div>
 
-          {/* Nitro Fuel Tank */}
-          <div className="flex flex-col items-center gap-1 pl-3 border-l border-white/10">
+          {/* Nitro Tank Meter */}
+          <div className="flex flex-col items-center gap-1 border-l border-white/10 pl-3">
             <Flame
               className={`size-4 ${
                 nitroPercent > 20 ? "text-cyan-400 animate-pulse" : "text-slate-600"
@@ -264,46 +321,46 @@ export function RaceHUD({
         </div>
       </div>
 
-      {/* ---------------- 2D CIRCUIT RADAR / MINIMAP (BOTTOM LEFT) ---------------- */}
-      <div className="pointer-events-none absolute bottom-4 left-4 z-20 hidden sm:block">
+      {/* ---------------- 2D GRAND PRIX RADAR / MINIMAP (BOTTOM LEFT) ---------------- */}
+      <div className="pointer-events-none absolute bottom-4 left-4 z-20 hidden md:block">
         <div className="rounded-3xl border border-white/10 bg-slate-950/85 p-3.5 backdrop-blur-xl shadow-2xl">
           <div className="flex items-center justify-between mb-1.5">
             <p className="font-mono text-[0.58rem] font-bold uppercase tracking-widest text-slate-400">
-              Track Radar
+              Grand Prix Circuit Radar
             </p>
             <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
-          <svg className="w-40 h-24 overflow-visible" viewBox="-42 -26 84 52">
-            {/* Grand Prix track tarmac base */}
+          <svg className="w-44 h-28 overflow-visible" viewBox="-185 -115 350 195">
+            {/* Asphalt Track Outline */}
             <path
-              d="M -16.5 -14.8 L 16.5 -14.8 A 14.8 14.8 0 0 1 16.5 14.8 L -16.5 14.8 A 14.8 14.8 0 0 1 -16.5 -14.8 Z"
+              d={radarPath}
               fill="none"
               stroke="#1e293b"
-              strokeWidth="8"
+              strokeWidth="16"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            {/* Neon centerline path */}
+            {/* Neon Cyan Circuit Line */}
             <path
-              d="M -16.5 -14.8 L 16.5 -14.8 A 14.8 14.8 0 0 1 16.5 14.8 L -16.5 14.8 A 14.8 14.8 0 0 1 -16.5 -14.8 Z"
+              d={radarPath}
               fill="none"
               stroke="#06b6d4"
-              strokeWidth="2"
-              strokeOpacity="0.9"
+              strokeWidth="3.5"
+              strokeOpacity="0.85"
             />
             {/* Checkered Start Line */}
-            <line x1="0" y1="-18.8" x2="0" y2="-10.8" stroke="#ffffff" strokeWidth="2.5" />
+            <line x1="0" y1="-95" x2="0" y2="-75" stroke="#ffffff" strokeWidth="3" />
 
             {/* Remote Players */}
             {remoteRacers.map((rp) => (
               <circle
                 key={rp.id}
-                cx={rp.x * 0.38}
-                cy={rp.z * 0.38}
-                r="2.5"
+                cx={rp.x}
+                cy={rp.z}
+                r="4.5"
                 fill={rp.color}
                 stroke="#ffffff"
-                strokeWidth="0.8"
+                strokeWidth="1.2"
               />
             ))}
 
@@ -311,118 +368,187 @@ export function RaceHUD({
             {aiBots.map((bot) => (
               <circle
                 key={bot.id}
-                cx={bot.x * 0.38}
-                cy={bot.z * 0.38}
-                r="2.4"
+                cx={bot.x}
+                cy={bot.z}
+                r="4.2"
                 fill={bot.color}
                 stroke="#090d16"
-                strokeWidth="0.8"
+                strokeWidth="1.2"
               />
             ))}
 
             {/* Local Player Blip */}
             <circle
-              cx={playerPos.x * 0.38}
-              cy={playerPos.z * 0.38}
-              r="3.5"
+              cx={playerPos.x}
+              cy={playerPos.z}
+              r="5.5"
               fill="#38bdf8"
               stroke="#ffffff"
-              strokeWidth="1.6"
+              strokeWidth="2.0"
             />
           </svg>
         </div>
       </div>
 
-      {/* ---------------- TOUCH SCREEN DRIVE CONTROLS (MOBILE & TABLET) ---------------- */}
+      {/* ---------------- TOUCH SCREEN DRIVE CONTROLS (EASY & ERGONOMIC) ---------------- */}
       {controlsMode === "touch" && (
-        <div className="pointer-events-none absolute inset-x-2.5 bottom-2.5 z-20 flex items-end justify-between select-none">
-          {/* Left Thumb: Ergonomic Curved Steering D-Pad */}
-          <div className="pointer-events-auto flex items-center gap-2 rounded-3xl border border-white/10 bg-slate-950/80 p-1.5 shadow-2xl backdrop-blur-xl">
+        <div className="pointer-events-none absolute inset-x-2 bottom-3 z-30 flex items-end justify-between select-none">
+          {/* Left Thumb: Extra Large Steering D-Pad */}
+          <div className="pointer-events-auto flex items-center gap-2 rounded-3xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl backdrop-blur-xl">
             <button
               type="button"
               aria-label="Steer Left"
-              className="flex size-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchLeftStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchLeftEnd(); }}
+              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                triggerHaptic();
+                onTouchLeftStart();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onTouchLeftEnd();
+              }}
               onTouchCancel={() => onTouchLeftEnd()}
-              onMouseDown={() => onTouchLeftStart()}
+              onMouseDown={() => {
+                triggerHaptic();
+                onTouchLeftStart();
+              }}
               onMouseUp={() => onTouchLeftEnd()}
               onMouseLeave={() => onTouchLeftEnd()}
             >
-              <ArrowLeft className="size-8" strokeWidth={2.5} />
+              <ArrowLeft className="size-9" strokeWidth={3} />
             </button>
             <button
               type="button"
               aria-label="Steer Right"
-              className="flex size-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchRightStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchRightEnd(); }}
+              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-500/40 bg-slate-900/90 text-white shadow-xl active:scale-90 active:bg-cyan-500 active:text-black transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                triggerHaptic();
+                onTouchRightStart();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onTouchRightEnd();
+              }}
               onTouchCancel={() => onTouchRightEnd()}
-              onMouseDown={() => onTouchRightStart()}
+              onMouseDown={() => {
+                triggerHaptic();
+                onTouchRightStart();
+              }}
               onMouseUp={() => onTouchRightEnd()}
               onMouseLeave={() => onTouchRightEnd()}
             >
-              <ArrowRight className="size-8" strokeWidth={2.5} />
+              <ArrowRight className="size-9" strokeWidth={3} />
             </button>
           </div>
 
-          {/* Right Thumb: Ergonomic Pedals & Powerslide Cluster */}
-          <div className="pointer-events-auto flex items-end gap-2 rounded-3xl border border-white/10 bg-slate-950/80 p-1.5 shadow-2xl backdrop-blur-xl">
+          {/* Right Thumb: Easy Action Buttons (Big Nitro, Brake & Drift) */}
+          <div className="pointer-events-auto flex items-end gap-2.5 rounded-3xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl backdrop-blur-xl">
+            {/* Powerslide Drift Button */}
             <button
               type="button"
-              aria-label="Drift"
-              className="flex size-13 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.62rem] font-black uppercase text-amber-300 shadow-lg active:scale-90 active:bg-amber-400 active:text-black transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchDriftStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchDriftEnd(); }}
+              aria-label="Powerslide Drift"
+              className="flex size-14 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.68rem] font-black uppercase text-amber-300 shadow-lg active:scale-90 active:bg-amber-400 active:text-black transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                triggerHaptic();
+                onTouchDriftStart();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onTouchDriftEnd();
+              }}
               onTouchCancel={() => onTouchDriftEnd()}
-              onMouseDown={() => onTouchDriftStart()}
+              onMouseDown={() => {
+                triggerHaptic();
+                onTouchDriftStart();
+              }}
               onMouseUp={() => onTouchDriftEnd()}
               onMouseLeave={() => onTouchDriftEnd()}
             >
               DRIFT
             </button>
 
+            {/* BIG NITRO BUTTON */}
             <button
               type="button"
-              aria-label="Nitro Boost"
-              className="flex size-13 items-center justify-center rounded-2xl border border-cyan-400/50 bg-cyan-500/25 font-mono text-[0.62rem] font-black uppercase text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.3)] active:scale-90 active:bg-cyan-400 active:text-black transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchNitroStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchNitroEnd(); }}
+              aria-label="Nitro Turbo Boost"
+              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-cyan-400/60 bg-gradient-to-t from-cyan-600/40 to-cyan-500/40 font-mono text-xs font-black uppercase text-cyan-200 shadow-[0_0_25px_rgba(6,182,212,0.4)] active:scale-90 active:bg-cyan-400 active:text-black transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                triggerHaptic();
+                onTouchNitroStart();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onTouchNitroEnd();
+              }}
               onTouchCancel={() => onTouchNitroEnd()}
-              onMouseDown={() => onTouchNitroStart()}
+              onMouseDown={() => {
+                triggerHaptic();
+                onTouchNitroStart();
+              }}
               onMouseUp={() => onTouchNitroEnd()}
               onMouseLeave={() => onTouchNitroEnd()}
             >
-              NITRO
+              <div className="flex flex-col items-center">
+                <Flame className="size-6 text-cyan-300 animate-pulse" />
+                <span className="mt-0.5 text-[0.62rem]">NITRO</span>
+              </div>
             </button>
 
+            {/* BRAKE & REVERSE BUTTON */}
             <button
               type="button"
               aria-label="Brake and Reverse"
-              className="flex size-15 items-center justify-center rounded-2xl border border-rose-500/40 bg-rose-500/25 text-rose-400 shadow-xl active:scale-90 active:bg-rose-500 active:text-white transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchBrakeStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchBrakeEnd(); }}
+              className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-rose-500/50 bg-gradient-to-t from-rose-600/35 to-rose-500/35 text-rose-300 shadow-xl active:scale-90 active:bg-rose-500 active:text-white transition-all"
+              onTouchStart={(e) => {
+                e.preventDefault();
+                triggerHaptic();
+                onTouchBrakeStart();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                onTouchBrakeEnd();
+              }}
               onTouchCancel={() => onTouchBrakeEnd()}
-              onMouseDown={() => onTouchBrakeStart()}
+              onMouseDown={() => {
+                triggerHaptic();
+                onTouchBrakeStart();
+              }}
               onMouseUp={() => onTouchBrakeEnd()}
               onMouseLeave={() => onTouchBrakeEnd()}
             >
-              <ArrowDown className="size-7" strokeWidth={2.5} />
+              <ArrowDown className="size-8" strokeWidth={3} />
             </button>
 
-            <button
-              type="button"
-              aria-label="Gas Accelerator"
-              className="flex size-18 items-center justify-center rounded-2xl border border-emerald-400/50 bg-gradient-to-t from-emerald-600/40 to-emerald-500/40 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-90 active:bg-emerald-400 active:text-black transition-all"
-              onTouchStart={(e) => { e.preventDefault(); onTouchGasStart(); }}
-              onTouchEnd={(e) => { e.preventDefault(); onTouchGasEnd(); }}
-              onTouchCancel={() => onTouchGasEnd()}
-              onMouseDown={() => onTouchGasStart()}
-              onMouseUp={() => onTouchGasEnd()}
-              onMouseLeave={() => onTouchGasEnd()}
-            >
-              <ArrowUp className="size-9" strokeWidth={3} />
-            </button>
+            {/* MANUAL GAS PEDAL (Only displayed if Auto-Drive is turned OFF) */}
+            {!autoDrive && (
+              <button
+                type="button"
+                aria-label="Gas Accelerator"
+                className="flex size-18 sm:size-20 items-center justify-center rounded-2xl border-2 border-emerald-400/60 bg-gradient-to-t from-emerald-600/45 to-emerald-500/45 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] active:scale-90 active:bg-emerald-400 active:text-black transition-all"
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  triggerHaptic();
+                  onTouchGasStart();
+                }}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  onTouchGasEnd();
+                }}
+                onTouchCancel={() => onTouchGasEnd()}
+                onMouseDown={() => {
+                  triggerHaptic();
+                  onTouchGasStart();
+                }}
+                onMouseUp={() => onTouchGasEnd()}
+                onMouseLeave={() => onTouchGasEnd()}
+              >
+                <ArrowUp className="size-9" strokeWidth={3} />
+              </button>
+            )}
           </div>
         </div>
       )}

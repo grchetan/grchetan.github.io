@@ -2,7 +2,7 @@
  * Cyber Circuit — Intelligent Autonomous Racing AI Rivals
  */
 
-import { TRACK_CONFIG, TRACK_GATES, TOTAL_GATES, resolveTrackBorders } from "./race-physics";
+import { TRACK_CONFIG, TRACK_GATES, TOTAL_GATES, resolveTrackBorders, START_GRID_POS } from "./race-physics";
 import * as THREE from "three";
 
 export interface AIRival {
@@ -46,14 +46,11 @@ export const AI_BOT_PROFILES = [
 ];
 
 export function createAIRivals(): AIRival[] {
-  const L = TRACK_CONFIG.straightLength / 2;
-  const R = TRACK_CONFIG.curveRadius;
-
   return AI_BOT_PROFILES.map((bot, idx) => {
-    // Stagger starting grid positions behind player
-    const gridSpacing = 6.5;
-    const startX = -4 - (idx + 1) * gridSpacing;
-    const startZ = -R + bot.offset;
+    // Stagger starting grid positions behind player on Main Straight (z = -85)
+    const gridSpacing = 8.5;
+    const startX = -8 - (idx + 1) * gridSpacing;
+    const startZ = START_GRID_POS.z + bot.offset;
 
     return {
       id: `ai-bot-${idx + 1}`,
@@ -106,7 +103,7 @@ export function updateAIRivals(
     while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
 
     // Steering toward target
-    const maxSteerSpeed = 3.2 * d;
+    const maxSteerSpeed = 3.4 * d;
     const steerChange = Math.max(-maxSteerSpeed, Math.min(maxSteerSpeed, angleDiff));
     const rotation = bot.rotation + steerChange;
 
@@ -114,42 +111,35 @@ export function updateAIRivals(
     const turnSharpness = Math.abs(angleDiff);
     let targetSpeed = bot.topSpeed * bot.skillFactor;
 
-    if (turnSharpness > 0.4) {
-      // Brake into turn
+    if (turnSharpness > 0.45) {
+      // Brake into sharp turn
       targetSpeed *= 0.65;
     }
 
-    // Car avoidance: check distance to player
-    const distToPlayer = Math.hypot(playerX - bot.x, playerZ - bot.z);
-    if (distToPlayer < 3.8) {
-      // Slow slightly to prevent hard clipping
-      targetSpeed *= 0.85;
-    }
-
-    // Accelerate or decelerate toward target speed
+    // Accelerate or coast to target speed
     let speed = bot.speed;
     if (speed < targetSpeed) {
-      speed += 32 * d;
+      speed += 36 * d;
     } else {
-      speed -= 30 * d;
+      speed -= 42 * d;
     }
 
-    // Translate AI position
+    // Move forward
     const vx = Math.sin(rotation) * speed;
     const vz = Math.cos(rotation) * speed;
-    let x = bot.x + vx * d;
-    let z = bot.z + vz * d;
+    let nextX = bot.x + vx * d;
+    let nextZ = bot.z + vz * d;
 
-    // Boundary resolution
-    const borderRes = resolveTrackBorders(x, z, speed, rotation);
-    x = borderRes.x;
-    z = borderRes.z;
-    speed = borderRes.speed;
+    // Border containment
+    const res = resolveTrackBorders(nextX, nextZ, speed, rotation);
+    nextX = res.x;
+    nextZ = res.z;
+    speed = res.speed;
 
-    // Checkpoint passage
+    // Checkpoint gate passing
     let checkpoint = bot.checkpoint;
     let lap = bot.lap;
-    if (distToTarget < 9.5) {
+    if (distToTarget < 12.0) {
       checkpoint = targetIdx;
       if (checkpoint === 0) {
         lap += 1;
@@ -158,11 +148,11 @@ export function updateAIRivals(
 
     return {
       ...bot,
-      x,
-      z,
+      x: nextX,
+      z: nextZ,
       rotation,
       speed,
-      steerAngle: steerChange * 4,
+      steerAngle: steerChange * 2.5,
       checkpoint,
       lap,
     };

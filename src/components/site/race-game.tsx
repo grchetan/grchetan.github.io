@@ -21,6 +21,7 @@ import {
   TRACK_CONFIG,
   TRACK_GATES,
   TOTAL_GATES,
+  START_GRID_POS,
   stepCarPhysics,
   type CarPhysicsState,
   type DriveInputs,
@@ -394,13 +395,13 @@ export function RaceGame({
   onFinish: (totalTime: number, bestLap: number) => void;
 }) {
   const localPlayer = room.players[player.id]!;
-  const R = TRACK_CONFIG.curveRadius;
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Initial starting state
+  // Initial starting state on Main Straight (z = -85)
   const initialPhysicsState: CarPhysicsState = {
-    x: 0,
-    z: -R,
-    rotation: Math.PI / 2, // Facing forward (+X)
+    x: START_GRID_POS.x,
+    z: START_GRID_POS.z,
+    rotation: START_GRID_POS.rotation,
     speed: 0,
     steerAngle: 0,
     isDrifting: false,
@@ -431,6 +432,8 @@ export function RaceGame({
   const [cameraMode, setCameraMode] = useState<"chase" | "bumper" | "top">("chase");
   const [isMuted, setIsMuted] = useState(raceAudio.isMuted);
   const [hasAI, setHasAI] = useState(true);
+  const [autoDrive, setAutoDrive] = useState(true); // Default to Auto-Gas on mobile for effortless driving!
+  const [isLandscape, setIsLandscape] = useState(false);
 
   // HUD Render State (Throttled for silky 60fps)
   const [hudState, setHudState] = useState({
@@ -467,6 +470,31 @@ export function RaceGame({
       setControlsMode("touch");
     }
   }, []);
+
+  // Screen Rotate & Fullscreen Landscape Toggle
+  const handleToggleRotateScreen = useCallback(async () => {
+    try {
+      if (!isLandscape) {
+        if (containerRef.current?.requestFullscreen) {
+          await containerRef.current.requestFullscreen().catch(() => {});
+        }
+        if (window.screen?.orientation && "lock" in window.screen.orientation) {
+          await (window.screen.orientation as any).lock("landscape").catch(() => {});
+        }
+        setIsLandscape(true);
+      } else {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen().catch(() => {});
+        }
+        if (window.screen?.orientation && "unlock" in window.screen.orientation) {
+          window.screen.orientation.unlock();
+        }
+        setIsLandscape(false);
+      }
+    } catch {
+      setIsLandscape((prev) => !prev);
+    }
+  }, [isLandscape]);
 
   // Keyboard Event Listeners with window.blur cleanup
   useEffect(() => {
@@ -544,7 +572,15 @@ export function RaceGame({
       if (finishedRef.current) return;
 
       const current = physicsRef.current;
-      const inputs = inputsRef.current;
+      const rawInputs = inputsRef.current;
+      const inputs: DriveInputs = { ...rawInputs };
+
+      // Auto-Drive mode: automatically accelerates forward on touch devices unless braking/reversing
+      if (autoDrive && controlsMode === "touch") {
+        if (!rawInputs.brake) {
+          inputs.gas = true;
+        }
+      }
 
       // 1. Step Player Car Physics
       const { next, gateCrossed, lapIncremented, barrierHit } = stepCarPhysics(current, inputs, delta);
@@ -672,17 +708,22 @@ export function RaceGame({
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-[2.2rem] border border-cyan-500/25 bg-slate-950 shadow-[0_0_60px_rgba(6,182,212,0.18)] select-none"
+      ref={containerRef}
+      className={
+        isLandscape
+          ? "fixed inset-0 z-50 h-screen w-screen bg-slate-950 select-none overflow-hidden"
+          : "relative w-full overflow-hidden rounded-[2.2rem] border border-cyan-500/25 bg-slate-950 shadow-[0_0_60px_rgba(6,182,212,0.18)] select-none"
+      }
       onClick={() => raceAudio.resume()}
     >
       {/* 3D WebGL Canvas */}
-      <div className="h-[72vh] min-h-[500px] w-full">
+      <div className={isLandscape ? "h-screen w-screen" : "h-[74vh] min-h-[500px] w-full"}>
         <Canvas
-          camera={{ position: [0, 9, -R - 14], fov: 60 }}
+          camera={{ position: [0, 9, START_GRID_POS.z - 14], fov: 60 }}
           gl={{ powerPreference: "high-performance", antialias: true }}
           dpr={[1, 1.5]}
         >
-          <fog attach="fog" args={["#020617", 50, 380]} />
+          <fog attach="fog" args={["#020617", 50, 480]} />
           <ambientLight intensity={0.65} />
           <directionalLight position={[65, 85, 45]} intensity={1.6} castShadow />
           <pointLight position={[0, 30, 0]} intensity={1.2} color="#38bdf8" />
@@ -741,6 +782,8 @@ export function RaceGame({
         isMuted={isMuted}
         controlsMode={controlsMode}
         hasAI={hasAI}
+        autoDrive={autoDrive}
+        isLandscape={isLandscape}
         playerPos={{ x: physicsRef.current.x, z: physicsRef.current.z }}
         remoteRacers={remotePlayersList.map((rp) => ({
           id: rp.id,
@@ -755,6 +798,8 @@ export function RaceGame({
         onToggleMute={() => setIsMuted(raceAudio.toggleMute())}
         onResetCar={handleResetCar}
         onToggleAI={() => setHasAI((prev) => !prev)}
+        onToggleAutoDrive={() => setAutoDrive((prev) => !prev)}
+        onToggleRotateScreen={handleToggleRotateScreen}
         onTouchGasStart={() => (inputsRef.current.gas = true)}
         onTouchGasEnd={() => (inputsRef.current.gas = false)}
         onTouchBrakeStart={() => (inputsRef.current.brake = true)}
