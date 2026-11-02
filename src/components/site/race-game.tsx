@@ -335,8 +335,9 @@ function CyberCameraRig({
   mode: "chase" | "bumper" | "top";
 }) {
   const { camera } = useThree();
-  const currentPos = useRef(new THREE.Vector3(0, 10, -TRACK_CONFIG.curveRadius - 12));
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, -TRACK_CONFIG.curveRadius));
+  // Start camera behind the grid: START_GRID_POS.z = -85, so camera at z = -85 - 14 = -99
+  const currentPos = useRef(new THREE.Vector3(0, 10, -99));
+  const currentLookAt = useRef(new THREE.Vector3(0, 0, -85));
 
   useFrame((_, delta) => {
     const target = getTarget();
