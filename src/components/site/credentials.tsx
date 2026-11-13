@@ -5,6 +5,7 @@ import { Counter, RegMark, Rule, Section, SectionHeading } from "@/components/si
 import { useCredentials } from "@/lib/credentials";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -115,8 +116,11 @@ function CertificateLightbox({
 
   /* lock scroll */
   useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
   }, []);
 
   return (
@@ -125,7 +129,7 @@ function CertificateLightbox({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 isolate select-none overflow-y-auto overscroll-contain"
       onClick={onClose}
     >
       {/* Backdrop */}
@@ -137,7 +141,7 @@ function CertificateLightbox({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.93, y: 20 }}
         transition={{ duration: 0.35, ease }}
-        className="relative z-10 w-full max-w-3xl"
+        className="relative z-10 w-full max-w-3xl my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Card */}
@@ -291,6 +295,11 @@ export function CertificateWall() {
   const { data, isLoading } = useCredentials();
   const certs = data?.certificates ?? [];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Section id="certificates">
@@ -359,16 +368,20 @@ export function CertificateWall() {
       )}
       {!isLoading && !certs.length ? <p className="caption mt-10">No certificates uploaded yet.</p> : null}
 
-      {/* Lightbox Portal */}
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <CertificateLightbox
-            certs={certs}
-            index={lightboxIndex}
-            onClose={() => setLightboxIndex(null)}
-          />
+      {/* Lightbox Portal — mounted directly in document.body to escape Section stacking context */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {lightboxIndex !== null && (
+              <CertificateLightbox
+                certs={certs}
+                index={lightboxIndex}
+                onClose={() => setLightboxIndex(null)}
+              />
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </Section>
   );
 }
