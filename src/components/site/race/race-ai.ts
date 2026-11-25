@@ -1,9 +1,16 @@
 /**
- * Cyber Circuit — Intelligent Autonomous Racing AI Rivals
+ * Horizon Grand Prix — Spline Look-Ahead Racing AI Rivals
  */
 
-import { TRACK_CONFIG, TRACK_GATES, TOTAL_GATES, resolveTrackBorders, START_GRID_POS } from "./race-physics";
-import * as THREE from "three";
+import {
+  CIRCUIT_SAMPLES,
+  SAMPLE_COUNT,
+  TRACK_GATES,
+  TOTAL_GATES,
+  checkGateCrossing,
+  getStartingGridPos,
+  resolveTrackBorders,
+} from "./race-physics";
 
 export interface AIRival {
   id: string;
@@ -16,135 +23,167 @@ export interface AIRival {
   steerAngle: number;
   checkpoint: number;
   lap: number;
-  targetOffset: number; // racing line preference (-3 to +3 across track)
-  skillFactor: number; // 0.85 to 1.15
+  progress: number;
+  nearestSampleIdx: number;
+  targetOffset: number;
+  skillFactor: number;
   topSpeed: number;
+  isBraking: boolean;
+  isBoosting: boolean;
 }
 
 export const AI_BOT_PROFILES = [
   {
     name: "Apex Phantom",
-    color: "#f59e0b", // Amber gold
-    skillFactor: 1.05,
-    topSpeed: 46,
-    offset: -1.8,
+    color: "#f59e0b",
+    skillFactor: 1.03,
+    topSpeed: 54,
+    offset: -3.2,
   },
   {
     name: "Neon Drift",
-    color: "#ec4899", // Cyber Magenta
-    skillFactor: 0.98,
-    topSpeed: 43,
-    offset: 2.2,
+    color: "#ec4899",
+    skillFactor: 0.96,
+    topSpeed: 51,
+    offset: 3.4,
   },
   {
     name: "Viper Shadow",
-    color: "#10b981", // Emerald Neon
-    skillFactor: 0.92,
-    topSpeed: 40,
-    offset: 0.5,
+    color: "#10b981",
+    skillFactor: 0.9,
+    topSpeed: 47,
+    offset: 0.2,
   },
 ];
 
 export function createAIRivals(): AIRival[] {
   return AI_BOT_PROFILES.map((bot, idx) => {
-    // Stagger starting grid positions behind player on Main Straight (z = -85)
-    const gridSpacing = 8.5;
-    const startX = -8 - (idx + 1) * gridSpacing;
-    const startZ = START_GRID_POS.z + bot.offset;
-
+    const pos = getStartingGridPos(idx + 1);
     return {
       id: `ai-bot-${idx + 1}`,
       name: bot.name,
       color: bot.color,
-      x: startX,
-      z: startZ,
-      rotation: Math.PI / 2, // Facing forward (+X)
+      x: pos.x,
+      z: pos.z,
+      rotation: pos.rotation,
       speed: 0,
       steerAngle: 0,
       checkpoint: 0,
       lap: 1,
+      progress: -5 - idx * 2,
+      nearestSampleIdx: SAMPLE_COUNT - 3 - idx * 2,
       targetOffset: bot.offset,
       skillFactor: bot.skillFactor,
       topSpeed: bot.topSpeed,
+      isBraking: false,
+      isBoosting: false,
     };
   });
 }
 
-/** Step all AI bots forward along the circuit waypoint spline */
+/** Step all AI bots smoothly along the 360-point spline look-ahead racing line */
 export function updateAIRivals(
   bots: AIRival[],
   delta: number,
   playerX: number,
   playerZ: number
 ): AIRival[] {
-  const d = Math.min(0.08, Math.max(0.005, delta));
+  const d = Math.min(0.05, Math.max(0.004, delta));
 
-  return bots.map((bot) => {
-    // Current target checkpoint
-    const targetIdx = (bot.checkpoint + 1) % TOTAL_GATES;
-    const targetGate = TRACK_GATES[targetIdx]!;
+  return bots.map((bot, idx) => {
+    const prevX = bot.x;
+    const prevZ = bot.z;
 
-    // Offset waypoint along the gate normal for race line variation
-    const normAngle = targetGate.forwardAngle + Math.PI / 2;
-    const targetX = targetGate.x + Math.sin(normAngle) * bot.targetOffset;
-    const targetZ = targetGate.z + Math.cos(normAngle) * bot.targetOffset;
+    const lookIdx = (bot.nearestSampleIdx + 11) % SAMPLE_COUNT;
+    const lookSample = CIRCUIT_SAMPLES[lookIdx]!;
+    const farLookSample =
+      CIRCUIT_SAMPLES[(bot.nearestSampleIdx + 20) % SAMPLE_COUNT]!;
 
-    // Distance and angle to target
+    let avoidOffset = bot.targetOffset;
+    if (Math.hypot(bot.x - playerX, bot.z - playerZ) < 6.5) {
+      avoidOffset += idx % 2 === 0 ? -2.8 : 2.8;
+    }
+
+    const targetX = lookSample.x + lookSample.normalX * avoidOffset;
+    const targetZ = lookSample.z + lookSample.normalZ * avoidOffset;
+
     const dx = targetX - bot.x;
     const dz = targetZ - bot.z;
-    const distToTarget = Math.hypot(dx, dz);
-
-    // Desired heading angle
     const desiredAngle = Math.atan2(dx, dz);
 
-    // Calculate shortest angle delta
     let angleDiff = desiredAngle - bot.rotation;
     while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
     while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
 
-    // Steering toward target
-    const maxSteerSpeed = 3.4 * d;
-    const steerChange = Math.max(-maxSteerSpeed, Math.min(maxSteerSpeed, angleDiff));
-    const rotation = bot.rotation + steerChange;
+    const maxSteerRate = 3.8 * d;
+    const steerChange = Math.max(
+      -maxSteerRate,
+      Math.min(maxSteerRate, angleDiff)
+    );
+    let rotation = bot.rotation + steerChange;
 
-    // Throttle / Brake control based on corner sharpness
-    const turnSharpness = Math.abs(angleDiff);
+    const upcomingCurve = Math.max(
+      Math.abs(lookSample.curvature),
+      Math.abs(farLookSample.curvature)
+    );
     let targetSpeed = bot.topSpeed * bot.skillFactor;
-
-    if (turnSharpness > 0.45) {
-      // Brake into sharp turn
-      targetSpeed *= 0.65;
+    if (upcomingCurve > 0.25) {
+      targetSpeed *= 0.68;
+    } else if (upcomingCurve > 0.14) {
+      targetSpeed *= 0.84;
     }
 
-    // Accelerate or coast to target speed
     let speed = bot.speed;
+    let isBraking = false;
     if (speed < targetSpeed) {
-      speed += 36 * d;
+      speed += 42 * d;
     } else {
-      speed -= 42 * d;
+      isBraking = speed - targetSpeed > 4;
+      speed -= 48 * d;
     }
 
-    // Move forward
+    const isBoosting =
+      upcomingCurve < 0.08 &&
+      speed > 44 &&
+      (idx === 0 || Math.sin(Date.now() * 0.002 + idx) > 0.7);
+    if (isBoosting) {
+      speed = Math.min(targetSpeed * 1.18, speed + 14 * d);
+    }
+
     const vx = Math.sin(rotation) * speed;
     const vz = Math.cos(rotation) * speed;
     let nextX = bot.x + vx * d;
     let nextZ = bot.z + vz * d;
 
-    // Border containment
-    const res = resolveTrackBorders(nextX, nextZ, speed, rotation);
+    const res = resolveTrackBorders(
+      nextX,
+      nextZ,
+      speed,
+      rotation,
+      bot.nearestSampleIdx
+    );
     nextX = res.x;
     nextZ = res.z;
     speed = res.speed;
+    rotation = res.rotation;
 
-    // Checkpoint gate passing
+    const nextGateIdx = (bot.checkpoint + 1) % TOTAL_GATES;
+    const targetGate = TRACK_GATES[nextGateIdx]!;
     let checkpoint = bot.checkpoint;
     let lap = bot.lap;
-    if (distToTarget < 12.0) {
-      checkpoint = targetIdx;
+
+    if (checkGateCrossing(prevX, prevZ, nextX, nextZ, targetGate)) {
+      checkpoint = nextGateIdx;
       if (checkpoint === 0) {
         lap += 1;
       }
     }
+
+    let adjustedSample = res.nearestIdx;
+    if (lap === 1 && checkpoint === 0 && res.nearestIdx > SAMPLE_COUNT - 40) {
+      adjustedSample = res.nearestIdx - SAMPLE_COUNT;
+    }
+    const progress = (lap - 1) * SAMPLE_COUNT + adjustedSample;
 
     return {
       ...bot,
@@ -152,9 +191,13 @@ export function updateAIRivals(
       z: nextZ,
       rotation,
       speed,
-      steerAngle: steerChange * 2.5,
+      steerAngle: Math.max(-0.5, Math.min(0.5, steerChange * 12)),
       checkpoint,
       lap,
+      progress,
+      nearestSampleIdx: res.nearestIdx,
+      isBraking,
+      isBoosting,
     };
   });
 }

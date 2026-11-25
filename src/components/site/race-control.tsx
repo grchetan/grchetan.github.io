@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Flag, RefreshCw, Trophy, Users, Clock, Trash2, Ban } from "lucide-react";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
-import { type RaceRoom, type RaceResult } from "@/lib/race";
+import { getValidPlayers, type RaceRoom, type RaceResult } from "@/lib/race";
 import { cn } from "@/lib/utils";
 
 function fmt(ms?: number) {
@@ -95,18 +95,18 @@ function ActiveRoomsPanel() {
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-display text-xl tracking-[0.1em] text-ink">{room.code}</span>
-                  <span className={cn("rounded-full border px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-widest", phaseColor[room.phase] ?? phaseColor.finished)}>
+                  <span className={cn("rounded-full border px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-widest", phaseColor[room.phase] ?? phaseColor['finished'])}>
                     {room.phase}
                   </span>
                 </div>
                 <p className="caption mt-1">
-                  {Object.keys(room.players).length}/{room.settings.maxPlayers} players ·{" "}
+                  {getValidPlayers(room).length}/{room.settings.maxPlayers} players ·{" "}
                   {room.settings.laps} laps ·{" "}
                   Created {new Date(room.createdAt).toLocaleTimeString()}
                 </p>
-                {Object.keys(room.players).length > 0 && (
+                {getValidPlayers(room).length > 0 && (
                   <p className="mt-1 font-mono text-[0.68rem] text-ink-soft">
-                    {Object.values(room.players).map(p => p.name).join(", ")}
+                    {getValidPlayers(room).map(p => p.name).join(", ")}
                   </p>
                 )}
               </div>

@@ -1,13 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PageHero, SiteShell } from "@/components/site/shell";
 import { RaceGame } from "@/components/site/race-game";
-import { RaceLobby, RaceResults, type LobbyView } from "@/components/site/race-lobby";
+import {
+  RaceLobby,
+  RaceResults,
+  type LobbyView,
+} from "@/components/site/race-lobby";
 import { RaceLeaderboard } from "@/components/site/race/race-leaderboard";
 import { createPlayer, cleanInputName, cleanName, type Player } from "@/lib/arcade";
-import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Sparkles, Zap } from "lucide-react";
+import { UserPlus, Link as LinkIcon, Keyboard, Trophy, Zap } from "lucide-react";
 import { raceAudio } from "@/components/site/race/race-audio";
+import { getStartingGridPos } from "@/components/site/race/race-physics";
 import {
   createRaceRoom,
   finishRace,
@@ -19,13 +24,14 @@ import {
   startRace,
   subscribeRaceRoom,
   submitRaceResult,
-  updatePlayerState,
+  updateRoomSettings,
   type RaceRoom,
+  type RoomSettings,
 } from "@/lib/race";
 
-const title = "Chrome Circuit — Multiplayer mini 3D race | Chetan Prajapat";
+const title = "Horizon Circuit — Multiplayer 3D GP Race | Chetan Prajapat";
 const description =
-  "Create a room, invite friends with a 4-letter code, and race on a chrome-lit 3D track. Live leaderboard and lap records.";
+  "Create a room, invite friends with a 4-letter code, and race on a 1.92km Horizon Grand Prix 3D circuit. Live standings & lap records.";
 
 export const Route = createFileRoute("/race")({
   component: RacePage,
@@ -51,11 +57,20 @@ function RacePage() {
   const [nameInput, setNameInput] = useState("");
   const [isCreatingPlayer, setIsCreatingPlayer] = useState(false);
 
+  const stageRef = useRef<HTMLDivElement>(null);
+  const countdownTimerRef = useRef<number | null>(null);
+
   useEffect(() => {
     const existing = getRacePlayer();
     if (existing) {
       setPlayer(existing);
     }
+    return () => {
+      if (countdownTimerRef.current) {
+        window.clearTimeout(countdownTimerRef.current);
+      }
+      raceAudio.endSession();
+    };
   }, []);
 
   useEffect(() => {
@@ -63,6 +78,7 @@ function RacePage() {
     const unsub = subscribeRaceRoom(roomCode, (r) => {
       if (!r) {
         toast.error("Room closed or expired.");
+        raceAudio.endSession();
         setRoom(null);
         setRoomCode(null);
         setView("menu");
@@ -73,6 +89,27 @@ function RacePage() {
     });
     return () => unsub();
   }, [roomCode]);
+
+  // Safety fallback: if countdown started >3.4s ago, ensure room progresses cleanly
+  useEffect(() => {
+    if (
+      room &&
+      room.phase === "countdown" &&
+      room.countdownStartedAt &&
+      player &&
+      room.hostId === player.id
+    ) {
+      const remaining = Math.max(
+        50,
+        3000 - (Date.now() - room.countdownStartedAt)
+      );
+      const t = window.setTimeout(() => {
+        void startRace(room.code);
+      }, remaining);
+      return () => window.clearTimeout(t);
+    }
+    return undefined;
+  }, [room?.code, room?.phase, room?.countdownStartedAt, room?.hostId, player]);
 
   const ensurePlayer = async (customName?: string) => {
     if (player) return player;
@@ -88,7 +125,8 @@ function RacePage() {
       toast.success(`Welcome, ${p.name}!`);
       return p;
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Could not create player ID";
+      const msg =
+        err instanceof Error ? err.message : "Could not create player ID";
       toast.error(msg);
       throw err;
     } finally {
@@ -96,8 +134,14 @@ function RacePage() {
     }
   };
 
+  const scrollToStage = () => {
+    window.setTimeout(() => {
+      stageRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+  };
+
   const handleCreate = async () => {
-    raceAudio.resume();
+    raceAudio.endSession();
     const p = await ensurePlayer();
     const r = await createRaceRoom(p);
     setRoom(r);
@@ -107,25 +151,27 @@ function RacePage() {
   };
 
   const handleQuickRace = async (directName?: string) => {
-    raceAudio.resume();
+    raceAudio.startSession();
     const p = await ensurePlayer(directName);
+    const spawn = getStartingGridPos(0);
     const r: RaceRoom = {
       code: "SOLO",
       hostId: p.id,
       phase: "racing",
-      settings: { laps: 3, maxPlayers: 6 },
+      settings: { laps: 3, maxPlayers: 6, withAI: true },
       players: {
         [p.id]: {
           id: p.id,
           name: p.name,
           handle: p.handle,
           car: { color: "#38bdf8" },
-          x: 0,
-          z: -85,
-          rotation: Math.PI / 2,
+          x: spawn.x,
+          z: spawn.z,
+          rotation: spawn.rotation,
           speed: 0,
           lap: 1,
           checkpoint: 0,
+          progress: -6,
           finishedAt: null,
           bestLap: null,
           connectedAt: Date.now(),
@@ -138,10 +184,12 @@ function RacePage() {
     setRoom(r);
     setRoomCode(null);
     setView("room");
-    toast.success("Quick Race started! Race against AI rivals.");
+    scrollToStage();
+    toast.success("Quick Race started on 1.92km Horizon GP!");
   };
 
   const handleJoin = async (code: string) => {
+    raceAudio.endSession();
     const p = await ensurePlayer();
     const r = await joinRaceRoom(p, code);
     setRoom(r);
@@ -149,109 +197,101 @@ function RacePage() {
     setView("room");
   };
 
-  const handleStart = async () => {
-    if (!room) return;
-    await startCountdown(room.code);
-    window.setTimeout(() => startRace(room.code), 3000);
+  const handleUpdateSettings = async (patch: Partial<RoomSettings>) => {
+    if (!room || room.code === "SOLO") return;
+    await updateRoomSettings(room.code, patch);
   };
 
-  const handleLeave = async () => {
-    raceAudio.stopAll();
-    if (player && room) {
+  const handleStart = async () => {
+    if (!room) return;
+    raceAudio.startSession();
+    await startCountdown(room.code);
+    scrollToStage();
+    if (countdownTimerRef.current) window.clearTimeout(countdownTimerRef.current);
+    countdownTimerRef.current = window.setTimeout(() => {
+      void startRace(room.code);
+    }, 3000);
+  };
+
+  const handleLeave = useCallback(async () => {
+    raceAudio.endSession();
+    if (player && room && room.code !== "SOLO") {
       await leaveRaceRoom(player.id, room.code);
     }
     setRoom(null);
     setRoomCode(null);
     setView("menu");
-  };
+  }, [player, room]);
 
   const handleCopyCode = (code: string) => {
     void navigator.clipboard.writeText(code);
     toast.success("Room code copied!");
   };
 
-  const handleUpdate = (state: Partial<RaceRoom["players"][string]>) => {
-    if (!player || !room) return;
-    if (room.code === "SOLO") {
-      setRoom((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          players: {
-            ...prev.players,
-            [player.id]: {
-              ...prev.players[player.id]!,
-              ...state,
-            },
-          },
-        };
+  const handleFinish = useCallback(
+    async (totalTime: number, bestLap: number) => {
+      if (!player || !room) return;
+      await submitRaceResult({
+        playerId: player.id,
+        name: player.name,
+        handle: player.handle,
+        totalTime,
+        bestLap,
+        laps: room.settings.laps,
       });
-      return;
-    }
-    void updatePlayerState(room.code, player.id, state);
-  };
 
-  const handleFinish = async (totalTime: number, bestLap: number) => {
-    raceAudio.stopAll();
-    if (!player || !room) return;
-    await submitRaceResult({
-      playerId: player.id,
-      name: player.name,
-      handle: player.handle,
-      totalTime,
-      bestLap,
-      laps: room.settings.laps,
-    });
+      const results = room.results ?? [];
+      const existing = results.find((r) => r.playerId === player.id);
+      const nextResult = {
+        playerId: player.id,
+        name: player.name,
+        handle: player.handle,
+        totalTime,
+        bestLap,
+        rank: 0,
+      };
+      const nextResults = existing
+        ? results.map((r) => (r.playerId === player.id ? nextResult : r))
+        : [...results, nextResult];
+      if (room.code === "SOLO") {
+        setRoom((prev) =>
+          prev ? { ...prev, phase: "finished", results: [nextResult] } : null
+        );
+        return;
+      }
+      await finishRace(room.code, nextResults);
+    },
+    [player, room]
+  );
 
-    const localEntry = room.players[player.id];
-    const results = room.results ?? [];
-    const existing = results.find((r) => r.playerId === player.id);
-    const nextResult = {
-      playerId: player.id,
-      name: player.name,
-      handle: player.handle,
-      totalTime,
-      bestLap,
-      rank: 0,
-    };
-    const nextResults = existing
-      ? results.map((r) => (r.playerId === player.id ? nextResult : r))
-      : [...results, nextResult];
-    if (room.code === "SOLO") {
-      setRoom((prev) => (prev ? { ...prev, phase: "finished", results: [nextResult] } : null));
-      return;
-    }
-    await finishRace(room.code, nextResults);
-  };
-
-  const handlePlayAgain = () => {
-    raceAudio.stopAll();
+  const handlePlayAgain = useCallback(() => {
+    raceAudio.endSession();
     setRoomCode(null);
     setRoom(null);
     setView("menu");
-  };
+  }, []);
 
   const steps = [
     {
       num: "01",
       title: "Enter the Pits",
-      desc: "Pick a display name. We'll automatically generate a secure local player ID for you.",
+      desc: "Pick a display name or launch instant Quick Race in 1 tap.",
       icon: UserPlus,
       color: "from-cyan-500 to-blue-500",
       shadow: "shadow-cyan-500/10",
     },
     {
       num: "02",
-      title: "Room Lobby",
-      desc: "Create a new private grid or enter a 4-letter room code shared by a friend to join them.",
+      title: "Low-MS Multiplayer",
+      desc: "Create a room or enter a 4-letter code for direct P2P low-ping racing.",
       icon: LinkIcon,
       color: "from-blue-500 to-indigo-500",
       shadow: "shadow-blue-500/10",
     },
     {
       num: "03",
-      title: "Steer to Win",
-      desc: "Use WASD or Arrow Keys to steer your car. Mobile grids get automatic touch-button layout.",
+      title: "Desktop & Mobile Pro",
+      desc: "Desktop WASD/Arrows or Mobile Slide-Pad, Virtual Wheel & Tilt Gyro.",
       icon: Keyboard,
       color: "from-indigo-500 to-purple-500",
       shadow: "shadow-indigo-500/10",
@@ -259,7 +299,7 @@ function RacePage() {
     {
       num: "04",
       title: "Claim Records",
-      desc: "Complete the laps, set the fastest lap record, and climb the all-time live leaderboard.",
+      desc: "Hit boost pads, powerslide through apexes, and set fastest lap records.",
       icon: Trophy,
       color: "from-purple-500 to-rose-500",
       shadow: "shadow-purple-500/10",
@@ -270,14 +310,23 @@ function RacePage() {
 
   return (
     <SiteShell>
-      <PageHero
-        eyebrow="Arcade"
-        title="Chrome Circuit"
-        lead="Create a room, share the code, race your friends on a chrome 3D track."
-        meta={["Multiplayer rooms", "Live leaderboard", "Lap records"]}
-      />
+      {!isRacing && (
+        <PageHero
+          eyebrow="Arcade"
+          title="Horizon Circuit"
+          lead="Create a room, share the code, race your friends across a 1.92km Grand Prix 3D circuit."
+          meta={["P2P + Cloud Sync", "3 Mobile Control Modes", "Lap records"]}
+        />
+      )}
 
-      <section className="relative z-10 px-5 pb-24 pt-6 sm:px-8 lg:px-14">
+      <section
+        ref={stageRef}
+        className={
+          isRacing
+            ? "relative z-10 px-2 pb-16 pt-24 sm:px-6 lg:px-10"
+            : "relative z-10 px-5 pb-24 pt-6 sm:px-8 lg:px-14"
+        }
+      >
         <div className="mx-auto w-full max-w-[84rem]">
           {!player ? (
             <div className="mx-auto max-w-md rounded-[1.75rem] border border-ink/10 bg-paper-tint/60 p-6 backdrop-blur-xl sm:p-8">
@@ -287,12 +336,14 @@ function RacePage() {
                   Ready to Race
                 </span>
               </div>
-              <h2 className="mt-2 font-display text-2xl text-ink">Enter the pits</h2>
+              <h2 className="mt-2 font-display text-2xl text-ink">
+                Enter the pits
+              </h2>
               <p className="mt-1 text-sm text-ink-soft">
-                Pick a display name or jump straight onto the track with 1 tap.
+                Pick a display name or jump straight onto the 1.92km circuit with
+                1 tap.
               </p>
 
-              {/* 1-Tap Instant Quick Race Button for Mobile */}
               <button
                 type="button"
                 onClick={() => handleQuickRace()}
@@ -314,7 +365,7 @@ function RacePage() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  handleQuickRace();
+                  void handleQuickRace();
                 }}
                 className="space-y-3"
               >
@@ -332,7 +383,7 @@ function RacePage() {
                   disabled={isCreatingPlayer}
                   className="w-full rounded-2xl bg-ink px-5 py-3 font-mono text-xs uppercase tracking-[0.14em] text-paper transition hover:opacity-90 disabled:opacity-50"
                 >
-                  {isCreatingPlayer ? "Creating..." : "Save Name & Enter Lobby"}
+                  {isCreatingPlayer ? "Creating..." : "Save Name & Race"}
                 </button>
               </form>
             </div>
@@ -340,10 +391,13 @@ function RacePage() {
             <RaceGame
               player={player}
               room={room}
-              onUpdate={handleUpdate}
+              onExit={() => void handleLeave()}
               onFinish={handleFinish}
             />
-          ) : view === "room" && room && room.phase === "finished" && room.results ? (
+          ) : view === "room" &&
+            room &&
+            room.phase === "finished" &&
+            room.results ? (
             <RaceResults
               results={room.results}
               player={player}
@@ -357,15 +411,16 @@ function RacePage() {
               onCreate={handleCreate}
               onJoin={handleJoin}
               onQuickRace={handleQuickRace}
+              onUpdateSettings={handleUpdateSettings}
               onStart={handleStart}
-              onLeave={handleLeave}
+              onLeave={() => void handleLeave()}
               onCopyCode={handleCopyCode}
               onView={setView}
             />
           )}
 
           {/* Circuit Hall of Fame Leaderboard */}
-          <RaceLeaderboard currentRacerId={player?.id} />
+          {!isRacing && <RaceLeaderboard currentRacerId={player?.id} />}
 
           {/* How to Play Section */}
           {!isRacing && (
@@ -373,10 +428,12 @@ function RacePage() {
               <div className="text-center max-w-xl mx-auto">
                 <span className="label text-cyan-400">Rules of engagement</span>
                 <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-                  How to Play <span className="chrome-text">Chrome Circuit</span>
+                  How to Play{" "}
+                  <span className="chrome-text">Horizon Circuit</span>
                 </h2>
                 <p className="mt-3 text-sm text-ink-soft leading-relaxed">
-                  Follow these quick steps to get behind the wheel, connect with friends, and start setting fast lap records.
+                  Follow these quick steps to get behind the wheel, connect with
+                  friends, and set fast lap records.
                 </p>
               </div>
 
@@ -386,16 +443,19 @@ function RacePage() {
                     key={i}
                     className="group relative rounded-3xl border border-ink/10 bg-paper-tint/30 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:bg-paper-tint/50"
                   >
-                    {/* Hover Glow Effect */}
-                    <div className={`absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-10 bg-gradient-to-br ${step.color} blur-[12px] -z-10`} />
+                    <div
+                      className={`absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-10 bg-gradient-to-br ${step.color} blur-[12px] -z-10`}
+                    />
 
                     <div className="flex items-center justify-between">
-                      {/* Step Number */}
-                      <span className={`font-mono text-xs font-black tracking-widest bg-gradient-to-r ${step.color} bg-clip-text text-transparent`}>
+                      <span
+                        className={`font-mono text-xs font-black tracking-widest bg-gradient-to-r ${step.color} bg-clip-text text-transparent`}
+                      >
                         STEP {step.num}
                       </span>
-                      {/* Icon */}
-                      <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${step.color} p-2 text-white shadow-lg ${step.shadow} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                      <div
+                        className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${step.color} p-2 text-white shadow-lg ${step.shadow} transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6`}
+                      >
                         <step.icon className="size-full" strokeWidth={1.5} />
                       </div>
                     </div>
@@ -403,7 +463,7 @@ function RacePage() {
                     <h3 className="mt-6 font-display text-lg font-bold text-ink transition-colors duration-300 group-hover:text-cyan-400">
                       {step.title}
                     </h3>
-                    
+
                     <p className="mt-2 text-xs leading-relaxed text-ink-soft">
                       {step.desc}
                     </p>

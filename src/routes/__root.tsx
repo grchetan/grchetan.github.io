@@ -10,6 +10,7 @@ import { initGoogleAnalytics, trackPageView } from "../lib/site-analytics";
 import { useNetworkStatus } from "../hooks/use-network-status";
 import { ClickSpark } from "../components/ui/click-spark";
 import { VersionWatcher } from "../components/site/version-watcher";
+import { raceAudio } from "../components/site/race/race-audio";
 
 function NotFoundComponent() {
   return <NotFoundScape />;
@@ -55,6 +56,9 @@ function RootComponent() {
 
   useEffect(() => {
     trackPageView(pathname);
+    if (!pathname.startsWith("/race")) {
+      raceAudio.endSession();
+    }
   }, [pathname]);
 
   // Dynamic canonical link update for SEO and multi-domain fallback

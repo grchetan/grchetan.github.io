@@ -1,60 +1,75 @@
 /**
- * Cyber Circuit — Next-Gen 3D Multiplayer & Single-Player Arcade Racer
- * Features:
- * - Realistic vehicle dynamics, True Reverse gear, Drifting mechanics, Nitro Boost
- * - Web Audio API procedural sound synthesizer (Engine, Drift, Nitro, Chimes, Fanfare)
- * - Intelligent AI Competitor Rivals with pathfinding & competitive racing line
- * - Cyberpunk 3D Track with neon rails, gantry bridge, floodlights & checkpoint gates
- * - Multiple camera perspectives (Chase Cam, Bumper Cam, Top-Down Cam)
- * - Cyber HUD with Speedometer, Tachometer, Gear indicator, Nitro tank & 2D Minimap
- * - Smooth multiplayer netcode with exponential interpolation
+ * Horizon Grand Prix — Next-Gen 3D Multiplayer & AI Arcade Racer
+ * Highlights:
+ * - Zero-Jank 60/120fps WebGL loop (no per-frame React re-renders of 3D track or opponents)
+ * - Dual-Transport Netcode (WebRTC P2P + BroadcastChannel + Coalesced Cloud) with live Ping (ms)
+ * - Dead-Reckoning Velocity Extrapolation & Smooth Exponential Interpolation for rivals
+ * - GPU-Instanced Drift Tire Smoke, Persistent Skid Marks, Impact Sparks & Twin Afterburners
+ * - Crisp Driver Nameplate Sprites, Working Reverse Lights & Accurate Visual Front-Wheel Steering
+ * - Portal-Mounted Fullscreen / Landscape Mode above Site Navbar + Zero-Leak Audio Lifecycle
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { toast } from "sonner";
 import type { Player } from "@/lib/arcade";
-import type { RacePlayer, RaceRoom } from "@/lib/race";
-
+import {
+  getValidPlayers,
+  type RacePlayer,
+  type RaceRoom,
+} from "@/lib/race";
+import { RaceNetSession, type NetMetrics } from "@/lib/race-net";
 import { raceAudio } from "./race/race-audio";
 import {
+  BOOST_PADS,
+  CIRCUIT_SAMPLES,
+  START_GRID_POS,
+  TOTAL_GATES,
   TRACK_CONFIG,
   TRACK_GATES,
-  TOTAL_GATES,
-  START_GRID_POS,
+  findNearestSplinePoint,
+  getStartingGridPos,
   stepCarPhysics,
   type CarPhysicsState,
   type DriveInputs,
 } from "./race/race-physics";
 import { Track3D } from "./race/race-track";
 import { createAIRivals, updateAIRivals, type AIRival } from "./race/race-ai";
-import { RaceHUD } from "./race/race-hud";
+import {
+  DriverNameSprite,
+  RaceParticlesFX,
+  type TelemetryFxSource,
+} from "./race/race-effects";
+import { RaceHUD, type MobileControlType } from "./race/race-hud";
 
 /* =========================================================================
-   3D CAR MODEL (LOCAL, REMOTE & AI BOT)
+   3D CAR MODEL (LOCAL, REMOTE P2P/CLOUD & AI BOT)
    ========================================================================= */
+
+interface CarVisualPose {
+  x: number;
+  z: number;
+  rotation: number;
+  speed: number;
+  steerAngle: number;
+  isDrifting: boolean;
+  isBoosting: boolean;
+  isBraking: boolean;
+  isReversing: boolean;
+}
 
 function CyberRaceCar({
   color,
   getPose,
-  isRemote = false,
-  remotePose,
   playerName,
+  isRemote = false,
 }: {
   color: string;
-  getPose?: () => {
-    x: number;
-    z: number;
-    rotation: number;
-    speed: number;
-    steerAngle: number;
-    isDrifting: boolean;
-    isBoosting: boolean;
-    isBraking: boolean;
-  };
-  isRemote?: boolean;
-  remotePose?: { x: number; z: number; rotation: number; speed?: number };
+  getPose: () => CarVisualPose | null;
   playerName?: string;
+  isRemote?: boolean;
 }) {
   const carGroup = useRef<THREE.Group>(null);
   const frontLeftWheel = useRef<THREE.Group>(null);
@@ -63,69 +78,69 @@ function CyberRaceCar({
   const rearRightWheel = useRef<THREE.Group>(null);
   const brakeLightLeft = useRef<THREE.MeshBasicMaterial>(null);
   const brakeLightRight = useRef<THREE.MeshBasicMaterial>(null);
-  const nitroFlameLeft = useRef<THREE.Mesh>(null);
-  const nitroFlameRight = useRef<THREE.Mesh>(null);
+  const reverseLightMat = useRef<THREE.MeshBasicMaterial>(null);
+  const nitroOuterLeft = useRef<THREE.Mesh>(null);
+  const nitroOuterRight = useRef<THREE.Mesh>(null);
+  const nitroCoreLeft = useRef<THREE.Mesh>(null);
+  const nitroCoreRight = useRef<THREE.Mesh>(null);
+  const nitroGlow = useRef<THREE.PointLight>(null);
 
-  // Interpolation cache for smooth network rendering
-  const currentPos = useRef(new THREE.Vector3(remotePose?.x ?? 0, 0.4, remotePose?.z ?? 0));
-  const currentRot = useRef(remotePose?.rotation ?? 0);
+  const smoothPos = useRef<THREE.Vector3 | null>(null);
+  const smoothRot = useRef<number | null>(null);
   const wheelRollAngle = useRef(0);
 
-  useFrame((_, delta) => {
-    if (!carGroup.current) return;
+  useFrame((_, rawDelta) => {
+    const pose = getPose();
+    if (!carGroup.current || !pose) return;
+    const delta = Math.min(0.05, rawDelta);
 
-    let posX = 0;
-    let posZ = 0;
-    let rotY = 0;
-    let speed = 0;
-    let steer = 0;
-    let isBraking = false;
-    let isBoosting = false;
+    if (isRemote) {
+      if (!smoothPos.current) {
+        smoothPos.current = new THREE.Vector3(pose.x, 0.4, pose.z);
+        smoothRot.current = pose.rotation;
+      } else {
+        const factor = 1 - Math.exp(-delta * 16);
+        smoothPos.current.lerp(
+          new THREE.Vector3(pose.x, 0.4, pose.z),
+          factor
+        );
+        let angleDelta = pose.rotation - (smoothRot.current ?? pose.rotation);
+        while (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
+        while (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
+        smoothRot.current =
+          (smoothRot.current ?? pose.rotation) + angleDelta * factor;
+      }
+      carGroup.current.position.copy(smoothPos.current);
+      carGroup.current.rotation.y = smoothRot.current ?? pose.rotation;
+    } else {
+      carGroup.current.position.set(pose.x, 0.4, pose.z);
+      carGroup.current.rotation.y = pose.rotation;
 
-    if (isRemote && remotePose) {
-      // Exponential lerp interpolation for remote players & AI
-      const targetVec = new THREE.Vector3(remotePose.x, 0.4, remotePose.z);
-      currentPos.current.lerp(targetVec, Math.min(1, delta * 15));
-      carGroup.current.position.copy(currentPos.current);
-
-      let angleDelta = remotePose.rotation - currentRot.current;
-      while (angleDelta < -Math.PI) angleDelta += Math.PI * 2;
-      while (angleDelta > Math.PI) angleDelta -= Math.PI * 2;
-      currentRot.current += angleDelta * Math.min(1, delta * 12);
-      carGroup.current.rotation.y = currentRot.current;
-
-      posX = currentPos.current.x;
-      posZ = currentPos.current.z;
-      rotY = currentRot.current;
-      speed = remotePose.speed ?? 0;
-    } else if (getPose) {
-      const p = getPose();
-      posX = p.x;
-      posZ = p.z;
-      rotY = p.rotation;
-      speed = p.speed;
-      steer = p.steerAngle;
-      isBraking = p.isBraking;
-      isBoosting = p.isBoosting;
-
-      carGroup.current.position.set(posX, 0.4, posZ);
-      carGroup.current.rotation.y = rotY;
-
-      // Realistic car body chassis roll & pitch on cornering / braking
-      const rollAmount = (steer * speed) / 110;
-      const pitchAmount = (isBraking ? 0.045 : isBoosting ? -0.06 : 0) * (speed / TRACK_CONFIG.maxSpeedForward);
-      carGroup.current.rotation.z = THREE.MathUtils.lerp(carGroup.current.rotation.z, rollAmount, 0.18);
-      carGroup.current.rotation.x = THREE.MathUtils.lerp(carGroup.current.rotation.x, pitchAmount, 0.18);
+      // Realistic chassis body roll & pitch squat
+      const rollAmount = (pose.steerAngle * pose.speed) / 130;
+      const pitchAmount =
+        (pose.isBraking ? 0.048 : pose.isBoosting ? -0.055 : 0) *
+        (Math.abs(pose.speed) / TRACK_CONFIG.maxSpeedForward);
+      carGroup.current.rotation.z = THREE.MathUtils.lerp(
+        carGroup.current.rotation.z,
+        rollAmount,
+        Math.min(1, delta * 12)
+      );
+      carGroup.current.rotation.x = THREE.MathUtils.lerp(
+        carGroup.current.rotation.x,
+        pitchAmount,
+        Math.min(1, delta * 12)
+      );
     }
 
-    // Wheel roll and steer animation
-    wheelRollAngle.current += (speed * delta) / 0.32;
+    // Accurate Wheel Roll & Steering Direction (-steer turns wheels INTO the corner)
+    wheelRollAngle.current += (pose.speed * delta) / 0.32;
     if (frontLeftWheel.current) {
-      frontLeftWheel.current.rotation.y = steer;
+      frontLeftWheel.current.rotation.y = -pose.steerAngle;
       frontLeftWheel.current.rotation.x = wheelRollAngle.current;
     }
     if (frontRightWheel.current) {
-      frontRightWheel.current.rotation.y = steer;
+      frontRightWheel.current.rotation.y = -pose.steerAngle;
       frontRightWheel.current.rotation.x = wheelRollAngle.current;
     }
     if (rearLeftWheel.current) {
@@ -135,51 +150,61 @@ function CyberRaceCar({
       rearRightWheel.current.rotation.x = wheelRollAngle.current;
     }
 
-    // Dynamic LED Brake Light Glow
-    const brakeColor = isBraking ? "#ff0033" : "#55000d";
+    // LED Brake Lights + Reverse Light
+    const brakeColor = pose.isBraking ? "#ff1133" : "#4a0410";
     if (brakeLightLeft.current) brakeLightLeft.current.color.set(brakeColor);
     if (brakeLightRight.current) brakeLightRight.current.color.set(brakeColor);
+    if (reverseLightMat.current) {
+      reverseLightMat.current.color.set(pose.isReversing ? "#f8fafc" : "#1e293b");
+    }
 
-    // Nitro exhaust twin fire flare
-    if (nitroFlameLeft.current && nitroFlameRight.current) {
-      if (isBoosting) {
-        const flicker = 1.0 + (Math.random() - 0.5) * 0.45;
-        nitroFlameLeft.current.scale.set(flicker, flicker, flicker * 2.5);
-        nitroFlameRight.current.scale.set(flicker, flicker, flicker * 2.5);
-        nitroFlameLeft.current.visible = true;
-        nitroFlameRight.current.visible = true;
+    // Dual-Layer Nitro Afterburner Flames
+    if (
+      nitroOuterLeft.current &&
+      nitroOuterRight.current &&
+      nitroCoreLeft.current &&
+      nitroCoreRight.current
+    ) {
+      if (pose.isBoosting) {
+        const f = 1.0 + (Math.random() - 0.5) * 0.4;
+        nitroOuterLeft.current.scale.set(f, f, f * 2.6);
+        nitroOuterRight.current.scale.set(f, f, f * 2.6);
+        nitroCoreLeft.current.scale.set(f * 0.7, f * 0.7, f * 2.1);
+        nitroCoreRight.current.scale.set(f * 0.7, f * 0.7, f * 2.1);
+        nitroOuterLeft.current.visible = true;
+        nitroOuterRight.current.visible = true;
+        nitroCoreLeft.current.visible = true;
+        nitroCoreRight.current.visible = true;
+        if (nitroGlow.current) nitroGlow.current.intensity = 3.5;
       } else {
-        nitroFlameLeft.current.visible = false;
-        nitroFlameRight.current.visible = false;
+        nitroOuterLeft.current.visible = false;
+        nitroOuterRight.current.visible = false;
+        nitroCoreLeft.current.visible = false;
+        nitroCoreRight.current.visible = false;
+        if (nitroGlow.current) nitroGlow.current.intensity = 0;
       }
     }
   });
 
   return (
     <group ref={carGroup}>
-      {/* Remote / AI Nameplate Display */}
       {isRemote && playerName && (
-        <group position={[0, 1.85, 0]}>
-          <mesh>
-            <planeGeometry args={[1.8, 0.38]} />
-            <meshBasicMaterial color="#090d16" transparent opacity={0.8} side={THREE.DoubleSide} />
-          </mesh>
-        </group>
+        <DriverNameSprite name={playerName} color={color} />
       )}
 
       {/* Main Aerodynamic Monocoque Chassis */}
       <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.52, 0.42, 2.75]} />
-        <meshStandardMaterial color={color} metalness={0.75} roughness={0.2} />
+        <boxGeometry args={[1.54, 0.42, 2.82]} />
+        <meshStandardMaterial color={color} metalness={0.72} roughness={0.22} />
       </mesh>
 
-      {/* Aerodynamic Front Splitter & Nose Scoop */}
-      <mesh position={[0, -0.06, 1.25]}>
-        <boxGeometry args={[1.36, 0.18, 0.55]} />
-        <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.2} />
+      {/* Carbon Splitter & Nose Scoop */}
+      <mesh position={[0, -0.06, 1.28]}>
+        <boxGeometry args={[1.38, 0.18, 0.56]} />
+        <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.25} />
       </mesh>
-      <mesh position={[0, -0.16, 1.48]}>
-        <boxGeometry args={[1.65, 0.05, 0.32]} />
+      <mesh position={[0, -0.16, 1.52]}>
+        <boxGeometry args={[1.68, 0.05, 0.34]} />
         <meshStandardMaterial color="#020617" roughness={0.5} />
       </mesh>
 
@@ -189,20 +214,18 @@ function CyberRaceCar({
         <meshStandardMaterial color="#090d16" metalness={0.9} roughness={0.15} />
       </mesh>
 
-      {/* Tinted Front Windshield */}
+      {/* Tinted Windshields */}
       <mesh position={[0, 0.3, 0.62]} rotation={[0.42, 0, 0]}>
         <planeGeometry args={[0.98, 0.46]} />
-        <meshStandardMaterial color="#060d1a" roughness={0.1} transparent opacity={0.92} />
+        <meshStandardMaterial color="#0b172a" roughness={0.1} transparent opacity={0.92} />
       </mesh>
-
-      {/* Tinted Rear Window */}
       <mesh position={[0, 0.3, -0.92]} rotation={[-0.42, 0, 0]}>
         <planeGeometry args={[0.98, 0.46]} />
-        <meshStandardMaterial color="#060d1a" roughness={0.1} transparent opacity={0.92} />
+        <meshStandardMaterial color="#0b172a" roughness={0.1} transparent opacity={0.92} />
       </mesh>
 
-      {/* Rear High-Downforce Spoiler */}
-      <group position={[0, 0.52, -1.25]}>
+      {/* Rear GT Spoiler */}
+      <group position={[0, 0.54, -1.28]}>
         <mesh position={[-0.48, -0.18, 0]}>
           <boxGeometry args={[0.07, 0.36, 0.08]} />
           <meshStandardMaterial color="#1e293b" />
@@ -212,188 +235,214 @@ function CyberRaceCar({
           <meshStandardMaterial color="#1e293b" />
         </mesh>
         <mesh position={[0, 0.04, 0]}>
-          <boxGeometry args={[1.82, 0.06, 0.38]} />
+          <boxGeometry args={[1.86, 0.06, 0.38]} />
           <meshStandardMaterial color={color} metalness={0.8} roughness={0.2} />
         </mesh>
       </group>
 
-      {/* Front LED Headlights */}
-      <mesh position={[-0.55, 0.02, 1.38]}>
-        <boxGeometry args={[0.2, 0.08, 0.05]} />
-        <meshBasicMaterial color="#38bdf8" />
+      {/* Front LED Headlights + Asphalt Light Cone */}
+      <mesh position={[-0.55, 0.02, 1.41]}>
+        <boxGeometry args={[0.24, 0.08, 0.05]} />
+        <meshBasicMaterial color="#e0f2fe" />
       </mesh>
-      <mesh position={[0.55, 0.02, 1.38]}>
-        <boxGeometry args={[0.2, 0.08, 0.05]} />
-        <meshBasicMaterial color="#38bdf8" />
+      <mesh position={[0.55, 0.02, 1.41]}>
+        <boxGeometry args={[0.24, 0.08, 0.05]} />
+        <meshBasicMaterial color="#e0f2fe" />
       </mesh>
-
-      {/* Dual Projector Headlight Beam Cones on Asphalt */}
-      <mesh position={[-0.55, -0.32, 6.2]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.8, 9.5]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
+      <mesh position={[-0.55, -0.32, 6.4]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.9, 9.8]} />
+        <meshBasicMaterial color="#bae6fd" transparent opacity={0.12} depthWrite={false} />
       </mesh>
-      <mesh position={[0.55, -0.32, 6.2]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[1.8, 9.5]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.15} />
+      <mesh position={[0.55, -0.32, 6.4]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[1.9, 9.8]} />
+        <meshBasicMaterial color="#bae6fd" transparent opacity={0.12} depthWrite={false} />
       </mesh>
 
-      {/* Cyber Neon Underglow on Tarmac */}
-      <mesh position={[0, -0.35, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[2.0, 3.4]} />
-        <meshBasicMaterial color={color} transparent opacity={0.3} />
+      {/* Neon Underglow */}
+      <mesh position={[0, -0.34, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.1, 3.5]} />
+        <meshBasicMaterial color={color} transparent opacity={0.28} depthWrite={false} />
       </mesh>
 
-      {/* Rear LED Brake Lights */}
-      <mesh position={[-0.55, 0.05, -1.38]}>
-        <boxGeometry args={[0.22, 0.08, 0.05]} />
-        <meshBasicMaterial ref={brakeLightLeft} color="#55000d" />
+      {/* Rear Brake Lights + Center Reverse Bar */}
+      <mesh position={[-0.55, 0.05, -1.41]}>
+        <boxGeometry args={[0.26, 0.08, 0.05]} />
+        <meshBasicMaterial ref={brakeLightLeft} color="#4a0410" />
       </mesh>
-      <mesh position={[0.55, 0.05, -1.38]}>
-        <boxGeometry args={[0.22, 0.08, 0.05]} />
-        <meshBasicMaterial ref={brakeLightRight} color="#55000d" />
+      <mesh position={[0.55, 0.05, -1.41]}>
+        <boxGeometry args={[0.26, 0.08, 0.05]} />
+        <meshBasicMaterial ref={brakeLightRight} color="#4a0410" />
+      </mesh>
+      <mesh position={[0, 0.05, -1.41]}>
+        <boxGeometry args={[0.32, 0.06, 0.05]} />
+        <meshBasicMaterial ref={reverseLightMat} color="#1e293b" />
       </mesh>
 
-      {/* Dual Exhaust System with Nitro Fire Cones */}
-      <group position={[-0.28, -0.1, -1.4]}>
+      {/* Twin Exhausts + Dual-Core Nitro Afterburner Flames */}
+      <pointLight
+        ref={nitroGlow}
+        position={[0, 0, -2.0]}
+        color="#38bdf8"
+        distance={14}
+        intensity={0}
+      />
+      <group position={[-0.28, -0.1, -1.43]}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.07, 0.07, 0.16, 12]} />
+          <cylinderGeometry args={[0.075, 0.075, 0.18, 12]} />
           <meshStandardMaterial color="#475569" metalness={0.9} />
         </mesh>
-        <mesh ref={nitroFlameLeft} position={[0, 0, -0.32]} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
-          <coneGeometry args={[0.13, 0.65, 12]} />
-          <meshBasicMaterial color="#38bdf8" transparent opacity={0.85} />
+        <mesh
+          ref={nitroOuterLeft}
+          position={[0, 0, -0.35]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          visible={false}
+        >
+          <coneGeometry args={[0.14, 0.72, 12]} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.85} />
+        </mesh>
+        <mesh
+          ref={nitroCoreLeft}
+          position={[0, 0, -0.25]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          visible={false}
+        >
+          <coneGeometry args={[0.08, 0.5, 10]} />
+          <meshBasicMaterial color="#f0f9ff" />
         </mesh>
       </group>
-      <group position={[0.28, -0.1, -1.4]}>
+      <group position={[0.28, -0.1, -1.43]}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.07, 0.07, 0.16, 12]} />
+          <cylinderGeometry args={[0.075, 0.075, 0.18, 12]} />
           <meshStandardMaterial color="#475569" metalness={0.9} />
         </mesh>
-        <mesh ref={nitroFlameRight} position={[0, 0, -0.32]} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
-          <coneGeometry args={[0.13, 0.65, 12]} />
-          <meshBasicMaterial color="#38bdf8" transparent opacity={0.85} />
+        <mesh
+          ref={nitroOuterRight}
+          position={[0, 0, -0.35]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          visible={false}
+        >
+          <coneGeometry args={[0.14, 0.72, 12]} />
+          <meshBasicMaterial color="#0ea5e9" transparent opacity={0.85} />
+        </mesh>
+        <mesh
+          ref={nitroCoreRight}
+          position={[0, 0, -0.25]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          visible={false}
+        >
+          <coneGeometry args={[0.08, 0.5, 10]} />
+          <meshBasicMaterial color="#f0f9ff" />
         </mesh>
       </group>
 
-      {/* 4 Wheels (Front Wheels Steer & Roll) */}
-      <group ref={frontLeftWheel} position={[-0.85, -0.15, 0.88]}>
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.32, 0.32, 0.26, 20]} />
-          <meshStandardMaterial color="#09090b" roughness={0.9} />
-        </mesh>
-        <mesh position={[-0.02, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.27, 12]} />
-          <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.1} />
-        </mesh>
-      </group>
-
-      <group ref={frontRightWheel} position={[0.85, -0.15, 0.88]}>
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.32, 0.32, 0.26, 20]} />
-          <meshStandardMaterial color="#09090b" roughness={0.9} />
-        </mesh>
-        <mesh position={[0.02, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.27, 12]} />
-          <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.1} />
-        </mesh>
-      </group>
-
-      <group ref={rearLeftWheel} position={[-0.85, -0.15, -0.88]}>
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.34, 0.34, 0.28, 20]} />
-          <meshStandardMaterial color="#09090b" roughness={0.9} />
-        </mesh>
-        <mesh position={[-0.02, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.21, 0.21, 0.29, 12]} />
-          <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.1} />
-        </mesh>
-      </group>
-
-      <group ref={rearRightWheel} position={[0.85, -0.15, -0.88]}>
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.34, 0.34, 0.28, 20]} />
-          <meshStandardMaterial color="#09090b" roughness={0.9} />
-        </mesh>
-        <mesh position={[0.02, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.21, 0.21, 0.29, 12]} />
-          <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.1} />
-        </mesh>
-      </group>
+      {/* 4 Wheels */}
+      {[
+        { ref: frontLeftWheel, pos: [-0.86, -0.15, 0.9] as const, r: 0.32, rimOffset: -0.02 },
+        { ref: frontRightWheel, pos: [0.86, -0.15, 0.9] as const, r: 0.32, rimOffset: 0.02 },
+        { ref: rearLeftWheel, pos: [-0.86, -0.15, -0.9] as const, r: 0.34, rimOffset: -0.02 },
+        { ref: rearRightWheel, pos: [0.86, -0.15, -0.9] as const, r: 0.34, rimOffset: 0.02 },
+      ].map((w, idx) => (
+        <group key={idx} ref={w.ref} position={[w.pos[0], w.pos[1], w.pos[2]]}>
+          <mesh rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[w.r, w.r, 0.27, 20]} />
+            <meshStandardMaterial color="#09090b" roughness={0.85} />
+          </mesh>
+          <mesh position={[w.rimOffset, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <cylinderGeometry args={[w.r * 0.62, w.r * 0.62, 0.28, 12]} />
+            <meshStandardMaterial color="#e2e8f0" metalness={0.92} roughness={0.12} />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 }
 
 /* =========================================================================
-   CAMERA RIG WITH DYNAMIC CHASE, BUMPER & TOP-DOWN PERSPECTIVES
+   DYNAMIC CHASE / BUMPER / TOP-DOWN CAMERA RIG
    ========================================================================= */
 
 function CyberCameraRig({
   getTarget,
   mode,
 }: {
-  getTarget: () => { x: number; z: number; rotation: number; speed: number; isBoosting: boolean };
+  getTarget: () => {
+    x: number;
+    z: number;
+    rotation: number;
+    speed: number;
+    steerAngle: number;
+    isBoosting: boolean;
+    isOnKerb: boolean;
+  };
   mode: "chase" | "bumper" | "top";
 }) {
   const { camera } = useThree();
-  // Start camera behind the grid: START_GRID_POS.z = -85, so camera at z = -85 - 14 = -99
-  const currentPos = useRef(new THREE.Vector3(0, 10, -99));
-  const currentLookAt = useRef(new THREE.Vector3(0, 0, -85));
+  const currentPos = useRef(
+    new THREE.Vector3(START_GRID_POS.x - 12, 8, START_GRID_POS.z)
+  );
+  const currentLookAt = useRef(
+    new THREE.Vector3(START_GRID_POS.x + 8, 1, START_GRID_POS.z)
+  );
 
-  useFrame((_, delta) => {
+  useFrame((_, rawDelta) => {
+    const delta = Math.min(0.05, rawDelta);
     const target = getTarget();
     const speed = Math.abs(target.speed);
     const speedRatio = speed / TRACK_CONFIG.maxSpeedForward;
 
-    let desiredPos = new THREE.Vector3();
-    let desiredLook = new THREE.Vector3(target.x, 0.5, target.z);
+    const desiredPos = new THREE.Vector3();
+    const desiredLook = new THREE.Vector3(target.x, 0.8, target.z);
 
     if (mode === "chase") {
-      // Dynamic chase camera: pulls back and widens when boosting
-      const dist = 11.2 + speedRatio * 4.2 + (target.isBoosting ? 3.5 : 0);
-      const height = 5.4 - speedRatio * 0.5;
+      const dist = 10.6 + speedRatio * 3.8 + (target.isBoosting ? 2.8 : 0);
+      const height = 4.9 - speedRatio * 0.45;
       const offsetX = Math.sin(target.rotation) * dist;
       const offsetZ = Math.cos(target.rotation) * dist;
 
       desiredPos.set(target.x - offsetX, height, target.z - offsetZ);
       desiredLook.set(
-        target.x + Math.sin(target.rotation) * 8,
-        1.1,
-        target.z + Math.cos(target.rotation) * 8
+        target.x + Math.sin(target.rotation) * 9.5,
+        1.2,
+        target.z + Math.cos(target.rotation) * 9.5
       );
     } else if (mode === "bumper") {
-      // Bumper / Hood Cam
-      const offsetX = Math.sin(target.rotation) * 0.4;
-      const offsetZ = Math.cos(target.rotation) * 0.4;
-      desiredPos.set(target.x + offsetX, 0.95, target.z + offsetZ);
+      const offsetX = Math.sin(target.rotation) * 0.6;
+      const offsetZ = Math.cos(target.rotation) * 0.6;
+      desiredPos.set(target.x + offsetX, 1.02, target.z + offsetZ);
       desiredLook.set(
-        target.x + Math.sin(target.rotation) * 16,
-        0.8,
-        target.z + Math.cos(target.rotation) * 16
+        target.x + Math.sin(target.rotation) * 18,
+        0.9,
+        target.z + Math.cos(target.rotation) * 18
       );
     } else {
-      // Top-Down Bird's Eye Cam
-      desiredPos.set(target.x, 52, target.z - 0.1);
+      desiredPos.set(target.x, 62, target.z - 0.1);
       desiredLook.set(target.x, 0, target.z);
     }
 
-    const lerpRate = Math.min(1, delta * (mode === "bumper" ? 24 : 10));
+    const lerpRate = 1 - Math.exp(-delta * (mode === "bumper" ? 26 : 11));
     currentPos.current.lerp(desiredPos, lerpRate);
     currentLookAt.current.lerp(desiredLook, lerpRate);
 
     camera.position.copy(currentPos.current);
     camera.lookAt(currentLookAt.current);
 
-    // Dynamic FOV Warp during Nitro & High Speeds for intense sensation of velocity
-    const targetFov = target.isBoosting ? 74 : 60 + speedRatio * 8;
     const persCam = camera as THREE.PerspectiveCamera;
     if (persCam.fov !== undefined) {
-      persCam.fov = THREE.MathUtils.lerp(persCam.fov, targetFov, delta * 8);
+      const targetFov = target.isBoosting ? 76 : 60 + speedRatio * 9;
+      persCam.fov = THREE.MathUtils.lerp(
+        persCam.fov,
+        targetFov,
+        Math.min(1, delta * 8)
+      );
       persCam.updateProjectionMatrix();
     }
 
-    // High-speed camera rumble
-    if (target.isBoosting || (speedRatio > 0.85 && mode === "chase")) {
-      const shakeAmt = target.isBoosting ? 0.07 : 0.025;
+    if (
+      target.isBoosting ||
+      target.isOnKerb ||
+      (speedRatio > 0.88 && mode === "chase")
+    ) {
+      const shakeAmt = target.isBoosting ? 0.065 : target.isOnKerb ? 0.045 : 0.022;
       camera.position.x += (Math.random() - 0.5) * shakeAmt;
       camera.position.y += (Math.random() - 0.5) * shakeAmt;
     }
@@ -401,10 +450,6 @@ function CyberCameraRig({
 
   return null;
 }
-
-/* =========================================================================
-   SCENE PHYSICS DRIVER HOOK
-   ========================================================================= */
 
 function PhysicsTick({ onStep }: { onStep: (delta: number) => void }) {
   useFrame((_, delta) => onStep(delta));
@@ -418,28 +463,46 @@ function PhysicsTick({ onStep }: { onStep: (delta: number) => void }) {
 export function RaceGame({
   player,
   room,
-  onUpdate,
+  onExit,
   onFinish,
 }: {
   player: Player;
   room: RaceRoom;
-  onUpdate: (state: Partial<RacePlayer>) => void;
+  onExit: () => void;
   onFinish: (totalTime: number, bestLap: number) => void;
 }) {
-  const localPlayer = room.players[player.id]!;
-  const containerRef = useRef<HTMLDivElement>(null);
+  const validPlayers = useMemo(() => getValidPlayers(room), [room]);
+  const mySlotIndex = Math.max(
+    0,
+    validPlayers.findIndex((p) => p.id === player.id)
+  );
+  const localPlayer = room.players[player.id] ?? validPlayers[0];
+  const initialSpawn = useMemo(
+    () => getStartingGridPos(room.code === "SOLO" ? 0 : mySlotIndex),
+    // Lock initial spawn grid slot at race start
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [room.code]
+  );
 
-  // Initial starting state on Main Straight (z = -85)
-  const initialPhysicsState: CarPhysicsState = {
-    x: START_GRID_POS.x,
-    z: START_GRID_POS.z,
-    rotation: START_GRID_POS.rotation,
+  const isMultiplayer = room.code !== "SOLO";
+  const withAI = room.settings?.withAI ?? true;
+
+  const initialNearest = useMemo(
+    () => findNearestSplinePoint(initialSpawn.x, initialSpawn.z).index,
+    [initialSpawn.x, initialSpawn.z]
+  );
+
+  const physicsRef = useRef<CarPhysicsState>({
+    x: initialSpawn.x,
+    z: initialSpawn.z,
+    rotation: initialSpawn.rotation,
     speed: 0,
     steerAngle: 0,
     isDrifting: false,
     isBoosting: false,
     isBraking: false,
     isReversing: false,
+    isOnKerb: false,
     driftSlipAngle: 0,
     driftScore: 0,
     nitroPercent: 100,
@@ -447,57 +510,132 @@ export function RaceGame({
     kmh: 0,
     checkpoint: 0,
     lap: 1,
+    progress: -6,
     isWrongWay: false,
-  };
+    nearestSampleIdx: initialNearest,
+  });
 
-  const physicsRef = useRef<CarPhysicsState>(initialPhysicsState);
+  const fxStateRef = useRef<TelemetryFxSource>({
+    x: initialSpawn.x,
+    z: initialSpawn.z,
+    rotation: initialSpawn.rotation,
+    speed: 0,
+    isDrifting: false,
+    isBraking: false,
+    isBoosting: false,
+    barrierHitAt: 0,
+  });
+
   const inputsRef = useRef<DriveInputs>({
     gas: false,
     brake: false,
     left: false,
     right: false,
+    steerValue: undefined,
     drift: false,
     nitro: false,
   });
 
-  const [controlsMode, setControlsMode] = useState<"keyboard" | "touch">("keyboard");
-  const [cameraMode, setCameraMode] = useState<"chase" | "bumper" | "top">("chase");
+  const [controlsMode, setControlsMode] = useState<"keyboard" | "touch">(
+    "keyboard"
+  );
+  const [mobileControlType, setMobileControlType] =
+    useState<MobileControlType>(() => {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("race_mobile_steer");
+        if (saved === "pad" || saved === "wheel" || saved === "tilt")
+          return saved;
+      }
+      return "pad";
+    });
+  const [cameraMode, setCameraMode] = useState<"chase" | "bumper" | "top">(
+    "chase"
+  );
   const [isMuted, setIsMuted] = useState(raceAudio.isMuted);
-  const [hasAI, setHasAI] = useState(true);
-  const [autoDrive, setAutoDrive] = useState(true); // Default to Auto-Gas on mobile for effortless driving!
+  const [autoDrive, setAutoDrive] = useState(true);
   const [isLandscape, setIsLandscape] = useState(false);
-  const [isTiltEnabled, setIsTiltEnabled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // HUD Render State (Throttled for silky 60fps)
+  const [netMetrics, setNetMetrics] = useState<NetMetrics>({
+    pingMs: room.code === "SOLO" ? 0 : null,
+    transport: room.code === "SOLO" ? "solo" : "cloud",
+    p2pConnectedCount: 0,
+    totalRemoteCount: 0,
+  });
+
   const [hudState, setHudState] = useState({
     speedKmh: 0,
     gear: "N",
     nitroPercent: 100,
     driftScore: 0,
     lap: 1,
+    activeGate: 1,
     totalTimeMs: 0,
     bestLapMs: null as number | null,
-    lapSplitText: null as string | null,
+    bannerText: null as string | null,
     rank: 1,
     isWrongWay: false,
   });
 
-  // AI Bots State
+  const bannerTimerRef = useRef<number | null>(null);
+  const showBanner = useCallback((msg: string) => {
+    setHudState((prev) => ({ ...prev, bannerText: msg }));
+    if (bannerTimerRef.current) window.clearTimeout(bannerTimerRef.current);
+    bannerTimerRef.current = window.setTimeout(() => {
+      setHudState((prev) => ({ ...prev, bannerText: null }));
+    }, 2600);
+  }, []);
+
+  // AI Rivals Ref (zero React re-renders per frame!)
   const aiBotsRef = useRef<AIRival[]>(createAIRivals());
   const [aiBotsHUD, setAiBotsHUD] = useState<AIRival[]>(aiBotsRef.current);
+  const prevRankRef = useRef<number>(1);
 
-  const startTimeRef = useRef<number>(room.raceStartedAt ?? Date.now());
+  const startTimeRef = useRef<number>(Date.now());
   const lapStartRef = useRef<number>(Date.now());
   const bestLapRef = useRef<number>(Infinity);
   const finishedRef = useRef(false);
-
-  const lastNetSyncRef = useRef(0);
   const lastHudUpdateRef = useRef(0);
+  const lastBoostPadSoundRef = useRef(0);
 
-  // Auto-detect mobile devices
+  // Dual-Transport Netcode Session
+  const netRef = useRef<RaceNetSession | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    raceAudio.startSession();
+    showBanner("LIGHTS OUT — GO!");
+    raceAudio.playCountdownBeep(true);
+
+    return () => {
+      if (bannerTimerRef.current) window.clearTimeout(bannerTimerRef.current);
+      raceAudio.endSession();
+    };
+  }, [showBanner]);
+
+  // Create & manage multiplayer session
+  useEffect(() => {
+    const net = new RaceNetSession(room.code, player.id, (m) => {
+      setNetMetrics(m);
+    });
+    netRef.current = net;
+    return () => {
+      net.dispose();
+      netRef.current = null;
+    };
+  }, [room.code, player.id]);
+
+  // Sync incoming Firestore room snapshots into RaceNetSession
+  useEffect(() => {
+    netRef.current?.syncRoom(room);
+  }, [room]);
+
+  // Auto-detect mobile / touch screen
   useEffect(() => {
     const isMobile =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ) ||
       "ontouchstart" in window ||
       navigator.maxTouchPoints > 0;
     if (isMobile) {
@@ -505,73 +643,132 @@ export function RaceGame({
     }
   }, []);
 
-  // Screen Rotate & Fullscreen Landscape Toggle
-  const handleToggleRotateScreen = useCallback(async () => {
-    try {
-      if (!isLandscape) {
-        if (containerRef.current?.requestFullscreen) {
-          await containerRef.current.requestFullscreen().catch(() => {});
-        }
-        if (window.screen?.orientation && "lock" in window.screen.orientation) {
-          await (window.screen.orientation as any).lock("landscape").catch(() => {});
-        }
-        setIsLandscape(true);
-      } else {
-        if (document.fullscreenElement && document.exitFullscreen) {
-          await document.exitFullscreen().catch(() => {});
-        }
-        if (window.screen?.orientation && "unlock" in window.screen.orientation) {
-          window.screen.orientation.unlock();
-        }
-        setIsLandscape(false);
-      }
-    } catch {
-      setIsLandscape((prev) => !prev);
-    }
-  }, [isLandscape]);
+  // Cycle Mobile Control Mode (PAD -> WHEEL -> TILT) with iOS Gyro Permission
+  const handleCycleMobileControl = useCallback(async () => {
+    const nextOrder: MobileControlType[] = ["pad", "wheel", "tilt"];
+    const next =
+      nextOrder[(nextOrder.indexOf(mobileControlType) + 1) % nextOrder.length]!;
 
-  // Mobile Gyroscope / Tilt Steering Listener
+    if (
+      next === "tilt" &&
+      typeof DeviceOrientationEvent !== "undefined" &&
+      typeof (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> })
+        .requestPermission === "function"
+    ) {
+      try {
+        const res = await (
+          DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }
+        ).requestPermission();
+        if (res !== "granted") {
+          toast.error("Gyroscope permission denied — switched to Touch Pad.");
+          setMobileControlType("pad");
+          localStorage.setItem("race_mobile_steer", "pad");
+          return;
+        }
+      } catch {
+        toast.info("Tilt sensor unavailable on this device.");
+      }
+    }
+
+    inputsRef.current.steerValue = undefined;
+    inputsRef.current.left = false;
+    inputsRef.current.right = false;
+    setMobileControlType(next);
+    localStorage.setItem("race_mobile_steer", next);
+    toast.success(`Steering mode: ${next.toUpperCase()}`);
+  }, [mobileControlType]);
+
+  // Analog Gyroscope / Tilt Listener
   useEffect(() => {
-    if (!isTiltEnabled || controlsMode !== "touch") return;
+    if (controlsMode !== "touch" || mobileControlType !== "tilt") return;
 
     const onOrientation = (e: DeviceOrientationEvent) => {
-      // In landscape mode, phone tilt left-to-right corresponds to beta or gamma
-      const tiltVal = Math.abs(window.orientation as number || 0) === 90 ? (e.beta ?? 0) : (e.gamma ?? 0);
-      if (tiltVal < -8) {
-        inputsRef.current.left = true;
-        inputsRef.current.right = false;
-      } else if (tiltVal > 8) {
-        inputsRef.current.right = true;
-        inputsRef.current.left = false;
+      const angle = window.screen?.orientation?.angle ?? (window.orientation as number) ?? 0;
+      const isLand = Math.abs(angle) === 90;
+      const rawTilt = isLand ? (e.beta ?? 0) : (e.gamma ?? 0);
+      const signed = angle === -90 || angle === 270 ? -rawTilt : rawTilt;
+
+      if (Math.abs(signed) < 4) {
+        inputsRef.current.steerValue = 0;
       } else {
-        inputsRef.current.left = false;
-        inputsRef.current.right = false;
+        const clamped = Math.max(-1, Math.min(1, signed / 28));
+        inputsRef.current.steerValue = clamped;
       }
     };
 
     window.addEventListener("deviceorientation", onOrientation);
     return () => {
       window.removeEventListener("deviceorientation", onOrientation);
-      inputsRef.current.left = false;
-      inputsRef.current.right = false;
+      inputsRef.current.steerValue = undefined;
     };
-  }, [isTiltEnabled, controlsMode]);
+  }, [controlsMode, mobileControlType]);
 
-  // Stop audio immediately when game finishes or unmounts
+  // Immersive Fullscreen & Orientation Lock
+  const handleToggleRotateScreen = useCallback(async () => {
+    if (!isLandscape) {
+      setIsLandscape(true);
+      try {
+        await document.documentElement.requestFullscreen?.();
+        if (window.screen?.orientation && "lock" in window.screen.orientation) {
+          await (
+            window.screen.orientation as unknown as {
+              lock: (o: string) => Promise<void>;
+            }
+          )
+            .lock("landscape")
+            .catch(() => {});
+        }
+      } catch {}
+    } else {
+      setIsLandscape(false);
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen?.();
+        }
+        window.screen?.orientation?.unlock?.();
+      } catch {}
+    }
+  }, [isLandscape]);
+
+  // Sync ESC key exiting browser fullscreen
   useEffect(() => {
-    return () => {
-      raceAudio.stopAll();
+    const onFsChange = () => {
+      if (!document.fullscreenElement && isLandscape) {
+        // Allow CSS portal fullscreen to stay or exit smoothly
+      }
     };
-  }, []);
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, [isLandscape]);
 
-  // Keyboard Event Listeners with window.blur cleanup
+  const handleResetCar = useCallback(() => {
+    const cur = physicsRef.current;
+    const sp = CIRCUIT_SAMPLES[cur.nearestSampleIdx] ?? CIRCUIT_SAMPLES[0]!;
+    physicsRef.current = {
+      ...cur,
+      x: sp.x,
+      z: sp.z,
+      rotation: sp.headingAngle,
+      speed: 0,
+      steerAngle: 0,
+      isDrifting: false,
+      isBoosting: false,
+      isBraking: false,
+      isReversing: false,
+    };
+    raceAudio.playBarrierImpact();
+    showBanner("CAR RESET ON TRACK");
+  }, [showBanner]);
+
+  // Keyboard Listeners
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       raceAudio.resume();
       const k = e.key.toLowerCase();
 
-      // Prevent scrolling when using arrow keys
-      if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(k)) {
+      if (
+        ["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(k)
+      ) {
         e.preventDefault();
       }
 
@@ -579,12 +776,14 @@ export function RaceGame({
       if (k === "arrowdown" || k === "s") inputsRef.current.brake = true;
       if (k === "arrowleft" || k === "a") inputsRef.current.left = true;
       if (k === "arrowright" || k === "d") inputsRef.current.right = true;
-      if (k === " " || k === "space" || k === "spacebar") inputsRef.current.drift = true;
+      if (k === " " || k === "space" || k === "spacebar")
+        inputsRef.current.drift = true;
       if (k === "shift") inputsRef.current.nitro = true;
-
       if (k === "r") handleResetCar();
       if (k === "c") {
-        setCameraMode((prev) => (prev === "chase" ? "bumper" : prev === "bumper" ? "top" : "chase"));
+        setCameraMode((prev) =>
+          prev === "chase" ? "bumper" : prev === "bumper" ? "top" : "chase"
+        );
       }
       if (k === "m") {
         setIsMuted(raceAudio.toggleMute());
@@ -597,12 +796,22 @@ export function RaceGame({
       if (k === "arrowdown" || k === "s") inputsRef.current.brake = false;
       if (k === "arrowleft" || k === "a") inputsRef.current.left = false;
       if (k === "arrowright" || k === "d") inputsRef.current.right = false;
-      if (k === " " || k === "space" || k === "spacebar") inputsRef.current.drift = false;
+      if (k === " " || k === "space" || k === "spacebar")
+        inputsRef.current.drift = false;
       if (k === "shift") inputsRef.current.nitro = false;
     };
 
     const onBlur = () => {
-      inputsRef.current = { gas: false, brake: false, left: false, right: false, drift: false, nitro: false };
+      inputsRef.current = {
+        gas: false,
+        brake: false,
+        left: false,
+        right: false,
+        steerValue: undefined,
+        drift: false,
+        nitro: false,
+      };
+      raceAudio.stopCarLoops();
     };
 
     window.addEventListener("keydown", onKeyDown, { passive: false });
@@ -614,27 +823,9 @@ export function RaceGame({
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onBlur);
     };
-  }, []);
+  }, [handleResetCar]);
 
-  // Reset car facing forward on track centerline
-  const handleResetCar = useCallback(() => {
-    const cur = physicsRef.current;
-    const gate = TRACK_GATES[cur.checkpoint % TOTAL_GATES]!;
-    physicsRef.current = {
-      ...cur,
-      x: gate.x,
-      z: gate.z,
-      rotation: gate.forwardAngle,
-      speed: 0,
-      steerAngle: 0,
-      isDrifting: false,
-      isBoosting: false,
-      isBraking: false,
-    };
-    raceAudio.playBarrierImpact();
-  }, []);
-
-  // Main 60FPS Physics Simulation Tick
+  // Main 60/120fps Physics Loop
   const onPhysicsStep = useCallback(
     (delta: number) => {
       if (finishedRef.current) return;
@@ -643,40 +834,56 @@ export function RaceGame({
       const rawInputs = inputsRef.current;
       const inputs: DriveInputs = { ...rawInputs };
 
-      // Auto-Drive mode: automatically accelerates forward on touch devices unless braking/reversing
-      if (autoDrive && controlsMode === "touch") {
-        if (!rawInputs.brake) {
-          inputs.gas = true;
+      if (autoDrive && controlsMode === "touch" && !rawInputs.brake) {
+        inputs.gas = true;
+      }
+
+      const { next, gateCrossed, lapIncremented, barrierHit } =
+        stepCarPhysics(current, inputs, delta);
+
+      // Boost Pads interaction
+      const nowPerf = performance.now();
+      for (const pad of BOOST_PADS) {
+        if (Math.hypot(next.x - pad.x, next.z - pad.z) < 7.5) {
+          next.speed = Math.min(
+            next.speed + delta * 45,
+            TRACK_CONFIG.maxSpeedForward * TRACK_CONFIG.nitroBoostMultiplier
+          );
+          next.nitroPercent = Math.min(100, next.nitroPercent + delta * 55);
+          next.isBoosting = true;
+          if (nowPerf - lastBoostPadSoundRef.current > 450) {
+            lastBoostPadSoundRef.current = nowPerf;
+            raceAudio.playSpeedPadWhoosh();
+            showBanner("⚡ TURBO PAD BOOST!");
+          }
+          break;
         }
       }
 
-      // 1. Step Player Car Physics
-      const { next, gateCrossed, lapIncremented, barrierHit } = stepCarPhysics(current, inputs, delta);
-
-      // Speed Boost Pad Interaction on Straightaways
-      const isOverBoost1 = Math.hypot(next.x - 40, next.z - (-85)) < 6.5;
-      const isOverBoost2 = Math.hypot(next.x - (-70), next.z - 55) < 6.5;
-      if (isOverBoost1 || isOverBoost2) {
-        next.speed = Math.min(
-          next.speed + delta * 38,
-          TRACK_CONFIG.maxSpeedForward * TRACK_CONFIG.nitroBoostMultiplier
-        );
-        next.nitroPercent = Math.min(100, next.nitroPercent + delta * 50);
-        if (Math.random() < 0.2) raceAudio.playSpeedPadWhoosh();
-      }
-
       physicsRef.current = next;
+      fxStateRef.current = {
+        x: next.x,
+        z: next.z,
+        rotation: next.rotation,
+        speed: next.speed,
+        isDrifting: next.isDrifting,
+        isBraking: next.isBraking,
+        isBoosting: next.isBoosting,
+        barrierHitAt: barrierHit ? nowPerf : fxStateRef.current.barrierHitAt,
+      };
 
-      // Sound triggers
       if (barrierHit) {
         raceAudio.playBarrierImpact();
+      } else if (next.isOnKerb) {
+        raceAudio.playKerbRumble(next.speed);
       }
+
+      const now = Date.now();
 
       if (gateCrossed) {
         raceAudio.playCheckpointBeep(next.checkpoint === 0);
 
         if (lapIncremented) {
-          const now = Date.now();
           const lapTime = now - lapStartRef.current;
           lapStartRef.current = now;
 
@@ -686,56 +893,114 @@ export function RaceGame({
             setHudState((prev) => ({
               ...prev,
               bestLapMs: bestLapRef.current,
-              lapSplitText: `Lap ${next.lap - 1}: ${(lapTime / 1000).toFixed(2)}s ${isBest ? "⚡ RECORD" : ""}`,
             }));
-            setTimeout(() => {
-              setHudState((prev) => ({ ...prev, lapSplitText: null }));
-            }, 3000);
+            showBanner(
+              `LAP ${next.lap - 1}: ${(lapTime / 1000).toFixed(2)}s ${
+                isBest ? "⚡ NEW BEST" : ""
+              }`
+            );
           }
         }
       }
 
       // Check race finish
-      const now = Date.now();
       const totalTime = now - startTimeRef.current;
-      if (next.lap > room.settings.laps && !finishedRef.current) {
+      const maxLaps = room.settings?.laps ?? 3;
+      if (next.lap > maxLaps && !finishedRef.current) {
         finishedRef.current = true;
-        raceAudio.stopAll();
-        raceAudio.playVictoryHorn();
-        onFinish(totalTime, bestLapRef.current === Infinity ? totalTime : bestLapRef.current);
+        raceAudio.playFinishFanfareAndStop();
+        netRef.current?.publishLocalPose(
+          {
+            x: next.x,
+            z: next.z,
+            rotation: next.rotation,
+            speed: next.speed,
+            steerAngle: next.steerAngle,
+            lap: next.lap,
+            checkpoint: next.checkpoint,
+            progress: next.progress,
+            isBoosting: next.isBoosting,
+            isDrifting: next.isDrifting,
+            isBraking: next.isBraking,
+          },
+          true
+        );
+        onFinish(
+          totalTime,
+          bestLapRef.current === Infinity ? totalTime : bestLapRef.current
+        );
         return;
       }
 
-      // 2. Step AI Rivals
-      if (hasAI) {
-        aiBotsRef.current = updateAIRivals(aiBotsRef.current, delta, next.x, next.z);
+      // Step AI bots
+      if (withAI) {
+        aiBotsRef.current = updateAIRivals(
+          aiBotsRef.current,
+          delta,
+          next.x,
+          next.z
+        );
       }
 
-      // 3. Audio Update
-      raceAudio.updateCarSound(next.speed, TRACK_CONFIG.maxSpeedForward, inputs.gas, next.isBoosting);
+      // Continuous Audio Update
+      raceAudio.updateCarSound(
+        next.speed,
+        TRACK_CONFIG.maxSpeedForward,
+        inputs.gas,
+        next.isBoosting
+      );
       raceAudio.updateDrift(next.isDrifting, next.speed);
       raceAudio.updateNitro(next.isBoosting);
 
-      // 4. Throttle HUD Updates to 20fps for performance
-      if (now - lastHudUpdateRef.current > 50) {
+      // Push Network Pose (30Hz WebRTC P2P + 150ms coalesced Cloud fallback)
+      netRef.current?.publishLocalPose(
+        {
+          x: next.x,
+          z: next.z,
+          rotation: next.rotation,
+          speed: next.speed,
+          steerAngle: next.steerAngle,
+          lap: next.lap,
+          checkpoint: next.checkpoint,
+          progress: next.progress,
+          isBoosting: next.isBoosting,
+          isDrifting: next.isDrifting,
+          isBraking: next.isBraking,
+        },
+        gateCrossed
+      );
+
+      // Throttle React HUD state updates to ~18Hz
+      if (now - lastHudUpdateRef.current > 55) {
         lastHudUpdateRef.current = now;
 
-        // Calculate competitive rank
-        const allRacers = [
-          { lap: next.lap, checkpoint: next.checkpoint },
-          ...(hasAI ? aiBotsRef.current.map((b) => ({ lap: b.lap, checkpoint: b.checkpoint })) : []),
-          ...Object.values(room.players)
-            .filter((p) => p.id !== player.id)
-            .map((p) => ({ lap: p.lap, checkpoint: p.checkpoint })),
-        ];
+        const remotePoses = Array.from(
+          netRef.current?.getAllRemotePoses().values() ?? []
+        );
+        const allProgress = [
+          { isMe: true, progress: next.progress },
+          ...(withAI
+            ? aiBotsRef.current.map((b) => ({
+                isMe: false,
+                progress: b.progress,
+              }))
+            : []),
+          ...remotePoses.map((rp) => ({
+            isMe: false,
+            progress: rp.progress,
+          })),
+        ].sort((a, b) => b.progress - a.progress);
 
-        allRacers.sort((a, b) => {
-          if (a.lap !== b.lap) return b.lap - a.lap;
-          return b.checkpoint - a.checkpoint;
-        });
+        const rank = Math.max(
+          1,
+          allProgress.findIndex((r) => r.isMe) + 1
+        );
 
-        const rank =
-          allRacers.findIndex((r) => r.lap === next.lap && r.checkpoint === next.checkpoint) + 1;
+        if (rank < prevRankRef.current && totalTime > 4000) {
+          raceAudio.playOvertakeChime();
+          showBanner(`⚡ OVERTAKE → P${rank}!`);
+        }
+        prevRankRef.current = rank;
 
         setHudState((prev) => ({
           ...prev,
@@ -744,34 +1009,29 @@ export function RaceGame({
           nitroPercent: next.nitroPercent,
           driftScore: next.driftScore,
           lap: next.lap,
+          activeGate: (next.checkpoint + 1) % TOTAL_GATES,
           totalTimeMs: totalTime,
-          rank: Math.max(1, rank),
+          rank,
           isWrongWay: next.isWrongWay,
         }));
 
-        if (hasAI) {
+        if (withAI) {
           setAiBotsHUD([...aiBotsRef.current]);
         }
       }
-
-      // 5. Network sync throttled to 100ms
-      if (finishedRef.current || now - lastNetSyncRef.current > 100) {
-        lastNetSyncRef.current = now;
-        onUpdate({
-          x: next.x,
-          z: next.z,
-          rotation: next.rotation,
-          speed: next.speed,
-          lap: next.lap,
-          checkpoint: next.checkpoint,
-          finishedAt: finishedRef.current ? now : null,
-        });
-      }
     },
-    [hasAI, onFinish, onUpdate, player.id, room.players, room.settings.laps]
+    [
+      autoDrive,
+      controlsMode,
+      withAI,
+      onFinish,
+      room.settings?.laps,
+      showBanner,
+    ]
   );
 
-  const getLocalCarPose = useCallback(() => {
+  // Ref callbacks for 3D scene (Zero React re-renders per frame!)
+  const getLocalCarPose = useCallback((): CarVisualPose => {
     const s = physicsRef.current;
     return {
       x: s.x,
@@ -782,124 +1042,247 @@ export function RaceGame({
       isDrifting: s.isDrifting,
       isBoosting: s.isBoosting,
       isBraking: s.isBraking,
+      isReversing: s.isReversing,
     };
   }, []);
 
-  const remotePlayersList = useMemo(
-    () => Object.values(room.players).filter((p) => p.id !== player.id),
-    [room.players, player.id]
+  const getCameraTarget = useCallback(() => {
+    const s = physicsRef.current;
+    return {
+      x: s.x,
+      z: s.z,
+      rotation: s.rotation,
+      speed: s.speed,
+      steerAngle: s.steerAngle,
+      isBoosting: s.isBoosting,
+      isOnKerb: s.isOnKerb,
+    };
+  }, []);
+
+  const getPlayerFx = useCallback(() => fxStateRef.current, []);
+
+  // Dead-reckoning prediction for remote human rivals
+  const getRemotePoseCallback = useCallback(
+    (rp: RacePlayer) => (): CarVisualPose => {
+      const netPose = netRef.current?.getRemotePose(rp.id);
+      if (!netPose) {
+        return {
+          x: rp.x,
+          z: rp.z,
+          rotation: rp.rotation,
+          speed: rp.speed,
+          steerAngle: rp.steerAngle ?? 0,
+          isDrifting: Boolean(rp.isDrifting),
+          isBoosting: Boolean(rp.isBoosting),
+          isBraking: Boolean(rp.isBraking),
+          isReversing: rp.speed < -0.5,
+        };
+      }
+      // Extrapolate smoothly up to 160ms ahead using current speed & heading
+      const leadSec = Math.min(
+        0.16,
+        Math.max(0, (performance.now() - netPose.receivedAt) / 1000)
+      );
+      return {
+        x: netPose.x + Math.sin(netPose.rotation) * netPose.speed * leadSec,
+        z: netPose.z + Math.cos(netPose.rotation) * netPose.speed * leadSec,
+        rotation: netPose.rotation,
+        speed: netPose.speed,
+        steerAngle: netPose.steerAngle,
+        isDrifting: netPose.isDrifting,
+        isBoosting: netPose.isBoosting,
+        isBraking: netPose.isBraking,
+        isReversing: netPose.speed < -0.5,
+      };
+    },
+    []
   );
 
-  return (
+  const getBotPoseCallback = useCallback(
+    (idx: number) => (): CarVisualPose | null => {
+      const b = aiBotsRef.current[idx];
+      if (!b) return null;
+      return {
+        x: b.x,
+        z: b.z,
+        rotation: b.rotation,
+        speed: b.speed,
+        steerAngle: b.steerAngle,
+        isDrifting: false,
+        isBoosting: b.isBoosting,
+        isBraking: b.isBraking,
+        isReversing: false,
+      };
+    },
+    []
+  );
+
+  const remotePlayersList = useMemo(
+    () => validPlayers.filter((p) => p.id !== player.id),
+    [validPlayers, player.id]
+  );
+
+  const handleExit = useCallback(() => {
+    raceAudio.endSession();
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.().catch(() => {});
+    }
+    window.screen?.orientation?.unlock?.();
+    onExit();
+  }, [onExit]);
+
+  const gameViewport = (
     <div
-      ref={containerRef}
       className={
         isLandscape
-          ? "fixed inset-0 z-50 h-screen w-screen bg-slate-950 select-none overflow-hidden"
-          : "relative w-full overflow-hidden rounded-[2.2rem] border border-cyan-500/25 bg-slate-950 shadow-[0_0_60px_rgba(6,182,212,0.18)] select-none"
+          ? "fixed inset-0 z-[9990] h-[100dvh] w-screen bg-[#0c1a30] select-none touch-none overflow-hidden"
+          : "relative w-full overflow-hidden rounded-[1.75rem] sm:rounded-[2.2rem] border border-cyan-500/30 bg-[#0c1a30] shadow-[0_0_60px_rgba(6,182,212,0.2)] select-none touch-none"
       }
       onClick={() => raceAudio.resume()}
     >
       {/* 3D WebGL Canvas */}
-      <div className={isLandscape ? "h-screen w-screen" : "h-[74vh] min-h-[500px] w-full"}>
+      <div
+        className={
+          isLandscape
+            ? "h-[100dvh] w-screen"
+            : "h-[68vh] min-h-[460px] sm:h-[75vh] sm:min-h-[540px] w-full"
+        }
+      >
         <Canvas
-          camera={{ position: [0, 9, START_GRID_POS.z - 14], fov: 60 }}
+          camera={{
+            position: [initialSpawn.x - 12, 8, initialSpawn.z],
+            fov: 62,
+            near: 0.4,
+            far: 1400,
+          }}
           gl={{ powerPreference: "high-performance", antialias: true }}
-          dpr={[1, 1.5]}
+          dpr={[1, 1.75]}
         >
-          <fog attach="fog" args={["#020617", 50, 480]} />
-          <ambientLight intensity={0.65} />
-          <directionalLight position={[65, 85, 45]} intensity={1.6} castShadow />
-          <pointLight position={[0, 30, 0]} intensity={1.2} color="#38bdf8" />
+          <color attach="background" args={["#183558"]} />
+          <fog attach="fog" args={["#23466d", 240, 960]} />
+          <hemisphereLight args={["#bae6fd", "#1c382a", 1.15]} />
+          <directionalLight position={[120, 140, -110]} intensity={1.9} color="#fff7ed" />
+          <directionalLight position={[-120, 80, 140]} intensity={0.75} color="#7dd3fc" />
 
-          {/* Physics Engine Hook */}
           <PhysicsTick onStep={onPhysicsStep} />
 
-          {/* Track and Cyber Environment */}
-          <Track3D activeGate={(physicsRef.current.checkpoint + 1) % TOTAL_GATES} />
+          <Track3D activeGate={hudState.activeGate} />
+
+          <RaceParticlesFX getPlayerFx={getPlayerFx} />
 
           {/* Local Player Car */}
-          <CyberRaceCar color={localPlayer.car.color} getPose={getLocalCarPose} />
+          <CyberRaceCar
+            color={localPlayer?.car.color ?? "#38bdf8"}
+            getPose={getLocalCarPose}
+          />
 
-          {/* Remote Multiplayer Players */}
+          {/* Remote Multiplayer Human Racers */}
           {remotePlayersList.map((rp) => (
             <CyberRaceCar
               key={rp.id}
               color={rp.car.color}
               isRemote
-              remotePose={{ x: rp.x, z: rp.z, rotation: rp.rotation, speed: rp.speed }}
+              getPose={getRemotePoseCallback(rp)}
               playerName={rp.name}
             />
           ))}
 
-          {/* AI Rival Bots */}
-          {hasAI &&
-            aiBotsRef.current.map((bot) => (
+          {/* Autonomous AI Rivals */}
+          {withAI &&
+            aiBotsRef.current.map((bot, idx) => (
               <CyberRaceCar
                 key={bot.id}
                 color={bot.color}
                 isRemote
-                remotePose={{ x: bot.x, z: bot.z, rotation: bot.rotation, speed: bot.speed }}
+                getPose={getBotPoseCallback(idx)}
                 playerName={bot.name}
               />
             ))}
 
-          {/* Camera View Follow Rig */}
-          <CyberCameraRig getTarget={getLocalCarPose} mode={cameraMode} />
+          <CyberCameraRig getTarget={getCameraTarget} mode={cameraMode} />
         </Canvas>
       </div>
 
-      {/* Cyberpunk Heads-Up Display (HUD) */}
+      {/* Pro Responsive Heads-Up Display */}
       <RaceHUD
         speedKmh={hudState.speedKmh}
         gear={hudState.gear}
         nitroPercent={hudState.nitroPercent}
         lap={hudState.lap}
-        maxLaps={room.settings.laps}
+        maxLaps={room.settings?.laps ?? 3}
         totalTimeMs={hudState.totalTimeMs}
         bestLapMs={hudState.bestLapMs}
-        lapSplitText={hudState.lapSplitText}
+        bannerText={hudState.bannerText}
         rank={hudState.rank}
-        totalRacers={1 + remotePlayersList.length + (hasAI ? aiBotsRef.current.length : 0)}
+        totalRacers={
+          1 + remotePlayersList.length + (withAI ? aiBotsRef.current.length : 0)
+        }
         isWrongWay={hudState.isWrongWay}
         cameraMode={cameraMode}
         isMuted={isMuted}
         controlsMode={controlsMode}
-        hasAI={hasAI}
+        mobileControlType={mobileControlType}
         autoDrive={autoDrive}
         isLandscape={isLandscape}
-        isTiltEnabled={isTiltEnabled}
         driftScore={hudState.driftScore}
-        playerPos={{ x: physicsRef.current.x, z: physicsRef.current.z }}
-        remoteRacers={remotePlayersList.map((rp) => ({
-          id: rp.id,
-          color: rp.car.color,
-          x: rp.x,
-          z: rp.z,
-        }))}
-        aiBots={hasAI ? aiBotsHUD : []}
+        pingMs={netMetrics.pingMs}
+        transport={netMetrics.transport}
+        isMultiplayer={isMultiplayer}
+        playerPos={{
+          x: physicsRef.current.x,
+          z: physicsRef.current.z,
+          rotation: physicsRef.current.rotation,
+        }}
+        remoteRacers={remotePlayersList.map((rp) => {
+          const live = netRef.current?.getRemotePose(rp.id);
+          return {
+            id: rp.id,
+            color: rp.car.color,
+            x: live?.x ?? rp.x,
+            z: live?.z ?? rp.z,
+          };
+        })}
+        aiBots={withAI ? aiBotsHUD : []}
+        onExitRace={handleExit}
         onToggleCamera={() =>
-          setCameraMode((prev) => (prev === "chase" ? "bumper" : prev === "bumper" ? "top" : "chase"))
+          setCameraMode((prev) =>
+            prev === "chase" ? "bumper" : prev === "bumper" ? "top" : "chase"
+          )
         }
         onToggleMute={() => setIsMuted(raceAudio.toggleMute())}
         onResetCar={handleResetCar}
-        onToggleAI={() => setHasAI((prev) => !prev)}
         onToggleAutoDrive={() => setAutoDrive((prev) => !prev)}
-        onToggleTilt={() => setIsTiltEnabled((prev) => !prev)}
+        onCycleMobileControl={handleCycleMobileControl}
         onToggleRotateScreen={handleToggleRotateScreen}
-        onTouchGasStart={() => (inputsRef.current.gas = true)}
-        onTouchGasEnd={() => (inputsRef.current.gas = false)}
-        onTouchBrakeStart={() => (inputsRef.current.brake = true)}
-        onTouchBrakeEnd={() => (inputsRef.current.brake = false)}
-        onTouchLeftStart={() => (inputsRef.current.left = true)}
-        onTouchLeftEnd={() => (inputsRef.current.left = false)}
-        onTouchRightStart={() => (inputsRef.current.right = true)}
-        onTouchRightEnd={() => (inputsRef.current.right = false)}
-        onTouchDriftStart={() => (inputsRef.current.drift = true)}
-        onTouchDriftEnd={() => (inputsRef.current.drift = false)}
-        onTouchNitroStart={() => (inputsRef.current.nitro = true)}
-        onTouchNitroEnd={() => (inputsRef.current.nitro = false)}
+        onAnalogSteer={(val) => {
+          inputsRef.current.steerValue = val;
+        }}
+        onTouchGasChange={(v) => {
+          inputsRef.current.gas = v;
+        }}
+        onTouchBrakeChange={(v) => {
+          inputsRef.current.brake = v;
+        }}
+        onTouchLeftChange={(v) => {
+          inputsRef.current.left = v;
+        }}
+        onTouchRightChange={(v) => {
+          inputsRef.current.right = v;
+        }}
+        onTouchDriftChange={(v) => {
+          inputsRef.current.drift = v;
+        }}
+        onTouchNitroChange={(v) => {
+          inputsRef.current.nitro = v;
+        }}
       />
     </div>
   );
+
+  // Portal fullscreen above Navbar (z-9990 > Navbar z-65) so nothing overlaps the game HUD
+  if (isLandscape && mounted) {
+    return createPortal(gameViewport, document.body);
+  }
+
+  return gameViewport;
 }

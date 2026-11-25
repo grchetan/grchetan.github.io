@@ -1,14 +1,18 @@
 /**
- * Chrome Circuit — multiplayer mini race backend.
- *
- * Uses Firestore room documents for real-time lobby + race state sync.
- * Falls back to localStorage when Firebase is unavailable.
+ * Horizon Grand Prix — Multiplayer Netcode Backend
+ * Features:
+ * - Coalesced, strictly ordered Firestore state writes (zero overlapping async storms)
+ * - Proper `deleteField()` player cleanup + null-entry sanitization
+ * - Clean async subscription disposal (prevents leaked Firestore listeners)
+ * - Accurate Firestore cloud RTT latency tracking (`cloudRttMs`)
+ * - Automatic BroadcastChannel fallback for sub-2ms local multi-tab testing
  */
 
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDb, isFirebaseConfigured } from "@/lib/firebase";
 import { readSessionPlayer, writeSessionPlayer, type Player } from "@/lib/arcade";
+import { getStartingGridPos } from "@/components/site/race/race-physics";
 
 export type RacePhase = "lobby" | "countdown" | "racing" | "finished";
 
@@ -25,8 +29,15 @@ export type RacePlayer = {
   z: number;
   rotation: number;
   speed: number;
+  steerAngle?: number | undefined;
+  isBoosting?: boolean | undefined;
+  isDrifting?: boolean | undefined;
+  isBraking?: boolean | undefined;
   lap: number;
   checkpoint: number;
+  progress?: number | undefined;
+  seq?: number | undefined;
+  ts?: number | undefined;
   finishedAt: number | null;
   bestLap: number | null;
   connectedAt: number;
@@ -35,6 +46,15 @@ export type RacePlayer = {
 export type RoomSettings = {
   laps: number;
   maxPlayers: number;
+  withAI?: boolean | undefined;
+};
+
+export type RtcSignalEdge = {
+  offer?: string | undefined;
+  answer?: string | undefined;
+  offerCandidates?: string[] | undefined;
+  answerCandidates?: string[] | undefined;
+  updatedAt?: number | undefined;
 };
 
 export type RaceRoom = {
@@ -43,9 +63,10 @@ export type RaceRoom = {
   phase: RacePhase;
   settings: RoomSettings;
   players: Record<string, RacePlayer>;
-  countdownStartedAt?: number;
-  raceStartedAt?: number;
-  results?: RaceResult[];
+  rtcSignals?: Record<string, RtcSignalEdge> | undefined;
+  countdownStartedAt?: number | undefined;
+  raceStartedAt?: number | undefined;
+  results?: RaceResult[] | undefined;
   createdAt: number;
   updatedAt: number;
 };
@@ -54,28 +75,43 @@ export type RaceResult = {
   playerId: string;
   name: string;
   handle: string;
-  totalTime?: number;
-  bestLap?: number;
+  totalTime?: number | undefined;
+  bestLap?: number | undefined;
   rank: number;
 };
 
 const COLLECTION = "raceRooms";
 const LEADERBOARD = "raceLeaderboard";
 const LS_ROOM = "race-room";
-const LS_PLAYER = "race-player";
 
 const COLORS = [
-  "#ef4444", // red
-  "#3b82f6", // blue
-  "#eab308", // yellow
+  "#38bdf8", // sky cyan
+  "#f59e0b", // amber
+  "#ec4899", // magenta
+  "#22c55e", // emerald
   "#a855f7", // purple
-  "#22c55e", // green
+  "#ef4444", // crimson
   "#f97316", // orange
-  "#06b6d4", // cyan
-  "#ec4899", // pink
+  "#06b6d4", // teal
 ];
 
-/** Firestore rejects `undefined`; strip it recursively before writing. */
+/** Cached Firestore handle to eliminate per-tick dynamic import latency */
+let cachedFs: {
+  db: Awaited<ReturnType<typeof getDb>>;
+  mod: typeof import("firebase/firestore");
+} | null = null;
+
+async function getFs() {
+  if (cachedFs) return cachedFs;
+  const [db, mod] = await Promise.all([
+    getDb(),
+    import("firebase/firestore"),
+  ]);
+  cachedFs = { db, mod };
+  return cachedFs;
+}
+
+/** Firestore rejects `undefined`; strip recursively before writing. */
 function clean<T>(value: T): T {
   if (Array.isArray(value)) return value.map((v) => clean(v)) as unknown as T;
   if (value && typeof value === "object") {
@@ -89,12 +125,42 @@ function clean<T>(value: T): T {
   return value;
 }
 
+/** Sanitize `players` map so legacy `null` entries never crash UI */
+export function sanitizeRoom(raw: RaceRoom | null | undefined): RaceRoom | null {
+  if (!raw || typeof raw !== "object") return null;
+  const players: Record<string, RacePlayer> = {};
+  if (raw.players && typeof raw.players === "object") {
+    for (const [id, p] of Object.entries(raw.players)) {
+      if (p && typeof p === "object" && p.id && p.car) {
+        players[id] = p;
+      }
+    }
+  }
+  return {
+    ...raw,
+    settings: {
+      laps: raw.settings?.laps ?? 3,
+      maxPlayers: raw.settings?.maxPlayers ?? 6,
+      withAI: raw.settings?.withAI ?? true,
+    },
+    players,
+  };
+}
+
+/** Extract sanitized list of valid RacePlayer objects */
+export function getValidPlayers(room: RaceRoom | null | undefined): RacePlayer[] {
+  if (!room?.players) return [];
+  return Object.values(room.players).filter(
+    (p): p is RacePlayer => Boolean(p && typeof p === "object" && p.id && p.car)
+  );
+}
+
 /** Turn raw Firestore errors into player-friendly messages. */
 export function raceError(e: unknown): string {
   const code = (e as { code?: string } | null)?.code ?? "";
   const message = (e as { message?: string } | null)?.message ?? "";
   if (code.includes("permission-denied") || /insufficient permissions/i.test(message)) {
-    return "Multiplayer is locked: Firestore rules don't allow the raceRooms collection yet. Add rules for raceRooms + raceLeaderboard in the Firebase console.";
+    return "Multiplayer is locked: Firestore rules don't allow raceRooms yet.";
   }
   if (code.includes("unavailable") || /network/i.test(message)) {
     return "Network issue — check your connection and try again.";
@@ -105,12 +171,14 @@ export function raceError(e: unknown): string {
 export function randomRoomCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
-  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  for (let i = 0; i < 4; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
   return code;
 }
 
-export function randomCarColor(): string {
-  return COLORS[Math.floor(Math.random() * COLORS.length)] ?? "#3b82f6";
+export function randomCarColor(slot = 0): string {
+  return COLORS[slot % COLORS.length] ?? "#38bdf8";
 }
 
 function readLocalRoom(): RaceRoom | null {
@@ -118,20 +186,31 @@ function readLocalRoom(): RaceRoom | null {
   const raw = localStorage.getItem(LS_ROOM);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as RaceRoom;
+    return sanitizeRoom(JSON.parse(raw) as RaceRoom);
   } catch {
     return null;
   }
 }
 
+function broadcastLocalRoom(code: string) {
+  if (typeof BroadcastChannel === "undefined") return;
+  try {
+    const ch = new BroadcastChannel(`race-room-${code}`);
+    ch.postMessage({ type: "room-updated", ts: Date.now() });
+    ch.close();
+  } catch {}
+}
+
 function writeLocalRoom(room: RaceRoom) {
   if (typeof window === "undefined") return;
   localStorage.setItem(LS_ROOM, JSON.stringify(room));
+  broadcastLocalRoom(room.code);
 }
 
-function removeLocalRoom() {
+function removeLocalRoom(code?: string) {
   if (typeof window === "undefined") return;
   localStorage.removeItem(LS_ROOM);
+  if (code) broadcastLocalRoom(code);
 }
 
 export function getRacePlayer(): Player | null {
@@ -144,9 +223,10 @@ export function setRacePlayer(player: Player) {
 
 export async function createRaceRoom(
   player: Player,
-  settings: RoomSettings = { laps: 3, maxPlayers: 6 },
+  settings: RoomSettings = { laps: 3, maxPlayers: 6, withAI: true }
 ): Promise<RaceRoom> {
   const code = randomRoomCode();
+  const spawn = getStartingGridPos(0);
   const room: RaceRoom = {
     code,
     hostId: player.id,
@@ -157,13 +237,14 @@ export async function createRaceRoom(
         id: player.id,
         name: player.name,
         handle: player.handle,
-        car: { color: randomCarColor() },
-        x: -5,
-        z: -85,
-        rotation: Math.PI / 2,
+        car: { color: randomCarColor(0) },
+        x: spawn.x,
+        z: spawn.z,
+        rotation: spawn.rotation,
         speed: 0,
-        lap: 0,
+        lap: 1,
         checkpoint: 0,
+        progress: 0,
         finishedAt: null,
         bestLap: null,
         connectedAt: Date.now(),
@@ -174,10 +255,9 @@ export async function createRaceRoom(
   };
 
   if (isFirebaseConfigured) {
-    const { doc, setDoc } = await import("firebase/firestore");
-    const db = await getDb();
+    const { db, mod } = await getFs();
     try {
-      await setDoc(doc(db, COLLECTION, code), clean(room));
+      await mod.setDoc(mod.doc(db, COLLECTION, code), clean(room));
     } catch (e) {
       throw new Error(raceError(e));
     }
@@ -192,38 +272,47 @@ export async function joinRaceRoom(player: Player, code: string): Promise<RaceRo
   const upper = code.trim().toUpperCase();
 
   if (isFirebaseConfigured) {
-    const { doc, getDoc, updateDoc } = await import("firebase/firestore");
-    const db = await getDb();
+    const { db, mod } = await getFs();
     let snap;
     try {
-      snap = await getDoc(doc(db, COLLECTION, upper));
+      snap = await mod.getDoc(mod.doc(db, COLLECTION, upper));
     } catch (e) {
       throw new Error(raceError(e));
     }
-    if (!snap.exists()) throw new Error("Room not found. Check the code and try again.");
-    const room = snap.data() as RaceRoom;
-    if (room.phase !== "lobby") throw new Error("Race already started. Try another room.");
-    const playerCount = Object.keys(room.players).length;
-    if (playerCount >= room.settings.maxPlayers) throw new Error("Room is full.");
+    if (!snap.exists()) {
+      throw new Error("Room not found. Check the code and try again.");
+    }
+    const room = sanitizeRoom(snap.data() as RaceRoom);
+    if (!room) throw new Error("Room data corrupted.");
+    if (room.phase !== "lobby" && !room.players[player.id]) {
+      throw new Error("Race already started. Try another room.");
+    }
+    const existingPlayers = getValidPlayers(room);
+    const playerCount = existingPlayers.length;
+    if (playerCount >= room.settings.maxPlayers && !room.players[player.id]) {
+      throw new Error("Room is full.");
+    }
 
-    const entry: RacePlayer = {
+    const spawn = getStartingGridPos(playerCount);
+    const entry: RacePlayer = room.players[player.id] ?? {
       id: player.id,
       name: player.name,
       handle: player.handle,
-      car: { color: randomCarColor() },
-      x: -5 + Math.min(playerCount, 4) * 2.2,
-      z: -85,
-      rotation: Math.PI / 2,
+      car: { color: randomCarColor(playerCount) },
+      x: spawn.x,
+      z: spawn.z,
+      rotation: spawn.rotation,
       speed: 0,
-      lap: 0,
+      lap: 1,
       checkpoint: 0,
+      progress: 0,
       finishedAt: null,
       bestLap: null,
       connectedAt: Date.now(),
     };
 
     try {
-      await updateDoc(doc(db, COLLECTION, upper), {
+      await mod.updateDoc(mod.doc(db, COLLECTION, upper), {
         [`players.${player.id}`]: clean(entry),
         updatedAt: Date.now(),
       });
@@ -236,66 +325,116 @@ export async function joinRaceRoom(player: Player, code: string): Promise<RaceRo
 
   const local = readLocalRoom();
   if (!local || local.code !== upper) throw new Error("Room not found.");
-  if (local.phase !== "lobby") throw new Error("Race already started.");
-  if (Object.keys(local.players).length >= local.settings.maxPlayers) throw new Error("Room is full.");
-  const entry: RacePlayer = {
+  if (local.phase !== "lobby" && !local.players[player.id]) {
+    throw new Error("Race already started.");
+  }
+  const existingPlayers = getValidPlayers(local);
+  if (
+    existingPlayers.length >= local.settings.maxPlayers &&
+    !local.players[player.id]
+  ) {
+    throw new Error("Room is full.");
+  }
+  const spawn = getStartingGridPos(existingPlayers.length);
+  const entry: RacePlayer = local.players[player.id] ?? {
     id: player.id,
     name: player.name,
     handle: player.handle,
-    car: { color: randomCarColor() },
-    x: -5 + Math.min(Object.keys(local.players).length, 4) * 2.2,
-    z: -85,
-    rotation: Math.PI / 2,
+    car: { color: randomCarColor(existingPlayers.length) },
+    x: spawn.x,
+    z: spawn.z,
+    rotation: spawn.rotation,
     speed: 0,
-    lap: 0,
+    lap: 1,
     checkpoint: 0,
+    progress: 0,
     finishedAt: null,
     bestLap: null,
     connectedAt: Date.now(),
   };
-  const updated = { ...local, players: { ...local.players, [player.id]: entry }, updatedAt: Date.now() };
+  const updated = {
+    ...local,
+    players: { ...local.players, [player.id]: entry },
+    updatedAt: Date.now(),
+  };
   writeLocalRoom(updated);
   return updated;
 }
 
 export async function leaveRaceRoom(playerId: string, code: string) {
   const upper = code.trim().toUpperCase();
+  if (!upper || upper === "SOLO") return;
 
   if (isFirebaseConfigured) {
-    const { doc, getDoc, updateDoc, deleteDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    const snap = await getDoc(doc(db, COLLECTION, upper));
-    if (!snap.exists()) return;
-    const room = snap.data() as RaceRoom;
-    const players = { ...room.players };
-    delete players[playerId];
-    if (Object.keys(players).length === 0) {
-      await deleteDoc(doc(db, COLLECTION, upper));
-    } else {
-      const updates: any = {
-        [`players.${playerId}`]: null,
-        updatedAt: Date.now(),
-      };
-      if (room.hostId === playerId) {
-        const nextHost = Object.values(players)[0];
-        if (nextHost) updates.hostId = nextHost.id;
+    try {
+      const { db, mod } = await getFs();
+      const ref = mod.doc(db, COLLECTION, upper);
+      const snap = await mod.getDoc(ref);
+      if (!snap.exists()) return;
+      const room = sanitizeRoom(snap.data() as RaceRoom);
+      if (!room) return;
+      const players = { ...room.players };
+      delete players[playerId];
+      const remaining = Object.values(players);
+      if (remaining.length === 0) {
+        await mod.deleteDoc(ref);
+      } else {
+        const updates: Record<string, unknown> = {
+          [`players.${playerId}`]: mod.deleteField(),
+          updatedAt: Date.now(),
+        };
+        if (room.hostId === playerId && remaining[0]) {
+          updates["hostId"] = remaining[0].id;
+        }
+        await mod.updateDoc(ref, updates);
       }
-      await updateDoc(doc(db, COLLECTION, upper), updates);
+    } catch {
+      // Ignore network leave error on cleanup
     }
   } else {
     const local = readLocalRoom();
     if (!local || local.code !== upper) return;
     const players = { ...local.players };
     delete players[playerId];
-    if (Object.keys(players).length === 0) {
-      removeLocalRoom();
+    const remaining = Object.values(players);
+    if (remaining.length === 0) {
+      removeLocalRoom(upper);
     } else {
-      const nextHost = Object.values(players)[0];
       writeLocalRoom({
         ...local,
-        hostId: local.hostId === playerId ? nextHost?.id ?? local.hostId : local.hostId,
+        hostId:
+          local.hostId === playerId
+            ? (remaining[0]?.id ?? local.hostId)
+            : local.hostId,
         players,
         updatedAt: Date.now(),
+      });
+    }
+  }
+}
+
+export async function updateRoomSettings(
+  code: string,
+  settings: Partial<RoomSettings>
+) {
+  const upper = code.trim().toUpperCase();
+  const now = Date.now();
+  if (isFirebaseConfigured) {
+    const { db, mod } = await getFs();
+    const updates: Record<string, unknown> = { updatedAt: now };
+    if (settings.laps !== undefined) updates["settings.laps"] = settings.laps;
+    if (settings.withAI !== undefined)
+      updates["settings.withAI"] = settings.withAI;
+    if (settings.maxPlayers !== undefined)
+      updates["settings.maxPlayers"] = settings.maxPlayers;
+    await mod.updateDoc(mod.doc(db, COLLECTION, upper), updates);
+  } else {
+    const local = readLocalRoom();
+    if (local && local.code === upper) {
+      writeLocalRoom({
+        ...local,
+        settings: { ...local.settings, ...settings },
+        updatedAt: now,
       });
     }
   }
@@ -306,9 +445,8 @@ export async function startCountdown(code: string) {
   const now = Date.now();
 
   if (isFirebaseConfigured) {
-    const { doc, updateDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    await updateDoc(doc(db, COLLECTION, upper), {
+    const { db, mod } = await getFs();
+    await mod.updateDoc(mod.doc(db, COLLECTION, upper), {
       phase: "countdown",
       countdownStartedAt: now,
       updatedAt: now,
@@ -316,7 +454,12 @@ export async function startCountdown(code: string) {
   } else {
     const local = readLocalRoom();
     if (local && local.code === upper) {
-      writeLocalRoom({ ...local, phase: "countdown", countdownStartedAt: now, updatedAt: now });
+      writeLocalRoom({
+        ...local,
+        phase: "countdown",
+        countdownStartedAt: now,
+        updatedAt: now,
+      });
     }
   }
 }
@@ -326,9 +469,8 @@ export async function startRace(code: string) {
   const now = Date.now();
 
   if (isFirebaseConfigured) {
-    const { doc, updateDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    await updateDoc(doc(db, COLLECTION, upper), {
+    const { db, mod } = await getFs();
+    await mod.updateDoc(mod.doc(db, COLLECTION, upper), {
       phase: "racing",
       raceStartedAt: now,
       updatedAt: now,
@@ -336,7 +478,12 @@ export async function startRace(code: string) {
   } else {
     const local = readLocalRoom();
     if (local && local.code === upper) {
-      writeLocalRoom({ ...local, phase: "racing", raceStartedAt: now, updatedAt: now });
+      writeLocalRoom({
+        ...local,
+        phase: "racing",
+        raceStartedAt: now,
+        updatedAt: now,
+      });
     }
   }
 }
@@ -346,9 +493,8 @@ export async function finishRace(code: string, results: RaceResult[]) {
   const now = Date.now();
 
   if (isFirebaseConfigured) {
-    const { doc, updateDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    await updateDoc(doc(db, COLLECTION, upper), {
+    const { db, mod } = await getFs();
+    await mod.updateDoc(mod.doc(db, COLLECTION, upper), {
       phase: "finished",
       results: clean(results),
       updatedAt: now,
@@ -356,68 +502,191 @@ export async function finishRace(code: string, results: RaceResult[]) {
   } else {
     const local = readLocalRoom();
     if (local && local.code === upper) {
-      writeLocalRoom({ ...local, phase: "finished", results, updatedAt: now });
+      writeLocalRoom({
+        ...local,
+        phase: "finished",
+        results,
+        updatedAt: now,
+      });
     }
   }
+}
+
+/** Measure true Firestore Cloud RTT in ms (used in Lobby before race starts) */
+export async function probeCloudPingMs(code?: string): Promise<number> {
+  if (!isFirebaseConfigured) return 1;
+  const start = performance.now();
+  try {
+    const { db, mod } = await getFs();
+    if (code && code !== "SOLO") {
+      await mod.getDocFromServer(mod.doc(db, COLLECTION, code.trim().toUpperCase()));
+    } else {
+      await mod.getDocsFromServer(
+        mod.query(mod.collection(db, LEADERBOARD), mod.limit(1))
+      );
+    }
+    return Math.max(1, Math.round(performance.now() - start));
+  } catch {
+    return Math.max(1, Math.round(performance.now() - start));
+  }
+}
+
+/** Per-player coalescing Firestore writer — guarantees max 1 in-flight write */
+const syncQueues = new Map<
+  string,
+  {
+    inFlight: boolean;
+    pending: Partial<RacePlayer> | null;
+    lastRttMs: number | null;
+  }
+>();
+
+export function getLastCloudRttMs(code: string, playerId: string): number | null {
+  return syncQueues.get(`${code}:${playerId}`)?.lastRttMs ?? null;
 }
 
 export async function updatePlayerState(
   code: string,
   playerId: string,
   state: Partial<RacePlayer>,
+  onRttSample?: (ms: number) => void
 ) {
   const upper = code.trim().toUpperCase();
+  if (!upper || upper === "SOLO") return;
 
-  if (isFirebaseConfigured) {
-    const { doc, updateDoc } = await import("firebase/firestore");
-    const db = await getDb();
-    const updates: Record<string, unknown> = { updatedAt: Date.now() };
-    for (const [key, value] of Object.entries(state)) {
-      if (value === undefined) continue;
-      updates[`players.${playerId}.${key}`] = clean(value);
-    }
-    await updateDoc(doc(db, COLLECTION, upper), updates);
-  } else {
+  if (!isFirebaseConfigured) {
     const local = readLocalRoom();
-    if (local && local.code === upper) {
+    if (local && local.code === upper && local.players[playerId]) {
       const players = { ...local.players };
       players[playerId] = { ...players[playerId]!, ...state };
       writeLocalRoom({ ...local, players, updatedAt: Date.now() });
+      onRttSample?.(1);
     }
+    return;
+  }
+
+  const qKey = `${upper}:${playerId}`;
+  let entry = syncQueues.get(qKey);
+  if (!entry) {
+    entry = { inFlight: false, pending: null, lastRttMs: null };
+    syncQueues.set(qKey, entry);
+  }
+
+  // Coalesce latest state if a Firestore write is currently in flight
+  if (entry.inFlight) {
+    entry.pending = { ...(entry.pending ?? {}), ...state };
+    return;
+  }
+
+  const flush = async (payload: Partial<RacePlayer>) => {
+    entry!.inFlight = true;
+    const t0 = performance.now();
+    try {
+      const { db, mod } = await getFs();
+      const updates: Record<string, unknown> = { updatedAt: Date.now() };
+      for (const [key, value] of Object.entries(payload)) {
+        if (value === undefined) continue;
+        updates[`players.${playerId}.${key}`] = clean(value);
+      }
+      await mod.updateDoc(mod.doc(db, COLLECTION, upper), updates);
+      const rtt = Math.max(1, Math.round(performance.now() - t0));
+      entry!.lastRttMs = rtt;
+      onRttSample?.(rtt);
+    } catch {
+      // Drop transient frame sync error gracefully
+    } finally {
+      entry!.inFlight = false;
+      const nextPayload = entry!.pending;
+      entry!.pending = null;
+      if (nextPayload) {
+        void flush(nextPayload);
+      }
+    }
+  };
+
+  void flush(state);
+}
+
+/** Update WebRTC signal edge stored cleanly on the room document */
+export async function writeRtcSignalEdge(
+  code: string,
+  edgeKey: string,
+  patch: Partial<RtcSignalEdge>
+) {
+  const upper = code.trim().toUpperCase();
+  if (!isFirebaseConfigured || !upper || upper === "SOLO") return;
+  try {
+    const { db, mod } = await getFs();
+    const updates: Record<string, unknown> = {
+      [`rtcSignals.${edgeKey}.updatedAt`]: Date.now(),
+    };
+    for (const [k, v] of Object.entries(patch)) {
+      if (v === undefined) continue;
+      updates[`rtcSignals.${edgeKey}.${k}`] = clean(v);
+    }
+    await mod.updateDoc(mod.doc(db, COLLECTION, upper), updates);
+  } catch {
+    // Non-fatal if signaling fails; cloud sync continues automatically
   }
 }
 
 export function subscribeRaceRoom(
   code: string,
-  onRoom: (room: RaceRoom | null) => void,
+  onRoom: (room: RaceRoom | null) => void
 ): () => void {
   const upper = code.trim().toUpperCase();
+  let disposed = false;
 
   if (isFirebaseConfigured) {
-    let unsub = () => {};
+    let unsub: (() => void) | null = null;
     (async () => {
-      const { doc, onSnapshot } = await import("firebase/firestore");
-      const db = await getDb();
-      unsub = onSnapshot(doc(db, COLLECTION, upper), (snap) => {
-        if (!snap.exists()) {
-          onRoom(null);
-          return;
-        }
-        onRoom(snap.data() as RaceRoom);
-      });
+      try {
+        const { db, mod } = await getFs();
+        if (disposed) return;
+        unsub = mod.onSnapshot(mod.doc(db, COLLECTION, upper), (snap) => {
+          if (disposed) return;
+          if (!snap.exists()) {
+            onRoom(null);
+            return;
+          }
+          onRoom(sanitizeRoom(snap.data() as RaceRoom));
+        });
+      } catch {
+        if (!disposed) onRoom(null);
+      }
     })();
-    return () => unsub();
+    return () => {
+      disposed = true;
+      unsub?.();
+    };
   }
 
-  const interval = window.setInterval(() => {
+  let bc: BroadcastChannel | null = null;
+  const emitLocal = () => {
+    if (disposed) return;
     const local = readLocalRoom();
     if (!local || local.code !== upper) {
       onRoom(null);
       return;
     }
     onRoom(local);
-  }, 200);
-  return () => window.clearInterval(interval);
+  };
+
+  if (typeof BroadcastChannel !== "undefined") {
+    try {
+      bc = new BroadcastChannel(`race-room-${upper}`);
+      bc.onmessage = emitLocal;
+    } catch {}
+  }
+
+  const interval = window.setInterval(emitLocal, 120);
+  emitLocal();
+
+  return () => {
+    disposed = true;
+    bc?.close();
+    window.clearInterval(interval);
+  };
 }
 
 const LS_LEADERBOARD = "race-leaderboard-local";
@@ -452,10 +721,9 @@ export async function submitRaceResult(result: {
   saveLocalRaceResult(result);
   if (isFirebaseConfigured) {
     try {
-      const { doc, setDoc } = await import("firebase/firestore");
-      const db = await getDb();
+      const { db, mod } = await getFs();
       const id = `${result.playerId}-${Date.now()}`;
-      await setDoc(doc(db, LEADERBOARD, id), {
+      await mod.setDoc(mod.doc(db, LEADERBOARD, id), {
         ...clean(result),
         createdAt: Date.now(),
       });
@@ -493,9 +761,14 @@ export function useGlobalRaceLeaderboard() {
       const local = readLocalRaceResults();
       if (!isFirebaseConfigured) return local;
       try {
-        const { collection, getDocs, query, orderBy, limit } = await import("firebase/firestore");
-        const db = await getDb();
-        const snap = await getDocs(query(collection(db, LEADERBOARD), orderBy("bestLap", "asc"), limit(100)));
+        const { db, mod } = await getFs();
+        const snap = await mod.getDocs(
+          mod.query(
+            mod.collection(db, LEADERBOARD),
+            mod.orderBy("bestLap", "asc"),
+            mod.limit(100)
+          )
+        );
         const remote = snap.docs.map((d) => d.data() as any);
         const remoteIds = new Set(remote.map((r) => r.playerId));
         const merged = [...remote];
@@ -504,7 +777,9 @@ export function useGlobalRaceLeaderboard() {
             merged.push(l);
           }
         }
-        return merged.sort((a, b) => (a.bestLap ?? Infinity) - (b.bestLap ?? Infinity));
+        return merged.sort(
+          (a, b) => (a.bestLap ?? Infinity) - (b.bestLap ?? Infinity)
+        );
       } catch (e) {
         console.warn("[Firebase useGlobalRaceLeaderboard]:", e);
         return local;
@@ -529,8 +804,8 @@ export function useCountdown(room: RaceRoom | null) {
       const remaining = Math.max(0, 3000 - elapsed);
       const display = Math.ceil(remaining / 1000);
       setCount(display);
-      if (remaining <= 0) {
-        if (timerRef.current) window.clearInterval(timerRef.current);
+      if (remaining <= 0 && timerRef.current) {
+        window.clearInterval(timerRef.current);
       }
     };
 

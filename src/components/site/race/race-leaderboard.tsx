@@ -136,7 +136,7 @@ function AnimatedMiniCar({
   );
 }
 
-export function RaceLeaderboard({ currentRacerId }: { currentRacerId?: string }) {
+export function RaceLeaderboard({ currentRacerId }: { currentRacerId?: string | undefined }) {
   const { data: rows = [], isLoading, refetch, isFetching } = useGlobalRaceLeaderboard();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"bestLap" | "totalTime">("bestLap");
