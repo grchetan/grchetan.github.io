@@ -1,11 +1,9 @@
 /**
  * Horizon Grand Prix — Vehicle Dynamics & 1,920m International Circuit Math
- * Features:
- * - Professional 1,920-meter International Circuit (26m wide tarmac, 87m+ non-adjacent clearance)
- * - 360-point Catmull-Rom spline with automatic curvature detection for apex kerbs & turn markers
- * - Smooth analog + digital steering (`steerValue` -1..+1), progressive cornering, and trail braking
- * - Anti-stall barrier wall-slide alignment so players never get stuck perpendicular to walls
- * - Continuous spline progress tracking for exact meter-by-meter live P1..PN rankings
+ * Tuned for crisp, controllable high-speed racing:
+ * - Balanced top cruising speed (~180 km/h) and Nitro Overdrive (~223 km/h)
+ * - Nitro Boost Tank with 30% minimum recharge cooldown lock (prevents uncontrollable spam)
+ * - Speed-sensitive progressive steering stability
  */
 
 import * as THREE from "three";
@@ -14,41 +12,42 @@ export const TRACK_CONFIG = {
   width: 26,
   halfWidth: 13,
   circuitLengthMeters: 1920,
-  maxSpeedForward: 60, // ~216 km/h top cruising speed
-  maxSpeedReverse: -20, // ~72 km/h reverse
-  accelForward: 52, // Crisp supercar launch & acceleration
-  brakeRate: 68, // High-downforce racing brakes
-  reverseAccel: 28,
-  nitroBoostMultiplier: 1.42, // ~306 km/h with Nitro Overdrive
-  nitroDurationSec: 4.5,
-  nitroRechargeRate: 15, // % per second
-  driftGainNitroRate: 44, // High nitro reward for sliding
-  normalFriction: 0.992,
-  driftFriction: 0.986,
+  maxSpeedForward: 50, // ~180 km/h crisp controllable cruising speed
+  maxSpeedReverse: -18, // ~65 km/h reverse
+  accelForward: 44,
+  brakeRate: 64,
+  reverseAccel: 26,
+  nitroBoostMultiplier: 1.24, // ~223 km/h max boost speed (fast & controllable!)
+  nitroDrainRate: 32, // % per second (~3.1s continuous boost per full tank)
+  nitroRechargeRate: 9, // % per second passive recharge
+  nitroMinThreshold: 30, // Must recharge to 30% after depletion before boosting again
+  driftGainNitroRate: 24, // % per second bonus while drifting
+  normalFriction: 0.991,
+  driftFriction: 0.985,
 };
 
 /** 20 Master Control Waypoints for the 1,920m Horizon Grand Prix Circuit */
 export const CIRCUIT_WAYPOINTS = [
-  new THREE.Vector3(0, 0, -190),      // 0: Start / Finish Line (Main Pit Straight)
-  new THREE.Vector3(105, 0, -190),    // 1: Pit Straight DRS End
-  new THREE.Vector3(205, 0, -190),    // 2: Turn 1 Heavy Braking Zone
-  new THREE.Vector3(280, 0, -162),    // 3: Turn 1 High-Speed Apex
-  new THREE.Vector3(310, 0, -85),     // 4: Turn 2 Outer Sweeper
-  new THREE.Vector3(265, 0, -10),     // 5: Turn 2 Exit
-  new THREE.Vector3(175, 0, 15),      // 6: The Esses (Right-Left Entry)
-  new THREE.Vector3(120, 0, 82),      // 7: The Esses Chicane Apex
-  new THREE.Vector3(205, 0, 145),     // 8: The Esses Exit Curve
-  new THREE.Vector3(175, 0, 215),     // 9: South Straight Entry
-  new THREE.Vector3(55, 0, 228),      // 10: South Boulevard DRS Zone
-  new THREE.Vector3(-75, 0, 220),     // 11: South Straight Braking
-  new THREE.Vector3(-190, 0, 195),    // 12: Sunset Hairpin Entry
-  new THREE.Vector3(-268, 0, 125),    // 13: Sunset Hairpin Apex
-  new THREE.Vector3(-265, 0, 30),     // 14: Hairpin Exit Acceleration
-  new THREE.Vector3(-180, 0, -15),    // 15: Infield S-Sweep
-  new THREE.Vector3(-115, 0, -72),    // 16: Technical Apex
-  new THREE.Vector3(-185, 0, -135),   // 17: Parabolica Entry
-  new THREE.Vector3(-165, 0, -186),   // 18: Final Corner onto Pit Straight
-  new THREE.Vector3(-85, 0, -190),    // 19: Pit Straight Alignment
+  new THREE.Vector3(0, 0, -190),
+  new THREE.Vector3(105, 0, -190),
+  new THREE.Vector3(205, 0, -190),
+  new THREE.Vector3(280, 0, -162),
+  new THREE.Vector3(310, 0, -85),
+  new THREE.Vector3(265, 0, -10),
+  new THREE.Vector3(175, 0, 15),
+  new THREE.Vector3(120, 0, 82),
+  new THREE.Vector3(205, 0, 145),
+  new THREE.Vector3(175, 0, 215),
+  new THREE.Vector3(55, 0, 228),
+  new THREE.Vector3(-75, 0, 220),
+  new THREE.Vector3(-190, 0, 195),
+  new THREE.Vector3(-268, 0, 125),
+  new THREE.Vector3(-265, 0, 30),
+  new THREE.Vector3(-180, 0, -15),
+  new THREE.Vector3(-115, 0, -72),
+  new THREE.Vector3(-185, 0, -135),
+  new THREE.Vector3(-165, 0, -186),
+  new THREE.Vector3(-85, 0, -190),
 ];
 
 export const SPLINE_CURVE = new THREE.CatmullRomCurve3(
@@ -73,7 +72,6 @@ export interface SplinePoint {
   isCorner: boolean;
 }
 
-/** Pre-computed equidistant sampled points along circuit centerline */
 export function buildCircuitSamples(): SplinePoint[] {
   const points = SPLINE_CURVE.getSpacedPoints(SAMPLE_COUNT);
   const raw: {
@@ -143,7 +141,6 @@ export interface TrackGate {
   rightZ: number;
 }
 
-/** 14 Sector Checkpoint Gates evenly distributed along the 1,920m circuit */
 export function buildTrackGates(): TrackGate[] {
   const gateDefs = [
     { sampleIdx: 0, label: "Start / Finish" },
@@ -193,7 +190,6 @@ export interface BoostPad {
   angle: number;
 }
 
-/** 3 Speed Boost Pads placed cleanly on circuit centerlines */
 export const BOOST_PADS: BoostPad[] = [18, 176, 336].map((idx) => {
   const sp = CIRCUIT_SAMPLES[idx % SAMPLE_COUNT]!;
   return { x: sp.x, z: sp.z, angle: sp.headingAngle };
@@ -202,10 +198,9 @@ export const BOOST_PADS: BoostPad[] = [18, 176, 336].map((idx) => {
 export const START_GRID_POS = {
   x: -8,
   z: -190,
-  rotation: Math.PI / 2, // Facing East (+X) along Pit Straight
+  rotation: Math.PI / 2,
 };
 
-/** Staggered F1-style 2-column starting grid positions behind the Start/Finish line */
 export function getStartingGridPos(slotIndex: number): {
   x: number;
   z: number;
@@ -233,6 +228,7 @@ export interface CarPhysicsState {
   steerAngle: number;
   isDrifting: boolean;
   isBoosting: boolean;
+  isBoostCooldown: boolean;
   isBraking: boolean;
   isReversing: boolean;
   isOnKerb: boolean;
@@ -253,13 +249,11 @@ export interface DriveInputs {
   brake: boolean;
   left: boolean;
   right: boolean;
-  /** Optional analog steering -1 (left) .. +1 (right) from wheel/gyro */
   steerValue?: number | undefined;
   drift: boolean;
   nitro: boolean;
 }
 
-/** Check if car moved across a gate line or within its corridor moving forward */
 export function checkGateCrossing(
   prevX: number,
   prevZ: number,
@@ -299,7 +293,6 @@ export function checkGateCrossing(
   return Math.abs(alongGate) < 4.5 && acrossGate <= TRACK_CONFIG.halfWidth + 1.5;
 }
 
-/** Find closest point on spline centerline */
 export function findNearestSplinePoint(
   x: number,
   z: number,
@@ -343,7 +336,6 @@ export function findNearestSplinePoint(
   return CIRCUIT_SAMPLES[bestIdx]!;
 }
 
-/** Robust barrier collision with smooth anti-stall wall-slide recovery */
 export function resolveTrackBorders(
   x: number,
   z: number,
@@ -359,7 +351,7 @@ export function resolveTrackBorders(
   isOnKerb: boolean;
   nearestIdx: number;
 } {
-  const safeMargin = TRACK_CONFIG.halfWidth - 1.4; // 11.6m usable width inside barrier
+  const safeMargin = TRACK_CONFIG.halfWidth - 1.4;
   const nearest = findNearestSplinePoint(x, z, hintIdx);
 
   const dx = x - nearest.x;
@@ -382,11 +374,11 @@ export function resolveTrackBorders(
     resX = nearest.x + nx * (safeMargin - 0.15);
     resZ = nearest.z + nz * (safeMargin - 0.15);
 
-    resSpeed = Math.abs(speed) * 0.86 * Math.sign(speed || 1);
+    resSpeed = Math.abs(speed) * 0.85 * Math.sign(speed || 1);
     let angleErr = nearest.headingAngle - resRot;
     while (angleErr > Math.PI) angleErr -= Math.PI * 2;
     while (angleErr < -Math.PI) angleErr += Math.PI * 2;
-    resRot += angleErr * 0.22;
+    resRot += angleErr * 0.24;
   }
 
   if (collided && Math.abs(resSpeed) < 0.8) {
@@ -404,7 +396,6 @@ export function resolveTrackBorders(
   };
 }
 
-/** Step vehicle physics by one simulation tick */
 export function stepCarPhysics(
   current: CarPhysicsState,
   inputs: DriveInputs,
@@ -423,15 +414,27 @@ export function stepCarPhysics(
   let rotation = current.rotation;
   let steerAngle = current.steerAngle;
   let nitro = current.nitroPercent;
+  let isBoostCooldown = current.isBoostCooldown;
   let driftScore = current.driftScore;
 
-  // --- NITRO MANAGEMENT ---
+  // --- NITRO BOOST WITH RECHARGE COOLDOWN LIMIT ---
   let isBoosting = false;
-  if (inputs.nitro && nitro > 1) {
+  if (isBoostCooldown && nitro >= TRACK_CONFIG.nitroMinThreshold) {
+    isBoostCooldown = false;
+  }
+
+  if (inputs.nitro && !isBoostCooldown && nitro > 0.5) {
     isBoosting = true;
-    nitro = Math.max(0, nitro - d * 21);
+    nitro = Math.max(0, nitro - d * TRACK_CONFIG.nitroDrainRate);
+    if (nitro <= 0.5) {
+      nitro = 0;
+      isBoostCooldown = true;
+    }
   } else {
     nitro = Math.min(100, nitro + d * TRACK_CONFIG.nitroRechargeRate);
+    if (isBoostCooldown && nitro >= TRACK_CONFIG.nitroMinThreshold) {
+      isBoostCooldown = false;
+    }
   }
 
   // --- DRIFTING & POWERSLIDING ---
@@ -450,7 +453,7 @@ export function stepCarPhysics(
     speed += TRACK_CONFIG.accelForward * boostMult * d;
   } else if (isBoosting) {
     speed +=
-      TRACK_CONFIG.accelForward * TRACK_CONFIG.nitroBoostMultiplier * 1.15 * d;
+      TRACK_CONFIG.accelForward * TRACK_CONFIG.nitroBoostMultiplier * 1.05 * d;
   }
 
   if (inputs.brake) {
@@ -469,13 +472,13 @@ export function stepCarPhysics(
     : TRACK_CONFIG.normalFriction;
   speed *= Math.pow(friction, d * 60);
 
-  // Speed clamps
+  // Controllable top speed clamps
   const maxFwd = isBoosting
     ? TRACK_CONFIG.maxSpeedForward * TRACK_CONFIG.nitroBoostMultiplier
     : TRACK_CONFIG.maxSpeedForward;
   speed = Math.max(TRACK_CONFIG.maxSpeedReverse, Math.min(speed, maxFwd));
 
-  // --- ANALOG + DIGITAL PROGRESSIVE STEERING ---
+  // --- SPEED-SENSITIVE PROGRESSIVE STEERING ---
   let rawSteer = 0;
   if (
     typeof inputs.steerValue === "number" &&
@@ -486,23 +489,26 @@ export function stepCarPhysics(
     rawSteer = (inputs.right ? 1 : 0) - (inputs.left ? 1 : 0);
   }
 
-  const speedRatio = Math.max(0.42, Math.min(1.18, Math.abs(speed) / 6.0));
-  const targetSteerAngle = rawSteer * 0.56;
-  steerAngle = THREE.MathUtils.lerp(steerAngle, targetSteerAngle, d * 20);
+  // Smoothly reduce max steering sensitivity at top/boost speeds so corners stay controlled
+  const absSpd = Math.abs(speed);
+  const highSpeedDamp = 1 - Math.min(0.28, (absSpd / 65) * 0.28);
+  const targetSteerAngle = rawSteer * 0.52 * highSpeedDamp;
+  steerAngle = THREE.MathUtils.lerp(steerAngle, targetSteerAngle, d * 18);
 
-  const brakingTurnBonus = isBraking ? 1.26 : 1.0;
-  const driftBonus = isDrifting ? 1.82 : 1.0;
+  const speedFactor = Math.max(0.45, Math.min(1.1, absSpd / 7.5));
+  const brakingTurnBonus = isBraking ? 1.22 : 1.0;
+  const driftBonus = isDrifting ? 1.72 : 1.0;
   const turnRate =
     -steerAngle *
-    (3.15 + Math.abs(speed) * 0.013) *
-    speedRatio *
+    2.95 *
+    speedFactor *
     driftBonus *
     brakingTurnBonus *
     Math.sign(speed || 1);
 
   rotation += turnRate * d;
 
-  const driftSlipAngle = isDrifting ? -steerAngle * 0.55 : 0;
+  const driftSlipAngle = isDrifting ? -steerAngle * 0.5 : 0;
 
   // --- POSITION TRANSLATION ---
   const forwardAngle = rotation + driftSlipAngle;
@@ -558,24 +564,24 @@ export function stepCarPhysics(
   const nearestSample = CIRCUIT_SAMPLES[nearestSampleIdx]!;
   let angleDiff = Math.abs(rotation - nearestSample.headingAngle);
   while (angleDiff > Math.PI) angleDiff = Math.abs(angleDiff - Math.PI * 2);
-  const isWrongWay = angleDiff > Math.PI * 0.7 && Math.abs(speed) > 10;
+  const isWrongWay = angleDiff > Math.PI * 0.7 && absSpd > 10;
 
-  // --- CONTINUOUS PROGRESS SCORE FOR EXACT RANKING ---
   let adjustedSample = nearestSampleIdx;
   if (lap === 1 && checkpoint === 0 && nearestSampleIdx > SAMPLE_COUNT - 40) {
     adjustedSample = nearestSampleIdx - SAMPLE_COUNT;
   }
   const progress = (lap - 1) * SAMPLE_COUNT + adjustedSample;
 
-  const kmh = Math.round(Math.abs(speed) * 3.6);
+  const kmh = Math.round(absSpd * 3.6);
   let currentGear = "N";
   if (speed < -0.8) currentGear = "R";
   else if (kmh < 2) currentGear = "1";
-  else if (kmh < 50) currentGear = "1";
-  else if (kmh < 105) currentGear = "2";
-  else if (kmh < 160) currentGear = "3";
-  else if (kmh < 215) currentGear = "4";
-  else currentGear = "5";
+  else if (kmh < 42) currentGear = "1";
+  else if (kmh < 84) currentGear = "2";
+  else if (kmh < 126) currentGear = "3";
+  else if (kmh < 164) currentGear = "4";
+  else if (kmh < 195) currentGear = "5";
+  else currentGear = "6";
 
   const nextState: CarPhysicsState = {
     x,
@@ -585,6 +591,7 @@ export function stepCarPhysics(
     steerAngle,
     isDrifting,
     isBoosting,
+    isBoostCooldown,
     isBraking,
     isReversing,
     isOnKerb,

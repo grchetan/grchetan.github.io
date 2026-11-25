@@ -1,14 +1,10 @@
 /**
- * Horizon Grand Prix — Pro Responsive HUD & Multi-Mode Mobile Controls
+ * Horizon Grand Prix — Pro Motorsport HUD & Responsive Multi-Mode Controls
  * Features:
- * - Live Multiplayer Ping indicator (`XX ms` + `P2P`/`CLOUD`/`LOCAL` signal badge)
- * - 3 Selectable Mobile Control Modes:
- *   1. Slide-Enabled Dual Touch Pad (drag seamlessly between Left <-> Right without lifting thumb)
- *   2. Interactive Virtual Steering Wheel (proportional analog steering -1..+1)
- *   3. Analog Gyroscope Tilt Steering (with iOS permission & baseline calibration)
- * - Isolated Multi-Touch Pedals (`NITRO`, `DRIFT`, `BRAKE`, optional `GAS` when Auto-Gas OFF)
- * - Responsive Fullscreen / Landscape toggle & clean In-Game Exit button
- * - High-Speed Radial Vignette, Drift Score Popups, Overtake Alerts, and 1,920m Radar Minimap
+ * - Nitro Cooldown / Limit status bar (`READY` / `BOOST` / `COOLING`)
+ * - 1-Tap `TOUCH / KEYS` switcher + Responsive Live Key & Touch Controls on all screen sizes
+ * - 3 Mobile Steering Modes: Slide Touch Pad, Virtual Analog Wheel, Tilt Gyroscope
+ * - Compact Mobile Telemetry Strip + Desktop Digital Cluster + 1.92km Circuit Radar
  */
 
 import { useMemo, useRef, useState, type TouchEvent } from "react";
@@ -32,10 +28,12 @@ import {
   Gauge,
   Compass,
   Gamepad2,
+  Keyboard,
 } from "lucide-react";
-import { CIRCUIT_SAMPLES, SAMPLE_COUNT } from "./race-physics";
+import { CIRCUIT_SAMPLES, SAMPLE_COUNT, TRACK_CONFIG } from "./race-physics";
 import type { AIRival } from "./race-ai";
 import type { TransportKind } from "@/lib/race-net";
+import type { CameraMode } from "../race-game";
 
 export type MobileControlType = "pad" | "wheel" | "tilt";
 
@@ -43,6 +41,8 @@ export interface HUDProps {
   speedKmh: number;
   gear: string;
   nitroPercent: number;
+  isBoosting: boolean;
+  isBoostCooldown: boolean;
   lap: number;
   maxLaps: number;
   totalTimeMs: number;
@@ -51,7 +51,7 @@ export interface HUDProps {
   rank: number;
   totalRacers: number;
   isWrongWay: boolean;
-  cameraMode: "chase" | "bumper" | "top";
+  cameraMode: CameraMode;
   isMuted: boolean;
   controlsMode: "keyboard" | "touch";
   mobileControlType: MobileControlType;
@@ -61,6 +61,14 @@ export interface HUDProps {
   pingMs: number | null;
   transport: TransportKind;
   isMultiplayer: boolean;
+  activeKeys: {
+    gas: boolean;
+    brake: boolean;
+    left: boolean;
+    right: boolean;
+    drift: boolean;
+    nitro: boolean;
+  };
   playerPos: { x: number; z: number; rotation: number };
   remoteRacers: { id: string; color: string; x: number; z: number }[];
   aiBots: AIRival[];
@@ -68,6 +76,7 @@ export interface HUDProps {
   onToggleCamera: () => void;
   onToggleMute: () => void;
   onResetCar: () => void;
+  onToggleControlsMode: () => void;
   onToggleAutoDrive: () => void;
   onCycleMobileControl: () => void;
   onToggleRotateScreen: () => void;
@@ -88,17 +97,18 @@ function triggerHaptic(ms = 12) {
   }
 }
 
-/** Multi-touch safe pedal button tracking its own touch identifier */
 function MultiTouchPedal({
   label,
   className,
   activeClassName,
+  disabled = false,
   onActiveChange,
   children,
 }: {
   label: string;
   className: string;
   activeClassName: string;
+  disabled?: boolean;
   onActiveChange: (active: boolean) => void;
   children: React.ReactNode;
 }) {
@@ -106,6 +116,7 @@ function MultiTouchPedal({
   const touchIdRef = useRef<number | null>(null);
 
   const activate = () => {
+    if (disabled) return;
     if (!pressed) {
       setPressed(true);
       triggerHaptic(14);
@@ -124,7 +135,7 @@ function MultiTouchPedal({
       type="button"
       aria-label={label}
       className={`${className} touch-none select-none transition-transform duration-75 ${
-        pressed ? `${activeClassName} scale-92` : ""
+        pressed && !disabled ? `${activeClassName} scale-90` : ""
       }`}
       onTouchStart={(e) => {
         e.preventDefault();
@@ -164,7 +175,6 @@ function MultiTouchPedal({
   );
 }
 
-/** Slide-Enabled Left/Right Touch Zone: slide finger smoothly between Left & Right */
 function SlideSteerPad({
   onLeftChange,
   onRightChange,
@@ -257,28 +267,27 @@ function SlideSteerPad({
       onMouseLeave={() => clearSteer()}
     >
       <div
-        className={`flex size-14 sm:size-16 items-center justify-center rounded-2xl border-2 transition-all duration-75 ${
+        className={`flex size-13 sm:size-16 items-center justify-center rounded-2xl border-2 transition-all duration-75 ${
           steerSide === "left"
-            ? "scale-92 border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.65)]"
+            ? "scale-90 border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.65)]"
             : "border-cyan-500/35 bg-slate-900/90 text-white"
         }`}
       >
-        <ArrowLeft className="size-7 sm:size-8" strokeWidth={3} />
+        <ArrowLeft className="size-6 sm:size-8" strokeWidth={3} />
       </div>
       <div
-        className={`flex size-14 sm:size-16 items-center justify-center rounded-2xl border-2 transition-all duration-75 ${
+        className={`flex size-13 sm:size-16 items-center justify-center rounded-2xl border-2 transition-all duration-75 ${
           steerSide === "right"
-            ? "scale-92 border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.65)]"
+            ? "scale-90 border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.65)]"
             : "border-cyan-500/35 bg-slate-900/90 text-white"
         }`}
       >
-        <ArrowRight className="size-7 sm:size-8" strokeWidth={3} />
+        <ArrowRight className="size-6 sm:size-8" strokeWidth={3} />
       </div>
     </div>
   );
 }
 
-/** Interactive Virtual Cyber Steering Wheel with analog precision */
 function VirtualSteeringWheel({
   onAnalogSteer,
 }: {
@@ -308,15 +317,15 @@ function VirtualSteeringWheel({
     <div
       ref={wheelRef}
       aria-label="Virtual Steering Wheel"
-      className="pointer-events-auto relative flex size-28 sm:size-32 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-slate-950/75 shadow-[0_0_30px_rgba(6,182,212,0.25)] backdrop-blur-xl touch-none select-none cursor-grab active:cursor-grabbing"
+      className="pointer-events-auto relative flex size-26 sm:size-32 items-center justify-center rounded-full border-2 border-cyan-400/50 bg-slate-950/75 shadow-[0_0_30px_rgba(6,182,212,0.25)] backdrop-blur-xl touch-none select-none cursor-grab active:cursor-grabbing"
       onTouchStart={(e) => {
         e.preventDefault();
         e.stopPropagation();
         const t = e.changedTouches[0];
         if (t) {
           touchIdRef.current = t.identifier;
-    const rect = wheelRef.current?.getBoundingClientRect();
-    startXRef.current = rect ? rect.left + rect.width / 2 : t.clientX;
+          const rect = wheelRef.current?.getBoundingClientRect();
+          startXRef.current = rect ? rect.left + rect.width / 2 : t.clientX;
           triggerHaptic(10);
           updateFromX(t.clientX);
         }
@@ -344,9 +353,8 @@ function VirtualSteeringWheel({
       }}
       onTouchCancel={() => resetWheel()}
       onMouseDown={(e) => {
-        startXRef.current =
-          (wheelRef.current?.getBoundingClientRect().left ?? 0) +
-          (wheelRef.current?.getBoundingClientRect().width ?? 112) / 2;
+        const rect = wheelRef.current?.getBoundingClientRect();
+        startXRef.current = rect ? rect.left + rect.width / 2 : e.clientX;
         updateFromX(e.clientX);
       }}
       onMouseMove={(e) => {
@@ -355,18 +363,13 @@ function VirtualSteeringWheel({
       onMouseUp={() => resetWheel()}
       onMouseLeave={() => resetWheel()}
     >
-      {/* Rotating F1 Steering Rim */}
       <div
-        className="relative flex size-22 sm:size-26 items-center justify-center rounded-full border-4 border-slate-700 bg-slate-900/90 transition-transform duration-75"
+        className="relative flex size-20 sm:size-26 items-center justify-center rounded-full border-4 border-slate-700 bg-slate-900/90 transition-transform duration-75"
         style={{ transform: `rotate(${deg}deg)` }}
       >
-        {/* Top center stripe */}
         <div className="absolute top-0 h-2.5 w-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
-        {/* Horizontal spoke */}
         <div className="h-2.5 w-full bg-slate-700/90" />
-        {/* Vertical center spoke */}
-        <div className="absolute bottom-2 h-9 w-2.5 bg-slate-700/90 rounded-b" />
-        {/* Hub */}
+        <div className="absolute bottom-2 h-8 w-2.5 bg-slate-700/90 rounded-b" />
         <div className="absolute size-7 rounded-full border-2 border-cyan-400/70 bg-slate-950 flex items-center justify-center">
           <div className="size-2 rounded-full bg-cyan-400" />
         </div>
@@ -382,6 +385,8 @@ export function RaceHUD({
   speedKmh,
   gear,
   nitroPercent,
+  isBoosting,
+  isBoostCooldown,
   lap,
   maxLaps,
   totalTimeMs,
@@ -400,6 +405,7 @@ export function RaceHUD({
   pingMs,
   transport,
   isMultiplayer,
+  activeKeys,
   playerPos,
   remoteRacers,
   aiBots,
@@ -407,6 +413,7 @@ export function RaceHUD({
   onToggleCamera,
   onToggleMute,
   onResetCar,
+  onToggleControlsMode,
   onToggleAutoDrive,
   onCycleMobileControl,
   onToggleRotateScreen,
@@ -425,7 +432,6 @@ export function RaceHUD({
     return `${m}:${sec}`;
   };
 
-  // Pre-rendered SVG path for the 1,920m Grand Prix circuit
   const radarPath = useMemo(() => {
     const N = SAMPLE_COUNT;
     let d = `M ${CIRCUIT_SAMPLES[0]!.x.toFixed(1)} ${CIRCUIT_SAMPLES[0]!.z.toFixed(1)}`;
@@ -455,30 +461,32 @@ export function RaceHUD({
           ? "CLOUD"
           : "SOLO";
 
+  const nitroLabel = isBoosting
+    ? "BOOST"
+    : isBoostCooldown
+      ? `WAIT ${nitroPercent}/${TRACK_CONFIG.nitroMinThreshold}%`
+      : `${nitroPercent}%`;
+
   return (
     <>
-      {/* ---------------- HIGH SPEED & NITRO RADIAL WARP OVERLAY ---------------- */}
-      {speedKmh > 185 && (
+      {/* ---------------- HIGH SPEED & NITRO RADIAL WARP ---------------- */}
+      {speedKmh > 165 && (
         <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
           <div
             className="absolute inset-0 transition-opacity duration-200"
             style={{
-              opacity: Math.min(0.6, (speedKmh - 185) / 140),
+              opacity: Math.min(0.55, (speedKmh - 165) / 110),
               background:
-                "radial-gradient(circle at center, transparent 52%, rgba(6, 182, 212, 0.24) 100%)",
+                "radial-gradient(circle at center, transparent 54%, rgba(6, 182, 212, 0.22) 100%)",
             }}
           />
-          <div className="absolute left-4 top-1/4 h-0.5 w-24 bg-cyan-300/70 animate-pulse" />
-          <div className="absolute left-8 bottom-1/3 h-0.5 w-36 bg-sky-300/60 animate-pulse delay-75" />
-          <div className="absolute right-4 top-1/3 h-0.5 w-28 bg-cyan-300/70 animate-pulse delay-100" />
-          <div className="absolute right-8 bottom-1/4 h-0.5 w-32 bg-sky-300/60 animate-pulse delay-150" />
         </div>
       )}
 
       {/* ---------------- FLOATING EVENT & DRIFT SCORE BADGES ---------------- */}
-      <div className="pointer-events-none absolute inset-x-0 top-18 sm:top-20 z-25 flex flex-col items-center gap-2 px-4">
+      <div className="pointer-events-none absolute inset-x-0 top-16 sm:top-20 z-25 flex flex-col items-center gap-2 px-4">
         {isWrongWay && (
-          <div className="animate-pulse rounded-full border border-rose-400/70 bg-rose-600/80 px-4 py-1.5 text-center font-mono text-[0.7rem] font-black uppercase tracking-widest text-white shadow-[0_0_25px_rgba(244,63,94,0.75)] backdrop-blur-xl">
+          <div className="animate-pulse rounded-full border border-rose-400/70 bg-rose-600/85 px-4 py-1.5 text-center font-mono text-[0.7rem] font-black uppercase tracking-widest text-white shadow-[0_0_25px_rgba(244,63,94,0.75)] backdrop-blur-xl">
             ⚠️ WRONG WAY — TURN AROUND
           </div>
         )}
@@ -490,19 +498,19 @@ export function RaceHUD({
         {driftScore > 0 && speedKmh > 30 && (
           <div className="flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-slate-950/75 px-3 py-1 font-mono text-[0.65rem] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md">
             <Flame className="size-3.5 text-amber-400" />
-            Drift Score: {driftScore.toLocaleString()}
+            Drift: {driftScore.toLocaleString()}
           </div>
         )}
       </div>
 
-      {/* ---------------- TOP HUD STATUS BAR ---------------- */}
+      {/* ---------------- TOP HUD TELEMETRY & ACTION BAR ---------------- */}
       <div className="pointer-events-none absolute inset-x-2.5 top-2.5 sm:inset-x-4 sm:top-3.5 z-30 flex items-start justify-between gap-2">
-        {/* Left: Timer, Best Lap & Live Ping (ms) */}
+        {/* Left: Timer, Best Lap & Live Ping */}
         <div className="flex flex-col gap-1.5 shrink-0">
           <div className="pointer-events-auto rounded-2xl border border-white/15 bg-slate-950/80 px-3 py-1.5 sm:px-3.5 sm:py-2 backdrop-blur-xl shadow-xl">
             <div className="flex items-center gap-1.5">
               <Flag className="size-3 text-cyan-400" />
-              <p className="font-mono text-[0.55rem] font-bold uppercase tracking-widest text-slate-400">
+              <p className="font-mono text-[0.52rem] font-bold uppercase tracking-widest text-slate-400">
                 Time
               </p>
             </div>
@@ -529,7 +537,7 @@ export function RaceHUD({
           )}
         </div>
 
-        {/* Center: Live Position, Lap Counter & Mobile Compact Speed */}
+        {/* Center: Live Standings, Lap & Mobile Speed/Gear */}
         <div className="pointer-events-auto flex items-center gap-2 rounded-2xl border border-white/15 bg-slate-950/80 px-3 py-1.5 sm:px-4 sm:py-2 backdrop-blur-xl shadow-xl">
           <div className="flex items-center gap-1">
             <Trophy className="size-3.5 text-amber-400" />
@@ -543,7 +551,7 @@ export function RaceHUD({
 
           <div className="h-4 w-px bg-white/15" />
 
-          <div className="font-mono text-[0.68rem] sm:text-xs font-bold text-slate-200">
+          <div className="font-mono text-[0.65rem] sm:text-xs font-bold text-slate-200">
             LAP{" "}
             <span className="text-cyan-400 font-extrabold">
               {Math.min(lap, maxLaps)}
@@ -553,22 +561,21 @@ export function RaceHUD({
 
           <div className="flex sm:hidden items-center gap-1 border-l border-white/15 pl-2 font-mono text-xs font-black text-cyan-300">
             {speedKmh}
-            <span className="text-[0.5rem] text-slate-400">KMH</span>
+            <span className="text-[0.48rem] text-slate-400">KMH</span>
           </div>
         </div>
 
-        {/* Right: Clean Compact Action Controls + Mobile Modes + Exit */}
+        {/* Right: Action Controls + Camera/Touch Switchers */}
         <div className="pointer-events-auto flex flex-col items-end gap-1.5">
           <div className="flex items-center gap-1 sm:gap-1.5">
-            {/* Immersive Fullscreen / Landscape Rotate */}
             <button
               type="button"
               onClick={() => {
                 triggerHaptic();
                 onToggleRotateScreen();
               }}
-              aria-label="Toggle Fullscreen Landscape"
-              title={isLandscape ? "Exit Fullscreen" : "Fullscreen / Rotate"}
+              aria-label="Toggle Fullscreen"
+              title="Fullscreen / Rotate"
               className="flex h-8 sm:h-9 items-center gap-1 rounded-xl border border-cyan-400/45 bg-cyan-950/80 px-2 sm:px-2.5 text-cyan-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:bg-cyan-900"
             >
               {isLandscape ? (
@@ -576,48 +583,48 @@ export function RaceHUD({
               ) : (
                 <Maximize2 className="size-3.5" />
               )}
-              <span className="hidden sm:inline font-mono text-[0.6rem] font-bold uppercase">
+              <span className="hidden md:inline font-mono text-[0.58rem] font-bold uppercase">
                 {isLandscape ? "Exit Full" : "Full"}
               </span>
             </button>
 
-            {/* Reset Car */}
             <button
               type="button"
               onClick={() => {
                 triggerHaptic();
                 onResetCar();
               }}
-              aria-label="Reset Car to Track"
+              aria-label="Reset Car"
               title="Reset Car (R)"
               className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-white/15 bg-slate-950/80 text-slate-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:text-white"
             >
               <RotateCcw className="size-3.5" />
             </button>
 
-            {/* Camera View */}
             <button
               type="button"
               onClick={() => {
                 triggerHaptic();
                 onToggleCamera();
               }}
-              aria-label={`Camera: ${cameraMode}`}
-              title={`Switch Camera (${cameraMode.toUpperCase()})`}
-              className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-white/15 bg-slate-950/80 text-slate-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:text-white"
+              aria-label="Switch Camera"
+              title={`Camera: ${cameraMode.toUpperCase()} (C)`}
+              className="flex h-8 sm:h-9 items-center gap-1 rounded-xl border border-white/15 bg-slate-950/80 px-2 text-slate-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:text-white"
             >
-              <Camera className="size-3.5" />
+              <Camera className="size-3.5 text-cyan-400" />
+              <span className="hidden sm:inline font-mono text-[0.56rem] font-bold uppercase">
+                {cameraMode}
+              </span>
             </button>
 
-            {/* Audio Mute */}
             <button
               type="button"
               onClick={() => {
                 triggerHaptic();
                 onToggleMute();
               }}
-              aria-label="Mute / Unmute Sound"
-              title="Toggle Sound (M)"
+              aria-label="Toggle Mute"
+              title="Mute / Unmute (M)"
               className="flex size-8 sm:size-9 items-center justify-center rounded-xl border border-white/15 bg-slate-950/80 text-slate-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:text-white"
             >
               {isMuted ? (
@@ -627,7 +634,6 @@ export function RaceHUD({
               )}
             </button>
 
-            {/* Clean Exit Race Button */}
             <button
               type="button"
               onClick={() => {
@@ -635,58 +641,76 @@ export function RaceHUD({
                 onExitRace();
               }}
               aria-label="Exit Race"
-              title="Exit to Lobby"
+              title="Exit Race"
               className="flex h-8 sm:h-9 items-center gap-1 rounded-xl border border-rose-500/45 bg-rose-950/85 px-2 sm:px-2.5 text-rose-300 shadow-lg backdrop-blur-xl active:scale-90 transition-all hover:bg-rose-900 hover:text-white"
             >
               <LogOut className="size-3.5" />
-              <span className="hidden sm:inline font-mono text-[0.6rem] font-bold uppercase">
+              <span className="hidden sm:inline font-mono text-[0.58rem] font-bold uppercase">
                 Exit
               </span>
             </button>
           </div>
 
-          {/* Mobile Touch Mode Switchers (Compact 2nd Row) */}
-          {controlsMode === "touch" && (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  onToggleAutoDrive();
-                }}
-                className={`flex items-center gap-1 rounded-xl border px-2 py-1 font-mono text-[0.55rem] font-bold uppercase backdrop-blur-xl transition-all active:scale-90 ${
-                  autoDrive
-                    ? "border-emerald-400/50 bg-emerald-950/80 text-emerald-300"
-                    : "border-white/15 bg-slate-950/80 text-slate-400"
-                }`}
-              >
-                <Zap className="size-3" />
-                <span>Auto: {autoDrive ? "ON" : "OFF"}</span>
-              </button>
+          {/* 2nd Row: Responsive Mode Toggle (Touch <-> Keys + Auto-Gas + Steer Mode) */}
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic();
+                onToggleControlsMode();
+              }}
+              className="flex items-center gap-1 rounded-xl border border-white/15 bg-slate-950/80 px-2 py-1 font-mono text-[0.55rem] font-bold uppercase text-slate-200 backdrop-blur-xl transition-all active:scale-90"
+            >
+              {controlsMode === "touch" ? (
+                <Gamepad2 className="size-3 text-cyan-400" />
+              ) : (
+                <Keyboard className="size-3 text-cyan-400" />
+              )}
+              <span>{controlsMode === "touch" ? "Touch UI" : "Keys UI"}</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  triggerHaptic();
-                  onCycleMobileControl();
-                }}
-                className="flex items-center gap-1 rounded-xl border border-cyan-400/45 bg-slate-950/85 px-2 py-1 font-mono text-[0.55rem] font-bold uppercase text-cyan-300 backdrop-blur-xl transition-all active:scale-90"
-              >
-                {mobileControlType === "wheel" ? (
-                  <Gauge className="size-3" />
-                ) : mobileControlType === "tilt" ? (
-                  <Compass className="size-3" />
-                ) : (
-                  <Gamepad2 className="size-3" />
-                )}
-                <span>Steer: {mobileControlType.toUpperCase()}</span>
-              </button>
-            </div>
-          )}
+            {controlsMode === "touch" && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    onToggleAutoDrive();
+                  }}
+                  className={`flex items-center gap-1 rounded-xl border px-2 py-1 font-mono text-[0.55rem] font-bold uppercase backdrop-blur-xl transition-all active:scale-90 ${
+                    autoDrive
+                      ? "border-emerald-400/50 bg-emerald-950/80 text-emerald-300"
+                      : "border-white/15 bg-slate-950/80 text-slate-400"
+                  }`}
+                >
+                  <Zap className="size-3" />
+                  <span>Auto: {autoDrive ? "ON" : "OFF"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic();
+                    onCycleMobileControl();
+                  }}
+                  className="flex items-center gap-1 rounded-xl border border-cyan-400/45 bg-slate-950/85 px-2 py-1 font-mono text-[0.55rem] font-bold uppercase text-cyan-300 backdrop-blur-xl transition-all active:scale-90"
+                >
+                  {mobileControlType === "wheel" ? (
+                    <Gauge className="size-3" />
+                  ) : mobileControlType === "tilt" ? (
+                    <Compass className="size-3" />
+                  ) : (
+                    <Gamepad2 className="size-3" />
+                  )}
+                  <span>{mobileControlType.toUpperCase()}</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* ---------------- DIGITAL SPEEDOMETER & NITRO GAUGE (BOTTOM RIGHT DESKTOP) ---------------- */}
+      {/* ---------------- DIGITAL SPEEDOMETER & NITRO COOLDOWN GAUGE (BOTTOM RIGHT DESKTOP) ---------------- */}
       <div className="pointer-events-none absolute bottom-4 right-4 z-20 hidden sm:flex items-end gap-3">
         <div className="rounded-3xl border border-white/15 bg-slate-950/85 p-3.5 backdrop-blur-xl shadow-2xl flex items-center gap-3.5">
           <div>
@@ -698,30 +722,55 @@ export function RaceHUD({
                 KM/H
               </span>
             </div>
-            <div className="mt-0.5 flex items-center gap-2 font-mono text-[0.62rem] text-slate-400">
+            <div className="mt-0.5 flex items-center gap-2 font-mono text-[0.6rem] text-slate-400">
               <span>
                 GEAR: <b className="text-cyan-400 font-extrabold">{gear}</b>
               </span>
               <span>•</span>
-              <span className="text-cyan-300">{cameraMode.toUpperCase()}</span>
+              <span
+                className={
+                  isBoostCooldown
+                    ? "text-amber-400 font-bold"
+                    : isBoosting
+                      ? "text-cyan-300 font-bold animate-pulse"
+                      : "text-emerald-400"
+                }
+              >
+                {isBoostCooldown
+                  ? "BOOST LOCK"
+                  : isBoosting
+                    ? "BOOSTING"
+                    : "BOOST READY"}
+              </span>
             </div>
           </div>
 
           <div className="flex flex-col items-center gap-1 border-l border-white/10 pl-3">
             <Flame
               className={`size-4 ${
-                nitroPercent > 15
-                  ? "text-cyan-400 animate-pulse"
-                  : "text-slate-600"
+                isBoostCooldown
+                  ? "text-amber-400"
+                  : nitroPercent >= TRACK_CONFIG.nitroMinThreshold
+                    ? "text-cyan-400 animate-pulse"
+                    : "text-slate-600"
               }`}
             />
-            <div className="h-10 w-2.5 overflow-hidden rounded-full bg-slate-800 flex flex-col justify-end">
+            <div className="relative h-11 w-2.5 overflow-hidden rounded-full bg-slate-800 flex flex-col justify-end">
               <div
-                className="w-full rounded-full bg-gradient-to-t from-cyan-500 to-sky-300 transition-all duration-75"
+                className={`w-full rounded-full transition-all duration-75 ${
+                  isBoostCooldown
+                    ? "bg-gradient-to-t from-amber-500 to-yellow-400"
+                    : "bg-gradient-to-t from-cyan-500 to-sky-300"
+                }`}
                 style={{ height: `${nitroPercent}%` }}
               />
+              {/* 30% minimum recharge threshold marker */}
+              <div
+                className="absolute inset-x-0 h-px bg-white/60"
+                style={{ bottom: `${TRACK_CONFIG.nitroMinThreshold}%` }}
+              />
             </div>
-            <span className="font-mono text-[0.55rem] font-bold text-slate-400">
+            <span className="font-mono text-[0.55rem] font-bold text-slate-300">
               {nitroPercent}%
             </span>
           </div>
@@ -732,7 +781,7 @@ export function RaceHUD({
       <div
         className={`pointer-events-none z-20 ${
           controlsMode === "touch"
-            ? "hidden sm:block absolute left-4 top-20"
+            ? "hidden sm:block absolute left-4 top-22"
             : "hidden md:block absolute bottom-4 left-4"
         }`}
       >
@@ -744,7 +793,7 @@ export function RaceHUD({
             <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
           </div>
           <svg
-            className="w-36 h-24 sm:w-44 sm:h-30 overflow-visible"
+            className="w-36 h-24 sm:w-44 sm:h-28 overflow-visible"
             viewBox="-295 -215 630 470"
           >
             <path
@@ -813,13 +862,15 @@ export function RaceHUD({
           className="pointer-events-none absolute inset-x-2 sm:inset-x-4 bottom-2 sm:bottom-4 z-30 flex items-end justify-between touch-none select-none"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
-          {/* Left Thumb Steering Mode */}
           <div className="flex items-end">
             {mobileControlType === "wheel" ? (
               <VirtualSteeringWheel onAnalogSteer={onAnalogSteer} />
             ) : mobileControlType === "tilt" ? (
               <div className="pointer-events-auto flex items-center gap-2 rounded-2xl border border-cyan-400/40 bg-slate-950/80 px-3 py-2 font-mono text-[0.6rem] font-bold uppercase text-cyan-300 backdrop-blur-xl">
-                <Compass className="size-4 animate-spin" style={{ animationDuration: "6s" }} />
+                <Compass
+                  className="size-4 animate-spin"
+                  style={{ animationDuration: "6s" }}
+                />
                 <span>Tilt Phone to Steer</span>
               </div>
             ) : (
@@ -831,11 +882,10 @@ export function RaceHUD({
             )}
           </div>
 
-          {/* Right Thumb Multi-Touch Action Pedals */}
           <div className="pointer-events-auto flex items-end gap-1.5 sm:gap-2 rounded-3xl border border-white/15 bg-slate-950/80 p-1.5 sm:p-2 shadow-2xl backdrop-blur-xl">
             <MultiTouchPedal
               label="Powerslide Drift"
-              className="flex size-12 sm:size-14 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.6rem] font-black uppercase text-amber-300 shadow-lg"
+              className="flex size-12 sm:size-14 items-center justify-center rounded-2xl border border-amber-500/50 bg-amber-500/20 font-mono text-[0.58rem] font-black uppercase text-amber-300 shadow-lg"
               activeClassName="bg-amber-400 text-slate-950 border-amber-300"
               onActiveChange={onTouchDriftChange}
             >
@@ -844,38 +894,49 @@ export function RaceHUD({
 
             <MultiTouchPedal
               label="Nitro Overdrive"
-              className="flex size-14 sm:size-16 items-center justify-center rounded-2xl border-2 border-cyan-400/65 bg-gradient-to-t from-cyan-600/45 to-sky-400/45 font-mono text-[0.58rem] font-black uppercase text-cyan-100 shadow-[0_0_20px_rgba(6,182,212,0.45)]"
+              disabled={isBoostCooldown}
+              className={`flex size-13 sm:size-16 items-center justify-center rounded-2xl border-2 font-mono text-[0.52rem] font-black uppercase shadow-lg ${
+                isBoostCooldown
+                  ? "border-amber-500/40 bg-amber-950/60 text-amber-300 opacity-75"
+                  : "border-cyan-400/65 bg-gradient-to-t from-cyan-600/45 to-sky-400/45 text-cyan-100 shadow-[0_0_20px_rgba(6,182,212,0.45)]"
+              }`}
               activeClassName="bg-cyan-400 text-slate-950 border-white"
               onActiveChange={onTouchNitroChange}
             >
-              <div className="flex flex-col items-center">
-                <Flame className="size-5 text-cyan-200 animate-pulse" />
-                <span>{nitroPercent}%</span>
+              <div className="flex flex-col items-center text-center leading-tight">
+                <Flame
+                  className={`size-4 sm:size-5 ${
+                    isBoostCooldown
+                      ? "text-amber-400"
+                      : "text-cyan-200 animate-pulse"
+                  }`}
+                />
+                <span className="mt-0.5">{nitroLabel}</span>
               </div>
             </MultiTouchPedal>
 
             <MultiTouchPedal
               label="Brake and Reverse"
-              className="flex size-13 sm:size-16 items-center justify-center rounded-2xl border-2 border-rose-500/55 bg-gradient-to-t from-rose-700/40 to-rose-500/40 text-rose-200 shadow-lg"
+              className="flex size-12 sm:size-16 items-center justify-center rounded-2xl border-2 border-rose-500/55 bg-gradient-to-t from-rose-700/40 to-rose-500/40 text-rose-200 shadow-lg"
               activeClassName="bg-rose-500 text-white border-rose-300"
               onActiveChange={onTouchBrakeChange}
             >
               <div className="flex flex-col items-center">
                 <ArrowDown className="size-5 sm:size-6" strokeWidth={3} />
-                <span className="font-mono text-[0.5rem] font-bold">BRK</span>
+                <span className="font-mono text-[0.48rem] font-bold">BRK</span>
               </div>
             </MultiTouchPedal>
 
             {!autoDrive && (
               <MultiTouchPedal
                 label="Gas Accelerator"
-                className="flex h-16 w-14 sm:h-18 sm:w-16 items-center justify-center rounded-2xl border-2 border-emerald-400/70 bg-gradient-to-t from-emerald-700/50 to-emerald-500/50 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                className="flex h-15 w-13 sm:h-18 sm:w-16 items-center justify-center rounded-2xl border-2 border-emerald-400/70 bg-gradient-to-t from-emerald-700/50 to-emerald-500/50 text-emerald-100 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
                 activeClassName="bg-emerald-400 text-slate-950 border-white"
                 onActiveChange={onTouchGasChange}
               >
                 <div className="flex flex-col items-center">
                   <ArrowUp className="size-6 sm:size-7" strokeWidth={3} />
-                  <span className="font-mono text-[0.52rem] font-black">GAS</span>
+                  <span className="font-mono text-[0.5rem] font-black">GAS</span>
                 </div>
               </MultiTouchPedal>
             )}
@@ -883,31 +944,71 @@ export function RaceHUD({
         </div>
       )}
 
-      {/* ---------------- DESKTOP KEYBOARD CONTROLS GUIDE ---------------- */}
+      {/* ---------------- RESPONSIVE INTERACTIVE DESKTOP CONTROLS DECK ---------------- */}
       {controlsMode === "keyboard" && (
-        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-10 hidden sm:flex items-center gap-3 rounded-full border border-white/15 bg-slate-950/85 px-5 py-2 backdrop-blur-xl text-slate-300 text-[0.68rem] font-mono shadow-2xl">
-          <span>
-            <b className="text-white">WASD / ↑↓←→</b> Drive
-          </span>
-          <span>•</span>
-          <span>
-            <b className="text-amber-400">SPACE</b> Drift
-          </span>
-          <span>•</span>
-          <span>
-            <b className="text-cyan-400">SHIFT</b> Nitro
-          </span>
-          <span>•</span>
-          <span>
-            <b className="text-white">R</b> Reset
-          </span>
-          <span>•</span>
-          <span>
-            <b className="text-white">C</b> Cam
-          </span>
-          <span>•</span>
-          <span>
-            <b className="text-white">M</b> Mute
+        <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-20 hidden sm:flex items-center gap-2.5 rounded-2xl border border-white/15 bg-slate-950/80 px-3.5 py-2 backdrop-blur-xl shadow-2xl">
+          {/* Interactive Directional Keys */}
+          <div className="pointer-events-auto flex items-center gap-1">
+            {[
+              { label: "←", active: activeKeys.left, onSet: onTouchLeftChange },
+              { label: "↑", active: activeKeys.gas, onSet: onTouchGasChange },
+              { label: "↓", active: activeKeys.brake, onSet: onTouchBrakeChange },
+              { label: "→", active: activeKeys.right, onSet: onTouchRightChange },
+            ].map((k) => (
+              <button
+                key={k.label}
+                type="button"
+                onMouseDown={() => k.onSet(true)}
+                onMouseUp={() => k.onSet(false)}
+                onMouseLeave={() => k.onSet(false)}
+                className={`flex size-7 items-center justify-center rounded-lg border font-mono text-xs font-black transition-all ${
+                  k.active
+                    ? "border-cyan-300 bg-cyan-400 text-slate-950 scale-95 shadow-[0_0_12px_rgba(34,211,238,0.6)]"
+                    : "border-white/15 bg-slate-900/90 text-slate-300 hover:border-white/30"
+                }`}
+              >
+                {k.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="h-5 w-px bg-white/15" />
+
+          {/* Interactive Drift & Nitro Keys */}
+          <div className="pointer-events-auto flex items-center gap-1.5 font-mono text-[0.65rem] font-bold">
+            <button
+              type="button"
+              onMouseDown={() => onTouchDriftChange(true)}
+              onMouseUp={() => onTouchDriftChange(false)}
+              onMouseLeave={() => onTouchDriftChange(false)}
+              className={`rounded-lg border px-2.5 py-1 transition-all ${
+                activeKeys.drift
+                  ? "border-amber-300 bg-amber-400 text-slate-950 shadow-[0_0_12px_rgba(251,191,36,0.6)]"
+                  : "border-amber-500/40 bg-amber-500/15 text-amber-300"
+              }`}
+            >
+              SPACE · DRIFT
+            </button>
+
+            <button
+              type="button"
+              onMouseDown={() => onTouchNitroChange(true)}
+              onMouseUp={() => onTouchNitroChange(false)}
+              onMouseLeave={() => onTouchNitroChange(false)}
+              className={`rounded-lg border px-2.5 py-1 transition-all ${
+                isBoostCooldown
+                  ? "border-amber-500/40 bg-amber-950/70 text-amber-300"
+                  : activeKeys.nitro || isBoosting
+                    ? "border-cyan-200 bg-cyan-400 text-slate-950 shadow-[0_0_14px_rgba(34,211,238,0.7)]"
+                    : "border-cyan-500/45 bg-cyan-500/15 text-cyan-300"
+              }`}
+            >
+              SHIFT · {isBoostCooldown ? `WAIT ${nitroPercent}%` : "NITRO"}
+            </button>
+          </div>
+
+          <span className="hidden lg:inline font-mono text-[0.62rem] text-slate-400 pl-1">
+            <b className="text-white">C</b> Cam · <b className="text-white">R</b> Reset
           </span>
         </div>
       )}
